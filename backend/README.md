@@ -1,62 +1,84 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Backend
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Laravel 8
 
-## About Laravel
+Laravel 8 では環境構築がこれまでよりさらに容易になっています。以前は行っていた、Composerの導入やLaravelプロジェクトの作成、またデータベースのインストールから接続などが不要になり、それらを意識することなく開発準備を整えることができます。
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Laravel Sail
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+前述の環境構築を行うためには、**Laravel Sail**と呼ばれるものを使用します。これは公式サイトで、Laravelのインストール方法として紹介されている軽量のCLIです。これはDockerを使った構築方法になっているので、事前にDockerが利用できる環境が必要です。
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+下記に以前の方法の一例とLaravel Sail を利用した場合の比較を行っていますが、かなり簡潔になっていることがわかります。
 
-## Learning Laravel
+従来の方法の例 (example-appは任意のプロジェクト名)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```bash
+curl -sS https://getcomposer.org/installer | php
+sudo mv composer.phar /usr/local/bin/composer
+composer global require laravel/installer
+export PATH="$HOME/.config/composer/vendor/bin:$PATH"
+laravel new example-app # バージョン指定する場合は下記のようになる
+# composer create-project laravel/laravel example-app --prefer-dist "5.5.*"
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+... # 次にデータベースの設定なども行う
+```
 
-## Laravel Sponsors
+Laravel Sail を利用する方法 (example-appは任意のプロジェクト名)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+```bash
+curl -s https://laravel.build/example-app | bash
+cd example-app && ./vendor/bin/sail up
+```
 
-### Premium Partners
+以上のように、より少ないコマンドで環境構築できる上、データベースの作成や接続なども完了し、またRedisやMailHogも同時に起動しています。
+プロジェクトルートに`docker-compose.yml`が配置されており、これらの設定を確認できます。
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/)**
-- **[OP.GG](https://op.gg)**
+なお、執筆時点のデフォルト設定では、MySQL, Redis, MeiliSearch, MailHog, Selenium のサービスが起動するようになっていますが、PostgreSQLを利用したい場合やRedisが不要といった場合は、インストール時に指定することができます。
+その場合はコマンドを以下のように変更し、`mysql`, `pgsql`, `redis`, `memcached`, `meilisearch`, `selenium`,  `mailhog`の中からサービスを指定します。
 
-## Contributing
+```bash
+curl -s "https://laravel.build/example-app?with=mysql,redis" | bash
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+このように、Laravel Sailを利用することによって、簡単にDocker環境でLaravelを利用した開発を始めることができるようになりました。
 
-## Code of Conduct
+#### `sail`コマンド
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+上で使用している`./vendor/bin/sail`は、Laravel Sail によって利用することができるようになったコマンドで、`docker-compose`コマンドと同様の利用法が可能ですが、さらに`./vendor/bin/sail mysql`や`./vendor/bin/sail bash`など、短縮コマンドも用意されており幅広い使い方が可能です。頻繁に利用するので入力の手間を省くため[公式と同じように](https://laravel.com/docs/8.x/sail#configuring-a-bash-alias)エイリアスを設定しておきます。
 
-## Security Vulnerabilities
+```bash
+alias sail='bash vendor/bin/sail' # ~/.bashrc などに追記する
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 初期設定
 
-## License
+#### デバッガー導入
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+初期設定とは少し異なりますが初めに導入しておいたほうが良いと思うのがデバッガーです。、インストールするだけでブラウザ上で、セッションやリクエスト情報等を確認することができ、開発時に非常に便利です。
+またインストールには前述の`sail`コマンドを利用します。これによってコンテナ内での実行を行うことができます。
+
+```bash
+sail composer require barryvdh/laravel-debugbar --dev
+```
+
+#### 地域設定
+
+日本語や日本時間を利用する指定を行います。設定ファイルは`app/config/app.php`です。
+
+```php :app/config/app.php
+<?php
+
+return [
+
+...
+
+    'timezone' => 'Asia/Tokyo',
+
+    'locale' => 'jp',
+
+    'faker_locale' => 'ja_JP',
+
+...
+
+];
+```
