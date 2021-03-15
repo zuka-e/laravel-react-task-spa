@@ -22,7 +22,8 @@ class TaskCardFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'title' => $this->faker->jobTitle,
+            'content' => $this->faker->sentence,
         ];
     }
 }

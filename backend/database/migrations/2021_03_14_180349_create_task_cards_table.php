@@ -15,6 +15,13 @@ class CreateTaskCardsTable extends Migration
     {
         Schema::create('task_cards', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->string('title', 191);
+            $table->text('content')->nullable();
+            $table->boolean('done')->default(false);
             $table->timestamps();
         });
     }
