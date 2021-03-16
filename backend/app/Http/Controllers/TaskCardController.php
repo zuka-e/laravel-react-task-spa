@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TaskCard;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class TaskCardController extends Controller
@@ -10,11 +11,14 @@ class TaskCardController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param  \App\Models\User  $user  // Dependency Injection
+     * => $user: パラメータの {user} を'id'として'User'から自動で取得
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(User $user)
     {
-        //
+        // JSONとして返却
+        return $user->taskCards;
     }
 
     /**
@@ -34,9 +38,13 @@ class TaskCardController extends Controller
      * @param  \App\Models\TaskCard  $taskCard
      * @return \Illuminate\Http\Response
      */
-    public function show(TaskCard $taskCard)
+    public function show(User $user, TaskCard $taskCard)
     {
-        //
+        // 自動取得した'taskCard'が '$user'に属するデータでなければ404エラー
+        if ($taskCard->user_id != $user->id) {
+            abort(404);
+        }
+        return $taskCard;
     }
 
     /**

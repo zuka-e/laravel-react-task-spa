@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group([
+    'namespace' => 'App\Http\Controllers',
+    'prefix' => 'v1',
+], function () {
+    Route::apiResource('users.task_cards', TaskCardController::class)->only('index', 'show');
 });
