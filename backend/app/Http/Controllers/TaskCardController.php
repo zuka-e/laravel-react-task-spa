@@ -17,8 +17,10 @@ class TaskCardController extends Controller
      */
     public function index(User $user)
     {
-        // JSONとして返却
-        return $user->taskCards;
+        // カスタマイズされたJSONとして返却
+        return new TaskCardCollection(
+            TaskCard::where('user_id', $user->id)->paginate(20)
+        );
     }
 
     /**
