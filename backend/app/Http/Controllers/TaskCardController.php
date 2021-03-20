@@ -19,7 +19,7 @@ class TaskCardController extends Controller
     {
         // カスタマイズされたJSONとして返却
         return new TaskCardCollection(
-            TaskCard::where('user_id', $user->id)->paginate(20)
+            TaskCard::where('user_id', $user->id)->orderBy('created_at', 'desc')->paginate(20)
         );
     }
 

@@ -18,6 +18,6 @@ class TaskCardSeeder extends Seeder
         $user = User::factory()->create();
 
         // 'User'に属するデータを生成
-        TaskCard::factory()->count(10)->for($user)->create();
+        TaskCard::factory()->count(21)->for($user)->create();
     }
 }
