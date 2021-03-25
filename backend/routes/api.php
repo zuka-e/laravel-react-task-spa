@@ -18,5 +18,9 @@ Route::group([
     'namespace' => 'App\Http\Controllers',
     'prefix' => 'v1',
 ], function () {
-    Route::apiResource('users.task_cards', TaskCardController::class)->only('index', 'show');
+    Route::apiResource('users.task_cards', TaskCardController::class)
+        ->only('index', 'show');
+    Route::middleware('auth:sanctum')
+        ->apiResource('users.task_cards', TaskCardController::class)
+        ->only('store');
 });
