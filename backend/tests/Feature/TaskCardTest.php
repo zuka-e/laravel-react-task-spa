@@ -54,4 +54,15 @@ class TaskCardTest extends TestCase
                 ->etc()
         ));
     }
+
+    public function test_cannot_create_task_without_auth()
+    {
+        $response = $this->postJson('/api/v1/users/1/task_cards', [
+            'title' => 'test',
+            'user_id' => $this->FIRST_USER->id
+        ]);
+        $response->assertUnauthorized();
+
+        $response->assertCreated();
+    }
 }
