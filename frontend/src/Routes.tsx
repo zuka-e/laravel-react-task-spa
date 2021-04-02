@@ -1,5 +1,6 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import NotFound from './pages/error/NotFound';
 
 const Routes = () => {
   return (
@@ -7,7 +8,9 @@ const Routes = () => {
       <Route exact path='/'>
         {/* ex. <Home /> */}
       </Route>
-      <Route path='*'>{/* ex. <NotFound /> */}</Route>
+      <Route path='*'>
+        <NotFound />
+      </Route>
     </Switch>
   );
 };
