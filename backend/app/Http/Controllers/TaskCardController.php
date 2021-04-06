@@ -28,11 +28,14 @@ class TaskCardController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\TaskCard  $taskCard  // DI
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $user, TaskCard $taskCard)
     {
-        //
+        $taskCard->title = $request->title;
+        $taskCard->user_id = $user;
+        if ($taskCard->save()) return $taskCard;
     }
 
     /**

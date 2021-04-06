@@ -19,8 +19,8 @@ class TaskCardTest extends TestCase
         parent::setUp();
         $this->TOTAL_NUMBER_OF_TASKS = 21; // テスト環境で作成するデータの総量
         $this->TOTAL_NUMBER_OF_TASKS_IN_ONE_PAGE = 20; // アクション内paginateメソッドの引数
-
         $this->FIRST_USER = User::factory()->create(['id' => 1]); // TaskCardが属するUser
+
         TaskCard::factory()->count($this->TOTAL_NUMBER_OF_TASKS - 1)
             ->for($this->FIRST_USER)->create();
     }
@@ -53,5 +53,42 @@ class TaskCardTest extends TestCase
                 ->where('done', 0)
                 ->etc()
         ));
+    }
+
+    public function test_cannot_create_task_without_auth()
+    {
+        $user = $this->FIRST_USER;
+
+        // 認証前
+        $response = $this->postJson('/api/v1/users/1/task_cards', [
+            'title' => 'test',
+            'user_id' => $user->id
+        ]);
+        $response->assertUnauthorized(); // 401
+
+        // ログイン処理
+        // $this->get('/sanctum/csrf-cookie');
+        $response = $this->postJson('/login', [
+            'email' => $user->email,
+            'password' => 'password'
+        ]);
+        $response->assertOk(); // 200
+
+        // 認証後
+        $this->assertDatabaseMissing('task_cards', [
+            'title' => 'authenticated',
+            'user_id' => $user->id
+        ]);
+
+        $response = $this->postJson('/api/v1/users/1/task_cards', [
+            'title' => 'authenticated',
+            'user_id' => $user->id
+        ]);
+        $response->assertCreated(); // 201
+
+        $this->assertDatabaseHas('task_cards', [
+            'title' => 'authenticated',
+            'user_id' => $user->id
+        ]);
     }
 }
