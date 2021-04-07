@@ -48,9 +48,8 @@ class TaskCardTest extends TestCase
             'data.0',
             fn ($json) =>
             $json->where('id', $first_task->id)
-                ->where('user_id', $first_task->user_id)
                 ->where('title', $first_task->title)
-                ->where('done', 0)
+                ->where('done', false)
                 ->etc()
         ));
     }
