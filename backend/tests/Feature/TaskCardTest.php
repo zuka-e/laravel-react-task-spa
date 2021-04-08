@@ -67,7 +67,7 @@ class TaskCardTest extends TestCase
 
         // ログイン処理
         // $this->get('/sanctum/csrf-cookie');
-        $response = $this->postJson('/login', [
+        $response = $this->postJson('api/login', [
             'email' => $user->email,
             'password' => 'password'
         ]);
