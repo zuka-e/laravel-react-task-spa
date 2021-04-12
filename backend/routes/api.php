@@ -27,3 +27,12 @@ Route::group([
         ->apiResource('users.task_cards', TaskCardController::class)
         ->only('store');
 });
+
+Route::any('/{any?}', function ($any = null) {
+    return response()->json([
+        'error' => [
+            'title' => '404 Not Found',
+            'message' => 'The requested URL was not found'
+        ]
+    ], 404);
+})->where('any', '.*');
