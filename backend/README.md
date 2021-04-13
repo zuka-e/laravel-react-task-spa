@@ -48,7 +48,7 @@ curl -s "https://laravel.build/example-app?with=mysql,redis" | bash
 ```
 
 このように、Laravel Sailを利用することによって、簡単にDocker環境でLaravelを利用した開発を始めることができるようになりました。
-> 参考： [Choosing Your Sail Services - Laravel](https://laravel.com/docs/8.x/installation#choosing-your-sail-services)
+> 参考： [Choosing Your Sail Services](https://laravel.com/docs/8.x/installation#choosing-your-sail-services) / Installation - Laravel
 
 #### `sail`コマンド
 
@@ -74,7 +74,7 @@ sail composer require barryvdh/laravel-debugbar --dev
 
 Telescopeを利用することで、リクエストのあらゆる情報が記録されていき、即座にまたは後に確認することができます。取得される情報は、ヘッダーやセッション、その他クエリやキャッシュまで、非常に広範囲にわたります。
 
-> 参考： [Laravel Telescope - Laravel](https://laravel.com/docs/8.x/telescope#introduction)
+> 参考： [Introduction](https://laravel.com/docs/8.x/telescope#introduction) / Laravel Telescope - Laravel
 >> Telescope provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.
 
 ##### インストール (Telescope)
@@ -92,7 +92,7 @@ sail artisan migrate # 記録データ格納用テーブルの作成
 #### タイムゾーン, ロケール
 
 日本語や日本時間を利用する指定を行います。設定ファイルは`app/config/app.php`です。
-> 参考： [Initial Configuration - Laravel](https://laravel.com/docs/8.x/installation#initial-configuration)
+> 参考： [Initial Configuration](https://laravel.com/docs/8.x/installation#initial-configuration) / Installation - Laravel
 
 ```php :app/config/app.php
 <?php
@@ -146,13 +146,13 @@ public function up()
 
 まず`users`テーブルとの外部キー制約の設定を行います。上記のような記述によって、参照整合性を保つことが可能です。すなわち、`user_id`が参照している`users`テーブルの`id`が変更された場合には当該テーブルの`user_id`の値も連動し、`users`テーブルの`id`が削除された場合には参照元である`task_cards`のレコードも同時に削除されされることになります。
 
-> 参考： [Foreign Key Constraints - Laravel](https://laravel.com/docs/8.x/migrations#foreign-key-constraints)
+> 参考： [Foreign Key Constraints](https://laravel.com/docs/8.x/migrations#foreign-key-constraints) / Database: Migrations - Laravel
 
 次に、`title`や`content`など、型を指定して、作成するタスクに必要なカラムの設定を行っています。このとき要件によって、null許容やデフォルト値も設定します。
 
 > 参考：
-> [Available Column Types - Laravel](https://laravel.com/docs/8.x/migrations#available-column-types)
-> [Column Modifiers - Laravel](https://laravel.com/docs/8.x/migrations#column-modifiers)
+> [Available Column Types](https://laravel.com/docs/8.x/migrations#available-column-types) / Database: Migrations - Laravel
+> [Column Modifiers - Laravel](https://laravel.com/docs/8.x/migrations#column-modifiers) / Database: Migrations - Laravel
 
 #### リレーション (Model)
 
@@ -257,7 +257,7 @@ sail artisan db:seed
 このように、リレーションのあるデータでも簡潔なコードで即座に大量のデータを生成可能であることが確認できました。
 
 > 参考：
-> [Defining Model Factories - Laravel](https://laravel.com/docs/8.x/database-testing#defining-model-factories)
+> [Defining Model Factories](https://laravel.com/docs/8.x/database-testing#defining-model-factories) / Database Testing - Laravel
 > [Database: Seeding - Laravel](https://laravel.com/docs/8.x/seeding)
 
 ### CRUD
@@ -294,7 +294,7 @@ Route::group([
 
 ちなみにこれは Laravel 8.x での変更点の一つで、以前はアプリケーション側で用意されていました。その従来の方法で`namespace`を指定することも可能です。
 
-> 参考： [Routing Namespace Updates - Laravel](https://laravel.com/docs/8.x/releases#routing-namespace-updates)
+> 参考： [Routing Namespace Updates](https://laravel.com/docs/8.x/releases#routing-namespace-updates) / Release Notes - Laravel
 
 `prefix`には`v1`としていますが、これはバージョンを表しておりAPI開発の際の一般的な表記です。
 
@@ -315,7 +315,7 @@ Route::group([
 
 結局、ルート定義としては、`api/v1/users/{user}/task_cards`にGETメソッドでアクセスしたとき`TaskCardController`の`index`アクションを実行するというものになりました。
 
-> 参考： [Resource Controllers - Laravel](https://laravel.com/docs/8.x/controllers#api-resource-routes)
+> 参考： [Resource Controllers](https://laravel.com/docs/8.x/controllers#api-resource-routes) / Controllers - Laravel
 
 `routes`ディレクトリには、`web.php`もありこちらにルーティングを設定することもできますが、今回はAPIとして利用するため、`api.php`の方に記述します。
 
@@ -396,12 +396,12 @@ class TaskCardController extends Controller
 上の処理で、`$user`が持つ`task_cards`レコードを全て取得し、JSON形式として返却します。
 変数`$user`には、`users`テーブルから`id`で検索されたデータが自動的に入ります。引数に型ヒント (ここでは`$user`前の`User`) を行うことで実現するこの手法を、依存性注入 (DI) と呼びます。
 
-> 参考： [Dependency Injection & Controllers - Laravel](https://laravel.com/docs/8.x/controllers#dependency-injection-and-controllers)
+> 参考： [Dependency Injection & Controllers](https://laravel.com/docs/8.x/controllers#dependency-injection-and-controllers) / Controllers - Laravel
 
 次に利用している`taskCards`メソッドは、先述の[リレーション (Model)](#リレーション-model)の項目で設定したものです。
 そしてデータをJSONとして返却する点ですが、Laravelでは、コントローラーから返却する際には自動的にJSONに変換するため特別の操作は不要です。
 
-> 参考： [Serializing To JSON - Laravel](https://laravel.com/docs/8.x/eloquent-serialization#serializing-to-json)
+> 参考： [Serializing To JSON](https://laravel.com/docs/8.x/eloquent-serialization#serializing-to-json) / Eloquent: Serialization - Laravel
 >> Laravel will automatically serialize your Eloquent models and collections to JSON when they are returned from routes or controllers:
 
 [テストデータ (Seeder, Factory)](#テストデータ-seeder-factory)の項目でデータを生成していれば、[localhost/api/v1/users/1/task_cards](http://localhost/api/v1/users/1/task_cards)にアクセスすることで、`id`が`1`である`User`が持つ`TaskCard`のデータがJSON出力されていることが確認できるはずです。
