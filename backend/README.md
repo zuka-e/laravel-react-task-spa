@@ -2,11 +2,16 @@
 
 ## Laravel 8
 
-Laravel 8 では環境構築がこれまでよりさらに容易になっています。以前は行っていた、Composerの導入やLaravelプロジェクトの作成、またデータベースのインストールから接続などが不要になり、それらを意識することなく開発準備を整えることができます。
+**Laravel 8.x**では環境構築がこれまでよりさらに容易になっています。以前は必要だった、Composerの導入やLaravelプロジェクトの作成、またデータベースのインストールから接続などが不要になり、それらを意識することなく開発準備を整えることができます。
 
 ### Laravel Sail
 
-前述の環境構築を行うためには、**Laravel Sail**と呼ばれるものを使用します。これは公式サイトで、Laravelのインストール方法として紹介されている軽量のCLIです。これはDockerを使った構築方法になっているので、事前にDockerが利用できる環境が必要です。
+前述の環境構築を行うためには、**Laravel Sail**と呼ばれるものを使用します。これは公式サイトで、[Laravelのインストール方法として紹介されている](https://laravel.com/docs/8.x/installation#your-first-laravel-project)CLIを利用した方法です。これはDockerを使った構築方法になっているので、事前にDockerが利用できる環境が必要です。macOSであれば、Homebrewを利用したインストールが簡単です。
+
+```bash
+brew install --cask Docker # インストール
+open /Applications/Docker.app # 起動
+```
 
 下記に以前の方法の一例とLaravel Sail を利用した場合の比較を行っていますが、かなり簡潔になっていることがわかります。
 
@@ -33,7 +38,9 @@ cd example-app && ./vendor/bin/sail up
 以上のように、より少ないコマンドで環境構築できる上、データベースの作成や接続なども完了し、またRedisやMailHogも同時に起動しています。
 プロジェクトルートに`docker-compose.yml`が配置されており、これらの設定を確認できます。
 
-なお、執筆時点のデフォルト設定では、MySQL, Redis, MeiliSearch, MailHog, Selenium のサービスが起動するようになっていますが、PostgreSQLを利用したい場合やRedisが不要といった場合は、インストール時に指定することができます。
+#### 同時起動サービス
+
+Laravel Sail を利用して環境構築する場合、執筆時点のデフォルト設定では、MySQL, Redis, MeiliSearch, MailHog, Selenium のサービスが起動するようになっていますが、PostgreSQLを利用したい場合やRedisが不要といった場合は、それをインストール時に指定することができます。
 その場合はコマンドを以下のように変更し、`mysql`, `pgsql`, `redis`, `memcached`, `meilisearch`, `selenium`,  `mailhog`の中からサービスを指定します。
 
 ```bash
@@ -41,6 +48,7 @@ curl -s "https://laravel.build/example-app?with=mysql,redis" | bash
 ```
 
 このように、Laravel Sailを利用することによって、簡単にDocker環境でLaravelを利用した開発を始めることができるようになりました。
+> 参考： [Choosing Your Sail Services - Laravel](https://laravel.com/docs/8.x/installation#choosing-your-sail-services)
 
 #### `sail`コマンド
 
@@ -52,10 +60,9 @@ alias sail='bash vendor/bin/sail' # ~/.bashrc などに追記する
 
 ### 初期設定
 
-#### デバッガー導入
+#### デバッガー
 
-初期設定とは少し異なりますが初めに導入しておいたほうが良いと思うのがデバッガーです。、インストールするだけでブラウザ上で、セッションやリクエスト情報等を確認することができ、開発時に非常に便利です。
-またインストールには前述の`sail`コマンドを利用します。これによってコンテナ内での実行を行うことができます。
+デバッガーは、アプリケーションの状態の把握の目的や、エラーが発生したときに速やかに原因を特定するために導入が必須と言えます。もし"View"をLaravel側で用意する場合には以下のパッケージも有用です。インストールするだけでセッションやリクエスト情報等をブラウザ上で確認することができます。
 
 ```bash
 sail composer require barryvdh/laravel-debugbar --dev
@@ -63,22 +70,21 @@ sail composer require barryvdh/laravel-debugbar --dev
 
 #### 地域設定
 
+#### タイムゾーン, ロケール
+
 日本語や日本時間を利用する指定を行います。設定ファイルは`app/config/app.php`です。
+> 参考： [Initial Configuration - Laravel](https://laravel.com/docs/8.x/installation#initial-configuration)
 
 ```php :app/config/app.php
 <?php
 
 return [
-
-...
-
+    // ...
     'timezone' => 'Asia/Tokyo',
 
     'locale' => 'jp',
 
     'faker_locale' => 'ja_JP',
-
-...
-
+    // ...
 ];
 ```
