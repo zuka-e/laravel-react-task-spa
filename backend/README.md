@@ -518,3 +518,323 @@ class TaskCardTest extends TestCase
 > 参考： [Scoping JSON Collection Assertions](https://laravel.com/docs/8.x/http-tests#scoping-json-collection-assertions) / HTTP Tests - Laravel
 
 さらにテストを活用するために、後に"[Github Actions](#github-actions)"を利用してCIを導入します。
+
+### 認証 (Authentication)
+
+Laravelで認証機能を実装する場合、選択肢が複数存在します。
+特に、[Breeze](https://laravel.com/docs/8.x/starter-kits#laravel-breeze)または[Jetstream](https://jetstream.laravel.com/2.x/introduction.html)のパッケージを用いることで、MVCの"View"にあたるUIも内包された状態で認証機能を導入することができます。
+ただ今回はこれを利用せず、**Fortify**と**Sanctum**という二つのパッケージを組み合わせて認証を実装します。
+
+前述のパッケージを利用しない理由の一つは、"View"の部分で対応しているのが基本的にVue.jsのみであるということです。学習済みである"React"を使用してさらに理解を深めることが目的でもあるので今回は採用を見送ることにしました。Fortifyを利用する場合、UIは提供されていないので自由にフロントエンドを選ぶことが可能です。
+
+#### Fortify
+
+Fortifyとは、ログインやユーザー登録、メール認証など基本的な認証機能を提供するパッケージです。BreezeおよびJetstreamにおける認証部分を担うものでもあります。
+
+##### 導入目的
+
+Fortifyを導入することで、例えば、`login`などのルートと対応するログイン処理が利用できるようになります。
+逆にFortifyを利用しない場合、認証に関するルーティングやコントローラーでの処理など全て作成する必要があります。
+しかしそれは手間がかかる上、知識の不足や実装の過不足によって脆弱性の存在を作り出してしまう原因にもなりえます。さらに認証で実装する内容はアプリケーションによってそれほど違いはないことが多いため、パッケージに任せるのが無難です。
+
+##### インストール (Fortify)
+
+初めに`sail`コマンドでComposerパッケージからインストールが必要です。
+
+```bash
+sail composer require laravel/fortify
+```
+
+次に、アクションやコンフィグ、マイグレーションを出力します。
+
+```bash
+php artisan vendor:publish --provider="Laravel\Fortify\FortifyServiceProvider"
+```
+
+マイグレーションファイルの内容をデータベースに反映させます。
+
+```bash
+sail artisan migrate
+```
+
+最後に、`Fortify Service Provider`クラスを`config/app.php`に登録することで、アクションを有効化します。
+
+```php :config/app.php
+App\Providers\FortifyServiceProvider::class,
+```
+
+##### 設定 (Fortify)
+
+まず、SPAの場合はログイン画面やユーザー登録画面のViewをバックエンドで提供する必要はないので。それらのルートを無効化させるために、設定ファイル`config/fortify.php`で`views`の値を`false`に切り替えます。
+
+```php :config/fortify.php
+'views' => false,
+```
+
+次に、ルート名の先頭にこれまで同様の`api`を付与するため、`prefix`を指定します。これにより、例えば、`api/login`のようなルートが提供されるようになります。
+
+```php :config/fortify.php
+'prefix' => 'api',
+```
+
+既に`config/fortify.php`の`features`で指定した機能が利用できるようになっており、例えば`api/login`へのPOSTリクエストを、データベースに登録されたユーザー情報を利用して行うことでログイン処理が行われます。
+
+しかし、別オリジンであるフロントエンドからのリクエストの場合は拒否されます。これを回避するために、後述の [CORS](#cors)および[CSRFトークン](#csrfトークン)の設定、加えて[Sanctum](#sanctum)の導入が必要となります。
+
+```php :config/fortify.php
+'features' => [
+    Features::registration(),
+    Features::resetPasswords(),
+    // Features::emailVerification(),
+    Features::updateProfileInformation(),
+    Features::updatePasswords(),
+    Features::twoFactorAuthentication([
+        'confirmPassword' => true,
+    ]),
+],
+
+```
+
+> 参考：
+> [Laravel Fortify - Laravel](https://laravel.com/docs/8.x/fortify)
+> [Laravel Fortify SPA Authentication with Laravel Sanctum without Jetstream - YouTube](https://www.youtube.com/watch?v=QYJKp1e71xs)
+> [Getting started with Laravel Fortify and Sanctum - YouTube](https://www.youtube.com/watch?v=W7owQcBYerA)
+> [Updates to the Laravel Fortify SPA Authentication, Improvements & Routes File Cleanup - YouTube](https://www.youtube.com/watch?v=2a2FFg40zFI)
+
+#### Sanctum
+
+Sanctumはアプリケーションに認証機能を提供するパッケージです。Fortifyと異なりこちらはルートやコントローラーでの処理は含まれていません。リクエストの正当性を検証するための方法を提供します。
+
+> 参考： [Laravel Fortify & Laravel Sanctum](https://laravel.com/docs/8.x/fortify#laravel-fortify-and-laravel-sanctum) / Laravel Fortify - Laravel
+>> Laravel Sanctum is only concerned with managing API tokens and authenticating existing users using session cookies or tokens. Sanctum does not provide any routes that handle user registration, password reset, etc
+
+先述のとおり、Fortifyを利用しない場合であっても代わりのコードを用意することは可能です。一方、Sanctumが提供する機能は、`Jetstream`などのパッケージを採用する場合を除いて、API認証を行う上で必要となります。
+
+##### 認証方式
+
+認証の方法として、APIトークンを利用した認証とSPA認証という二つが用意されていますが、SPAのバックエンドとして用いる場合にはSPA認証の方を利用するべきとの記載があるのでそれに従います。
+SPA認証は、APIトークンの代わりにCookieとセッションを利用した認証方式です。
+
+> [API Token Authentication](https://laravel.com/docs/8.x/sanctum#api-token-authentication) / Laravel Sanctum - Laravel
+>> You should not use API tokens to authenticate your own first-party SPA. Instead, use Sanctum's built-in SPA authentication features.
+
+##### インストール (Sanctum)
+
+初めに`sail`コマンドでComposerパッケージからインストールが必要です。
+
+```bash
+sail composer require laravel/sanctum
+```
+
+次に、コンフィグおよびマイグレーションを出力します。
+
+```bash
+php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+```
+
+最後に、マイグレーションファイルの内容をデータベースに反映させます。
+
+```bash
+sail artisan migrate
+```
+
+##### 設定 (Sanctum)
+
+まずフロントエンドでCookieを受け入れるようにするため、使用しているドメインを`config/sanctum.php`に追加します。利用している環境によって異なりますが、今回の場合、`localhost:3000`です。なお実際に編集するのは下の`.env`ファイルです。
+
+```php :config/sanctum.php
+/*
+|--------------------------------------------------------------------------
+| Stateful Domains
+|--------------------------------------------------------------------------
+|
+| Requests from the following domains / hosts will receive stateful API
+| authentication cookies. Typically, these should include your local
+| and production domains which access your API via a frontend SPA.
+|
+*/
+
+'stateful' => explode(',', env(
+    'SANCTUM_STATEFUL_DOMAINS',
+    'localhost,127.0.0.1,127.0.0.1:8000,::1'
+)),
+```
+
+```bash :.env
+SANCTUM_STATEFUL_DOMAINS=localhost:3000
+```
+
+加えて、`app/Http/Kernel.php`のミドルウェアグループ`api`に`EnsureFrontendRequestsAreStateful`を追加します。
+
+```php : app/Http/Kernel.php
+protected $middlewareGroups = [
+    'web' => [
+        \App\Http\Middleware\EncryptCookies::class,
+        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+        \Illuminate\Session\Middleware\StartSession::class,
+        // \Illuminate\Session\Middleware\AuthenticateSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \App\Http\Middleware\VerifyCsrfToken::class,
+        \Illuminate\Routing\Middleware\SubstituteBindings::class,
+    ],
+
+    'api' => [
+        \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class, // 追加
+        'throttle:api',
+        \Illuminate\Routing\Middleware\SubstituteBindings::class,
+    ],
+];
+```
+
+先述のように、Sanctumは、Cookieとセッションを利用した認証方式です。しかしデフォルトではミドルウェアグループ`api`に含まれていません。`EnsureFrontendRequestsAreStateful`はそれらの他必要なミドルウェアの代替も果たすものです。
+そして、上記の`SANCTUM_STATEFUL_DOMAINS`からのリクエストの場合にそれを有効にさせるようになっています。
+
+##### 認証付きルート
+
+アクセスにログインを必要とするルートを定義するには、`sanctum`"guard"を追加します。
+
+```php :
+Route::middleware('auth:sanctum')
+    ->apiResource('users.task_cards', TaskCardController::class)
+    ->only('store');
+```
+
+未ログインの状態でアクセスした場合には`401`エラーが発生します。
+
+##### ログイン
+
+ログインを行うには設定済みのFortifyによって提供されるルート`api/login`にユーザー情報を持ったPOSTリクエストを送ります。[後述のCORSの設定](#cors)は完了済みとすると、Axiosでは例えば以下のようになります。
+
+```typescript
+apiClient.post('/api/login', {
+    email: 'username@example.com',
+    password: 'password'
+}).then(response => {
+    console.log(response)
+})
+```
+
+このとき、`email`に'username@example.com'を持ち`password`の値が'password'である`User`が存在しない場合、`422`エラーが発生します。
+
+注意点として、データベースとの値と照合するときの`password`の値はハッシュ値であるということです。テストを行う際には、データ生成用の`UserFactory`における`password`の値がハッシュ化されていることを確認します。なお、デフォルトでは'password'のハッシュ値になっているようです。
+
+```php :database/factories/UserFactory.php
+public function definition()
+{
+    return [
+        'name' => $this->faker->name,
+        'email' => $this->faker->unique()->safeEmail,
+        'email_verified_at' => now(),
+        'password' => Hash::make("password"), // 明示的なハッシュ化
+        'remember_token' => Str::random(10),
+    ];
+}
+```
+
+まだCSRF保護機能への対応を行っていないので、このリクエストに対してサーバーは`419 (CSRF token mismatch)`エラーを返します。
+
+##### CSRFトークン
+
+LaravelではセッションごとにCSRFトークンを生成し、リクエスト時にそれを検証することで正当なユーザーからのアクセスであることを確認します。このCSRFトークンは取得した後Cookie`XSRF-TOKEN`にセットして使用します。
+そのためには、前述のログインリクエストの前に`sanctum/csrf-cookie`に対するGETリクエストを行うことが必要です。
+
+```typescript
+apiClient.get('/sanctum/csrf-cookie').then(response => {
+    apiClient.post('/api/login', {
+        email: 'username@example.com',
+        password: 'password'
+    }).then(response => {
+        console.log(response)
+    })
+});
+```
+
+なお、`config/cors.php`へ`sanctum/csrf-cookie`の追加が必要です。([CORSの項目参照](#cors))
+
+```php :config/cors.php
+'paths' => ['api/*', 'sanctum/csrf-cookie'],
+```
+
+そして、リクエスト時にこの`XSRF-TOKEN`の値をヘッダー`X-XSRF-TOKEN`にセットすることが必要です。**Axiosを利用している場合には**この動作を自動的に行います。
+
+Cookieが有効であり、`XSRF-TOKEN`の値が`X-XSRF-TOKEN`に入っていれば、その後のリクエストで`419`エラーは発生しなくなりこれは成功となります。
+
+なお、セッションの期限切れなどによって有効でなくなった場合には、`401`および`419`エラーが返されます。その場合再度ログインが必要となるので、フロントエンド側のルーティング処理によってログインページにリダイレクトを行います。
+
+> 参考：
+> [Authentication - Laravel](https://laravel.com/docs/8.x/authentication)
+> [CSRF Protection - Laravel](https://laravel.com/docs/8.x/csrf)
+> [Laravel Sanctum - Laravel](https://laravel.com/docs/8.x/sanctum)
+> [Using Sanctum to authenticate a React SPA | Laravel News](https://laravel-news.com/using-sanctum-to-authenticate-a-react-spa)
+> [Laravel Sanctum SPA Tutorial - React SPA Authentication With Sanctum - YouTube](https://www.youtube.com/watch?v=uPKd3q-iaVs)
+> [Getting started with Laravel Fortify and Sanctum - YouTube](https://www.youtube.com/watch?v=W7owQcBYerA)
+
+#### CORS
+
+異なるオリジン間でサーバーからのレスポンスを受け取るには、CORS (Cross-Origin Resource Sharing) の設定が必要になります。
+これはブラウザに備えられた同一オリジンポリシーの機能によって、他のオリジンのリソースにアクセス制限がかけられているためです。
+
+> 参考：
+> [オリジン間リソース共有 (CORS) - HTTP | MDN](https://developer.mozilla.org/ja/docs/Web/HTTP/CORS)
+> [同一オリジンポリシー - Web セキュリティ | MDN](https://developer.mozilla.org/ja/docs/Web/Security/Same-origin_policy)
+> A digression on CORS / [Using Sanctum to authenticate a React SPA | Laravel News](https://laravel-news.com/using-sanctum-to-authenticate-a-react-spa)
+
+##### `Access-Control-Allow-Origin`
+
+CORSを有効化するためには、まずレスポンスヘッダー`Access-Control-Allow-Origin`の値にフロントエンドで利用しているオリジン (ここでは`http://localhost:3000`) を指定する必要がありますが、Laravelでは、`config/cors.php`でそれを行います。
+以下のように、許可されるオリジンではワイルドカードが使用されており任意の値を示していますが、一方パスの指定では制限がかけられています。
+
+```php :config/cors.php
+'paths' => ['api/*', 'sanctum/csrf-cookie'], // CORSを許可するパス
+// ...
+'allowed_origins' => ['*'], // CORSを許可するオリジン
+```
+
+ルート設定で`routes/api.php`を利用しているので、リクエストは基本的に許可されるパスに対するものになります。一方、Sanctumを利用する際に`sanctum/csrf-cookie`のルートが必要ですが、これは先頭が`api`でないため上記`paths`の値に追加します。
+
+このヘッダーと、リクエスト側のヘッダーである`Origin`の値が一致してしる場合、CORSは有効に作用します。なお、この`Origin`はリクエストヘッダーに付与されるので特に設定の必要はありません。
+
+##### プリフライトリクエスト
+
+CORSを利用するにあたって、ブラウザは本来のリクエストの前にそれが許可されているかをサーバーに問い合わせる目的で`OPTIONS`リクエストを送信します。これをプリフライトリクエストといいます。
+
+ここで前述の`config/cors.php`がリクエストを許可する設定になっていれば、CORSポリシーによるブロックは解かれるようになります。
+
+##### `Access-Control-Allow-Credentials`
+
+加えて、Cookieを利用したリクエストの場合は、レスポンスヘッダーに`Access-Control-Allow-Credentials`を`true`にして追加することも必要です。Laravelでそれを行うには、`config/cors.php`の`supports_credentials`を`true`に設定します。
+
+```php :config/cors.php
+'supports_credentials' => true,
+```
+
+次に、リクエスト側でも上記に対応する設定が必要で、例えばAxiosを利用する場合、`withCredentials`オプションを`true`にして追加します。なお、以下のようにインスタンスを作成し、リクエスト時にこれを代わりに使用することで、次回以降同じ設定を利用することが可能です。
+
+```typescript
+import axios from 'axios';
+
+const apiClient = axios.create({
+    baseURL: 'http://localhost',
+    withCredentials: true,
+});
+
+// 例： axios.get() の代わりに、apiClient.get() を使用
+```
+
+> 参考： [The Axios Instance | Axios Docs](https://axios-http.com/docs/instance/)
+
+##### Cookie
+
+Cookieに関して、上記に加えてもう一つ設定があります。それはCookieが利用できるドメインを指定することです。これはサーバー側の設定なので、今回の場合`localhost`になります。また、これはCookieのDomain属性を設定することに該当し、Laravelでは、`config/session.php`の`domein`の値を指定することで対応します。
+
+```php :config/session.php
+'domain' => env('SESSION_DOMAIN', null),
+```
+
+指定していない場合はCookieを設定したのと同じオリジンになりますが、サブドメインは除外されます。したがって、サブドメインでも利用する場合に当該設定が必要となり、表記法は以下のように先頭にドットを付与したものとなります。
+
+```bash :.env
+SESSION_DOMAIN=.domain.com
+```
+
+> 参考： [HTTP Cookie の使用 - HTTP | MDN](https://developer.mozilla.org/ja/docs/Web/HTTP/Cookies)
