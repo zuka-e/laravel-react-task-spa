@@ -68,7 +68,26 @@ alias sail='bash vendor/bin/sail' # ~/.bashrc などに追記する
 sail composer require barryvdh/laravel-debugbar --dev
 ```
 
-#### 地域設定
+しかし、SPAとして実装を進める場合、ブラウザで立ち上げているのはLaravelではなく、主にフロントエンドのアプリケーションとなるので、用途に合致しないようです。そこで、Laravel公式サイトでパッケージとして紹介されている[Telescope](https://laravel.com/docs/8.x/telescope)を利用します。
+
+#### Telescope
+
+Telescopeを利用することで、リクエストのあらゆる情報が記録されていき、即座にまたは後に確認することができます。取得される情報は、ヘッダーやセッション、その他クエリやキャッシュまで、非常に広範囲にわたります。
+
+> 参考： [Laravel Telescope - Laravel](https://laravel.com/docs/8.x/telescope#introduction)
+>> Telescope provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.
+
+##### インストール (Telescope)
+
+以下のコマンドによってインストールを行います。
+
+```bash
+sail composer require laravel/telescope --dev # 開発環境でのインストール
+sail artisan telescope:install # CSSなどアセットファイルの出力
+sail artisan migrate # 記録データ格納用テーブルの作成
+```
+
+ルートを確認すると、Telescopeで利用されるものが追加されています。[http://localhost/telescope](http://localhost/telescope)にアクセスすることでダッシュボードを確認することができます。
 
 #### タイムゾーン, ロケール
 
