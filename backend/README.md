@@ -107,3 +107,159 @@ return [
     // ...
 ];
 ```
+
+### リソース生成
+
+Laravelでは、アプリケーションに一般的に必要なファイルがコマンド一つで一気に生成可能です。
+
+```bash
+sail artisan make:model TaskCard --all --api
+```
+
+上記コマンドの`--all`オプションによって、`model`と同時に、 `migration`, `seeder`, `factory`, `controller`のファイルが生成されます。また`--api`オプションの指定をすることで、`controller`に、`index`や`store`などの、APIに必要なアクションが追加された状態となります。
+なお、他に利用可能なオプションは`--help`を指定することで確認できます。
+
+```bash
+php artisan make:model --help
+```
+
+#### 外部キー制約 (Migration)
+
+生成されたファイルの内、まずはマイグレーションファイル (database/migrations/{時刻}_create_task_cards_table.php) を以下のように書き換えます。
+
+```php :database/migrations/{時刻}_create_task_cards_table.php
+public function up()
+{
+    Schema::create('task_cards', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('user_id')
+            ->constrained() // 外部キー制約
+            ->onUpdate('cascade')
+            ->onDelete('cascade');
+        $table->string('title', 191);
+        $table->text('content')->nullable(); // null許容
+        $table->boolean('done')->default(false); // 初期値設定
+        $table->timestamps();
+    });
+}
+```
+
+まず`users`テーブルとの外部キー制約の設定を行います。上記のような記述によって、参照整合性を保つことが可能です。すなわち、`user_id`が参照している`users`テーブルの`id`が変更された場合には当該テーブルの`user_id`の値も連動し、`users`テーブルの`id`が削除された場合には参照元である`task_cards`のレコードも同時に削除されされることになります。
+
+> 参考： [Foreign Key Constraints - Laravel](https://laravel.com/docs/8.x/migrations#foreign-key-constraints)
+
+次に、`title`や`content`など、型を指定して、作成するタスクに必要なカラムの設定を行っています。このとき要件によって、null許容やデフォルト値も設定します。
+
+> 参考：
+> [Available Column Types - Laravel](https://laravel.com/docs/8.x/migrations#available-column-types)
+> [Column Modifiers - Laravel](https://laravel.com/docs/8.x/migrations#column-modifiers)
+
+#### リレーション (Model)
+
+次にモデルに変更を加えます。
+始めに`$fillable`プロパティに、アプリ上で変更できるカラムを指定します。これはユーザーの通常の操作によって変更可能かを決定するもので、一般的に`id`や`created_at`(timestamps) などは含めません。
+
+次にリレーションを設定します。今回の場合、一人の`User`が`TaskCard`を複数持つことができる、一対多の関係です。それには`user`プロパティを作成し、`belongsTo`メソッドを追加することで実現します。
+
+```php :app/Models/TaskCard.php
+class TaskCard extends Model
+{
+    use HasFactory;
+
+    // アプリ上の操作で変更可能にしたいカラムを追加
+    protected $fillable = [
+        'title',
+        'content',
+        'done'
+    ];
+
+    // リレーション設定
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+}
+```
+
+一方、`User`モデル側も編集し、`taskCards`プロパティに`hasMany`メソッドを追加します。
+
+```php :app/Models/User.php
+public function taskCards()
+{
+    return $this->hasMany(TaskCard::class);
+}
+```
+
+このようにすることで、互いのモデルに容易にアクセスできるようになります。
+
+```php
+// `id`が`1`である`User`が持つ`TaskCard`を取得
+$task_cards = App\Models\User::find(1)->task_cards;
+// `id`が`1`である`TaskCard`が属する`User`を取得
+$user = App\Models\TaskCard::find(1)->user;
+```
+
+> 参考： [Eloquent: Relationships - Laravel](https://laravel.com/docs/8.x/eloquent-relationships)
+
+#### テストデータ (Seeder, Factory)
+
+動作確認用にテスト用のデータがあると便利でしょう。Laravelでは簡単にそのようなデータを作成することができる機能を内包しています。まず、`database/factories/TaskCardFactory.php`の`definition`メソッドに、どのようなデータを生成するかを定義します。
+
+```php :database/factories/TaskCardFactory.php
+public function definition()
+{
+    return [
+        'title' => $this->faker->jobTitle,
+        'content' => $this->faker->sentence,
+    ];
+}
+```
+
+上記のように、`faker`プロパティを通すことで、Laravelに備えられている[Faker](https://github.com/FakerPHP/Faker)ライブラリにアクセスし、事前に用意されたデータをランダムに生成することができるようになります。
+なお、上述の[初期設定、タイムゾーン, ロケール](#タイムゾーン-ロケール)で設定したように、`faker`で作成されるデータは日本語になるように指定してありますが、それがライブラリ側に用意されていない場合は日本語になりません。
+
+次に、`database/seeders/TaskCardSeeder.php`の`run`メソッドに、データベースに対する処理を追加します。
+
+```php :database/seeders/TaskCardSeeder.php
+public function run()
+{
+    // 作成する`TaskCard`が属する`User`を事前に作成
+    $user = User::factory()->create();
+
+    // 'User'に属するデータを10件生成
+    TaskCard::factory()->count(10)->for($user)->create();
+}
+```
+
+上の処理では、まず`User`データを作成しています。`User`に属していない`TaskCard`は許容していないため、そのためのデータが必要となります。そして、その`User`に属するデータを10件生成するという処理を記述しています。
+
+実際にデータ作成処理を走らせるには以下`artisan`コマンドを実行します。
+
+```bash
+sail artisan db:seed --class=TaskCardSeeder # Seederを指定してデータを生成
+```
+
+データベースを確認するとデータは作成できていますが、以上のような方法だとテーブルが増えてきたときには面倒になります。よってこれを統合するため、`database/seeders/DatabaseSeeder.php`の内容を以下のように編集します。
+
+```php :database/seeders/DatabaseSeeder.php
+public function run()
+{
+    $this->call(TaskCardSeeder::class);
+}
+```
+
+このように記述することで、Seederを指定することなくデータ生成が可能です。
+
+```bash
+sail artisan db:seed
+```
+
+このように、リレーションのあるデータでも簡潔なコードで即座に大量のデータを生成可能であることが確認できました。
+
+> 参考：
+> [Defining Model Factories - Laravel](https://laravel.com/docs/8.x/database-testing#defining-model-factories)
+> [Database: Seeding - Laravel](https://laravel.com/docs/8.x/seeding)
+
+
+];
+```
