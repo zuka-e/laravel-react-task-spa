@@ -2,11 +2,11 @@
 
 ## Laravel 8
 
-**Laravel 8.x**では環境構築がこれまでよりさらに容易になっています。以前は必要だった、Composerの導入やLaravelプロジェクトの作成、またデータベースのインストールから接続などが不要になり、それらを意識することなく開発準備を整えることができます。
+**Laravel 8.x**では環境構築がこれまでよりさらに容易になっています。以前は必要とされた手順であるComposerの導入やLaravelプロジェクトの作成、またデータベースのインストールや接続設定などが不要になり、それらを意識することなく開発準備を整えることができます。
 
 ### Laravel Sail
 
-前述の環境構築を行うためには、**Laravel Sail**と呼ばれるものを使用します。これは公式サイトで、[Laravelのインストール方法として紹介されている](https://laravel.com/docs/8.x/installation#your-first-laravel-project)CLIを利用した方法です。これはDockerを使った構築方法になっているので、事前にDockerが利用できる環境が必要です。macOSであれば、Homebrewを利用したインストールが簡単です。
+前述の環境構築を行うためには、**Laravel Sail**と呼ばれるものを使用します。これは[公式サイトで紹介されている](https://laravel.com/docs/8.x/installation#your-first-laravel-project)パッケージの一つです。要件として、Dockerを使った構築方法になっているので、事前にDockerが利用できる環境が必要です。macOSであれば、Homebrewを利用したインストールが簡単です。
 
 ```bash
 brew install --cask Docker # インストール
@@ -15,9 +15,9 @@ open /Applications/Docker.app # 起動
 
 下記に以前の方法の一例とLaravel Sail を利用した場合の比較を行っていますが、かなり簡潔になっていることがわかります。
 
-従来の方法の例 (example-appは任意のプロジェクト名)
-
 ```bash
+# 従来のインストール方法の例 (example-appは任意のプロジェクト名)
+
 curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 composer global require laravel/installer
@@ -25,12 +25,12 @@ export PATH="$HOME/.config/composer/vendor/bin:$PATH"
 laravel new example-app # バージョン指定する場合は下記のようになる
 # composer create-project laravel/laravel example-app --prefer-dist "5.5.*"
 
-... # 次にデータベースの設定なども行う
+# 次にデータベースの設定なども行う
 ```
 
-Laravel Sail を利用する方法 (example-appは任意のプロジェクト名)
-
 ```bash
+# Laravel Sail を利用する方法 (example-appは任意のプロジェクト名)
+
 curl -s https://laravel.build/example-app | bash
 cd example-app && ./vendor/bin/sail up
 ```
@@ -48,6 +48,7 @@ curl -s "https://laravel.build/example-app?with=mysql,redis" | bash
 ```
 
 このように、Laravel Sailを利用することによって、簡単にDocker環境でLaravelを利用した開発を始めることができるようになりました。
+
 > 参考： [Choosing Your Sail Services](https://laravel.com/docs/8.x/installation#choosing-your-sail-services) / Installation - Laravel
 
 #### `sail`コマンド
@@ -59,6 +60,8 @@ alias sail='bash vendor/bin/sail' # ~/.bashrc などに追記する
 ```
 
 ### 初期設定
+
+アプリケーションの状態を把握し円滑な開発を進めるために、初めに設定の操作やツールの導入を行います。
 
 #### デバッガー
 
@@ -92,6 +95,7 @@ sail artisan migrate # 記録データ格納用テーブルの作成
 #### タイムゾーン, ロケール
 
 日本語や日本時間を利用する指定を行います。設定ファイルは`app/config/app.php`です。
+
 > 参考： [Initial Configuration](https://laravel.com/docs/8.x/installation#initial-configuration) / Installation - Laravel
 
 ```php :app/config/app.php
@@ -125,9 +129,9 @@ php artisan make:model --help
 
 #### 外部キー制約 (Migration)
 
-生成されたファイルの内、まずはマイグレーションファイル (database/migrations/{時刻}_create_task_cards_table.php) を以下のように書き換えます。
+生成されたファイルの内、まずはマイグレーションファイル`database/migrations/{時刻}_create_task_cards_table.php`を以下のように書き換えます。
 
-```php :database/migrations/{時刻}_create_task_cards_table.php
+```php :database/migrations/時刻_create_task_cards_table.php
 public function up()
 {
     Schema::create('task_cards', function (Blueprint $table) {
@@ -605,7 +609,7 @@ App\Providers\FortifyServiceProvider::class,
 
 Sanctumはアプリケーションに認証機能を提供するパッケージです。Fortifyと異なりこちらはルートやコントローラーでの処理は含まれていません。リクエストの正当性を検証するための方法を提供します。
 
-> 参考： [Laravel Fortify & Laravel Sanctum](https://laravel.com/docs/8.x/fortify#laravel-fortify-and-laravel-sanctum) / Laravel Fortify - Laravel
+> [Laravel Fortify & Laravel Sanctum](https://laravel.com/docs/8.x/fortify#laravel-fortify-and-laravel-sanctum) / Laravel Fortify - Laravel
 >> Laravel Sanctum is only concerned with managing API tokens and authenticating existing users using session cookies or tokens. Sanctum does not provide any routes that handle user registration, password reset, etc
 
 先述のとおり、Fortifyを利用しない場合であっても代わりのコードを用意することは可能です。一方、Sanctumが提供する機能は、`Jetstream`などのパッケージを採用する場合を除いて、API認証を行う上で必要となります。
