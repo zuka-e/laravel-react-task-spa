@@ -15,7 +15,7 @@ jobs:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         env:
-          MYSQL_DATABASE: backend-test
+          MYSQL_DATABASE: backend
           MYSQL_USERNAME: root
           MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
     steps:
@@ -32,7 +32,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-composer-
       - name: Set environment variables
-        run: mv .env.testing .env
+        run: mv .env.example .env
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: composer install --no-interaction --prefer-dist
@@ -41,4 +41,4 @@ jobs:
       - name: Execute database migration
         run: php artisan migrate
       - name: Execute tests
-        run: ./vendor/bin/phpunit ./tests
+        run: php artisan test --env=local ./tests

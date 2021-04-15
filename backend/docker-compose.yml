@@ -22,6 +22,18 @@ services:
       - mysql
       - redis
       - selenium
+  mysql.test:
+    image: "mysql:8.0"
+    ports:
+      - "${FORWARD_DB_PORT:-3307}:3306"
+    environment:
+      TZ: "Asia/Tokyo"
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_DATABASE: "${DB_DATABASE}"
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    networks:
+      - sail
   mysql:
     image: "mysql:8.0"
     ports:
