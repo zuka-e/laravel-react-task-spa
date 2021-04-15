@@ -41,4 +41,4 @@ jobs:
       - name: Execute database migration
         run: php artisan migrate
       - name: Execute tests
-        run: php artisan test --env=local ./tests
+        run: php artisan test --env=local
