@@ -521,7 +521,7 @@ class TaskCardTest extends TestCase
 
 > 参考： [Scoping JSON Collection Assertions](https://laravel.com/docs/8.x/http-tests#scoping-json-collection-assertions) / HTTP Tests - Laravel
 
-さらにテストを活用するために、後に"[Github Actions](#github-actions)"を利用してCIを導入します。
+さらにテストを活用するために、後に"[GitHub Actions](#github-actions)"を利用してCIを導入します。
 
 ### 認証 (Authentication)
 
@@ -842,3 +842,228 @@ SESSION_DOMAIN=.domain.com
 ```
 
 > 参考： [HTTP Cookie の使用 - HTTP | MDN](https://developer.mozilla.org/ja/docs/Web/HTTP/Cookies)
+
+### GitHub Actions
+
+**GitHub Actions** とは、事前に規定したイベントが発生した際に、自動的に任意のコマンドを実行することができるサービスです。イベントに指定可能なものとして、リポジトリへのPushやPull Request があり、特定のBranchの場合に限定するといった条件を指定することも可能です。
+また、イベント駆動に限らず、スケジュールに従って実行することもできます。
+
+> 参考： [ワークフローをトリガーするイベント - GitHub Docs](https://docs.github.com/ja/actions/reference/events-that-trigger-workflows)
+
+#### 導入目的
+
+GitHub Actions を導入することで、コードのビルドやテストの実行およびデプロイなどを、イベントに従って自動で行うことができます。これによって、コードの変更による他の箇所への影響を早期に発見し対処することが可能となると同時に、このような頻繁に発生する定型業務を効率化しつつ強制することができます。すなわちCI/CDの実現を目指します。
+
+ここでは、[Laravelにおけるテストの項目](#テスト-phpunit)でテストを作成したのでそれを利用します。今回は、PushおよびPull Request のタイミングで対象Branchは問わずに実行していきます。
+
+#### 料金
+
+**パブリックリポジトリでは無料**で利用することができます。
+
+プライベートリポジトリでは、一定のリソース消費までは無料となります。GitHubの料金プランによってその範囲は異なりますが、現在は以下のような制限となっています。
+
+| 製品 | ストレージ | 利用時間 (分) / 月 |
+|---|---|---|
+| GitHub Free | 500 MB | 2,000 |
+
+最新の料金体系については変更の可能性があるので、下記の参考サイトを確認する必要があります。
+
+> 参考： [GitHub Actionsの支払いについて - GitHub Docs](https://docs.github.com/ja/github/setting-up-and-managing-billing-and-payments-on-github/about-billing-for-github-actions)
+
+#### 実行環境
+
+GitHub Actions では、**GitHubホストランナー**と呼ばれる仮想環境が提供されており、定義したコマンドが実際に実行される場所はこのGitHubホストランナー上となります。よって、それに対応させるようにコマンドの調整が必要になります。しかし、一般的なユースケースはテンプレートとして用意されているので、それに従うことで導入コストを抑えることができます。
+なお、上記の仮想環境ではなく独自で用意したホストを利用する方法もあります。
+
+> 参考：
+> [GitHubホストランナーについて - GitHub Docs](https://docs.github.com/ja/actions/using-github-hosted-runners/about-github-hosted-runners)
+> [セルフホストランナーについて - GitHub Docs](https://docs.github.com/ja/actions/hosting-your-own-runners/about-self-hosted-runners)
+
+#### 導入方法
+
+GitHub Actions は導入から動作させるまでに特段の準備は必要ありません。リポジトリのルートに`.github/workflows`ディレクトリを作成し、その配下に設定やコマンドなどの手順 (**ワークフロー**) を記述したYAMLファイル を設置するだけです。このように導入が容易なことも利点の一つと言えます。
+
+このワークフローの作成においてもテンプレートを利用して簡単に始めることができます。次のGitHubリポジトリ [actions/starter-workflows: Accelerating new GitHub Actions workflows](https://github.com/actions/starter-workflows) に様々な言語でCI/CDに利用できるコードが提供されています。またこちらへのアクセスは、利用しているリポジトリの"Actions"タブからも可能です。
+
+また、GitHubコミュニティによって作成されたものを利用することもでき、[GitHub Marketplace](https://github.com/marketplace?type=actions) からそれらにアクセスできます。
+
+##### ワークフローの作成
+
+今回の主な目的としてはテストを行うことです。すなわち**PHPUnit**によるテスト実行コマンドを走らせることができればいいことになります。しかし、GitHubホストランナー上の環境はまだその準備ができていないので、初めにそれを整える必要があります。具体的には、`.env`ファイルの生成やパッケージインストールなどです。
+
+それも含めてワークフローを作成すると以下のようになります。なおこれは下記参考サイトのLaravelにおけるワークフローを一部改変したものです。
+
+```yml :test.yml
+# 任意のワークフロー名
+name: PHPUnit
+# トリガーとなるイベント
+on: [push, pull_request]
+
+jobs:
+  test: # 任意のジョブ名
+    runs-on: ubuntu-latest # GitHubホストランナー
+    defaults:
+      run:
+        # テストを実行するディレクトリ
+        working-directory: ./backend
+    steps:
+      - name: Check out repository code # 任意のステップ名
+        uses: actions/checkout@v2 # アクションの使用
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Generate APP_KEY
+        run: php artisan key:generate --env=testing
+      - name: Execute tests
+        run: ./vendor/bin/phpunit
+```
+
+注意点として初めに`working-directory`に注目します。今回のリポジトリの構成としてルートに`backend`ディレクトリを作成し、そこにLaravelプロジェクトを構築しています。よってテストを実行すべき作業ディレクトリは相対パスで`./backend`となり、それを`working-directory`の値に指定する必要があります。
+
+YAML構文の最上位に`jobs`が来ています。これはワークフロー内のジョブ (ここでは`test`一つのみ) をまとめるものです。複数のジョブが存在する場合は並行実行します。
+また、ジョブは一連のステップ`steps`から構成されます。そのステップにおいてはアクション`uses`またはシェルコマンド`run`を指定します。
+アクションには、上記の`actions`の他、[GitHub Marketplace](https://github.com/marketplace?type=actions) で提供されているものを利用することも可能です。
+なお、`actions/checkout`は必須のアクションとなっています。
+
+> [ワークフローファイルを理解する](https://docs.github.com/ja/actions/learn-github-actions/introduction-to-github-actions#understanding-the-workflow-file) - GitHub Actions 入門 - GitHub Docs
+>> ワークフローがリポジトリのコードに対して実行されるとき、またはリポジトリで定義されたアクションを使用しているときはいつでも、チェックアウトアクションを使用する必要があります。
+
+次に、依存関係のインストールです。ここでのオプションは主に余計な出力を制限しています。詳細は`sail composer install --help`にて確認可能です。
+
+そしてアプリケーションキーの生成ですが、ここでのポイントとしては、下記参考サイトでは行っている`.env`ファイル作成処理を行わない代わりに、`php artisan key:generate`実行時に`--env=testing`オプションを指定していることです。これにより、`.env.testing`に`APP_KEY`の値が生成されることになります。またテスト`phpunit`実行時に`.env.testing`が存在すればその値を参照するため`.env`は不要です。
+
+> 参考：
+> [GitHub Actionsのワークフロー構文 - GitHub Docs](https://docs.github.com/ja/actions/reference/workflow-syntax-for-github-actions)
+> [Laravel workflow](https://github.com/actions/starter-workflows/blob/a3d822534a3d6467de0aba8563d4c7ee25b7a94c/ci/laravel.yml) - actions/starter-workflows/ci/laravel.yml - GitHub
+
+###### データベースコンテナ
+
+データベースを利用したテストを実行するため、事前にデータベースのサービスを起動する必要があります。今回は、MySQLのDockerコンテナを用いてこれを実現することにします。
+
+ワークフローに設定する内容としては以下のようになります。
+
+```yml :test.yml
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_DATABASE: backend
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+```
+
+このコンテナにアクセスするには上でマッピングしたポート`3306`と`DB_HOST`にローカルホストを指定します。ここで`localhost`ではなく`127.0.0.1`を利用することに注意が必要です。前者では現状、`SQLSTATE[HY000] [2002] No such file or directory`エラーが発生します。
+
+```yml :test.yml
+- name: Execute tests
+  env:
+    DB_HOST: 127.0.0.1
+  run: ./vendor/bin/phpunit
+```
+
+このアクセス情報が`.env.testing`ファイルに設定されていればコードは不要ですが、`DB_HOST`の値はローカル環境でテスト用データベースのホスト名`mysql.test`を指定しているので上書きが必要です。
+
+> 参考：
+> [ランナーマシン上で直接のジョブの実行](https://docs.github.com/ja/actions/guides/creating-postgresql-service-containers#running-jobs-directly-on-the-runner-machine) / PostgreSQLサービスコンテナの作成 - GitHub Docs
+> [Workflow syntax for GitHub Actions - GitHub Docs](https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idservices)
+
+###### キャッシュ
+
+GitHub Actions では、毎回仮想環境内にアプリケーション実行環境をセットアップする必要があります。特に、Composerパッケージなどの依存関係を毎回ダウンロードしなければならないというのは、実行時間やネットワークIOなどの面で余計なコストが発生します。プライベートリポジトリでは利用時間の制限があるので、より考慮すべき問題となります。
+
+そこで依存関係をキャッシュしておき、これを次回以降利用することで環境構築を高速化することを目指します。
+
+ワークフローに追加するをコードとしては以下のようになります。
+
+```yml :.test.yml
+- name: Cache Composer packages
+  id: composer-cache # actions/cache@v2 に対して付与
+  uses: actions/cache@v2
+  with:
+    path: ./backend/vendor # `vendor/autoload.php`を作成するため
+    key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+    restore-keys: |
+      ${{ runner.os }}-composer-
+- name: Install Dependencies
+  if: steps.composer-cache.outputs.cache-hit != 'true' # キャッシュ存在すればスキップ
+  run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+```
+
+基本的に参考サイトで提示されているテンプレートの流用ですが、相違点としては、キャッシュのパス`path`を`./backend/vendor`としていることです。これは依存パッケージを`vendor`配下に設置し、キャッシュが存在する場合にインストール処理をスキップするためです。
+
+他のディレクトリの指定では`vendor/autoload.php`が作成されず、`composer install`をスキップした場合にはそのファイルを要求する旨のエラーが発生します。
+
+```bash
+PHP Fatal error:  Uncaught Error: Failed opening required '/home/runner/work/{リポジトリ名}/backend/vendor/autoload.php'
+```
+
+なお、`working-directory`に`./backend`を指定していましたが、ここではルートディレクトリからの相対パスまたは絶対パスを設定します。`working-directory`から見た`./vendor`ではないことに注意が必要です。
+
+> 参考：
+> [依存関係をキャッシュしてワークフローのスピードを上げる - GitHub Docs](https://docs.github.com/ja/actions/guides/caching-dependencies-to-speed-up-workflows)
+> [PHP - Composer](https://github.com/actions/cache/blob/main/examples.md#php---composer) - actions/cache/examples.md - GitHub
+> [Skipping steps based on cache-hit](https://github.com/actions/cache#Skipping-steps-based-on-cache-hit) - actions/cache - GitHub
+> [PHP workflow](https://github.com/actions/starter-workflows/blob/a3d822534a3d6467de0aba8563d4c7ee25b7a94c/ci/php.yml) - actions/starter-workflows/ci/php.yml - GitHub
+
+###### 完成形
+
+かくして、以上の設定を組み合わせたワークフローは次のようになりました。
+
+```yml :test.yml
+name: PHPUnit
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+
+    services:
+      db:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_DATABASE: backend
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: ./backend/vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+      - name: Install Dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        run: composer install --no-interaction --prefer-dist
+      - name: Generate APP_KEY
+        run: php artisan key:generate --env=testing
+      - name: Execute tests
+        env:
+          DB_HOST: 127.0.0.1
+        run: ./vendor/bin/phpunit
+```
+
+このYAMLファイルがリポジトリのルートに設置されている`.github/workflows`ディレクトリに格納することで、以降のPushおよびPull Request のタイミングでテストが実行され、その結果はリポジトリの"Actions"タブから確認することができるようになります。
