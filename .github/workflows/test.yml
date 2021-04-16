@@ -1,6 +1,6 @@
 name: PHPUnit
 
-on: push
+on: [push, pull_request]
 
 jobs:
   test:
@@ -8,37 +8,41 @@ jobs:
     defaults:
       run:
         working-directory: ./backend
+
     services:
       db:
         image: mysql:8.0
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
         env:
           MYSQL_DATABASE: backend
-          MYSQL_USERNAME: root
-          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-    steps:
-      - uses: actions/checkout@v2
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
-      - name: Get Composer cache directory
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Cache Composer packages
         id: composer-cache
-        run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
-      - uses: actions/cache@v2
+        uses: actions/cache@v2
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
+          path: ./backend/vendor # ルートからの相対パス
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-
-      - name: Set environment variables
-        run: mv .env.example .env
       - name: Install Dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.composer-cache.outputs.cache-hit != 'true'
         run: composer install --no-interaction --prefer-dist
-      - name: Generate APP_KEY
-        run: php artisan key:generate
-      - name: Execute database migration
-        run: php artisan migrate
+      - name: Generate APP_KEY # `.env` -> `.env.testing`を利用
+        run: php artisan key:generate --env=testing
+      # - name: Directory Permissions
+      #   run: chmod -R 777 storage bootstrap/cache
       - name: Execute tests
-        run: php artisan test --env=local
+        env:
+          DB_HOST: 127.0.0.1 # <- localhost
+        run: ./vendor/bin/phpunit
