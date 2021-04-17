@@ -15,6 +15,7 @@
         "laravel/fortify": "^1.7",
         "laravel/framework": "^8.12",
         "laravel/sanctum": "^2.9",
+        "laravel/telescope": "^4.4",
         "laravel/tinker": "^2.5"
     },
     "require-dev": {
