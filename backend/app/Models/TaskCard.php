@@ -15,6 +15,14 @@ class TaskCard extends Model
         'done'
     ];
 
+    protected $hidden = [
+        'user_id',
+    ];
+
+    protected $casts = [
+        'done' => 'boolean'
+    ];
+
     // 使用例: TaskCard::find(1)->user;
     public function user()
     {
