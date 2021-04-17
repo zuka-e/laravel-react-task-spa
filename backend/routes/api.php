@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/home', fn () => Auth::user());
+
 Route::group([
     'namespace' => 'App\Http\Controllers',
     'prefix' => 'v1',
@@ -24,3 +27,12 @@ Route::group([
         ->apiResource('users.task_cards', TaskCardController::class)
         ->only('store');
 });
+
+Route::any('/{any?}', function ($any = null) {
+    return response()->json([
+        'error' => [
+            'title' => '404 Not Found',
+            'message' => 'The requested URL was not found'
+        ]
+    ], 404);
+})->where('any', '.*');
