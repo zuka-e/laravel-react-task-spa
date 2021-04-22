@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -16,6 +16,8 @@ import {
 } from '@material-ui/core';
 import FormLayout from './FormLayout';
 import { APP_NAME } from '../../config/app';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { signInWithEmail } from '../../store/slices/authSlice';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -48,6 +50,8 @@ const schema = yup.object().shape({
 
 const SignIn: React.FC = () => {
   const classes = useStyles();
+  const dispatch = useAppDispatch();
+  const { signedIn, loading } = useAppSelector((state) => state.auth);
   const history = useHistory();
   const {
     register, // 入力項目の登録
@@ -58,8 +62,13 @@ const SignIn: React.FC = () => {
     resolver: yupResolver(schema),
   });
 
+  // ログイン済みならルートへリダイレクト
+  useEffect(() => {
+    signedIn && history.replace('/');
+  });
+
   const onSubmit = (data: FormData) => {
-    //
+    dispatch(signInWithEmail(data));
   };
 
   return (
@@ -100,6 +109,7 @@ const SignIn: React.FC = () => {
             label='Remember me'
           />
           <Button
+            disabled={loading}
             type='submit'
             fullWidth
             variant='contained'
