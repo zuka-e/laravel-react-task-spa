@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -52,6 +52,7 @@ const SignIn: React.FC = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const { signedIn, loading } = useAppSelector((state) => state.auth);
+  const [message, setMessage] = useState<string | undefined>('');
   const history = useHistory();
   const {
     register, // 入力項目の登録
@@ -67,8 +68,12 @@ const SignIn: React.FC = () => {
     signedIn && history.replace('/');
   });
 
-  const onSubmit = (data: FormData) => {
-    dispatch(signInWithEmail(data));
+  // エラー発生時はメッセージを表示する
+  const onSubmit = async (data: FormData) => {
+    const response = await dispatch(signInWithEmail(data));
+    if (signInWithEmail.rejected.match(response)) {
+      setMessage(response.error.message);
+    }
   };
 
   return (
@@ -76,7 +81,7 @@ const SignIn: React.FC = () => {
       <Helmet>
         <title>Sign in | {APP_NAME}</title>
       </Helmet>
-      <FormLayout title={`Sign in to ${APP_NAME}`}>
+      <FormLayout title={`Sign in to ${APP_NAME}`} message={message}>
         <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
           <TextField
             variant='outlined'
