@@ -5,6 +5,7 @@ import { APP_NAME } from '../config/app';
 import { isSignedIn } from '../utils/auth';
 import { useAppDispatch } from '../store/hooks';
 import { putSignOut } from '../store/slices/authSlice';
+import Header from '../layouts/Header';
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -18,6 +19,7 @@ const Home: React.FC = () => {
       <Helmet>
         <title>{APP_NAME}</title>
       </Helmet>
+      <Header />
       {isSignedIn() && <Button onClick={handleClick}>Logout</Button>}
     </React.Fragment>
   );
