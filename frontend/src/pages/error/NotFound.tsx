@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
 import { Container, Typography, Button, Box } from '@material-ui/core';
 import { APP_NAME } from '../../config/app';
