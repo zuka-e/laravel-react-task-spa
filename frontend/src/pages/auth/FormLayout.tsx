@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Container, Card, Avatar, Typography, Box } from '@material-ui/core';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { APP_NAME } from '../../config/app';
 
@@ -24,9 +25,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
   },
   errorBox: {
-    border: `1px solid ${theme.palette.error.main}`,
-    borderRadius: theme.spacing(1),
-    padding: theme.spacing(2),
     marginBottom: theme.spacing(3),
   },
 }));
@@ -40,14 +38,12 @@ const FormLayout: React.FC<FormLayoutProps> = (props) => {
   const { children, title, message } = props;
   const classes = useStyles();
 
-  const FlashMessage = () => {
-    // // TODO: <Alert> を利用する
-    return (
-      <Box className={classes.errorBox}>
-        <Typography color='error'>{message}</Typography>
-      </Box>
-    );
-  };
+  const FlashMessage = () => (
+    <Alert className={classes.errorBox} severity='error' elevation={2}>
+      <AlertTitle>Error</AlertTitle>
+      {message}
+    </Alert>
+  );
 
   return (
     <Container component='main' maxWidth='xs'>
