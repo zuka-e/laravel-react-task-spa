@@ -72,7 +72,7 @@ const SignIn: React.FC = () => {
   const onSubmit = async (data: FormData) => {
     const response = await dispatch(signInWithEmail(data));
     if (signInWithEmail.rejected.match(response)) {
-      setMessage(response.error.message);
+      setMessage(response.payload?.error?.message);
     }
   };
 

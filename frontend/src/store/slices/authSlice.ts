@@ -14,43 +14,60 @@ const authApiClient = axios.create({
   withCredentials: true,
 });
 
-export const signInWithEmail = createAsyncThunk(
-  'auth/signInWithEmail',
-  async (payload: { email: string; password: string }, thunkApi) => {
-    const { email, password } = payload;
-    try {
-      await authApiClient.get(GET_CSRF_TOKEN_PATH);
-      const response = await authApiClient.post(SIGNIN_PATH, {
-        email,
-        password,
-      });
-      return response?.data;
-    } catch (error) {
-      // The server responded with a status code that falls out of 2xx
-      if (error.response?.status === 422) {
-        return Promise.reject({
-          message: 'メールアドレスまたはパスワードが間違っています',
-        });
-      } // `authSlice`の`extraReducers`で`rejected`を呼び出す
-      return Promise.reject(error);
-    }
-  }
-);
+type RejectWithValueType = {
+  error: {
+    message?: string;
+    data: any;
+  };
+};
 
-export const fetchSignInState = createAsyncThunk(
-  'auth/fetchSignInState',
-  async () => {
-    try {
-      // 認証済みの場合CSRFトークンは有効 (初期化不要) 認証切れなら`419`
-      await authApiClient.get(GET_CSRF_TOKEN_PATH);
-      const response = await authApiClient.post(SIGNIN_PATH);
-      // status: サーバー認証が有効の場合`200`それ以外なら`422`
-      return response?.status === 200;
-    } catch (error) {
-      return Promise.reject(error);
-    }
+export const signInWithEmail = createAsyncThunk<
+  any,
+  { email: string; password: string },
+  { rejectValue: RejectWithValueType }
+>('auth/signInWithEmail', async (payload, thunkApi) => {
+  const { email, password } = payload;
+  try {
+    await authApiClient.get(GET_CSRF_TOKEN_PATH);
+    const response = await authApiClient.post(SIGNIN_PATH, {
+      email,
+      password,
+    });
+    return response?.data;
+  } catch (e) {
+    const error: AxiosError = e; // cast the error for access
+    // The server responded with a status code that falls out of 2xx
+    if (error.response?.status === 422) {
+      return thunkApi.rejectWithValue({
+        error: {
+          message: 'メールアドレスまたはパスワードが間違っています',
+          data: error.response.data,
+        },
+      });
+    } // `authSlice`の`extraReducers`で`rejected`を呼び出す
+    return thunkApi.rejectWithValue({
+      error: { data: error?.response?.data },
+    });
   }
-);
+});
+
+export const fetchSignInState = createAsyncThunk<
+  void,
+  void,
+  { rejectValue: RejectWithValueType }
+>('auth/fetchSignInState', async (_, thunkApi) => {
+  try {
+    // 認証済みの場合CSRFトークンは有効 (初期化不要) 認証切れなら`419`
+    await authApiClient.get(GET_CSRF_TOKEN_PATH);
+    await authApiClient.post(SIGNIN_PATH);
+    // response.status: サーバー認証が有効の場合`200`それ以外なら`422`
+  } catch (e) {
+    const error: AxiosError = e;
+    return thunkApi.rejectWithValue({
+      error: { data: error?.response?.data },
+    });
+  }
+});
 
 type AuthState = {
   signedIn: boolean | undefined;
