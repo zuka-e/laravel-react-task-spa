@@ -30,6 +30,12 @@ const useStyles = makeStyles((theme) => ({
   link: {
     color: theme.palette.info.dark,
   },
+  textFieldLabel: {
+    marginTop: theme.spacing(-1),
+    marginBottom: theme.spacing(2),
+    marginLeft: 0,
+    color: theme.palette.text.hint,
+  },
   divider: {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(2),
@@ -52,6 +58,7 @@ const SignIn: React.FC = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const { signedIn, loading } = useAppSelector((state) => state.auth);
+  const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const history = useHistory();
   const {
@@ -67,6 +74,10 @@ const SignIn: React.FC = () => {
   useEffect(() => {
     signedIn && history.replace('/');
   });
+
+  const handleVisiblePassword = () => {
+    setVisiblePassword(!visiblePassword);
+  };
 
   // エラー発生時はメッセージを表示する
   const onSubmit = async (data: FormData) => {
@@ -102,13 +113,27 @@ const SignIn: React.FC = () => {
             required
             fullWidth
             label='Password'
-            type='password'
+            type={visiblePassword ? 'text' : 'password'}
             id='password'
             autoComplete='current-password'
             {...register('password')}
             helperText={errors?.password?.message || '8-20 characters'}
             error={!!errors?.password}
           />
+          <div>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  size='small'
+                  color='primary'
+                  checked={visiblePassword}
+                  onChange={handleVisiblePassword}
+                />
+              }
+              className={classes.textFieldLabel}
+              label='Show Password'
+            />
+          </div>
           <FormControlLabel
             control={<Checkbox value='remember' color='primary' />}
             label='Remember me'
