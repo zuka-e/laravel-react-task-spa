@@ -1,9 +1,18 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { GET_CSRF_TOKEN_PATH, SIGNIN_PATH } from '../../config/api';
-import apiClient from '../../utils/api';
-import { sessionStorageKeys, sessionStorageValues } from '../../config/app';
+import axios, { AxiosError } from 'axios';
+import {
+  API_HOST,
+  GET_CSRF_TOKEN_PATH,
+  SIGNIN_PATH,
+  SIGNOUT_PATH,
+} from '../../config/api';
 
-const authApiClient = apiClient({ nonApiRoute: true });
+// `store`の利用不可、それを利用した関数も同様 (以下のエラー発生)
+// TypeError: Cannot read property 'reducer' of undefined
+const authApiClient = axios.create({
+  baseURL: API_HOST,
+  withCredentials: true,
+});
 
 export const signInWithEmail = createAsyncThunk(
   'auth/signInWithEmail',
@@ -43,15 +52,17 @@ export const fetchSignInState = createAsyncThunk(
   }
 );
 
-const { SIGNED_IN } = sessionStorageKeys;
-const { TRUE } = sessionStorageValues;
+type AuthState = {
+  signedIn: boolean | undefined;
+  loading: boolean;
+};
 
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    signedIn: false,
+    signedIn: undefined,
     loading: false,
-  },
+  } as AuthState,
   reducers: {
     signIn(state) {
       state.signedIn = true;
@@ -65,22 +76,22 @@ const authSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(signInWithEmail.fulfilled, (state, action) => {
-      sessionStorage.setItem(SIGNED_IN, TRUE); // 文字列のみ保存可 (値は不問)
-      state.signedIn = true; // `sessionStorage`と同時に`store`も`siginedIn`へ
+      state.signedIn = true;
       state.loading = false;
     });
     builder.addCase(signInWithEmail.rejected, (state, action) => {
+      state.signedIn = false;
       state.loading = false;
     });
     builder.addCase(fetchSignInState.pending, (state, action) => {
       state.loading = true;
     });
     builder.addCase(fetchSignInState.fulfilled, (state, action) => {
-      sessionStorage.setItem(SIGNED_IN, TRUE);
       state.signedIn = true;
       state.loading = false;
     });
     builder.addCase(fetchSignInState.rejected, (state, action) => {
+      state.signedIn = false;
       state.loading = false;
     });
   },
