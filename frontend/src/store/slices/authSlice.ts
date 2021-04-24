@@ -69,6 +69,25 @@ export const fetchSignInState = createAsyncThunk<
   }
 });
 
+export const putSignOut = createAsyncThunk<
+  void,
+  void,
+  { rejectValue: RejectWithValueType }
+>('auth/putSignOut', async (_, thunkApi) => {
+  try {
+    // status(response): ログイン状態によらず`204` 認証切れなら`419`
+    await authApiClient.post(SIGNOUT_PATH);
+  } catch (e) {
+    const error: AxiosError = e;
+    if (error.response && [401, 419].includes(error.response.status)) {
+      thunkApi.dispatch(signOut());
+    }
+    return thunkApi.rejectWithValue({
+      error: { data: error?.response?.data },
+    });
+  }
+});
+
 type AuthState = {
   signedIn: boolean | undefined;
   loading: boolean;
@@ -109,6 +128,17 @@ const authSlice = createSlice({
     });
     builder.addCase(fetchSignInState.rejected, (state, action) => {
       state.signedIn = false;
+      state.loading = false;
+    });
+    builder.addCase(putSignOut.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(putSignOut.fulfilled, (state, action) => {
+      state.signedIn = false;
+      state.loading = false;
+    });
+    builder.addCase(putSignOut.rejected, (state, action) => {
+      state.signedIn = undefined;
       state.loading = false;
     });
   },
