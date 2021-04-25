@@ -1,4 +1,5 @@
 import { createMuiTheme } from '@material-ui/core/styles';
+import overrides from './overrides';
 import typography from './typography';
 
 const theme = createMuiTheme({
@@ -15,7 +16,8 @@ const theme = createMuiTheme({
     // light, dark値の算出 0に近いほど main値に近付く (0-1)
     tonalOffset: 0.025,
   },
-  typography,
+  typography: typography,
+  overrides: overrides,
 });
 
 export default theme;
