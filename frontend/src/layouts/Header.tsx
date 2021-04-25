@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { pink } from '@material-ui/core/colors';
 import {
   AppBar,
@@ -21,24 +21,26 @@ import Sidebar from './Sidebar';
 import PopoverControl from '../templates/PopoverControl';
 import AccountMenuList from '../components/Header/AccountMenuList';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  title: {
-    marginLeft: theme.spacing(2),
-  },
-  buttonLink: {
-    color: 'inherit',
-    '&:hover': {
-      textDecoration: 'none',
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      flexGrow: 1,
     },
-  },
-  pink: {
-    color: theme.palette.getContrastText(pink[500]),
-    backgroundColor: pink[500],
-  },
-}));
+    title: {
+      marginLeft: theme.spacing(2),
+    },
+    buttonLink: {
+      color: 'inherit',
+      '&:hover': {
+        textDecoration: 'none',
+      },
+    },
+    pink: {
+      color: theme.palette.getContrastText(pink[500]),
+      backgroundColor: pink[500],
+    },
+  })
+);
 
 const Header: React.FC = () => {
   const classes = useStyles();

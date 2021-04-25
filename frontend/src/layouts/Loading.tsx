@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Backdrop, CircularProgress } from '@material-ui/core';
 import { useAppSelector } from '../store/hooks';
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     backdrop: {
       zIndex: theme.zIndex.drawer + 1,

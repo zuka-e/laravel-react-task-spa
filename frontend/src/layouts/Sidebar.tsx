@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
   Typography,
   List,
@@ -9,19 +9,21 @@ import {
 } from '@material-ui/core';
 import { Menu as MenuIcon } from '@material-ui/icons';
 
-const useStyles = makeStyles((theme) => ({
-  drawer: {
-    width: '250px',
-  },
-  listHeader: {
-    display: 'flex',
-    padding: '4px',
-  },
-  listHeaderTitle: {
-    marginLeft: theme.spacing(2),
-    lineHeight: 'unset',
-  },
-}));
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    drawer: {
+      width: '250px',
+    },
+    listHeader: {
+      display: 'flex',
+      padding: '4px',
+    },
+    listHeaderTitle: {
+      marginLeft: theme.spacing(2),
+      lineHeight: 'unset',
+    },
+  })
+);
 
 type SidebarProps = {
   toggleDrawer: (

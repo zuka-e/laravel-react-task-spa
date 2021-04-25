@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
   TextField,
   Checkbox,
@@ -19,28 +19,30 @@ import { APP_NAME } from '../../config/app';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { signInWithEmail } from '../../store/slices/authSlice';
 
-const useStyles = makeStyles((theme) => ({
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(3),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  link: {
-    color: theme.palette.info.dark,
-  },
-  textFieldLabel: {
-    marginTop: theme.spacing(-1),
-    marginBottom: theme.spacing(2),
-    marginLeft: 0,
-    color: theme.palette.text.hint,
-  },
-  divider: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(2),
-  },
-}));
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    form: {
+      width: '100%', // Fix IE 11 issue.
+      marginTop: theme.spacing(3),
+    },
+    submit: {
+      margin: theme.spacing(3, 0, 2),
+    },
+    link: {
+      color: theme.palette.info.dark,
+    },
+    textFieldLabel: {
+      marginTop: theme.spacing(-1),
+      marginBottom: theme.spacing(2),
+      marginLeft: 0,
+      color: theme.palette.text.hint,
+    },
+    divider: {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
 
 // Input items
 type FormData = {
