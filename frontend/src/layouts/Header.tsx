@@ -2,15 +2,19 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { pink } from '@material-ui/core/colors';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Drawer from '@material-ui/core/Drawer';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import PersonIcon from '@material-ui/icons/Person';
-import MenuIcon from '@material-ui/icons/Menu';
+import {
+  AppBar,
+  Toolbar,
+  Drawer,
+  Avatar,
+  Button,
+  IconButton,
+} from '@material-ui/core';
+import {
+  AccountCircle as AccountCircleIcon,
+  Person as PersonIcon,
+  Menu as MenuIcon,
+} from '@material-ui/icons';
 import { APP_NAME } from '../config/app';
 import { isSignedIn } from '../utils/auth';
 import Sidebar from './Sidebar';
