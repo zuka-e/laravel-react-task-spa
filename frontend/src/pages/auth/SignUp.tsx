@@ -3,8 +3,8 @@ import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Grid, Button, TextField } from '@material-ui/core';
-import FormLayout from './FormLayout';
 import { APP_NAME } from '../../config/app';
+import FormLayout from '../../layouts/FormLayout';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

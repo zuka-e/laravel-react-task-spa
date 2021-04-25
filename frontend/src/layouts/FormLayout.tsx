@@ -3,15 +3,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Container, Card, Avatar, Typography, Box } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { APP_NAME } from '../../config/app';
-
-const Copyright = () => {
-  return (
-    <Typography variant='body2' color='textSecondary' align='center'>
-      © {APP_NAME} {new Date().getFullYear()}
-    </Typography>
-  );
-};
+import { APP_NAME } from '../config/app';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,6 +21,12 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(3),
     },
   })
+);
+
+const Copyright = () => (
+  <Typography variant='body2' color='textSecondary' align='center'>
+    © {APP_NAME} {new Date().getFullYear()}
+  </Typography>
 );
 
 type FormLayoutProps = {

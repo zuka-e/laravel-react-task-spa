@@ -14,10 +14,10 @@ import {
   Divider,
   Grid,
 } from '@material-ui/core';
-import FormLayout from './FormLayout';
 import { APP_NAME } from '../../config/app';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { signInWithEmail } from '../../store/slices/authSlice';
+import FormLayout from '../../layouts/FormLayout';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
