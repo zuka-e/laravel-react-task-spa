@@ -6,7 +6,7 @@ import { initializeAuthState } from './utils/auth';
 import { useAppSelector } from './store/hooks';
 
 const App: React.FC = () => {
-  const { signedIn } = useAppSelector((state) => state.auth);
+  const { loading, signedIn } = useAppSelector((state) => state.auth);
 
   // `sessionStorage`と`store`のログイン状態を初期化
   useEffect(() => {
@@ -15,7 +15,7 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <Loading />
+      {loading && <Loading />}
       <Routes />
     </Router>
   );
