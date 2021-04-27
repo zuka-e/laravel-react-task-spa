@@ -26,6 +26,7 @@ const options: MarkdownToJSX.Options = {
       ),
     },
     p: { component: (props) => <Typography paragraph {...props} /> },
+    ol: { props: { style: { paddingInlineStart: '1.6rem' } } },
     li: {
       component: (props) => <Typography component='li' {...props} />,
     },
