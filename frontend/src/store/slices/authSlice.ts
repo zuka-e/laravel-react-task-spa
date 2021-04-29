@@ -6,6 +6,7 @@ import {
   SIGNIN_PATH,
   SIGNOUT_PATH,
 } from '../../config/api';
+import { FlashMessageProps } from '../../templates/FlashMessage';
 
 // `store`の利用不可、それを利用した関数も同様 (以下のエラー発生)
 // TypeError: Cannot read property 'reducer' of undefined
@@ -91,6 +92,7 @@ export const putSignOut = createAsyncThunk<
 type AuthState = {
   signedIn: boolean | undefined;
   loading: boolean;
+  flash: FlashMessageProps | null;
 };
 
 const authSlice = createSlice({
@@ -98,6 +100,7 @@ const authSlice = createSlice({
   initialState: {
     signedIn: undefined,
     loading: false,
+    flash: null,
   } as AuthState,
   reducers: {
     signIn(state) {
@@ -114,6 +117,7 @@ const authSlice = createSlice({
     builder.addCase(signInWithEmail.fulfilled, (state, action) => {
       state.signedIn = true;
       state.loading = false;
+      state.flash = { type: 'success', message: 'ログインしました' };
     });
     builder.addCase(signInWithEmail.rejected, (state, action) => {
       state.signedIn = false;
@@ -136,6 +140,7 @@ const authSlice = createSlice({
     builder.addCase(putSignOut.fulfilled, (state, action) => {
       state.signedIn = false;
       state.loading = false;
+      state.flash = { type: 'success', message: 'ログアウトしました' };
     });
     builder.addCase(putSignOut.rejected, (state, action) => {
       state.signedIn = undefined;

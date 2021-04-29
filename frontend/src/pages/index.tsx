@@ -1,26 +1,36 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Button } from '@material-ui/core';
 import { APP_NAME } from '../config/app';
-import { isSignedIn } from '../utils/auth';
-import { useAppDispatch } from '../store/hooks';
-import { putSignOut } from '../store/slices/authSlice';
 import Header from '../layouts/Header';
+import Footer from '../layouts/Footer';
+import Hero from '../components/Home/Hero';
+import Features from '../components/Home/Features';
+import { isSignedIn } from '../utils/auth';
+
+const LP = () => (
+  <React.Fragment>
+    <Hero />
+    <Features />
+  </React.Fragment>
+);
+
+const renderHome = () => {
+  if (isSignedIn()) {
+    // return <Dashboard />;
+  } else {
+    return <LP />;
+  }
+};
 
 const Home: React.FC = () => {
-  const dispatch = useAppDispatch();
-
-  const handleClick = () => {
-    dispatch(putSignOut());
-  };
-
   return (
     <React.Fragment>
       <Helmet>
         <title>{APP_NAME}</title>
       </Helmet>
       <Header />
-      {isSignedIn() && <Button onClick={handleClick}>Logout</Button>}
+      {renderHome()}
+      <Footer />
     </React.Fragment>
   );
 };

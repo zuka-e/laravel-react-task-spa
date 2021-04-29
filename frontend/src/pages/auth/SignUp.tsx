@@ -1,23 +1,25 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Grid, Button, TextField } from '@material-ui/core';
-import FormLayout from './FormLayout';
 import { APP_NAME } from '../../config/app';
+import FormLayout from '../../layouts/FormLayout';
 
-const useStyles = makeStyles((theme) => ({
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(3),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  link: {
-    color: theme.palette.info.dark,
-  },
-}));
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    form: {
+      width: '100%', // Fix IE 11 issue.
+      marginTop: theme.spacing(3),
+    },
+    submit: {
+      margin: theme.spacing(3, 0, 2),
+    },
+    link: {
+      color: theme.palette.info.dark,
+    },
+  })
+);
 
 const SignUp = () => {
   const classes = useStyles();

@@ -1,40 +1,47 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { pink } from '@material-ui/core/colors';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Drawer from '@material-ui/core/Drawer';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import PersonIcon from '@material-ui/icons/Person';
-import MenuIcon from '@material-ui/icons/Menu';
+import {
+  AppBar,
+  Toolbar,
+  Drawer,
+  Avatar,
+  Button,
+  IconButton,
+} from '@material-ui/core';
+import {
+  AccountCircle as AccountCircleIcon,
+  Person as PersonIcon,
+  Menu as MenuIcon,
+} from '@material-ui/icons';
 import { APP_NAME } from '../config/app';
 import { isSignedIn } from '../utils/auth';
 import Sidebar from './Sidebar';
 import PopoverControl from '../templates/PopoverControl';
 import AccountMenuList from '../components/Header/AccountMenuList';
+import logo from '../images/logo.svg';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  title: {
-    marginLeft: theme.spacing(2),
-  },
-  buttonLink: {
-    color: 'inherit',
-    '&:hover': {
-      textDecoration: 'none',
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      flexGrow: 1,
     },
-  },
-  pink: {
-    color: theme.palette.getContrastText(pink[500]),
-    backgroundColor: pink[500],
-  },
-}));
+    title: {
+      marginLeft: theme.spacing(2),
+    },
+    buttonLink: {
+      color: 'inherit',
+      '&:hover': {
+        textDecoration: 'none',
+      },
+    },
+    pink: {
+      color: theme.palette.getContrastText(pink[500]),
+      backgroundColor: pink[500],
+    },
+  })
+);
 
 const Header: React.FC = () => {
   const classes = useStyles();
@@ -98,7 +105,7 @@ const Header: React.FC = () => {
         </Drawer>
         <div className={`${classes.root} ${classes.title}`}>
           <Link to={'/'} className={classes.buttonLink}>
-            {APP_NAME}
+            <img src={logo} alt={APP_NAME} width='120' height='30' />
           </Link>
         </div>
         {isSignedIn() ? <AccountMenuButton /> : <SignInLinkButton />}
