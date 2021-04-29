@@ -20,6 +20,7 @@ import { isSignedIn } from '../utils/auth';
 import Sidebar from './Sidebar';
 import PopoverControl from '../templates/PopoverControl';
 import AccountMenuList from '../components/Header/AccountMenuList';
+import logo from '../images/logo.svg';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -104,7 +105,7 @@ const Header: React.FC = () => {
         </Drawer>
         <div className={`${classes.root} ${classes.title}`}>
           <Link to={'/'} className={classes.buttonLink}>
-            {APP_NAME}
+            <img src={logo} alt={APP_NAME} width='120' height='30' />
           </Link>
         </div>
         {isSignedIn() ? <AccountMenuButton /> : <SignInLinkButton />}
