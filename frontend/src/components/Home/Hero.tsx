@@ -20,13 +20,14 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     hero: {
       justifyContent: 'space-around',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         flexDirection: 'column-reverse',
+        alignItems: 'center',
       },
     },
     description: {
       marginBottom: theme.spacing(12),
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         marginTop: theme.spacing(4),
         marginBottom: theme.spacing(6),
       },
@@ -34,11 +35,6 @@ const useStyles = makeStyles((theme: Theme) =>
     catchphrase: {
       fontSize: '3.6rem',
       marginBottom: theme.spacing(5),
-    },
-    heroImage: {
-      [theme.breakpoints.down('xs')]: {
-        margin: 'auto',
-      },
     },
     buttonLink: {
       minWidth: '120px',
@@ -54,10 +50,10 @@ const Hero: React.FC = () => {
   const classes = useStyles();
 
   return (
-    <Box className={classes.root}>
-      <Container component='main' className={classes.container}>
-        <Grid container spacing={5} className={classes.hero}>
-          <Grid item sm={7}>
+    <Box component='main' className={classes.root}>
+      <Container className={classes.container}>
+        <Grid container className={classes.hero}>
+          <Grid item md={6}>
             <div className={classes.description}>
               <Typography variant='h1' className={classes.catchphrase}>
                 タスク管理を。
@@ -93,7 +89,7 @@ const Hero: React.FC = () => {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item sm={5} xs={10} className={classes.heroImage}>
+          <Grid item md={5} sm={10} xs={10}>
             <img src={hero} alt='hero' width='100%' height='100%' />
           </Grid>
         </Grid>
