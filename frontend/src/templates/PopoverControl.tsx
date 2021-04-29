@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Popover, Box } from '@material-ui/core';
 
-const useStyles = makeStyles((theme) => ({
-  popover: {
-    '& > .MuiPopover-paper': {
-      width: '250px',
-      border: `1px solid ${theme.palette.info.light}`,
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    popover: {
+      '& > .MuiPopover-paper': {
+        width: '250px',
+        border: `1px solid ${theme.palette.info.light}`,
+      },
     },
-  },
-}));
+  })
+);
 
 const makePopoverOriginSet = (position: PopoverPosition | undefined) => {
   type PopoverOrigin = {

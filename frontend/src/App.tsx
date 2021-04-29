@@ -2,11 +2,12 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Routes from './Routes';
 import Loading from './layouts/Loading';
+import FlashMessage from './templates/FlashMessage';
 import { initializeAuthState } from './utils/auth';
 import { useAppSelector } from './store/hooks';
 
 const App: React.FC = () => {
-  const { signedIn } = useAppSelector((state) => state.auth);
+  const { signedIn, loading, flash } = useAppSelector((state) => state.auth);
 
   // `sessionStorage`と`store`のログイン状態を初期化
   useEffect(() => {
@@ -15,7 +16,8 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <Loading />
+      {loading && <Loading />}
+      {flash && <FlashMessage type={flash.type} message={flash.message} />}
       <Routes />
     </Router>
   );

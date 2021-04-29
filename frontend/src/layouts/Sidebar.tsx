@@ -1,25 +1,29 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import List from '@material-ui/core/List';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import {
+  Typography,
+  List,
+  ListSubheader,
+  Divider,
+  IconButton,
+} from '@material-ui/core';
+import { Menu as MenuIcon } from '@material-ui/icons';
 
-const useStyles = makeStyles((theme) => ({
-  drawer: {
-    width: '250px',
-  },
-  listHeader: {
-    display: 'flex',
-    padding: '4px',
-  },
-  listHeaderTitle: {
-    marginLeft: theme.spacing(2),
-    lineHeight: 'unset',
-  },
-}));
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    drawer: {
+      width: '250px',
+    },
+    listHeader: {
+      display: 'flex',
+      padding: '4px',
+    },
+    listHeaderTitle: {
+      marginLeft: theme.spacing(2),
+      lineHeight: 'unset',
+    },
+  })
+);
 
 type SidebarProps = {
   toggleDrawer: (
