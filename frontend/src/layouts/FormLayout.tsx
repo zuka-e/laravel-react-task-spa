@@ -1,6 +1,13 @@
 import React from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Container, Card, Avatar, Typography, Box } from '@material-ui/core';
+import {
+  Container,
+  Card,
+  Avatar,
+  Typography,
+  Box,
+  Grid,
+} from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { APP_NAME } from '../config/app';
@@ -38,7 +45,7 @@ const FormLayout: React.FC<FormLayoutProps> = (props) => {
   const { children, title, message } = props;
   const classes = useStyles();
 
-  const FlashMessage = () => (
+  const ErrorMessage = () => (
     <Alert className={classes.errorBox} severity='error' elevation={2}>
       <AlertTitle>Error</AlertTitle>
       {message}
@@ -48,7 +55,7 @@ const FormLayout: React.FC<FormLayoutProps> = (props) => {
   return (
     <Container component='main' maxWidth='xs'>
       <Card className={classes.paper} elevation={2}>
-        {!!message && <FlashMessage />}
+        {message && <ErrorMessage />}
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
@@ -58,7 +65,20 @@ const FormLayout: React.FC<FormLayoutProps> = (props) => {
         {children}
       </Card>
       <Box mt={8}>
-        <Copyright />
+        <Grid container direction='column' alignItems='center'>
+          <Grid item>
+            <a href='/terms' target='_blank'>
+              Terms
+            </a>
+            <Box display='inline' borderLeft='1px solid' ml={1} pl={1} />
+            <a href='/privacy' target='_blank'>
+              Privacy
+            </a>
+          </Grid>
+          <Grid item>
+            <Copyright />
+          </Grid>
+        </Grid>
       </Box>
     </Container>
   );
