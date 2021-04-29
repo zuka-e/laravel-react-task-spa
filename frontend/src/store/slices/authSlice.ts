@@ -5,6 +5,7 @@ import {
   GET_CSRF_TOKEN_PATH,
   SIGNIN_PATH,
   SIGNOUT_PATH,
+  SIGNUP_PATH,
 } from '../../config/api';
 import { FlashMessageProps } from '../../templates/FlashMessage';
 
@@ -22,6 +23,44 @@ type RejectWithValueType = {
   };
 };
 
+export const createUser = createAsyncThunk<
+  any,
+  {
+    name: string;
+    email: string;
+    password: string;
+    password_confirmation: string;
+  },
+  { rejectValue: RejectWithValueType }
+>('auth/createUser', async (payload, thunkApi) => {
+  const { email, password, password_confirmation } = payload;
+  try {
+    await authApiClient.get(GET_CSRF_TOKEN_PATH);
+    const response = await authApiClient.post(SIGNUP_PATH, {
+      name: email,
+      email,
+      password,
+      password_confirmation,
+    });
+    return response?.data;
+  } catch (e) {
+    // ステータスコード 2xx 以外を`catch`
+    const error: AxiosError = e; // cast the error for access
+    if (error.response?.status === 422) {
+      return thunkApi.rejectWithValue({
+        error: {
+          // 他のバリデーションはフロントエンドで実施
+          message: 'このメールアドレスは既に使用されています',
+          data: error.response.data,
+        },
+      });
+    } // `authSlice`の`extraReducers`で`rejected`を呼び出す
+    return thunkApi.rejectWithValue({
+      error: { data: error?.response?.data },
+    });
+  }
+});
+
 export const signInWithEmail = createAsyncThunk<
   any,
   { email: string; password: string },
@@ -36,8 +75,7 @@ export const signInWithEmail = createAsyncThunk<
     });
     return response?.data;
   } catch (e) {
-    const error: AxiosError = e; // cast the error for access
-    // The server responded with a status code that falls out of 2xx
+    const error: AxiosError = e;
     if (error.response?.status === 422) {
       return thunkApi.rejectWithValue({
         error: {
@@ -45,7 +83,7 @@ export const signInWithEmail = createAsyncThunk<
           data: error.response.data,
         },
       });
-    } // `authSlice`の`extraReducers`で`rejected`を呼び出す
+    }
     return thunkApi.rejectWithValue({
       error: { data: error?.response?.data },
     });
@@ -111,6 +149,18 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(createUser.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(createUser.fulfilled, (state, action) => {
+      state.signedIn = true;
+      state.loading = false;
+      state.flash = { type: 'success', message: 'ユーザー登録が完了しました' };
+    });
+    builder.addCase(createUser.rejected, (state, action) => {
+      state.signedIn = false;
+      state.loading = false;
+    });
     builder.addCase(signInWithEmail.pending, (state, action) => {
       state.loading = true;
     });
