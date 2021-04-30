@@ -2,10 +2,10 @@ import axios from 'axios';
 import store from '../store';
 import { signOut } from '../store/slices/authSlice';
 import { API_HOST, API_VERSION } from '../config/api';
-import { sessionStorageKeys, sessionStorageValues } from './const';
+import { localStorageKeys, localStorageValues } from './const';
 
-const { SIGNED_IN } = sessionStorageKeys;
-const { FALSE } = sessionStorageValues;
+const { SIGNED_IN } = localStorageKeys;
+const { FALSE } = localStorageValues;
 
 const apiClient = (params?: { nonApiRoute: true }) => {
   const nonApiRoute = !!params?.nonApiRoute; // 引数なし -> false
@@ -20,7 +20,7 @@ const apiClient = (params?: { nonApiRoute: true }) => {
     (error) => {
       if ([401, 419].includes(error.response?.status)) {
         // サーバー認証エラーの場合`store`からログイン状態を破棄
-        sessionStorage.setItem(SIGNED_IN, FALSE);
+        localStorage.setItem(SIGNED_IN, FALSE);
         store.dispatch(signOut());
         return Promise.reject(error);
       }

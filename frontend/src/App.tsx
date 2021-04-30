@@ -9,7 +9,7 @@ import { useAppSelector } from './store/hooks';
 const App: React.FC = () => {
   const { signedIn, loading, flash } = useAppSelector((state) => state.auth);
 
-  // `sessionStorage`と`store`のログイン状態を初期化
+  // `localStorage`と`store`のログイン状態を初期化
   useEffect(() => {
     initializeAuthState();
   }, [signedIn]);
