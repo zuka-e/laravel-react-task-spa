@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios, { AxiosError } from 'axios';
 import {
   API_HOST,
+  FETCH_SIGNIN_STATE_PATH,
   FORGOT_PASSWORD_PATH,
   GET_CSRF_TOKEN_PATH,
   RESET_PASSWORD_PATH,
@@ -99,10 +100,8 @@ export const fetchSignInState = createAsyncThunk<
   { rejectValue: RejectWithValueType }
 >('auth/fetchSignInState', async (_, thunkApi) => {
   try {
-    // 認証済みの場合CSRFトークンは有効 (初期化不要) 認証切れなら`419`
-    await authApiClient.get(GET_CSRF_TOKEN_PATH);
-    await authApiClient.post(SIGNIN_PATH);
-    // response.status: サーバー認証が有効の場合`200`それ以外なら`422`
+    // 認証済ならCSRFトークン有効 (初期化不要) 非認証は`401`, 認証切れは`419`
+    await authApiClient.get(FETCH_SIGNIN_STATE_PATH);
   } catch (e) {
     const error: AxiosError = e;
     return thunkApi.rejectWithValue({
