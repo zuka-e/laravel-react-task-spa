@@ -283,7 +283,7 @@ const authSlice = createSlice({
       state.flash = { type: 'success', message: 'ログアウトしました' };
     });
     builder.addCase(putSignOut.rejected, (state, action) => {
-      state.signedIn = undefined;
+      state.signedIn = false;
       state.loading = false;
     });
   },
