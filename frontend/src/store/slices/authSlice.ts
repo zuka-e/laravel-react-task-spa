@@ -2,7 +2,9 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios, { AxiosError } from 'axios';
 import {
   API_HOST,
+  FORGOT_PASSWORD_PATH,
   GET_CSRF_TOKEN_PATH,
+  RESET_PASSWORD_PATH,
   SIGNIN_PATH,
   SIGNOUT_PATH,
   SIGNUP_PATH,
@@ -109,6 +111,71 @@ export const fetchSignInState = createAsyncThunk<
   }
 });
 
+export const forgotPassword = createAsyncThunk<
+  string,
+  { email: string },
+  { rejectValue: RejectWithValueType }
+>('auth/forgotPassword', async (payload, thunkApi) => {
+  const { email } = payload;
+  try {
+    // 正常時は`200`バリデーションエラー時は`422`
+    await authApiClient.get(GET_CSRF_TOKEN_PATH);
+    const response = await authApiClient.post(FORGOT_PASSWORD_PATH, {
+      email,
+    });
+    return response.data?.message;
+  } catch (e) {
+    const error: AxiosError = e;
+    if (error.response?.status === 422) {
+      return thunkApi.rejectWithValue({
+        error: {
+          message: '指定されたメールアドレスは存在しません',
+          data: error.response.data,
+        },
+      });
+    }
+    return thunkApi.rejectWithValue({
+      error: { data: error?.response?.data },
+    });
+  }
+});
+
+export const resetPassword = createAsyncThunk<
+  void,
+  {
+    email: string;
+    password: string;
+    password_confirmation: string;
+    token: string;
+  },
+  { rejectValue: RejectWithValueType }
+>('auth/resetPassword', async (payload, thunkApi) => {
+  const { email, password, password_confirmation, token } = payload;
+  try {
+    // 正常時は`200`バリデーションエラー時は`422`
+    await authApiClient.get(GET_CSRF_TOKEN_PATH);
+    await authApiClient.post(RESET_PASSWORD_PATH, {
+      email,
+      password,
+      password_confirmation,
+      token,
+    });
+  } catch (e) {
+    const error: AxiosError = e;
+    if (error.response?.status === 422) {
+      return thunkApi.rejectWithValue({
+        error: {
+          message: '認証に失敗しました\n再度お試しください',
+          data: error.response.data,
+        },
+      });
+    }
+    return thunkApi.rejectWithValue({
+      error: { data: error?.response?.data },
+    });
+  }
+});
+
 export const putSignOut = createAsyncThunk<
   void,
   void,
@@ -183,6 +250,29 @@ const authSlice = createSlice({
     });
     builder.addCase(fetchSignInState.rejected, (state, action) => {
       state.signedIn = false;
+      state.loading = false;
+    });
+    builder.addCase(forgotPassword.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(forgotPassword.fulfilled, (state, action) => {
+      state.loading = false;
+      state.flash = {
+        type: 'success',
+        message: 'パスワード再設定用のメールを送信しました',
+      };
+    });
+    builder.addCase(forgotPassword.rejected, (state, action) => {
+      state.loading = false;
+    });
+    builder.addCase(resetPassword.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(resetPassword.fulfilled, (state, action) => {
+      state.loading = false;
+      state.flash = { type: 'success', message: 'パスワードを再設定しました' };
+    });
+    builder.addCase(resetPassword.rejected, (state, action) => {
       state.loading = false;
     });
     builder.addCase(putSignOut.pending, (state, action) => {
