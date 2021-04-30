@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
 type FormData = {
   email: string;
   password: string;
+  remember: string | undefined;
 };
 
 // The schema-based form validation with Yup
@@ -135,7 +136,9 @@ const SignIn: React.FC = () => {
             />
           </div>
           <FormControlLabel
-            control={<Checkbox value='remember' color='primary' />}
+            control={
+              <Checkbox {...register('remember')} value='on' color='primary' />
+            }
             label='Remember me'
           />
           <Button

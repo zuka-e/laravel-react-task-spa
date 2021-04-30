@@ -63,15 +63,16 @@ export const createUser = createAsyncThunk<
 
 export const signInWithEmail = createAsyncThunk<
   any,
-  { email: string; password: string },
+  { email: string; password: string; remember: string | undefined },
   { rejectValue: RejectWithValueType }
 >('auth/signInWithEmail', async (payload, thunkApi) => {
-  const { email, password } = payload;
+  const { email, password, remember } = payload;
   try {
     await authApiClient.get(GET_CSRF_TOKEN_PATH);
     const response = await authApiClient.post(SIGNIN_PATH, {
       email,
       password,
+      remember,
     });
     return response?.data;
   } catch (e) {
