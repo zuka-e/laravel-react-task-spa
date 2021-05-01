@@ -28,7 +28,7 @@ return [
     | of your password brokers setup in your "auth" configuration file.
     |
     */
-
+    // ref. `config/auth.php`, "'passwords' => [..."
     'passwords' => 'users',
 
     /*
