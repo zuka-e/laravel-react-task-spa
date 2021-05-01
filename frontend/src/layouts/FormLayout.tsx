@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
   Container,
@@ -9,8 +10,8 @@ import {
   Grid,
 } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { APP_NAME } from '../config/app';
+import logo from '../images/logo_short.svg';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -21,8 +22,10 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       alignItems: 'center',
     },
-    avatar: {
-      margin: theme.spacing(1),
+    logo: {
+      marginBottom: theme.spacing(1),
+      width: theme.spacing(10),
+      height: theme.spacing(10),
     },
     errorBox: {
       marginBottom: theme.spacing(3),
@@ -56,9 +59,13 @@ const FormLayout: React.FC<FormLayoutProps> = (props) => {
     <Container component='main' maxWidth='xs'>
       <Card className={classes.paper} elevation={2}>
         {message && <ErrorMessage />}
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
+        <Avatar
+          className={classes.logo}
+          src={logo}
+          alt={APP_NAME}
+          component={RouterLink}
+          to='/'
+        />
         <Typography component='h1' variant='h5'>
           {title}
         </Typography>
