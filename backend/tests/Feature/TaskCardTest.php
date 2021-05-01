@@ -36,7 +36,7 @@ class TaskCardTest extends TestCase
     {
         $user_id = self::$FIRST_USER->id;
         $url = self::$URL_PREFIX . "/users/${user_id}/task_cards";
-        $response = $this->get($url);
+        $response = $this->getJson($url);
         $response->assertJson(
             fn (AssertableJson $json) =>
             $json->has('meta') // JSONのkey有無をテスト
@@ -54,7 +54,7 @@ class TaskCardTest extends TestCase
 
         $user_id = self::$FIRST_USER->id;
         $url = self::$URL_PREFIX . "/users/${user_id}/task_cards?page=2";
-        $response = $this->get($url); // 2ページ目
+        $response = $this->getJson($url); // 2ページ目
         $response->assertJson(fn (AssertableJson $json) => $json->has(
             'data.0',
             fn ($json) =>
