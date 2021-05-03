@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -64,7 +64,7 @@ const SignUp: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const { signedIn, loading } = useAppSelector((state) => state.auth);
+  const { loading } = useAppSelector((state) => state.auth);
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const {
@@ -74,11 +74,6 @@ const SignUp: React.FC = () => {
   } = useForm<FormData>({
     mode: 'onChange', // バリデーション判定タイミング
     resolver: yupResolver(schema),
-  });
-
-  // ログイン済みならルートへリダイレクト
-  useEffect(() => {
-    signedIn && history.replace('/');
   });
 
   const handleVisiblePassword = () => {

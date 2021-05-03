@@ -2,8 +2,20 @@ import store from '../store';
 import { fetchSignInState, signIn, signOut } from '../store/slices/authSlice';
 import { localStorageKeys, localStorageValues } from './const';
 
+export const isReady = () => {
+  return store.getState().auth.signedIn !== undefined;
+};
+
 export const isSignedIn = () => {
   return store.getState().auth.signedIn;
+};
+
+export const isSentEmail = () => {
+  return store.getState().auth.sentEmail;
+};
+
+export const isVerified = () => {
+  return !!store.getState().auth.user?.emailVerifiedAt;
 };
 
 // store`signedIn`更新時に実行すること -> `useEffect`

@@ -1,15 +1,16 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios, { AxiosError } from 'axios';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   API_HOST,
   FETCH_SIGNIN_STATE_PATH,
   FORGOT_PASSWORD_PATH,
+  GET_AUTH_USER_PATH,
   GET_CSRF_TOKEN_PATH,
   RESET_PASSWORD_PATH,
   SIGNIN_PATH,
   SIGNOUT_PATH,
   SIGNUP_PATH,
 } from '../../config/api';
+import { User } from '../../models/User';
 import { FlashMessageProps } from '../../templates/FlashMessage';
 
 // `store`の利用不可、それを利用した関数も同様 (以下のエラー発生)
@@ -27,7 +28,7 @@ type RejectWithValueType = {
 };
 
 export const createUser = createAsyncThunk<
-  any,
+  void,
   {
     name: string;
     email: string;
@@ -39,13 +40,18 @@ export const createUser = createAsyncThunk<
   const { email, password, password_confirmation } = payload;
   try {
     await authApiClient.get(GET_CSRF_TOKEN_PATH);
-    const response = await authApiClient.post(SIGNUP_PATH, {
-      name: email,
-      email,
-      password,
-      password_confirmation,
-    });
-    return response?.data;
+    await authApiClient.post(
+      SIGNUP_PATH,
+      {
+        name: email,
+        email,
+        password,
+        password_confirmation,
+      },
+      { validateStatus: (status) => status === 201 }
+    );
+    thunkApi.dispatch(fetchAuthUser()); // TODO: API側でUserを返却する
+    // 正常時はステータスコード`201`, `response.data`なし
   } catch (e) {
     // ステータスコード 2xx 以外を`catch`
     const error: AxiosError = e; // cast the error for access
@@ -58,6 +64,22 @@ export const createUser = createAsyncThunk<
         },
       });
     } // `authSlice`の`extraReducers`で`rejected`を呼び出す
+    return thunkApi.rejectWithValue({
+      error: { data: error?.response?.data },
+    });
+  }
+});
+
+export const fetchAuthUser = createAsyncThunk<
+  User,
+  void,
+  { rejectValue: RejectWithValueType }
+>('auth/fetchAuthUser', async (_, thunkApi) => {
+  try {
+    const response = await authApiClient.get(GET_AUTH_USER_PATH);
+    return response?.data?.data as User;
+  } catch (e) {
+    const error: AxiosError = e;
     return thunkApi.rejectWithValue({
       error: { data: error?.response?.data },
     });
@@ -77,6 +99,7 @@ export const signInWithEmail = createAsyncThunk<
       password,
       remember,
     });
+    thunkApi.dispatch(fetchAuthUser());
     return response?.data;
   } catch (e) {
     const error: AxiosError = e;
@@ -87,9 +110,18 @@ export const signInWithEmail = createAsyncThunk<
           data: error.response.data,
         },
       });
+    } // 認証用メールから遷移して、認証リンクが無効だった場合
+    else if (error.response?.status === 403) {
+      thunkApi.dispatch(fetchSignInState());
+      thunkApi.dispatch(
+        setFlash({ type: 'warning', message: '認証に失敗しました' })
+      );
     }
     return thunkApi.rejectWithValue({
-      error: { data: error?.response?.data },
+      error: {
+        message: error?.response?.data.message,
+        data: error?.response?.data,
+      },
     });
   }
 });
@@ -195,6 +227,8 @@ export const putSignOut = createAsyncThunk<
 });
 
 type AuthState = {
+  user: User | null;
+  sentEmail: boolean;
   signedIn: boolean | undefined;
   loading: boolean;
   flash: FlashMessageProps | null;
@@ -208,6 +242,13 @@ const authSlice = createSlice({
     flash: null,
   } as AuthState,
   reducers: {
+    setFlash(state, action: PayloadAction<FlashMessageProps>) {
+      const { type, message } = action.payload;
+      state.flash = { type, message };
+    },
+    deleteSentEmailState(state) {
+      state.sentEmail = false;
+    },
     signIn(state) {
       state.signedIn = true;
     },
@@ -220,11 +261,25 @@ const authSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(createUser.fulfilled, (state, action) => {
+      state.sentEmail = true;
       state.signedIn = true;
       state.loading = false;
       state.flash = { type: 'success', message: 'ユーザー登録が完了しました' };
     });
     builder.addCase(createUser.rejected, (state, action) => {
+      state.signedIn = false;
+      state.loading = false;
+    });
+    builder.addCase(fetchAuthUser.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchAuthUser.fulfilled, (state, action) => {
+      state.user = action.payload;
+      state.signedIn = true;
+      state.loading = false;
+    });
+    builder.addCase(fetchAuthUser.rejected, (state, action) => {
+      state.user = null;
       state.signedIn = false;
       state.loading = false;
     });
@@ -278,6 +333,7 @@ const authSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(putSignOut.fulfilled, (state, action) => {
+      state.user = null;
       state.signedIn = false;
       state.loading = false;
       state.flash = { type: 'success', message: 'ログアウトしました' };
@@ -289,6 +345,11 @@ const authSlice = createSlice({
   },
 });
 
-export const { signIn, signOut } = authSlice.actions;
+export const {
+  setFlash,
+  deleteSentEmailState,
+  signIn,
+  signOut,
+} = authSlice.actions;
 
 export default authSlice;

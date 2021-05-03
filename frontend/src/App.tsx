@@ -14,6 +14,9 @@ const App: React.FC = () => {
     initializeAuthState();
   }, [signedIn]);
 
+  // 値を評価する準備が整うまで待機
+  if (!isReady()) return <Loading />;
+
   return (
     <Router>
       {loading && <Loading />}
