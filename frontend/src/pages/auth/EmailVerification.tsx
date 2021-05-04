@@ -9,7 +9,7 @@ import { APP_NAME } from '../../config/app';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   deleteSentEmailState,
-  // sendEmailVerificationLink,
+  sendEmailVerificationLink,
 } from '../../store/slices/authSlice';
 import { isSentEmail, isVerified } from '../../utils/auth';
 
@@ -46,7 +46,7 @@ const EmailVerification: React.FC = () => {
   }, [dispatch]);
 
   const handleClick = () => {
-    // dispatch(sendEmailVerificationLink());
+    dispatch(sendEmailVerificationLink());
   };
 
   return (

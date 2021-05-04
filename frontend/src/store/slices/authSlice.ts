@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import {
   API_HOST,
   FETCH_SIGNIN_STATE_PATH,
@@ -9,6 +10,7 @@ import {
   SIGNIN_PATH,
   SIGNOUT_PATH,
   SIGNUP_PATH,
+  VERIFICATION_NOTIFICATION_PATH,
 } from '../../config/api';
 import { User } from '../../models/User';
 import { FlashMessageProps } from '../../templates/FlashMessage';
@@ -80,6 +82,29 @@ export const fetchAuthUser = createAsyncThunk<
     return response?.data?.data as User;
   } catch (e) {
     const error: AxiosError = e;
+    return thunkApi.rejectWithValue({
+      error: { data: error?.response?.data },
+    });
+  }
+});
+
+export const sendEmailVerificationLink = createAsyncThunk<
+  AxiosResponse<any>['status'],
+  void,
+  { rejectValue: RejectWithValueType }
+>('auth/sendVerificationLink', async (_, thunkApi) => {
+  try {
+    // 正常時は`202`(認証済みの場合`204`)
+    const response = await authApiClient.post(VERIFICATION_NOTIFICATION_PATH);
+    return response.status;
+  } catch (e) {
+    const error: AxiosError = e;
+    if (error.response && [401, 419].includes(error.response.status)) {
+      thunkApi.dispatch(signOut());
+      thunkApi.dispatch(
+        setFlash({ type: 'error', message: 'ログインしてください' })
+      );
+    }
     return thunkApi.rejectWithValue({
       error: { data: error?.response?.data },
     });
@@ -229,22 +254,18 @@ export const putSignOut = createAsyncThunk<
 type AuthState = {
   user: User | null;
   sentEmail: boolean;
-  signedIn: boolean | undefined;
+  signedIn: boolean;
   loading: boolean;
-  flash: FlashMessageProps | null;
+  flash: FlashMessageProps[];
 };
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState: {
-    signedIn: undefined,
-    loading: false,
-    flash: null,
-  } as AuthState,
+  initialState: { flash: [{}] } as AuthState,
   reducers: {
     setFlash(state, action: PayloadAction<FlashMessageProps>) {
       const { type, message } = action.payload;
-      state.flash = { type, message };
+      state.flash.push({ type, message });
     },
     deleteSentEmailState(state) {
       state.sentEmail = false;
@@ -264,7 +285,10 @@ const authSlice = createSlice({
       state.sentEmail = true;
       state.signedIn = true;
       state.loading = false;
-      state.flash = { type: 'success', message: 'ユーザー登録が完了しました' };
+      state.flash.push({
+        type: 'success',
+        message: 'ユーザー登録が完了しました',
+      });
     });
     builder.addCase(createUser.rejected, (state, action) => {
       state.signedIn = false;
@@ -281,6 +305,27 @@ const authSlice = createSlice({
     builder.addCase(fetchAuthUser.rejected, (state, action) => {
       state.user = null;
       state.signedIn = false;
+      state.loading = false;
+    });
+    builder.addCase(sendEmailVerificationLink.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(sendEmailVerificationLink.fulfilled, (state, action) => {
+      state.loading = false;
+      if (action.payload === 202) {
+        state.flash.push({
+          type: 'success',
+          message: '認証用メールを送信しました',
+        });
+      } else if (action.payload === 204) {
+        state.sentEmail = false;
+        state.flash.push({
+          type: 'error',
+          message: '既に認証済みです',
+        });
+      }
+    });
+    builder.addCase(sendEmailVerificationLink.rejected, (state, action) => {
       state.loading = false;
     });
     builder.addCase(signInWithEmail.pending, (state, action) => {
@@ -311,10 +356,10 @@ const authSlice = createSlice({
     });
     builder.addCase(forgotPassword.fulfilled, (state, action) => {
       state.loading = false;
-      state.flash = {
+      state.flash.push({
         type: 'success',
         message: 'パスワード再設定用のメールを送信しました',
-      };
+      });
     });
     builder.addCase(forgotPassword.rejected, (state, action) => {
       state.loading = false;
@@ -324,7 +369,10 @@ const authSlice = createSlice({
     });
     builder.addCase(resetPassword.fulfilled, (state, action) => {
       state.loading = false;
-      state.flash = { type: 'success', message: 'パスワードを再設定しました' };
+      state.flash.push({
+        type: 'success',
+        message: 'パスワードを再設定しました',
+      });
     });
     builder.addCase(resetPassword.rejected, (state, action) => {
       state.loading = false;
@@ -336,7 +384,7 @@ const authSlice = createSlice({
       state.user = null;
       state.signedIn = false;
       state.loading = false;
-      state.flash = { type: 'success', message: 'ログアウトしました' };
+      state.flash.push({ type: 'success', message: 'ログアウトしました' });
     });
     builder.addCase(putSignOut.rejected, (state, action) => {
       state.signedIn = false;
