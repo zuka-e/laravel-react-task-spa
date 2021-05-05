@@ -4,6 +4,7 @@ import Home from './pages';
 import SignUp from './pages/auth/SignUp';
 import EmailVerification from './pages/auth/EmailVerification';
 import SignIn from './pages/auth/SignIn';
+import Account from './pages/auth/Account';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import ResetPassword from './pages/auth/ResetPassword';
 import NotFound from './pages/error/NotFound';
@@ -29,6 +30,7 @@ const Routes: React.FC = () => {
       <GuestRoute exact path='/register' component={SignUp} />
       <AuthRoute path='/email-verification' component={EmailVerification} />
       <Route exact path='/login' component={SignIn} />
+      <AuthRoute exact path='/account' component={Account} />
       <Route exact path='/forgot-password' component={ForgotPassword} />
       <Route exact path='/reset-password' component={ResetPassword} />
       <Route path='*' component={NotFound} />
