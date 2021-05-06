@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 
@@ -10,11 +10,6 @@ export type FlashMessageProps = {
 const FlashMessage: React.FC<FlashMessageProps> = (props) => {
   const { type, message } = props;
   const [open, setOpen] = useState(true);
-
-  // `message`の変更を監視
-  useEffect(() => {
-    setOpen(true);
-  }, [message]);
 
   const handleClose = (_event?: React.SyntheticEvent, reason?: string) => {
     if (reason === 'clickaway') return;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -9,7 +9,6 @@ import {
   TextField,
   Checkbox,
   FormControlLabel,
-  Typography,
   Button,
   Divider,
   Grid,
@@ -48,6 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
 type FormData = {
   email: string;
   password: string;
+  remember: string | undefined;
 };
 
 // The schema-based form validation with Yup
@@ -59,7 +59,7 @@ const schema = yup.object().shape({
 const SignIn: React.FC = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
-  const { signedIn, loading } = useAppSelector((state) => state.auth);
+  const { loading } = useAppSelector((state) => state.auth);
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const history = useHistory();
@@ -72,11 +72,6 @@ const SignIn: React.FC = () => {
     resolver: yupResolver(schema),
   });
 
-  // ログイン済みならルートへリダイレクト
-  useEffect(() => {
-    signedIn && history.replace('/');
-  });
-
   const handleVisiblePassword = () => {
     setVisiblePassword(!visiblePassword);
   };
@@ -86,7 +81,7 @@ const SignIn: React.FC = () => {
     const response = await dispatch(signInWithEmail(data));
     if (signInWithEmail.rejected.match(response)) {
       setMessage(response.payload?.error?.message);
-    }
+    } else history.goBack();
   };
 
   return (
@@ -104,7 +99,6 @@ const SignIn: React.FC = () => {
             id='email'
             label='Email Address'
             autoComplete='email'
-            autoFocus
             {...register('email')}
             helperText={errors?.email?.message}
             error={!!errors?.email}
@@ -137,7 +131,9 @@ const SignIn: React.FC = () => {
             />
           </div>
           <FormControlLabel
-            control={<Checkbox value='remember' color='primary' />}
+            control={
+              <Checkbox {...register('remember')} value='on' color='primary' />
+            }
             label='Remember me'
           />
           <Button
@@ -156,9 +152,7 @@ const SignIn: React.FC = () => {
           <Divider className={classes.divider} />
           <Grid container justify='flex-end'>
             <Grid item>
-              <Typography display='inline' variant='body2'>
-                New to {APP_NAME}?&nbsp;
-              </Typography>
+              New to {APP_NAME}?&nbsp;
               <Button size='small' onClick={() => history.push('/register')}>
                 <span className={classes.link}>Create an account</span>
               </Button>
