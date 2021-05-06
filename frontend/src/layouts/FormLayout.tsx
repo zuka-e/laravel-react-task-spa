@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: theme.spacing(10),
     },
     errorBox: {
+      width: '100%',
       marginBottom: theme.spacing(3),
     },
   })
@@ -56,22 +57,24 @@ const FormLayout: React.FC<FormLayoutProps> = (props) => {
   );
 
   return (
-    <Container component='main' maxWidth='xs'>
-      <Card className={classes.paper} elevation={2}>
-        {message && <ErrorMessage />}
-        <Avatar
-          className={classes.logo}
-          src={logo}
-          alt={APP_NAME}
-          component={RouterLink}
-          to='/'
-        />
-        <Typography component='h1' variant='h5'>
-          {title}
-        </Typography>
-        {children}
-      </Card>
-      <Box mt={8}>
+    <React.Fragment>
+      <Container component='main' maxWidth='xs'>
+        <Card className={classes.paper} elevation={2}>
+          {message && <ErrorMessage />}
+          <Avatar
+            className={classes.logo}
+            src={logo}
+            alt={APP_NAME}
+            component={RouterLink}
+            to='/'
+          />
+          <Typography component='h1' variant='h5'>
+            {title}
+          </Typography>
+          {children}
+        </Card>
+      </Container>
+      <Box component='footer' mt={8}>
         <Grid container direction='column' alignItems='center'>
           <Grid item>
             <a href='/terms' target='_blank'>
@@ -87,7 +90,7 @@ const FormLayout: React.FC<FormLayoutProps> = (props) => {
           </Grid>
         </Grid>
       </Box>
-    </Container>
+    </React.Fragment>
   );
 };
 
