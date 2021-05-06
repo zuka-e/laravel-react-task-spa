@@ -6,6 +6,7 @@ use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
+use App\Http\Responses\RegisterResponse;
 use App\Http\Responses\LoginResponse;
 use App\Http\Controllers\VerifyEmailController as VerifyEmailControllerOverride;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -13,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 
@@ -36,6 +38,7 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->app->singleton(RegisterResponseContract::class, RegisterResponse::class);
         $this->app->singleton(LoginResponseContract::class, LoginResponse::class);
         $this->app->singleton(VerifyEmailController::class, VerifyEmailControllerOverride::class);
 

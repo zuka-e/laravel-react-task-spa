@@ -2,6 +2,8 @@
 
 namespace App\Http\Responses;
 
+use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 
 class LoginResponse implements LoginResponseContract
@@ -20,7 +22,10 @@ class LoginResponse implements LoginResponseContract
 
         // `vendor/laravel/fortify/src/Http/Responses/LoginResponse.php`転記
         return $request->wantsJson()
-            ? response()->json(['two_factor' => false])
+            ? response()->json([
+                'user' => new UserResource(Auth::user()),
+                'two_factor' => false
+            ])
             : redirect()->intended(config('fortify.home'));
     }
 }
