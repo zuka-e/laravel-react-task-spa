@@ -49,7 +49,7 @@ curl -s "https://laravel.build/example-app?with=mysql,redis" | bash
 
 このように、Laravel Sailを利用することによって、簡単にDocker環境でLaravelを利用した開発を始めることができるようになりました。  
 
-> 参考： [Choosing Your Sail Services](https://laravel.com/docs/8.x/installation#choosing-your-sail-services) / Installation - Laravel
+> 参考： [Choosing Your Sail Services](https://laravel.com/docs/8.x/installation#choosing-your-sail-services) / Installation - Laravel  
 
 #### `sail`コマンド
 
@@ -77,8 +77,8 @@ sail composer require barryvdh/laravel-debugbar --dev
 
 Telescopeを利用することで、リクエストのあらゆる情報が記録されていき、即座にまたは後に確認することができます。取得される情報は、ヘッダーやセッション、その他クエリやキャッシュまで、非常に広範囲にわたります。  
 
-> 参考： [Introduction](https://laravel.com/docs/8.x/telescope#introduction) / Laravel Telescope - Laravel
->> Telescope provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.
+> 参考： [Introduction](https://laravel.com/docs/8.x/telescope#introduction) / Laravel Telescope - Laravel  
+>> Telescope provides insight into the requests coming into your application, exceptions, log entries, database queries, queued jobs, mail, notifications, cache operations, scheduled tasks, variable dumps, and more.  
 
 ##### インストール (Telescope)
 
@@ -96,7 +96,7 @@ sail artisan migrate # 記録データ格納用テーブルの作成
 
 日本語や日本時間を利用する指定を行います。設定ファイルは`app/config/app.php`です。  
 
-> 参考： [Initial Configuration](https://laravel.com/docs/8.x/installation#initial-configuration) / Installation - Laravel
+> 参考： [Initial Configuration](https://laravel.com/docs/8.x/installation#initial-configuration) / Installation - Laravel  
 
 ```php :app/config/app.php
 <?php
@@ -150,13 +150,13 @@ public function up()
 
 まず`users`テーブルとの外部キー制約の設定を行います。上記のような記述によって、参照整合性を保つことが可能です。すなわち、`user_id`が参照している`users`テーブルの`id`が変更された場合には当該テーブルの`user_id`の値も連動し、`users`テーブルの`id`が削除された場合には参照元である`task_cards`のレコードも同時に削除されされることになります。  
 
-> 参考： [Foreign Key Constraints](https://laravel.com/docs/8.x/migrations#foreign-key-constraints) / Database: Migrations - Laravel
+> 参考： [Foreign Key Constraints](https://laravel.com/docs/8.x/migrations#foreign-key-constraints) / Database: Migrations - Laravel  
 
 次に、`title`や`content`など、型を指定して、作成するタスクに必要なカラムの設定を行っています。このとき要件によって、null許容やデフォルト値も設定します。  
 
-> 参考：
-> [Available Column Types](https://laravel.com/docs/8.x/migrations#available-column-types) / Database: Migrations - Laravel
-> [Column Modifiers - Laravel](https://laravel.com/docs/8.x/migrations#column-modifiers) / Database: Migrations - Laravel
+> 参考：  
+> [Available Column Types](https://laravel.com/docs/8.x/migrations#available-column-types) / Database: Migrations - Laravel  
+> [Column Modifiers - Laravel](https://laravel.com/docs/8.x/migrations#column-modifiers) / Database: Migrations - Laravel  
 
 #### リレーション (Model)
 
@@ -203,7 +203,7 @@ $task_cards = App\Models\User::find(1)->task_cards;
 $user = App\Models\TaskCard::find(1)->user;
 ```
 
-> 参考： [Eloquent: Relationships - Laravel](https://laravel.com/docs/8.x/eloquent-relationships)
+> 参考： [Eloquent: Relationships - Laravel](https://laravel.com/docs/8.x/eloquent-relationships)  
 
 #### テストデータ (Seeder, Factory)
 
@@ -260,9 +260,9 @@ sail artisan db:seed
 
 このように、リレーションのあるデータでも簡潔なコードで即座に大量のデータを生成可能であることが確認できました。  
 
-> 参考：
-> [Defining Model Factories](https://laravel.com/docs/8.x/database-testing#defining-model-factories) / Database Testing - Laravel
-> [Database: Seeding - Laravel](https://laravel.com/docs/8.x/seeding)
+> 参考：  
+> [Defining Model Factories](https://laravel.com/docs/8.x/database-testing#defining-model-factories) / Database Testing - Laravel  
+> [Database: Seeding - Laravel](https://laravel.com/docs/8.x/seeding)  
 
 ### CRUD
 
@@ -298,7 +298,7 @@ Route::group([
 
 ちなみにこれは Laravel 8.x での変更点の一つで、以前はアプリケーション側で用意されていました。その従来の方法で`namespace`を指定することも可能です。  
 
-> 参考： [Routing Namespace Updates](https://laravel.com/docs/8.x/releases#routing-namespace-updates) / Release Notes - Laravel
+> 参考： [Routing Namespace Updates](https://laravel.com/docs/8.x/releases#routing-namespace-updates) / Release Notes - Laravel  
 
 `prefix`には`v1`としていますが、これはバージョンを表しておりAPI開発の際の一般的な表記です。  
 
@@ -319,7 +319,7 @@ Route::group([
 
 結局、ルート定義としては、`api/v1/users/{user}/task_cards`にGETメソッドでアクセスしたとき`TaskCardController`の`index`アクションを実行するというものになりました。  
 
-> 参考： [Resource Controllers](https://laravel.com/docs/8.x/controllers#api-resource-routes) / Controllers - Laravel
+> 参考： [Resource Controllers](https://laravel.com/docs/8.x/controllers#api-resource-routes) / Controllers - Laravel  
 
 `routes`ディレクトリには、`web.php`もありこちらにルーティングを設定することもできますが、今回はAPIとして利用するため、`api.php`の方に記述します。  
 
@@ -346,7 +346,7 @@ public function boot()
 }
 ```
 
-> 参考： [Routing - Laravel](https://laravel.com/docs/8.x/routing)
+> 参考： [Routing - Laravel](https://laravel.com/docs/8.x/routing)  
 
 ###### ミドルウェア
 
@@ -374,7 +374,7 @@ protected $middlewareGroups = [
 
 このように、`web`と`api`では属しているミドルウェアが異なるため、それぞれが割り当てられている`web.php`と`api.php`では適用されるミドルウェアに違いがあります。  
 
-> 参考： [Middleware - Laravel](https://laravel.com/docs/8.x/middleware)
+> 参考： [Middleware - Laravel](https://laravel.com/docs/8.x/middleware)  
 
 ###### コントローラー
 
@@ -400,13 +400,13 @@ class TaskCardController extends Controller
 上の処理で、`$user`が持つ`task_cards`レコードを全て取得し、JSON形式として返却します。  
 変数`$user`には、`users`テーブルから`id`で検索されたデータが自動的に入ります。引数に型ヒント (ここでは`$user`前の`User`) を行うことで実現するこの手法を、依存性注入 (DI) と呼びます。  
 
-> 参考： [Dependency Injection & Controllers](https://laravel.com/docs/8.x/controllers#dependency-injection-and-controllers) / Controllers - Laravel
+> 参考： [Dependency Injection & Controllers](https://laravel.com/docs/8.x/controllers#dependency-injection-and-controllers) / Controllers - Laravel  
 
 次に利用している`taskCards`メソッドは、先述の[リレーション (Model)](#リレーション-model)の項目で設定したものです。  
 そしてデータをJSONとして返却する点ですが、Laravelでは、コントローラーから返却する際には自動的にJSONに変換するため特別の操作は不要です。  
 
-> 参考： [Serializing To JSON](https://laravel.com/docs/8.x/eloquent-serialization#serializing-to-json) / Eloquent: Serialization - Laravel
->> Laravel will automatically serialize your Eloquent models and collections to JSON when they are returned from routes or controllers:
+> 参考： [Serializing To JSON](https://laravel.com/docs/8.x/eloquent-serialization#serializing-to-json) / Eloquent: Serialization - Laravel  
+>> Laravel will automatically serialize your Eloquent models and collections to JSON when they are returned from routes or controllers:  
 
 [テストデータ (Seeder, Factory)](#テストデータ-seeder-factory)の項目でデータを生成していれば、[localhost/api/v1/users/1/task_cards](http://localhost/api/v1/users/1/task_cards)にアクセスすることで、`id`が`1`である`User`が持つ`TaskCard`のデータがJSON出力されていることが確認できるはずです。  
 
@@ -428,7 +428,7 @@ protected $casts = [
 ];
 ```
 
-> 参考： [Attribute Casting](https://laravel.com/docs/8.x/eloquent-mutators#attribute-casting) / Eloquent: Mutators & Casting - Laravel
+> 参考： [Attribute Casting](https://laravel.com/docs/8.x/eloquent-mutators#attribute-casting) / Eloquent: Mutators & Casting - Laravel  
 
 ###### ページネーション
 
@@ -452,7 +452,7 @@ class TaskCardController extends Controller
 // ...
 ```
 
-> 参考：[Database: Pagination - Laravel](https://laravel.com/docs/8.x/pagination)
+> 参考：[Database: Pagination - Laravel](https://laravel.com/docs/8.x/pagination)  
 
 ###### テスト (PHPUnit)
 
@@ -466,7 +466,7 @@ Laravelにおいては、初めから、テストに必要なライブラリで�
 
 ただし注意点として、ファイルが存在しない場合は`.env`の値が用いられるということです。この場合データベースも同じものを使用しているので、これまでに作成したデータが削除されたり想定外のテスト結果となってしまったりすることがあります。  
 
-> 参考：[Environment](https://laravel.com/docs/8.x/testing#environment) / Testing: Getting Started - Laravel
+> 参考：[Environment](https://laravel.com/docs/8.x/testing#environment) / Testing: Getting Started - Laravel  
 
 それでは以下のコマンドを実行して実際にテストを作成してみます。`--unit`オプションを付けない場合、`Feature`ディレクトリにファイルが生成されます。  
 
@@ -519,7 +519,7 @@ class TaskCardTest extends TestCase
 
 テストの実行には、`sail artisan test`を使用し、成功すれば`PASS`と出力されます。  
 
-> 参考： [Scoping JSON Collection Assertions](https://laravel.com/docs/8.x/http-tests#scoping-json-collection-assertions) / HTTP Tests - Laravel
+> 参考： [Scoping JSON Collection Assertions](https://laravel.com/docs/8.x/http-tests#scoping-json-collection-assertions) / HTTP Tests - Laravel  
 
 さらにテストを活用するために、後に"[GitHub Actions](#github-actions)"を利用してCIを導入します。  
 
@@ -599,18 +599,18 @@ App\Providers\FortifyServiceProvider::class,
 
 ```
 
-> 参考：
-> [Laravel Fortify - Laravel](https://laravel.com/docs/8.x/fortify)
-> [Laravel Fortify SPA Authentication with Laravel Sanctum without Jetstream - YouTube](https://www.youtube.com/watch?v=QYJKp1e71xs)
-> [Getting started with Laravel Fortify and Sanctum - YouTube](https://www.youtube.com/watch?v=W7owQcBYerA)
-> [Updates to the Laravel Fortify SPA Authentication, Improvements & Routes File Cleanup - YouTube](https://www.youtube.com/watch?v=2a2FFg40zFI)
+> 参考：  
+> [Laravel Fortify - Laravel](https://laravel.com/docs/8.x/fortify)  
+> [Laravel Fortify SPA Authentication with Laravel Sanctum without Jetstream - YouTube](https://www.youtube.com/watch?v=QYJKp1e71xs)  
+> [Getting started with Laravel Fortify and Sanctum - YouTube](https://www.youtube.com/watch?v=W7owQcBYerA)  
+> [Updates to the Laravel Fortify SPA Authentication, Improvements & Routes File Cleanup - YouTube](https://www.youtube.com/watch?v=2a2FFg40zFI)  
 
 #### Sanctum
 
 Sanctumはアプリケーションに認証機能を提供するパッケージです。Fortifyと異なりこちらはルートやコントローラーでの処理は含まれていません。リクエストの正当性を検証するための方法を提供します。  
 
-> [Laravel Fortify & Laravel Sanctum](https://laravel.com/docs/8.x/fortify#laravel-fortify-and-laravel-sanctum) / Laravel Fortify - Laravel
->> Laravel Sanctum is only concerned with managing API tokens and authenticating existing users using session cookies or tokens. Sanctum does not provide any routes that handle user registration, password reset, etc
+> [Laravel Fortify & Laravel Sanctum](https://laravel.com/docs/8.x/fortify#laravel-fortify-and-laravel-sanctum) / Laravel Fortify - Laravel  
+>> Laravel Sanctum is only concerned with managing API tokens and authenticating existing users using session cookies or tokens. Sanctum does not provide any routes that handle user registration, password reset, etc  
 
 先述のとおり、Fortifyを利用しない場合であっても代わりのコードを用意することは可能です。一方、Sanctumが提供する機能は、`Jetstream`などのパッケージを採用する場合を除いて、API認証を行う上で必要となります。  
 
@@ -619,8 +619,8 @@ Sanctumはアプリケーションに認証機能を提供するパッケージ�
 認証の方法として、APIトークンを利用した認証とSPA認証という二つが用意されていますが、SPAのバックエンドとして用いる場合にはSPA認証の方を利用するべきとの記載があるのでそれに従います。  
 SPA認証は、APIトークンの代わりにCookieとセッションを利用した認証方式です。  
 
-> [API Token Authentication](https://laravel.com/docs/8.x/sanctum#api-token-authentication) / Laravel Sanctum - Laravel
->> You should not use API tokens to authenticate your own first-party SPA. Instead, use Sanctum's built-in SPA authentication features.
+> [API Token Authentication](https://laravel.com/docs/8.x/sanctum#api-token-authentication) / Laravel Sanctum - Laravel  
+>> You should not use API tokens to authenticate your own first-party SPA. Instead, use Sanctum's built-in SPA authentication features.  
 
 ##### インストール (Sanctum)
 
@@ -765,23 +765,23 @@ Cookieが有効であり、`XSRF-TOKEN`の値が`X-XSRF-TOKEN`に入っていれ
 
 なお、セッションの期限切れなどによって有効でなくなった場合には、`401`および`419`エラーが返されます。その場合再度ログインが必要となるので、フロントエンド側のルーティング処理によってログインページにリダイレクトを行います。  
 
-> 参考：
-> [Authentication - Laravel](https://laravel.com/docs/8.x/authentication)
-> [CSRF Protection - Laravel](https://laravel.com/docs/8.x/csrf)
-> [Laravel Sanctum - Laravel](https://laravel.com/docs/8.x/sanctum)
-> [Using Sanctum to authenticate a React SPA | Laravel News](https://laravel-news.com/using-sanctum-to-authenticate-a-react-spa)
-> [Laravel Sanctum SPA Tutorial - React SPA Authentication With Sanctum - YouTube](https://www.youtube.com/watch?v=uPKd3q-iaVs)
-> [Getting started with Laravel Fortify and Sanctum - YouTube](https://www.youtube.com/watch?v=W7owQcBYerA)
+> 参考：  
+> [Authentication - Laravel](https://laravel.com/docs/8.x/authentication)  
+> [CSRF Protection - Laravel](https://laravel.com/docs/8.x/csrf)  
+> [Laravel Sanctum - Laravel](https://laravel.com/docs/8.x/sanctum)  
+> [Using Sanctum to authenticate a React SPA | Laravel News](https://laravel-news.com/using-sanctum-to-authenticate-a-react-spa)  
+> [Laravel Sanctum SPA Tutorial - React SPA Authentication With Sanctum - YouTube](https://www.youtube.com/watch?v=uPKd3q-iaVs)  
+> [Getting started with Laravel Fortify and Sanctum - YouTube](https://www.youtube.com/watch?v=W7owQcBYerA)  
 
 #### CORS
 
 異なるオリジン間でサーバーからのレスポンスを受け取るには、CORS (Cross-Origin Resource Sharing) の設定が必要になります。  
 これはブラウザに備えられた同一オリジンポリシーの機能によって、他のオリジンのリソースにアクセス制限がかけられているためです。  
 
-> 参考：
-> [オリジン間リソース共有 (CORS) - HTTP | MDN](https://developer.mozilla.org/ja/docs/Web/HTTP/CORS)
-> [同一オリジンポリシー - Web セキュリティ | MDN](https://developer.mozilla.org/ja/docs/Web/Security/Same-origin_policy)
-> A digression on CORS / [Using Sanctum to authenticate a React SPA | Laravel News](https://laravel-news.com/using-sanctum-to-authenticate-a-react-spa)
+> 参考：  
+> [オリジン間リソース共有 (CORS) - HTTP | MDN](https://developer.mozilla.org/ja/docs/Web/HTTP/CORS)  
+> [同一オリジンポリシー - Web セキュリティ | MDN](https://developer.mozilla.org/ja/docs/Web/Security/Same-origin_policy)  
+> A digression on CORS / [Using Sanctum to authenticate a React SPA | Laravel News](https://laravel-news.com/using-sanctum-to-authenticate-a-react-spa)  
 
 ##### `Access-Control-Allow-Origin`
 
@@ -825,7 +825,7 @@ const apiClient = axios.create({
 // 例： axios.get() の代わりに、apiClient.get() を使用
 ```
 
-> 参考： [The Axios Instance | Axios Docs](https://axios-http.com/docs/instance/)
+> 参考： [The Axios Instance | Axios Docs](https://axios-http.com/docs/instance/)  
 
 ##### Cookie
 
@@ -841,14 +841,14 @@ Cookieに関して、上記に加えてもう一つ設定があります。そ�
 SESSION_DOMAIN=.domain.com
 ```
 
-> 参考： [HTTP Cookie の使用 - HTTP | MDN](https://developer.mozilla.org/ja/docs/Web/HTTP/Cookies)
+> 参考： [HTTP Cookie の使用 - HTTP | MDN](https://developer.mozilla.org/ja/docs/Web/HTTP/Cookies)  
 
 ### GitHub Actions
 
 **GitHub Actions** とは、事前に規定したイベントが発生した際に、自動的に任意のコマンドを実行することができるサービスです。イベントに指定可能なものとして、リポジトリへのPushやPull Request があり、特定のBranchの場合に限定するといった条件を指定することも可能です。  
 また、イベント駆動に限らず、スケジュールに従って実行することもできます。  
 
-> 参考： [ワークフローをトリガーするイベント - GitHub Docs](https://docs.github.com/ja/actions/reference/events-that-trigger-workflows)
+> 参考： [ワークフローをトリガーするイベント - GitHub Docs](https://docs.github.com/ja/actions/reference/events-that-trigger-workflows)  
 
 #### 導入目的
 
@@ -868,16 +868,16 @@ GitHub Actions を導入することで、コードのビルドやテストの�
 
 最新の料金体系については変更の可能性があるので、下記の参考サイトを確認する必要があります。  
 
-> 参考： [GitHub Actionsの支払いについて - GitHub Docs](https://docs.github.com/ja/github/setting-up-and-managing-billing-and-payments-on-github/about-billing-for-github-actions)
+> 参考： [GitHub Actionsの支払いについて - GitHub Docs](https://docs.github.com/ja/github/setting-up-and-managing-billing-and-payments-on-github/about-billing-for-github-actions)  
 
 #### 実行環境
 
 GitHub Actions では、**GitHubホストランナー**と呼ばれる仮想環境が提供されており、定義したコマンドが実際に実行される場所はこのGitHubホストランナー上となります。よって、それに対応させるようにコマンドの調整が必要になります。しかし、一般的なユースケースはテンプレートとして用意されているので、それに従うことで導入コストを抑えることができます。  
 なお、上記の仮想環境ではなく独自で用意したホストを利用する方法もあります。  
 
-> 参考：
-> [GitHubホストランナーについて - GitHub Docs](https://docs.github.com/ja/actions/using-github-hosted-runners/about-github-hosted-runners)
-> [セルフホストランナーについて - GitHub Docs](https://docs.github.com/ja/actions/hosting-your-own-runners/about-self-hosted-runners)
+> 参考：  
+> [GitHubホストランナーについて - GitHub Docs](https://docs.github.com/ja/actions/using-github-hosted-runners/about-github-hosted-runners)  
+> [セルフホストランナーについて - GitHub Docs](https://docs.github.com/ja/actions/hosting-your-own-runners/about-self-hosted-runners)  
 
 #### 導入方法
 
@@ -924,16 +924,16 @@ YAML構文の最上位に`jobs`が来ています。これはワークフロー�
 アクションには、上記の`actions`の他、[GitHub Marketplace](https://github.com/marketplace?type=actions) で提供されているものを利用することも可能です。  
 なお、`actions/checkout`は必須のアクションとなっています。  
 
-> [ワークフローファイルを理解する](https://docs.github.com/ja/actions/learn-github-actions/introduction-to-github-actions#understanding-the-workflow-file) - GitHub Actions 入門 - GitHub Docs
+> [ワークフローファイルを理解する](https://docs.github.com/ja/actions/learn-github-actions/introduction-to-github-actions#understanding-the-workflow-file) - GitHub Actions 入門 - GitHub Docs  
 >> ワークフローがリポジトリのコードに対して実行されるとき、またはリポジトリで定義されたアクションを使用しているときはいつでも、チェックアウトアクションを使用する必要があります。  
 
 次に、依存関係のインストールです。ここでのオプションは主に余計な出力を制限しています。詳細は`sail composer install --help`にて確認可能です。  
 
 そしてアプリケーションキーの生成ですが、ここでのポイントとしては、下記参考サイトでは行っている`.env`ファイル作成処理を行わない代わりに、`php artisan key:generate`実行時に`--env=testing`オプションを指定していることです。これにより、`.env.testing`に`APP_KEY`の値が生成されることになります。またテスト`phpunit`実行時に`.env.testing`が存在すればその値を参照するため`.env`は不要です。  
 
-> 参考：
-> [GitHub Actionsのワークフロー構文 - GitHub Docs](https://docs.github.com/ja/actions/reference/workflow-syntax-for-github-actions)
-> [Laravel workflow](https://github.com/actions/starter-workflows/blob/a3d822534a3d6467de0aba8563d4c7ee25b7a94c/ci/laravel.yml) - actions/starter-workflows/ci/laravel.yml - GitHub
+> 参考：  
+> [GitHub Actionsのワークフロー構文 - GitHub Docs](https://docs.github.com/ja/actions/reference/workflow-syntax-for-github-actions)  
+> [Laravel workflow](https://github.com/actions/starter-workflows/blob/a3d822534a3d6467de0aba8563d4c7ee25b7a94c/ci/laravel.yml) - actions/starter-workflows/ci/laravel.yml - GitHub  
 
 ###### データベースコンテナ
 
@@ -971,9 +971,9 @@ jobs:
 
 このアクセス情報が`.env.testing`ファイルに設定されていればコードは不要ですが、`DB_HOST`の値はローカル環境でテスト用データベースのホスト名`mysql.test`を指定しているので上書きが必要です。  
 
-> 参考：
-> [ランナーマシン上で直接のジョブの実行](https://docs.github.com/ja/actions/guides/creating-postgresql-service-containers#running-jobs-directly-on-the-runner-machine) / PostgreSQLサービスコンテナの作成 - GitHub Docs
-> [Workflow syntax for GitHub Actions - GitHub Docs](https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idservices)
+> 参考：  
+> [ランナーマシン上で直接のジョブの実行](https://docs.github.com/ja/actions/guides/creating-postgresql-service-containers#running-jobs-directly-on-the-runner-machine) / PostgreSQLサービスコンテナの作成 - GitHub Docs  
+> [Workflow syntax for GitHub Actions - GitHub Docs](https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idservices)  
 
 ###### キャッシュ
 
@@ -1007,11 +1007,11 @@ PHP Fatal error:  Uncaught Error: Failed opening required '/home/runner/work/{�
 
 なお、`working-directory`に`./backend`を指定していましたが、ここではルートディレクトリからの相対パスまたは絶対パスを設定します。`working-directory`から見た`./vendor`ではないことに注意が必要です。  
 
-> 参考：
-> [依存関係をキャッシュしてワークフローのスピードを上げる - GitHub Docs](https://docs.github.com/ja/actions/guides/caching-dependencies-to-speed-up-workflows)
-> [PHP - Composer](https://github.com/actions/cache/blob/main/examples.md#php---composer) - actions/cache/examples.md - GitHub
-> [Skipping steps based on cache-hit](https://github.com/actions/cache#Skipping-steps-based-on-cache-hit) - actions/cache - GitHub
-> [PHP workflow](https://github.com/actions/starter-workflows/blob/a3d822534a3d6467de0aba8563d4c7ee25b7a94c/ci/php.yml) - actions/starter-workflows/ci/php.yml - GitHub
+> 参考：  
+> [依存関係をキャッシュしてワークフローのスピードを上げる - GitHub Docs](https://docs.github.com/ja/actions/guides/caching-dependencies-to-speed-up-workflows)  
+> [PHP - Composer](https://github.com/actions/cache/blob/main/examples.md#php---composer) - actions/cache/examples.md - GitHub  
+> [Skipping steps based on cache-hit](https://github.com/actions/cache#Skipping-steps-based-on-cache-hit) - actions/cache - GitHub  
+> [PHP workflow](https://github.com/actions/starter-workflows/blob/a3d822534a3d6467de0aba8563d4c7ee25b7a94c/ci/php.yml) - actions/starter-workflows/ci/php.yml - GitHub  
 
 ###### 完成形
 
