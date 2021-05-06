@@ -37,8 +37,8 @@ const MarkdownWithToc: React.FC<MarkdownWithTocProps> = (props) => {
       <Grid container spacing={5} justify='space-between'>
         <Grid item sm={4}>
           <ul className={classes.toc}>
-            {articles.map((article) => (
-              <li>
+            {articles.map((article, id) => (
+              <li key={id}>
                 <Link href={`#${article}`}>{article}</Link>
               </li>
             ))}
