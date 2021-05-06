@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -22,7 +23,9 @@ Route::group([
     'prefix' => 'v1',
     'middleware' => 'auth:sanctum'
 ], function () {
-    Route::apiResource('users.task_cards', TaskCardController::class)
+    Route::get('/users/auth', fn () => new UserResource(Auth::user()));
+    Route::middleware('verified')
+        ->apiResource('users.task_cards', TaskCardController::class)
         ->only('index', 'show');
     Route::middleware('verified')
         ->apiResource('users.task_cards', TaskCardController::class)
