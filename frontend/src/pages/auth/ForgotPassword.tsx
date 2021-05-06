@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -44,7 +44,7 @@ const ForgotPassword: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const { signedIn, loading } = useAppSelector((state) => state.auth);
+  const { loading } = useAppSelector((state) => state.auth);
   const [message, setMessage] = useState<string | undefined>('');
   const {
     register, // 入力項目の登録
@@ -53,11 +53,6 @@ const ForgotPassword: React.FC = () => {
   } = useForm<FormData>({
     mode: 'onChange', // バリデーション判定タイミング
     resolver: yupResolver(schema),
-  });
-
-  // ログイン済みならルートへリダイレクト
-  useEffect(() => {
-    signedIn && history.replace('/');
   });
 
   // エラー発生時はメッセージを表示する

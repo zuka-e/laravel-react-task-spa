@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import {
   API_HOST,
-  FETCH_SIGNIN_STATE_PATH,
   FORGOT_PASSWORD_PATH,
   GET_AUTH_USER_PATH,
   GET_CSRF_TOKEN_PATH,
@@ -137,7 +136,7 @@ export const signInWithEmail = createAsyncThunk<
       });
     } // 認証用メールから遷移して、認証リンクが無効だった場合
     else if (error.response?.status === 403) {
-      thunkApi.dispatch(fetchSignInState());
+      thunkApi.dispatch(fetchAuthUser());
       thunkApi.dispatch(
         setFlash({ type: 'warning', message: '認証に失敗しました' })
       );
@@ -147,22 +146,6 @@ export const signInWithEmail = createAsyncThunk<
         message: error?.response?.data.message,
         data: error?.response?.data,
       },
-    });
-  }
-});
-
-export const fetchSignInState = createAsyncThunk<
-  void,
-  void,
-  { rejectValue: RejectWithValueType }
->('auth/fetchSignInState', async (_, thunkApi) => {
-  try {
-    // 認証済ならCSRFトークン有効 (初期化不要) 非認証は`401`, 認証切れは`419`
-    await authApiClient.get(FETCH_SIGNIN_STATE_PATH);
-  } catch (e) {
-    const error: AxiosError = e;
-    return thunkApi.rejectWithValue({
-      error: { data: error?.response?.data },
     });
   }
 });
@@ -334,20 +317,9 @@ const authSlice = createSlice({
     builder.addCase(signInWithEmail.fulfilled, (state, action) => {
       state.signedIn = true;
       state.loading = false;
-      state.flash = { type: 'success', message: 'ログインしました' };
+      state.flash.push({ type: 'success', message: 'ログインしました' });
     });
     builder.addCase(signInWithEmail.rejected, (state, action) => {
-      state.signedIn = false;
-      state.loading = false;
-    });
-    builder.addCase(fetchSignInState.pending, (state, action) => {
-      state.loading = true;
-    });
-    builder.addCase(fetchSignInState.fulfilled, (state, action) => {
-      state.signedIn = true;
-      state.loading = false;
-    });
-    builder.addCase(fetchSignInState.rejected, (state, action) => {
       state.signedIn = false;
       state.loading = false;
     });

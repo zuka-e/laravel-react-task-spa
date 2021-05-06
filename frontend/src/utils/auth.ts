@@ -1,5 +1,5 @@
 import store from '../store';
-import { fetchSignInState, signIn, signOut } from '../store/slices/authSlice';
+import { fetchAuthUser } from '../store/slices/authSlice';
 import { localStorageKeys, localStorageValues } from './const';
 
 export const isReady = () => {
@@ -24,19 +24,8 @@ export const initializeAuthState = () => {
   const { TRUE, FALSE } = localStorageValues;
 
   // 初回 (session開始時) のみサーバーの認証状態を問い合わせ
-  if (isSignedIn() === undefined) {
-    // `undefined`: 初期値, リロード時など
-    switch (localStorage.getItem(SIGNED_IN)) {
-      case TRUE:
-        store.dispatch(signIn());
-        break;
-      case FALSE:
-        store.dispatch(signOut());
-        break;
-      case null: // 新規タブ、ウィンドウ
-        store.dispatch(fetchSignInState());
-    }
-  }
+  isSignedIn() === undefined && store.dispatch(fetchAuthUser());
+
   // (case null:) 更新した`store`の値で`localStorage`も更新
   const signedIn = isSignedIn() ? TRUE : FALSE;
   localStorage.setItem(SIGNED_IN, signedIn);

@@ -29,10 +29,10 @@ const Routes: React.FC = () => {
       <Route exact path='/privacy' component={Privacy} />
       <GuestRoute exact path='/register' component={SignUp} />
       <AuthRoute path='/email-verification' component={EmailVerification} />
-      <Route exact path='/login' component={SignIn} />
+      <GuestRoute exact path='/login' component={SignIn} />
       <AuthRoute exact path='/account' component={Account} />
-      <Route exact path='/forgot-password' component={ForgotPassword} />
-      <Route exact path='/reset-password' component={ResetPassword} />
+      <GuestRoute exact path='/forgot-password' component={ForgotPassword} />
+      <GuestRoute exact path='/reset-password' component={ResetPassword} />
       <Route path='*' component={NotFound} />
     </Switch>
   );
