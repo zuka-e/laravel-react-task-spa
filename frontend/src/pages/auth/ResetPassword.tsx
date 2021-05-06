@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -67,7 +67,7 @@ const ResetPassword: React.FC = () => {
   const token = query.get('token') || '';
   const email = query.get('email') || '';
   const dispatch = useAppDispatch();
-  const { signedIn, loading } = useAppSelector((state) => state.auth);
+  const { loading } = useAppSelector((state) => state.auth);
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const {
@@ -79,11 +79,6 @@ const ResetPassword: React.FC = () => {
     resolver: yupResolver(schema),
     defaultValues: { email: email, token: token },
     // `defaultValues`はフォーム入力では変更不可
-  });
-
-  // ログイン済みならルートへリダイレクト
-  useEffect(() => {
-    signedIn && history.replace('/');
   });
 
   const handleVisiblePassword = () => {
