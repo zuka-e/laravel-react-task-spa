@@ -29,7 +29,7 @@ type RejectWithValueType = {
 };
 
 export const createUser = createAsyncThunk<
-  void,
+  User,
   {
     name: string;
     email: string;
@@ -41,7 +41,7 @@ export const createUser = createAsyncThunk<
   const { email, password, password_confirmation } = payload;
   try {
     await authApiClient.get(GET_CSRF_TOKEN_PATH);
-    await authApiClient.post(
+    const response = await authApiClient.post(
       SIGNUP_PATH,
       {
         name: email,
@@ -51,7 +51,7 @@ export const createUser = createAsyncThunk<
       },
       { validateStatus: (status) => status === 201 }
     );
-    thunkApi.dispatch(fetchAuthUser()); // TODO: API側でUserを返却する
+    return response?.data?.user as User;
     // 正常時はステータスコード`201`, `response.data`なし
   } catch (e) {
     // ステータスコード 2xx 以外を`catch`
@@ -81,7 +81,7 @@ export const fetchAuthUser = createAsyncThunk<
 >('auth/fetchAuthUser', async (_, thunkApi) => {
   try {
     const response = await authApiClient.get(GET_AUTH_USER_PATH);
-    return response?.data?.data as User;
+    return response?.data?.user as User;
   } catch (e) {
     const error: AxiosError = e;
     return thunkApi.rejectWithValue({
@@ -117,7 +117,7 @@ export const sendEmailVerificationLink = createAsyncThunk<
 });
 
 export const signInWithEmail = createAsyncThunk<
-  any,
+  User,
   { email: string; password: string; remember: string | undefined },
   { rejectValue: RejectWithValueType }
 >('auth/signInWithEmail', async (payload, thunkApi) => {
@@ -129,8 +129,7 @@ export const signInWithEmail = createAsyncThunk<
       password,
       remember,
     });
-    thunkApi.dispatch(fetchAuthUser());
-    return response?.data;
+    return response?.data?.user as User;
   } catch (e) {
     const error: AxiosError = e;
     if (error.response?.status === 422) {
@@ -280,6 +279,7 @@ const authSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(createUser.fulfilled, (state, action) => {
+      state.user = action.payload;
       state.sentEmail = true;
       state.signedIn = true;
       state.loading = false;
@@ -330,6 +330,7 @@ const authSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(signInWithEmail.fulfilled, (state, action) => {
+      state.user = action.payload;
       state.signedIn = true;
       state.loading = false;
       state.flash.push({ type: 'success', message: 'ログインしました' });
