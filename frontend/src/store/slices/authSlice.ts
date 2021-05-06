@@ -317,7 +317,7 @@ const authSlice = createSlice({
     builder.addCase(signInWithEmail.fulfilled, (state, action) => {
       state.signedIn = true;
       state.loading = false;
-      state.flash = { type: 'success', message: 'ログインしました' };
+      state.flash.push({ type: 'success', message: 'ログインしました' });
     });
     builder.addCase(signInWithEmail.rejected, (state, action) => {
       state.signedIn = false;
