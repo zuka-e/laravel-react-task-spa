@@ -66,7 +66,10 @@ export const createUser = createAsyncThunk<
       });
     } // `authSlice`の`extraReducers`で`rejected`を呼び出す
     return thunkApi.rejectWithValue({
-      error: { data: error?.response?.data },
+      error: {
+        message: 'システムエラーが発生しました',
+        data: error?.response?.data,
+      },
     });
   }
 });
@@ -105,7 +108,10 @@ export const sendEmailVerificationLink = createAsyncThunk<
       );
     }
     return thunkApi.rejectWithValue({
-      error: { data: error?.response?.data },
+      error: {
+        message: 'システムエラーが発生しました',
+        data: error?.response?.data,
+      },
     });
   }
 });
@@ -143,7 +149,7 @@ export const signInWithEmail = createAsyncThunk<
     }
     return thunkApi.rejectWithValue({
       error: {
-        message: error?.response?.data.message,
+        message: 'システムエラーが発生しました',
         data: error?.response?.data,
       },
     });
@@ -174,7 +180,10 @@ export const forgotPassword = createAsyncThunk<
       });
     }
     return thunkApi.rejectWithValue({
-      error: { data: error?.response?.data },
+      error: {
+        message: 'システムエラーが発生しました',
+        data: error?.response?.data,
+      },
     });
   }
 });
@@ -210,7 +219,10 @@ export const resetPassword = createAsyncThunk<
       });
     }
     return thunkApi.rejectWithValue({
-      error: { data: error?.response?.data },
+      error: {
+        message: 'システムエラーが発生しました',
+        data: error?.response?.data,
+      },
     });
   }
 });
@@ -229,7 +241,10 @@ export const putSignOut = createAsyncThunk<
       thunkApi.dispatch(signOut());
     }
     return thunkApi.rejectWithValue({
-      error: { data: error?.response?.data },
+      error: {
+        message: 'システムエラーが発生しました',
+        data: error?.response?.data,
+      },
     });
   }
 });
