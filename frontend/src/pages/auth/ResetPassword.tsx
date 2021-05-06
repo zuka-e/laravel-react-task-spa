@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -14,8 +14,9 @@ import {
   Grid,
 } from '@material-ui/core';
 import { APP_NAME } from '../../config/app';
+import { useQuery } from '../../utils/hooks';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { createUser } from '../../store/slices/authSlice';
+import { resetPassword, signInWithEmail } from '../../store/slices/authSlice';
 import FormLayout from '../../layouts/FormLayout';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -45,26 +46,28 @@ const useStyles = makeStyles((theme: Theme) =>
 
 // Input items
 type FormData = {
-  name: string;
   email: string;
   password: string;
   password_confirmation: string;
+  token: string;
 };
 
 // The schema-based form validation with Yup
 const schema = yup.object().shape({
-  email: yup.string().email().required(),
   password: yup.string().required().min(8).max(20),
   password_confirmation: yup
     .string()
     .oneOf([yup.ref('password'), null], 'Passwords do not match'),
 });
 
-const SignUp: React.FC = () => {
+const ResetPassword: React.FC = () => {
   const classes = useStyles();
+  const query = useQuery();
   const history = useHistory();
+  const token = query.get('token') || '';
+  const email = query.get('email') || '';
   const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.auth);
+  const { signedIn, loading } = useAppSelector((state) => state.auth);
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const {
@@ -74,6 +77,13 @@ const SignUp: React.FC = () => {
   } = useForm<FormData>({
     mode: 'onChange', // バリデーション判定タイミング
     resolver: yupResolver(schema),
+    defaultValues: { email: email, token: token },
+    // `defaultValues`はフォーム入力では変更不可
+  });
+
+  // ログイン済みならルートへリダイレクト
+  useEffect(() => {
+    signedIn && history.replace('/');
   });
 
   const handleVisiblePassword = () => {
@@ -82,31 +92,24 @@ const SignUp: React.FC = () => {
 
   // エラー発生時はメッセージを表示する
   const onSubmit = async (data: FormData) => {
-    const response = await dispatch(createUser(data));
-    if (createUser.rejected.match(response)) {
+    const response = await dispatch(resetPassword(data));
+    if (resetPassword.rejected.match(response)) {
       setMessage(response.payload?.error?.message);
+    } else {
+      // 認証成功時は自動ログイン
+      dispatch(
+        signInWithEmail({ email, password: data.password, remember: undefined })
+      );
     }
   };
 
   return (
     <React.Fragment>
       <Helmet>
-        <title>Registration | {APP_NAME}</title>
+        <title>Reset Password | {APP_NAME}</title>
       </Helmet>
-      <FormLayout title={'Create an account'} message={message}>
+      <FormLayout title={'Reset Password'} message={message}>
         <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
-          <TextField
-            variant='outlined'
-            margin='normal'
-            required
-            fullWidth
-            id='email'
-            label='Email Address'
-            autoComplete='email'
-            {...register('email')}
-            helperText={errors?.email?.message}
-            error={!!errors?.email}
-          />
           <TextField
             variant='outlined'
             margin='normal'
@@ -157,14 +160,13 @@ const SignUp: React.FC = () => {
             color='primary'
             className={classes.submit}
           >
-            Create an account
+            Reset Password
           </Button>
           <Divider className={classes.divider} />
           <Grid container justify='flex-end'>
             <Grid item>
-              Already have an account?&nbsp;
-              <Button size='small' onClick={() => history.push('/login')}>
-                <span className={classes.link}>Sign in</span>
+              <Button size='small' onClick={() => history.push('/')}>
+                <span className={classes.link}>Cancel</span>
               </Button>
             </Grid>
           </Grid>
@@ -174,4 +176,4 @@ const SignUp: React.FC = () => {
   );
 };
 
-export default SignUp;
+export default ResetPassword;

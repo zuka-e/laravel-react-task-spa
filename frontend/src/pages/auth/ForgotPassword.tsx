@@ -1,21 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import {
-  TextField,
-  Checkbox,
-  FormControlLabel,
-  Button,
-  Divider,
-  Grid,
-} from '@material-ui/core';
+import { TextField, Button, Divider, Grid } from '@material-ui/core';
 import { APP_NAME } from '../../config/app';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { createUser } from '../../store/slices/authSlice';
+import { forgotPassword } from '../../store/slices/authSlice';
 import FormLayout from '../../layouts/FormLayout';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -30,12 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
     link: {
       color: theme.palette.info.dark,
     },
-    textFieldLabel: {
-      // marginTop: theme.spacing(-1),
-      marginBottom: theme.spacing(2),
-      marginLeft: 0,
-      color: theme.palette.text.hint,
-    },
     divider: {
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(2),
@@ -45,27 +32,19 @@ const useStyles = makeStyles((theme: Theme) =>
 
 // Input items
 type FormData = {
-  name: string;
   email: string;
-  password: string;
-  password_confirmation: string;
 };
 
 // The schema-based form validation with Yup
 const schema = yup.object().shape({
   email: yup.string().email().required(),
-  password: yup.string().required().min(8).max(20),
-  password_confirmation: yup
-    .string()
-    .oneOf([yup.ref('password'), null], 'Passwords do not match'),
 });
 
-const SignUp: React.FC = () => {
+const ForgotPassword: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.auth);
-  const [visiblePassword, setVisiblePassword] = useState(false);
+  const { signedIn, loading } = useAppSelector((state) => state.auth);
   const [message, setMessage] = useState<string | undefined>('');
   const {
     register, // 入力項目の登録
@@ -76,14 +55,15 @@ const SignUp: React.FC = () => {
     resolver: yupResolver(schema),
   });
 
-  const handleVisiblePassword = () => {
-    setVisiblePassword(!visiblePassword);
-  };
+  // ログイン済みならルートへリダイレクト
+  useEffect(() => {
+    signedIn && history.replace('/');
+  });
 
   // エラー発生時はメッセージを表示する
   const onSubmit = async (data: FormData) => {
-    const response = await dispatch(createUser(data));
-    if (createUser.rejected.match(response)) {
+    const response = await dispatch(forgotPassword(data));
+    if (forgotPassword.rejected.match(response)) {
       setMessage(response.payload?.error?.message);
     }
   };
@@ -91,9 +71,9 @@ const SignUp: React.FC = () => {
   return (
     <React.Fragment>
       <Helmet>
-        <title>Registration | {APP_NAME}</title>
+        <title>Forgot Password | {APP_NAME}</title>
       </Helmet>
-      <FormLayout title={'Create an account'} message={message}>
+      <FormLayout title={'Forgot Password?'} message={message}>
         <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
           <TextField
             variant='outlined'
@@ -107,48 +87,6 @@ const SignUp: React.FC = () => {
             helperText={errors?.email?.message}
             error={!!errors?.email}
           />
-          <TextField
-            variant='outlined'
-            margin='normal'
-            required
-            fullWidth
-            label='Password'
-            type={visiblePassword ? 'text' : 'password'}
-            id='password'
-            autoComplete='current-password'
-            {...register('password')}
-            helperText={errors?.password?.message || '8-20 characters'}
-            error={!!errors?.password}
-          />
-          <TextField
-            variant='outlined'
-            // margin='normal'
-            required
-            fullWidth
-            label='Password Confirmation'
-            type={visiblePassword ? 'text' : 'password'}
-            id='password-confirmation'
-            autoComplete='password-confirmation'
-            {...register('password_confirmation')}
-            helperText={
-              errors?.password_confirmation?.message || 'Retype password'
-            }
-            error={!!errors?.password_confirmation}
-          />
-          <div>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  size='small'
-                  color='primary'
-                  checked={visiblePassword}
-                  onChange={handleVisiblePassword}
-                />
-              }
-              className={classes.textFieldLabel}
-              label='Show Password'
-            />
-          </div>
           <Button
             disabled={loading}
             type='submit'
@@ -157,12 +95,12 @@ const SignUp: React.FC = () => {
             color='primary'
             className={classes.submit}
           >
-            Create an account
+            Send password reset email
           </Button>
           <Divider className={classes.divider} />
           <Grid container justify='flex-end'>
             <Grid item>
-              Already have an account?&nbsp;
+              Back to
               <Button size='small' onClick={() => history.push('/login')}>
                 <span className={classes.link}>Sign in</span>
               </Button>
@@ -174,4 +112,4 @@ const SignUp: React.FC = () => {
   );
 };
 
-export default SignUp;
+export default ForgotPassword;
