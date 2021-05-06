@@ -23,4 +23,12 @@ class UserResource extends JsonResource
             'updatedAt' => $this->updated_at,
         ];
     }
+
+    /**
+     * The "data" wrapper that should be applied.
+     *
+     * @var string
+     */
+    // デフォルトのキー`data`を変更
+    public static $wrap = 'user';
 }
