@@ -1,8 +1,8 @@
 import { Button, Grid } from '@material-ui/core';
-import { Alert, AlertTitle } from '@material-ui/lab';
 import { User } from '../../models/User';
 import { useAppDispatch } from '../../store/hooks';
 import { sendEmailVerificationLink } from '../../store/slices/authSlice';
+import AlertMessage from '../../templates/AlertMessge';
 
 const UserStatus: React.FC<{ user: User }> = (props) => {
   const { user } = props;
@@ -12,24 +12,21 @@ const UserStatus: React.FC<{ user: User }> = (props) => {
     dispatch(sendEmailVerificationLink());
   };
 
+  const AlertAction = () => (
+    <Button variant='contained' color='secondary' onClick={handleClick}>
+      メールを再送信する
+    </Button>
+  );
+
   const showEmailVerificationState = () => {
     return !!user.emailVerifiedAt ? (
-      <Alert severity='success'>
-        <AlertTitle>Success</AlertTitle>
-        認証済みです
-      </Alert>
+      <AlertMessage severity='success' body='認証済みです' />
     ) : (
-      <Alert
+      <AlertMessage
         severity='warning'
-        action={
-          <Button variant='contained' color='secondary' onClick={handleClick}>
-            メールを再送信する
-          </Button>
-        }
-      >
-        <AlertTitle>Warning</AlertTitle>
-        メール認証が完了しておりません
-      </Alert>
+        action={<AlertAction />}
+        body='メール認証が完了しておりません'
+      ></AlertMessage>
     );
   };
 

@@ -3,18 +3,11 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Box, Grid, TextField } from '@material-ui/core';
-import { Alert, AlertTitle } from '@material-ui/lab';
 import { User } from '../../models/User';
 import { useAppDispatch } from '../../store/hooks';
 import { updateProfile } from '../../store/slices/authSlice';
+import AlertMessage from '../../templates/AlertMessge';
 import SubmitButton from '../../templates/SubmitButton';
-
-const ErrorMessage = (props: { message: string }) => (
-  <Alert severity='error' elevation={2}>
-    <AlertTitle>Error</AlertTitle>
-    {props.message}
-  </Alert>
-);
 
 // Input items
 type FormData = {
@@ -63,7 +56,7 @@ const UserProfile: React.FC<{ user: User }> = (props) => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          {message && <ErrorMessage message={message} />}
+          {message && <AlertMessage severity='error' body={message} />}
         </Grid>
         <Grid item md={6} xs={12}>
           <TextField
