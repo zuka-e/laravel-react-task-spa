@@ -13,6 +13,7 @@ import Loading from '../../layouts/Loading';
 import Header from '../../layouts/Header';
 import Footer from '../../layouts/Footer';
 import UserProfile from '../../components/Account/UserProfile';
+import Password from '../../components/Account/Password';
 import UserStatus from '../../components/Account/UserStatus';
 import { useAuth } from '../../utils/hooks';
 
@@ -45,6 +46,13 @@ const Account: React.FC = () => {
             <Divider />
             <CardContent>
               <UserProfile user={currentUser} />
+            </CardContent>
+          </Box>
+          <Box component='section' mb={3}>
+            <CardHeader title='Password' />
+            <Divider />
+            <CardContent>
+              <Password />
             </CardContent>
           </Box>
           <Box component='section' mb={3}>

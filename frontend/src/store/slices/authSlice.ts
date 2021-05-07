@@ -9,6 +9,7 @@ import {
   SIGNIN_PATH,
   SIGNOUT_PATH,
   SIGNUP_PATH,
+  UPDATE_PASSWORD_PATH,
   UPDATE_USER_INFO_PATH,
   VERIFICATION_NOTIFICATION_PATH,
 } from '../../config/api';
@@ -180,6 +181,43 @@ export const updateProfile = createAsyncThunk<
       return thunkApi.rejectWithValue({
         error: {
           message: 'このメールアドレスは既に使用されています',
+          data: error.response.data,
+        },
+      });
+    }
+    return thunkApi.rejectWithValue({
+      error: {
+        message: 'システムエラーが発生しました',
+        data: error?.response?.data,
+      },
+    });
+  }
+});
+
+export const updatePassword = createAsyncThunk<
+  void,
+  { current_password: string; password: string; password_confirmation: string },
+  { rejectValue: RejectWithValueType }
+>('auth/updatePassword', async (payload, thunkApi) => {
+  const { current_password, password, password_confirmation } = payload;
+  try {
+    await authApiClient.put(UPDATE_PASSWORD_PATH, {
+      current_password,
+      password,
+      password_confirmation,
+    });
+  } catch (e) {
+    const error: AxiosError = e;
+    if (error.response && [401, 419].includes(error.response.status)) {
+      thunkApi.dispatch(signOut());
+      thunkApi.dispatch(
+        setFlash({ type: 'error', message: 'ログインしてください' })
+      );
+    }
+    if (error.response?.status === 422) {
+      return thunkApi.rejectWithValue({
+        error: {
+          message: 'パスワードが間違っています',
           data: error.response.data,
         },
       });
@@ -402,6 +440,19 @@ const authSlice = createSlice({
       state.loading = false;
     });
     builder.addCase(updateProfile.rejected, (state, action) => {
+      state.loading = false;
+    });
+    builder.addCase(updatePassword.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(updatePassword.fulfilled, (state, action) => {
+      state.flash.push({
+        type: 'success',
+        message: 'パスワードを変更しました',
+      });
+      state.loading = false;
+    });
+    builder.addCase(updatePassword.rejected, (state, action) => {
       state.loading = false;
     });
     builder.addCase(forgotPassword.pending, (state, action) => {
