@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Box, Button, Grid, TextField } from '@material-ui/core';
+import { Box, Grid, TextField } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppDispatch } from '../../store/hooks';
 import { updatePassword } from '../../store/slices/authSlice';
 import LabeledCheckbox from '../../templates/LabeledCheckbox';
+import SubmitButton from '../../templates/SubmitButton';
 
 const ErrorMessage = (props: { message: string }) => (
   <Alert severity='error' elevation={2}>
@@ -33,7 +34,6 @@ const schema = yup.object().shape({
 
 const Password: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.auth);
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const {
@@ -115,14 +115,9 @@ const Password: React.FC = () => {
           Show Password
         </LabeledCheckbox>
       </Box>
-      <Button
-        disabled={loading}
-        type='submit'
-        variant='contained'
-        color='secondary'
-      >
-        パスワードを変更する
-      </Button>
+      <Box mb={1}>
+        <SubmitButton color='secondary'>パスワードを変更する</SubmitButton>
+      </Box>
     </form>
   );
 };

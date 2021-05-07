@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Box, Button, Grid, TextField } from '@material-ui/core';
+import { Box, Grid, TextField } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { User } from '../../models/User';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppDispatch } from '../../store/hooks';
 import { updateProfile } from '../../store/slices/authSlice';
+import SubmitButton from '../../templates/SubmitButton';
 
 const ErrorMessage = (props: { message: string }) => (
   <Alert severity='error' elevation={2}>
@@ -30,7 +31,6 @@ const schema = yup.object().shape({
 const UserProfile: React.FC<{ user: User }> = (props) => {
   const { user } = props;
   const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.auth);
   const [message, setMessage] = useState<string | undefined>('');
   const {
     register, // 入力項目の登録
@@ -95,14 +95,7 @@ const UserProfile: React.FC<{ user: User }> = (props) => {
         </Grid>
       </Grid>
       <Box mt={3} mb={1}>
-        <Button
-          disabled={loading}
-          type='submit'
-          variant='contained'
-          color='secondary'
-        >
-          プロフィールを更新する
-        </Button>
+        <SubmitButton>プロフィールを更新する</SubmitButton>
       </Box>
     </form>
   );
