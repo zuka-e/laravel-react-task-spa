@@ -1,11 +1,10 @@
 import { Button, Grid } from '@material-ui/core';
-import { User } from '../../models/User';
 import { useAppDispatch } from '../../store/hooks';
 import { sendEmailVerificationLink } from '../../store/slices/authSlice';
 import AlertMessage from '../../templates/AlertMessge';
+import { isVerified } from '../../utils/auth';
 
-const UserStatus: React.FC<{ user: User }> = (props) => {
-  const { user } = props;
+const UserStatus: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const handleClick = () => {
@@ -19,7 +18,7 @@ const UserStatus: React.FC<{ user: User }> = (props) => {
   );
 
   const showEmailVerificationState = () => {
-    return !!user.emailVerifiedAt ? (
+    return isVerified() ? (
       <AlertMessage severity='success' body='認証済みです' />
     ) : (
       <AlertMessage

@@ -59,7 +59,7 @@ const Account: React.FC = () => {
             <CardHeader title='Status' />
             <Divider />
             <CardContent>
-              <UserStatus user={currentUser} />
+              <UserStatus />
             </CardContent>
           </Box>
         </Card>
