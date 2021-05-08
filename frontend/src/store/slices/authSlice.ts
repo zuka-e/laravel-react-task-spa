@@ -116,8 +116,13 @@ export const sendEmailVerificationLink = createAsyncThunk<
   }
 });
 
+type SignInResponse = {
+  user: User;
+  verified: true | undefined;
+};
+
 export const signInWithEmail = createAsyncThunk<
-  User,
+  SignInResponse,
   { email: string; password: string; remember: string | undefined },
   { rejectValue: RejectWithValueType }
 >('auth/signInWithEmail', async (payload, thunkApi) => {
@@ -129,7 +134,7 @@ export const signInWithEmail = createAsyncThunk<
       password,
       remember,
     });
-    return response?.data?.user as User;
+    return response?.data;
   } catch (e) {
     const error: AxiosError = e;
     if (error.response?.status === 422) {
@@ -330,10 +335,13 @@ const authSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(signInWithEmail.fulfilled, (state, action) => {
-      state.user = action.payload;
+      state.user = action.payload.user;
       state.signedIn = true;
       state.loading = false;
-      state.flash.push({ type: 'success', message: 'ログインしました' });
+      // 認証メールリンクからのリダイレクトの場合 `true`
+      action.payload.verified
+        ? state.flash.push({ type: 'success', message: '認証に成功しました' })
+        : state.flash.push({ type: 'info', message: 'ログインしました' });
     });
     builder.addCase(signInWithEmail.rejected, (state, action) => {
       state.signedIn = false;
