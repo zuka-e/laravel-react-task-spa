@@ -8,6 +8,7 @@ import { updatePassword } from '../../store/slices/authSlice';
 import LabeledCheckbox from '../../templates/LabeledCheckbox';
 import AlertMessage from '../../templates/AlertMessge';
 import SubmitButton from '../../templates/SubmitButton';
+import { isGuest } from '../../utils/auth';
 
 // Input items
 type FormData = {
@@ -58,6 +59,7 @@ const Password: React.FC = () => {
         </Grid>
         <Grid item md={6} xs={12}>
           <TextField
+            disabled={isGuest()}
             variant='outlined'
             margin='normal'
             fullWidth
@@ -74,6 +76,7 @@ const Password: React.FC = () => {
       <Grid container spacing={2}>
         <Grid item md={6} xs={12}>
           <TextField
+            disabled={isGuest()}
             variant='outlined'
             margin='normal'
             fullWidth
@@ -88,6 +91,7 @@ const Password: React.FC = () => {
         </Grid>
         <Grid item md={6} xs={12}>
           <TextField
+            disabled={isGuest()}
             variant='outlined'
             margin='normal'
             fullWidth
@@ -109,7 +113,9 @@ const Password: React.FC = () => {
         </LabeledCheckbox>
       </Box>
       <Box mb={1}>
-        <SubmitButton color='secondary'>パスワードを変更する</SubmitButton>
+        {!isGuest() && (
+          <SubmitButton color='secondary'>パスワードを変更する</SubmitButton>
+        )}
       </Box>
     </form>
   );

@@ -18,6 +18,11 @@ export const isVerified = () => {
   return !!store.getState().auth.user?.emailVerifiedAt;
 };
 
+export const isGuest = () => {
+  const guestEmail = process.env.REACT_APP_GUEST_EMAIL;
+  return store.getState().auth.user?.email === guestEmail;
+};
+
 // store`signedIn`更新時に実行すること -> `useEffect`
 export const initializeAuthState = () => {
   const { SIGNED_IN } = localStorageKeys;

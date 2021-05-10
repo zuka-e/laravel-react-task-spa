@@ -8,6 +8,7 @@ import { useAppDispatch } from '../../store/hooks';
 import { updateProfile } from '../../store/slices/authSlice';
 import AlertMessage from '../../templates/AlertMessge';
 import SubmitButton from '../../templates/SubmitButton';
+import { isGuest } from '../../utils/auth';
 
 // Input items
 type FormData = {
@@ -60,6 +61,7 @@ const UserProfile: React.FC<{ user: User }> = (props) => {
         </Grid>
         <Grid item md={6} xs={12}>
           <TextField
+            disabled={isGuest()}
             variant='outlined'
             margin='normal'
             fullWidth
@@ -74,6 +76,7 @@ const UserProfile: React.FC<{ user: User }> = (props) => {
         </Grid>
         <Grid item md={6} xs={12}>
           <TextField
+            disabled={isGuest()}
             variant='outlined'
             margin='normal'
             fullWidth
@@ -88,7 +91,7 @@ const UserProfile: React.FC<{ user: User }> = (props) => {
         </Grid>
       </Grid>
       <Box mt={3} mb={1}>
-        <SubmitButton>プロフィールを更新する</SubmitButton>
+        {!isGuest() && <SubmitButton>プロフィールを更新する</SubmitButton>}
       </Box>
     </form>
   );
