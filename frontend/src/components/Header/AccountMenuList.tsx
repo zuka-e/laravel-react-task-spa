@@ -1,5 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import {
   AccountCircle as AccountCircleIcon,
@@ -8,7 +9,17 @@ import {
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { putSignOut } from '../../store/slices/authSlice';
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      maxWidth: '300px',
+      overflowWrap: 'break-word',
+    },
+  })
+);
+
 const AccountMenuList: React.FC = () => {
+  const classes = useStyles();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const history = useHistory();
@@ -18,7 +29,7 @@ const AccountMenuList: React.FC = () => {
   };
 
   return (
-    <List component='nav' aria-label='sign-out'>
+    <List component='nav' aria-label='sign-out' className={classes.root}>
       <ListItem button onClick={() => history.push('/account')}>
         <ListItemIcon>
           <AccountCircleIcon />

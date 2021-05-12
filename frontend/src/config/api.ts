@@ -11,6 +11,11 @@ export const VERIFICATION_NOTIFICATION_PATH =
 export const GET_AUTH_USER_PATH =
   process.env.REACT_APP_GET_AUTH_USER_PATH || '/api/v1/users/auth';
 export const SIGNIN_PATH = process.env.REACT_APP_SIGNIN_PATH || '/api/login';
+export const UPDATE_USER_INFO_PATH =
+  process.env.REACT_APP_UPDATE_USER_INFO_PATH ||
+  '/api/user/profile-information';
+export const UPDATE_PASSWORD_PATH =
+  process.env.REACT_APP_UPDATE_PASSWORD_PATH || '/api/user/password';
 export const SIGNOUT_PATH = process.env.REACT_APP_SIGNOUT_PATH || '/api/logout';
 export const FORGOT_PASSWORD_PATH =
   process.env.REACT_APP_FORGOT_PASSWORD_PATH || '/api/forgot-password';

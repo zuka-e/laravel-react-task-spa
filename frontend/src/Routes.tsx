@@ -1,5 +1,5 @@
-import React from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 import Home from './pages';
 import SignUp from './pages/auth/SignUp';
 import EmailVerification from './pages/auth/EmailVerification';
@@ -10,6 +10,9 @@ import ResetPassword from './pages/auth/ResetPassword';
 import NotFound from './pages/error/NotFound';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
+import { useAppDispatch } from './store/hooks';
+import { setFlash } from './store/slices/authSlice';
+import { useQuery } from './utils/hooks';
 import { isReady, isSentEmail, isSignedIn } from './utils/auth';
 
 const GuestRoute = ({ ...rest }) => {
@@ -22,6 +25,18 @@ const AuthRoute = ({ ...rest }) => {
 };
 
 const Routes: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const history = useHistory();
+  const verified = useQuery().get('verified');
+
+  // 認証メールリンクからのリダイレクトの場合
+  useEffect(() => {
+    if (verified) {
+      dispatch(setFlash({ type: 'success', message: '認証に成功しました。' }));
+      history.push('/');
+    }
+  }, [dispatch, history, verified]);
+
   return (
     <Switch>
       <Route exact path='/' component={Home} />
