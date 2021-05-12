@@ -58,7 +58,7 @@ const EmailVerification: React.FC = () => {
       <Container component='main' maxWidth='sm'>
         <Card className={classes.paper} elevation={2}>
           <Box mb={4}>
-            <Typography variant='h3' component='h1'>
+            <Typography variant='h4' component='h1'>
               認証用メールを送信しました。
             </Typography>
           </Box>

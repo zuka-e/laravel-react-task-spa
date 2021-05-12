@@ -9,6 +9,7 @@ import {
   Divider,
   Container,
 } from '@material-ui/core';
+import { APP_NAME } from '../../config/app';
 import Loading from '../../layouts/Loading';
 import Header from '../../layouts/Header';
 import Footer from '../../layouts/Footer';
@@ -36,7 +37,7 @@ const Account: React.FC = () => {
   return (
     <React.Fragment>
       <Helmet>
-        <title>Account | Material Kit</title>
+        <title>Account | {APP_NAME}</title>
       </Helmet>
       <Header />
       <Container component='main' maxWidth='md'>
