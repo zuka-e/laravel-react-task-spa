@@ -3,12 +3,14 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import {
   API_HOST,
   FORGOT_PASSWORD_PATH,
-  GET_AUTH_USER_PATH,
+  AUTH_USER_PATH,
   GET_CSRF_TOKEN_PATH,
   RESET_PASSWORD_PATH,
   SIGNIN_PATH,
   SIGNOUT_PATH,
   SIGNUP_PATH,
+  UPDATE_PASSWORD_PATH,
+  UPDATE_USER_INFO_PATH,
   VERIFICATION_NOTIFICATION_PATH,
 } from '../../config/api';
 import { User } from '../../models/User';
@@ -29,7 +31,7 @@ type RejectWithValueType = {
 };
 
 export const createUser = createAsyncThunk<
-  void,
+  User,
   {
     name: string;
     email: string;
@@ -41,7 +43,7 @@ export const createUser = createAsyncThunk<
   const { email, password, password_confirmation } = payload;
   try {
     await authApiClient.get(GET_CSRF_TOKEN_PATH);
-    await authApiClient.post(
+    const response = await authApiClient.post(
       SIGNUP_PATH,
       {
         name: email,
@@ -51,7 +53,7 @@ export const createUser = createAsyncThunk<
       },
       { validateStatus: (status) => status === 201 }
     );
-    thunkApi.dispatch(fetchAuthUser()); // TODO: API側でUserを返却する
+    return response?.data?.user as User;
     // 正常時はステータスコード`201`, `response.data`なし
   } catch (e) {
     // ステータスコード 2xx 以外を`catch`
@@ -66,7 +68,10 @@ export const createUser = createAsyncThunk<
       });
     } // `authSlice`の`extraReducers`で`rejected`を呼び出す
     return thunkApi.rejectWithValue({
-      error: { data: error?.response?.data },
+      error: {
+        message: 'システムエラーが発生しました',
+        data: error?.response?.data,
+      },
     });
   }
 });
@@ -77,8 +82,8 @@ export const fetchAuthUser = createAsyncThunk<
   { rejectValue: RejectWithValueType }
 >('auth/fetchAuthUser', async (_, thunkApi) => {
   try {
-    const response = await authApiClient.get(GET_AUTH_USER_PATH);
-    return response?.data?.data as User;
+    const response = await authApiClient.get(AUTH_USER_PATH);
+    return response?.data?.user as User;
   } catch (e) {
     const error: AxiosError = e;
     return thunkApi.rejectWithValue({
@@ -105,13 +110,21 @@ export const sendEmailVerificationLink = createAsyncThunk<
       );
     }
     return thunkApi.rejectWithValue({
-      error: { data: error?.response?.data },
+      error: {
+        message: 'システムエラーが発生しました',
+        data: error?.response?.data,
+      },
     });
   }
 });
 
+type SignInResponse = {
+  user: User;
+  verified: true | undefined;
+};
+
 export const signInWithEmail = createAsyncThunk<
-  any,
+  SignInResponse,
   { email: string; password: string; remember: string | undefined },
   { rejectValue: RejectWithValueType }
 >('auth/signInWithEmail', async (payload, thunkApi) => {
@@ -123,7 +136,6 @@ export const signInWithEmail = createAsyncThunk<
       password,
       remember,
     });
-    thunkApi.dispatch(fetchAuthUser());
     return response?.data;
   } catch (e) {
     const error: AxiosError = e;
@@ -143,7 +155,81 @@ export const signInWithEmail = createAsyncThunk<
     }
     return thunkApi.rejectWithValue({
       error: {
-        message: error?.response?.data.message,
+        message: 'システムエラーが発生しました',
+        data: error?.response?.data,
+      },
+    });
+  }
+});
+
+export const updateProfile = createAsyncThunk<
+  { username: string; email: string },
+  { username: string; email: string },
+  { rejectValue: RejectWithValueType }
+>('auth/updateProfile', async (payload, thunkApi) => {
+  const { username, email } = payload;
+  try {
+    await authApiClient.put(UPDATE_USER_INFO_PATH, {
+      name: username,
+      email,
+    });
+    return { username, email };
+  } catch (e) {
+    const error: AxiosError = e;
+    if (error.response && [401, 419].includes(error.response.status)) {
+      thunkApi.dispatch(signOut());
+      thunkApi.dispatch(
+        setFlash({ type: 'error', message: 'ログインしてください' })
+      );
+    }
+    if (error.response?.status === 422) {
+      return thunkApi.rejectWithValue({
+        error: {
+          message: 'このメールアドレスは既に使用されています',
+          data: error.response.data,
+        },
+      });
+    }
+    return thunkApi.rejectWithValue({
+      error: {
+        message: 'システムエラーが発生しました',
+        data: error?.response?.data,
+      },
+    });
+  }
+});
+
+export const updatePassword = createAsyncThunk<
+  void,
+  { current_password: string; password: string; password_confirmation: string },
+  { rejectValue: RejectWithValueType }
+>('auth/updatePassword', async (payload, thunkApi) => {
+  const { current_password, password, password_confirmation } = payload;
+  try {
+    await authApiClient.put(UPDATE_PASSWORD_PATH, {
+      current_password,
+      password,
+      password_confirmation,
+    });
+  } catch (e) {
+    const error: AxiosError = e;
+    if (error.response && [401, 419].includes(error.response.status)) {
+      thunkApi.dispatch(signOut());
+      thunkApi.dispatch(
+        setFlash({ type: 'error', message: 'ログインしてください' })
+      );
+    }
+    if (error.response?.status === 422) {
+      return thunkApi.rejectWithValue({
+        error: {
+          message: 'パスワードが間違っています',
+          data: error.response.data,
+        },
+      });
+    }
+    return thunkApi.rejectWithValue({
+      error: {
+        message: 'システムエラーが発生しました',
         data: error?.response?.data,
       },
     });
@@ -174,7 +260,10 @@ export const forgotPassword = createAsyncThunk<
       });
     }
     return thunkApi.rejectWithValue({
-      error: { data: error?.response?.data },
+      error: {
+        message: 'システムエラーが発生しました',
+        data: error?.response?.data,
+      },
     });
   }
 });
@@ -210,7 +299,10 @@ export const resetPassword = createAsyncThunk<
       });
     }
     return thunkApi.rejectWithValue({
-      error: { data: error?.response?.data },
+      error: {
+        message: 'システムエラーが発生しました',
+        data: error?.response?.data,
+      },
     });
   }
 });
@@ -229,7 +321,35 @@ export const putSignOut = createAsyncThunk<
       thunkApi.dispatch(signOut());
     }
     return thunkApi.rejectWithValue({
-      error: { data: error?.response?.data },
+      error: {
+        message: 'システムエラーが発生しました',
+        data: error?.response?.data,
+      },
+    });
+  }
+});
+
+export const deleteAccount = createAsyncThunk<
+  any,
+  void,
+  { rejectValue: RejectWithValueType }
+>('auth/deleteAccount', async (_, thunkApi) => {
+  try {
+    await authApiClient.delete(AUTH_USER_PATH);
+  } catch (e) {
+    const error: AxiosError = e;
+    if (error.response && [401, 419].includes(error.response.status)) {
+      thunkApi.dispatch(signOut());
+      thunkApi.dispatch(
+        setFlash({ type: 'error', message: 'ログインしてください' })
+      );
+    }
+    setFlash({ type: 'error', message: 'システムエラーが発生しました' });
+    return thunkApi.rejectWithValue({
+      error: {
+        message: 'システムエラーが発生しました',
+        data: error?.response?.data,
+      },
     });
   }
 });
@@ -265,6 +385,7 @@ const authSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(createUser.fulfilled, (state, action) => {
+      state.user = action.payload;
       state.sentEmail = true;
       state.signedIn = true;
       state.loading = false;
@@ -315,12 +436,56 @@ const authSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(signInWithEmail.fulfilled, (state, action) => {
+      state.user = action.payload.user;
       state.signedIn = true;
       state.loading = false;
-      state.flash.push({ type: 'success', message: 'ログインしました' });
+      // 認証メールリンクからのリダイレクトの場合 `true`
+      action.payload.verified
+        ? state.flash.push({ type: 'success', message: '認証に成功しました' })
+        : state.flash.push({ type: 'info', message: 'ログインしました' });
     });
     builder.addCase(signInWithEmail.rejected, (state, action) => {
       state.signedIn = false;
+      state.loading = false;
+    });
+    builder.addCase(updateProfile.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(updateProfile.fulfilled, (state, action) => {
+      if (!state.user) return; // `null`を排除 (state.user?利用不可)
+
+      if (state.user.email !== action.payload.email) {
+        state.user.name = action.payload.username;
+        state.user.email = action.payload.email;
+        state.user.emailVerifiedAt = null;
+        state.flash.push({
+          type: 'info',
+          message: '認証用メールを送信しました',
+        });
+      } else {
+        state.user.name = action.payload.username;
+        state.user.email = action.payload.email;
+        state.flash.push({
+          type: 'success',
+          message: 'ユーザー情報を更新しました',
+        });
+      }
+      state.loading = false;
+    });
+    builder.addCase(updateProfile.rejected, (state, action) => {
+      state.loading = false;
+    });
+    builder.addCase(updatePassword.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(updatePassword.fulfilled, (state, action) => {
+      state.flash.push({
+        type: 'success',
+        message: 'パスワードを変更しました',
+      });
+      state.loading = false;
+    });
+    builder.addCase(updatePassword.rejected, (state, action) => {
       state.loading = false;
     });
     builder.addCase(forgotPassword.pending, (state, action) => {
@@ -360,6 +525,21 @@ const authSlice = createSlice({
     });
     builder.addCase(putSignOut.rejected, (state, action) => {
       state.signedIn = false;
+      state.loading = false;
+    });
+    builder.addCase(deleteAccount.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(deleteAccount.fulfilled, (state, action) => {
+      state.user = null;
+      state.signedIn = false;
+      state.loading = false;
+      state.flash.push({
+        type: 'warning',
+        message: 'アカウントは削除されました',
+      });
+    });
+    builder.addCase(deleteAccount.rejected, (state, action) => {
       state.loading = false;
     });
   },

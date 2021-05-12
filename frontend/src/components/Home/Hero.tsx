@@ -1,8 +1,8 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Container, Grid, Typography, Button, Box } from '@material-ui/core';
+import { Container, Grid, Typography, Box } from '@material-ui/core';
 import hero from '../../images/hero.svg';
+import HeroAction from './HeroAction';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -62,32 +62,7 @@ const Hero: React.FC = () => {
                 つれづれなるまゝに、日暮らし、硯にむかひて、心にうつりゆくよしなし事を、そこはかとなく書きつくれば、あやしうこそものぐるほしけれ。
               </Typography>
             </div>
-            <Grid container spacing={2}>
-              <Grid item>
-                <Button
-                  variant='contained'
-                  size='large'
-                  color='primary'
-                  component={RouterLink}
-                  to='/register'
-                  className={classes.buttonLink}
-                >
-                  始める
-                </Button>
-              </Grid>
-              <Grid item>
-                <Button
-                  variant='contained'
-                  size='large'
-                  color='secondary'
-                  component={RouterLink}
-                  to='/login'
-                  className={classes.buttonLink}
-                >
-                  ログイン
-                </Button>
-              </Grid>
-            </Grid>
+            <HeroAction />
           </Grid>
           <Grid item md={5} sm={10} xs={10}>
             <img src={hero} alt='hero' width='100%' height='100%' />
