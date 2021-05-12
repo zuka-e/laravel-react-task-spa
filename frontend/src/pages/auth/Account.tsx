@@ -8,6 +8,7 @@ import {
   CardHeader,
   Divider,
   Container,
+  Button,
 } from '@material-ui/core';
 import { APP_NAME } from '../../config/app';
 import Loading from '../../layouts/Loading';
@@ -16,6 +17,7 @@ import Footer from '../../layouts/Footer';
 import UserProfile from '../../components/Account/UserProfile';
 import Password from '../../components/Account/Password';
 import UserStatus from '../../components/Account/UserStatus';
+import DeleteAccountDialog from '../../components/Account/DeleteAccountDialog';
 import { useAuth } from '../../utils/hooks';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -24,6 +26,13 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(8),
       marginBottom: theme.spacing(8),
       padding: theme.spacing(3),
+    },
+    danger: {
+      color: theme.palette.primary.contrastText,
+      backgroundColor: theme.palette.error.main,
+      '&:hover': {
+        backgroundColor: theme.palette.error.dark,
+      },
     },
   })
 );
@@ -61,6 +70,19 @@ const Account: React.FC = () => {
             <Divider />
             <CardContent>
               <UserStatus />
+            </CardContent>
+          </Box>
+          <Box component='section' mb={3}>
+            <CardHeader title='Delete account' />
+            <Divider />
+            <CardContent>
+              <DeleteAccountDialog
+                trigger={
+                  <Button variant='contained' className={classes.danger}>
+                    アカウントを削除
+                  </Button>
+                }
+              />
             </CardContent>
           </Box>
         </Card>
