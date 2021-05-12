@@ -3,7 +3,7 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import {
   API_HOST,
   FORGOT_PASSWORD_PATH,
-  GET_AUTH_USER_PATH,
+  AUTH_USER_PATH,
   GET_CSRF_TOKEN_PATH,
   RESET_PASSWORD_PATH,
   SIGNIN_PATH,
@@ -82,7 +82,7 @@ export const fetchAuthUser = createAsyncThunk<
   { rejectValue: RejectWithValueType }
 >('auth/fetchAuthUser', async (_, thunkApi) => {
   try {
-    const response = await authApiClient.get(GET_AUTH_USER_PATH);
+    const response = await authApiClient.get(AUTH_USER_PATH);
     return response?.data?.user as User;
   } catch (e) {
     const error: AxiosError = e;
@@ -329,6 +329,31 @@ export const putSignOut = createAsyncThunk<
   }
 });
 
+export const deleteAccount = createAsyncThunk<
+  any,
+  void,
+  { rejectValue: RejectWithValueType }
+>('auth/deleteAccount', async (_, thunkApi) => {
+  try {
+    await authApiClient.delete(AUTH_USER_PATH);
+  } catch (e) {
+    const error: AxiosError = e;
+    if (error.response && [401, 419].includes(error.response.status)) {
+      thunkApi.dispatch(signOut());
+      thunkApi.dispatch(
+        setFlash({ type: 'error', message: 'ログインしてください' })
+      );
+    }
+    setFlash({ type: 'error', message: 'システムエラーが発生しました' });
+    return thunkApi.rejectWithValue({
+      error: {
+        message: 'システムエラーが発生しました',
+        data: error?.response?.data,
+      },
+    });
+  }
+});
+
 type AuthState = {
   user: User | null;
   sentEmail: boolean;
@@ -500,6 +525,21 @@ const authSlice = createSlice({
     });
     builder.addCase(putSignOut.rejected, (state, action) => {
       state.signedIn = false;
+      state.loading = false;
+    });
+    builder.addCase(deleteAccount.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(deleteAccount.fulfilled, (state, action) => {
+      state.user = null;
+      state.signedIn = false;
+      state.loading = false;
+      state.flash.push({
+        type: 'warning',
+        message: 'アカウントは削除されました',
+      });
+    });
+    builder.addCase(deleteAccount.rejected, (state, action) => {
       state.loading = false;
     });
   },

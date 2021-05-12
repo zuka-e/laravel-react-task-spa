@@ -8,8 +8,8 @@ export const SIGNUP_PATH = process.env.REACT_APP_SIGNUP_PATH || '/api/register';
 export const VERIFICATION_NOTIFICATION_PATH =
   process.env.REACT_APP_VERIFICATION_NOTIFICATION_PATH ||
   '/api/email/verification-notification';
-export const GET_AUTH_USER_PATH =
-  process.env.REACT_APP_GET_AUTH_USER_PATH || '/api/v1/users/auth';
+export const AUTH_USER_PATH =
+  process.env.REACT_APP_AUTH_USER_PATH || '/api/v1/users/auth';
 export const SIGNIN_PATH = process.env.REACT_APP_SIGNIN_PATH || '/api/login';
 export const UPDATE_USER_INFO_PATH =
   process.env.REACT_APP_UPDATE_USER_INFO_PATH ||
