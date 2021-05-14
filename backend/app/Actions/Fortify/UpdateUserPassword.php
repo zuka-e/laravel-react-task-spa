@@ -19,6 +19,8 @@ class UpdateUserPassword implements UpdatesUserPasswords
      */
     public function update($user, array $input)
     {
+        if ($user->email === env('GUEST_EMAIL')) abort(403);
+
         Validator::make($input, [
             'current_password' => ['required', 'string'],
             'password' => $this->passwordRules(),

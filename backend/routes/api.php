@@ -24,6 +24,10 @@ Route::group([
     'middleware' => 'auth:sanctum'
 ], function () {
     Route::get('/users/auth', fn () => new UserResource(Auth::user()));
+    Route::delete('/users/auth', function (Request $request) {
+        $request->user()->delete();
+        return response()->json([], 204);
+    });
     Route::middleware('verified')
         ->apiResource('users.task_cards', TaskCardController::class)
         ->only('index', 'show');

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\Http\Requests\VerifyEmailRequest;
 
 class VerifyEmailController extends Controller
@@ -19,7 +21,10 @@ class VerifyEmailController extends Controller
         // `email_verified_at`が存在する場合
         if ($request->user()->hasVerifiedEmail()) {
             return $request->wantsJson() // 認証リンク遷移後にログインした場合`true`
-                ? response()->json(['verified' => true])
+                ? response()->json([
+                    'user' => new UserResource(Auth::user()),
+                    'verified' => true
+                ])
                 : redirect()->intended(config('fortify.home') . '?verified=1');
         }
 
@@ -30,7 +35,10 @@ class VerifyEmailController extends Controller
 
         // 初回認証時
         return $request->wantsJson()
-            ? response()->json(['verified' => true])
+            ? response()->json([
+                'user' => new UserResource(Auth::user()),
+                'verified' => true
+            ])
             : redirect()->intended(config('fortify.home') . '?verified=1');
     }
 }
