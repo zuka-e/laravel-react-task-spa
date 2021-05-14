@@ -14,8 +14,13 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
-        if (! $request->expectsJson()) {
-            return route('login');
+        // 認証メールリンクからのリダイレクトに使用 (クエリパラメータは飾り)
+        if (!$request->expectsJson()) {
+            $path = $request->session()->get('url.intended');
+            $url = $path
+                ? url(env('SPA_URL') . '/login' . '?dest=' . $path)
+                : url(env('SPA_URL') . '/login');
+            return $url;
         }
     }
 }
