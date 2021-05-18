@@ -64,5 +64,8 @@
     "customize-cra": "^1.0.0",
     "msw": "^0.28.2",
     "react-app-rewired": "^2.1.8"
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }
