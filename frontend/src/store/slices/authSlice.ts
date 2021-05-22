@@ -30,14 +30,20 @@ type RejectWithValueType = {
   };
 };
 
+export type SignUpRequest = {
+  name: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+};
+
+export type SignUpResponse = {
+  user: User;
+};
+
 export const createUser = createAsyncThunk<
-  User,
-  {
-    name: string;
-    email: string;
-    password: string;
-    password_confirmation: string;
-  },
+  SignUpResponse,
+  SignUpRequest,
   { rejectValue: RejectWithValueType }
 >('auth/createUser', async (payload, thunkApi) => {
   const { email, password, password_confirmation } = payload;
@@ -53,7 +59,7 @@ export const createUser = createAsyncThunk<
       },
       { validateStatus: (status) => status === 201 }
     );
-    return response?.data?.user as User;
+    return response?.data as SignUpResponse;
     // 正常時はステータスコード`201`, `response.data`なし
   } catch (e) {
     // ステータスコード 2xx 以外を`catch`
@@ -76,14 +82,18 @@ export const createUser = createAsyncThunk<
   }
 });
 
+export type FetchAuthUserResponse = {
+  user: User;
+};
+
 export const fetchAuthUser = createAsyncThunk<
-  User,
+  FetchAuthUserResponse,
   void,
   { rejectValue: RejectWithValueType }
 >('auth/fetchAuthUser', async (_, thunkApi) => {
   try {
     const response = await authApiClient.get(AUTH_USER_PATH);
-    return response?.data?.user as User;
+    return response?.data as FetchAuthUserResponse;
   } catch (e) {
     const error: AxiosError = e;
     return thunkApi.rejectWithValue({
@@ -385,7 +395,7 @@ const authSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(createUser.fulfilled, (state, action) => {
-      state.user = action.payload;
+      state.user = action.payload.user;
       state.sentEmail = true;
       state.signedIn = true;
       state.loading = false;
@@ -402,7 +412,7 @@ const authSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(fetchAuthUser.fulfilled, (state, action) => {
-      state.user = action.payload;
+      state.user = action.payload.user;
       state.signedIn = true;
       state.loading = false;
     });
