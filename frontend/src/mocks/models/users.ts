@@ -1,3 +1,4 @@
+import { SignInRequest } from '../../store/slices/authSlice';
 import { User } from '../../models/User';
 import { GUEST_EMAIL, GUEST_PASSWORD } from '../utils/const';
 import { digestText } from '../utils/hash';
@@ -24,6 +25,20 @@ export const addUser = (userData: UsersSchema) => {
 
   usersData[uuid] = userData;
   users.push(sanitizeUser(userData));
+};
+
+export const authenticate = (request: SignInRequest) => {
+  const { email, password } = request;
+  const session_id = digestText(email);
+  const uuid = digestText(session_id);
+  const digestRequestPassword = digestText(password);
+  const user = usersData[uuid];
+  const digestPassword = user?.password;
+
+  if (digestRequestPassword === digestPassword) {
+    return { ...user, session_id };
+  }
+  throw Error('422: パスワードかメールアドレスが間違っています');
 };
 
 // `localStorage` 読み書き

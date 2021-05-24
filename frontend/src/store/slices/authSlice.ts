@@ -128,14 +128,20 @@ export const sendEmailVerificationLink = createAsyncThunk<
   }
 });
 
-type SignInResponse = {
+export type SignInResponse = {
   user: User;
   verified: true | undefined;
 };
 
+export type SignInRequest = {
+  email: string;
+  password: string;
+  remember: string | undefined;
+};
+
 export const signInWithEmail = createAsyncThunk<
   SignInResponse,
-  { email: string; password: string; remember: string | undefined },
+  SignInRequest,
   { rejectValue: RejectWithValueType }
 >('auth/signInWithEmail', async (payload, thunkApi) => {
   const { email, password, remember } = payload;

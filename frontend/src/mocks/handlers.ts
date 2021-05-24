@@ -3,16 +3,20 @@ import {
   API_HOST,
   AUTH_USER_PATH,
   GET_CSRF_TOKEN_PATH,
+  SIGNIN_PATH,
   SIGNUP_PATH,
 } from '../config/api';
 import {
   FetchAuthUserResponse,
+  SignInRequest,
+  SignInResponse,
   SignUpRequest,
   SignUpResponse,
 } from '../store/slices/authSlice';
 import { User } from '../models/User';
 import {
   addUser,
+  authenticate,
   sanitizeUser,
   saveUser,
   users,
@@ -78,6 +82,28 @@ export const handlers = [
       const user = userData ? sanitizeUser(userData) : null;
 
       return res(ctx.status(statusCode), ctx.json({ user: user as User }));
+    }
+  ),
+
+  rest.post<SignInRequest, SignInResponse, RequestParams>(
+    API_HOST + SIGNIN_PATH,
+    (req, res, ctx) => {
+      try {
+        const authenticatedUser = authenticate(req.body);
+        return res(
+          ctx.status(200),
+          ctx.cookie('session_id', authenticatedUser.session_id, {
+            httpOnly: true,
+          }),
+          ctx.json({
+            user: authenticatedUser,
+            verified: undefined,
+          } as SignInResponse)
+        );
+      } catch (e) {
+        console.log(e);
+        return res(ctx.status(422));
+      }
     }
   ),
 ];
