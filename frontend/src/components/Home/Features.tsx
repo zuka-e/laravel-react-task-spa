@@ -46,6 +46,15 @@ const useStyles = makeStyles((theme: Theme) =>
 const Features: React.FC = () => {
   const classes = useStyles();
 
+  const basename = (filename: string) => {
+    const startIndex =
+      filename.lastIndexOf('/') !== -1 ? filename.lastIndexOf('/') + 1 : 0;
+    const endIndex =
+      filename.indexOf('.') !== -1 ? filename.indexOf('.') : filename.length;
+
+    return filename.slice(startIndex, endIndex);
+  };
+
   const FeaturesLayout: React.FC<{
     children: React.ReactNode;
     image: string;
@@ -53,7 +62,7 @@ const Features: React.FC = () => {
   }> = ({ children, image, title }) => (
     <Grid item md={4} sm={9} xs={11}>
       <Box className={classes.feature}>
-        <img src={image} alt={image} width='100%' height='100%' />
+        <img src={image} alt={basename(image)} width='100%' height='100%' />
         <Typography variant='h3' component='h2' className={classes.title}>
           {title}
         </Typography>

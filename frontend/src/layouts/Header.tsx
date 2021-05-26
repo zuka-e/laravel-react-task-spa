@@ -31,8 +31,8 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(2),
     },
     buttonLink: {
-      color: 'inherit',
       '&:hover': {
+        color: theme.palette.primary.contrastText,
         textDecoration: 'none',
       },
     },
@@ -47,34 +47,34 @@ const Header: React.FC = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
 
-  const toggleDrawer = (open: boolean) => (
-    event: React.KeyboardEvent | React.MouseEvent
-  ) => {
-    if (
-      event?.type === 'keydown' &&
-      ((event as React.KeyboardEvent).key === 'Tab' ||
-        (event as React.KeyboardEvent).key === 'Shift')
-    )
-      return;
-    setOpen(open);
-  };
+  const toggleDrawer =
+    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event?.type === 'keydown' &&
+        ((event as React.KeyboardEvent).key === 'Tab' ||
+          (event as React.KeyboardEvent).key === 'Shift')
+      )
+        return;
+      setOpen(open);
+    };
 
   const SignInLinkButton = () => (
-    <Link to={'/login'} className={classes.buttonLink}>
-      <Button
-        variant='contained'
-        color='secondary'
-        startIcon={<AccountCircleIcon />}
-      >
-        {'ログイン'}
-      </Button>
-    </Link>
+    <Button
+      component={Link}
+      to='/login'
+      variant='contained'
+      color='secondary'
+      startIcon={<AccountCircleIcon />}
+      className={classes.buttonLink}
+    >
+      {'ログイン'}
+    </Button>
   );
 
   const AccountMenuButton = () => (
     <PopoverControl
       trigger={
-        <IconButton>
+        <IconButton aria-label='account-menu'>
           <Avatar alt='avatar' src={undefined} className={classes.pink}>
             {<PersonIcon />}
           </Avatar>

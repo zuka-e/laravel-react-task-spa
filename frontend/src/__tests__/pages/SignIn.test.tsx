@@ -140,7 +140,7 @@ describe('SignIn', () => {
   describe('After authenticated', () => {
     it('should display the username on the account menu', () => {
       // `Header`部 `AccountMenuButton`ボタン
-      userEvent.click(screen.getByRole('button', { name: '' }));
+      userEvent.click(screen.getByRole('button', { name: 'account-menu' }));
       expect(screen.getByRole('button', { name: GUEST_NAME })).toBeVisible();
       expect(isSignedIn()).toBeTruthy();
     });

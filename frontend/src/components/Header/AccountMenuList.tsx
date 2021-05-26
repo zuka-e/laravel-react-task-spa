@@ -29,7 +29,7 @@ const AccountMenuList: React.FC = () => {
   };
 
   return (
-    <List component='nav' aria-label='sign-out' className={classes.root}>
+    <List component='nav' aria-label='account-menu' className={classes.root}>
       <ListItem button onClick={() => history.push('/account')}>
         <ListItemIcon>
           <AccountCircleIcon />
