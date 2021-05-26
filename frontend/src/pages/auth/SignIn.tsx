@@ -30,10 +30,6 @@ const useStyles = makeStyles((theme: Theme) =>
     link: {
       color: theme.palette.info.dark,
     },
-    divider: {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(2),
-    },
   })
 );
 
@@ -125,7 +121,9 @@ const SignIn: React.FC = () => {
           <Button size='small' onClick={() => history.push('/forgot-password')}>
             <span className={classes.link}>Forgot password?</span>
           </Button>
-          <Divider className={classes.divider} />
+          <Box mt={1} mb={2}>
+            <Divider />
+          </Box>
           <Grid container justify='flex-end'>
             <Grid item>
               New to {APP_NAME}?&nbsp;

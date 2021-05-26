@@ -23,10 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
     link: {
       color: theme.palette.info.dark,
     },
-    divider: {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(2),
-    },
   })
 );
 
@@ -125,7 +121,9 @@ const ResetPassword: React.FC = () => {
           <Box mt={4} mb={3}>
             <SubmitButton fullWidth>Reset Password</SubmitButton>
           </Box>
-          <Divider className={classes.divider} />
+          <Box mt={1} mb={2}>
+            <Divider />
+          </Box>
           <Grid container justify='flex-end'>
             <Grid item>
               <Button size='small' onClick={() => history.push('/')}>
