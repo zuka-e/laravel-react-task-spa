@@ -162,6 +162,14 @@ export const signInWithEmail = createAsyncThunk<
           data: error.response.data,
         },
       });
+    } else if (error.response?.status === 429) {
+      return thunkApi.rejectWithValue({
+        error: {
+          message:
+            '所定回数を超えて誤った入力が行われたため、アクセスを制限しております',
+          data: error.response.data,
+        },
+      });
     } // 認証用メールから遷移して、認証リンクが無効だった場合
     else if (error.response?.status === 403) {
       thunkApi.dispatch(fetchAuthUser());
@@ -561,11 +569,7 @@ const authSlice = createSlice({
   },
 });
 
-export const {
-  setFlash,
-  deleteSentEmailState,
-  signIn,
-  signOut,
-} = authSlice.actions;
+export const { setFlash, deleteSentEmailState, signIn, signOut } =
+  authSlice.actions;
 
 export default authSlice;
