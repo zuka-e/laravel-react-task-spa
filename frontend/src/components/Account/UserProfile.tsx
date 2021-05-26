@@ -5,7 +5,7 @@ import * as yup from 'yup';
 import { Box, Grid, TextField } from '@material-ui/core';
 import { User } from '../../models/User';
 import { useAppDispatch } from '../../store/hooks';
-import { updateProfile } from 'store/thunks/updateProfile';
+import { updateProfile } from 'store/thunks';
 import AlertMessage from '../../templates/AlertMessge';
 import SubmitButton from '../../templates/SubmitButton';
 import { isGuest } from '../../utils/auth';

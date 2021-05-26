@@ -2,16 +2,18 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { User } from 'models/User';
 import { FlashNotificationProps } from 'layouts/FlashNotification';
-import { createUser } from 'store/thunks/createUser';
-import { fetchAuthUser } from 'store/thunks/fetchAuthUser';
-import { sendEmailVerificationLink } from 'store/thunks/sendEmailVerificationLink';
-import { signInWithEmail } from 'store/thunks/signInWithEmail';
-import { updateProfile } from 'store/thunks/updateProfile';
-import { updatePassword } from 'store/thunks/updatePassword';
-import { forgotPassword } from 'store/thunks/forgotPassoword';
-import { resetPassword } from 'store/thunks/resetPassword';
-import { putSignOut } from 'store/thunks/putSignOut';
-import { deleteAccount } from 'store/thunks/deleteAccount';
+import {
+  createUser,
+  fetchAuthUser,
+  sendEmailVerificationLink,
+  signInWithEmail,
+  updateProfile,
+  updatePassword,
+  forgotPassword,
+  resetPassword,
+  putSignOut,
+  deleteAccount,
+} from 'store/thunks';
 
 type AuthState = {
   user: User | null;

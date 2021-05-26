@@ -8,7 +8,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { TextField, Button, Divider, Grid } from '@material-ui/core';
 import { APP_NAME } from '../../config/app';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { forgotPassword } from 'store/thunks/forgotPassoword';
+import { forgotPassword } from 'store/thunks';
 import FormLayout from '../../layouts/FormLayout';
 
 const useStyles = makeStyles((theme: Theme) =>

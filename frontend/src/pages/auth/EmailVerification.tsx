@@ -8,7 +8,7 @@ import Footer from '../../layouts/Footer';
 import { APP_NAME } from '../../config/app';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { deleteSentEmailState } from 'store/slices/authSlice';
-import { sendEmailVerificationLink } from 'store/thunks/sendEmailVerificationLink';
+import { sendEmailVerificationLink } from 'store/thunks';
 import { isSentEmail, isVerified } from '../../utils/auth';
 
 const useStyles = makeStyles((theme: Theme) =>

@@ -1,5 +1,5 @@
 import store from '../store';
-import { fetchAuthUser } from 'store/thunks/fetchAuthUser';
+import { fetchAuthUser } from 'store/thunks';
 import { localStorageKeys, localStorageValues } from './const';
 
 export const isReady = () => {

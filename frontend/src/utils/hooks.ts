@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { User } from '../models/User';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { fetchAuthUser } from 'store/thunks/fetchAuthUser';
+import { fetchAuthUser } from 'store/thunks';
 
 // クエリパラメータ用カスタムフック
 export const useQuery = () => new URLSearchParams(useLocation().search);
