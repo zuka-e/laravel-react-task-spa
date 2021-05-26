@@ -137,7 +137,7 @@ describe('Sign Up', () => {
     userEvent.type(passwordConfirmationField, password);
     userEvent.click(submit);
 
-    // `FlashMessage`
+    // `FlashNotification`
     expect(await screen.findByRole('alert')).toBeVisible();
     expect(screen.getByText(/ユーザー登録が完了しました/i)).toBeVisible();
 

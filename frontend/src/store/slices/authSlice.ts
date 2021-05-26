@@ -14,7 +14,7 @@ import {
   VERIFICATION_NOTIFICATION_PATH,
 } from '../../config/api';
 import { User } from '../../models/User';
-import { FlashMessageProps } from '../../templates/FlashMessage';
+import { FlashNotificationProps } from 'layouts/FlashNotification';
 
 // `store`の利用不可、それを利用した関数も同様 (以下のエラー発生)
 // TypeError: Cannot read property 'reducer' of undefined
@@ -383,14 +383,14 @@ type AuthState = {
   sentEmail: boolean;
   signedIn: boolean;
   loading: boolean;
-  flash: FlashMessageProps[];
+  flash: FlashNotificationProps[];
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState: { flash: [{}] } as AuthState,
   reducers: {
-    setFlash(state, action: PayloadAction<FlashMessageProps>) {
+    setFlash(state, action: PayloadAction<FlashNotificationProps>) {
       const { type, message } = action.payload;
       state.flash.push({ type, message });
     },
