@@ -8,19 +8,17 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { TextField, Button, Divider, Grid, Box } from '@material-ui/core';
 import { APP_NAME } from '../../config/app';
 import { useQuery } from 'utils/hooks';
-import { useAppDispatch, useAppSelector } from 'utils/hooks';
+import { useAppDispatch } from 'utils/hooks';
 import { signInWithEmail, resetPassword } from 'store/thunks';
 import FormLayout from '../../layouts/FormLayout';
 import LabeledCheckbox from '../../templates/LabeledCheckbox';
+import SubmitButton from 'templates/SubmitButton';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     form: {
       width: '100%', // Fix IE 11 issue.
       marginTop: theme.spacing(3),
-    },
-    submit: {
-      margin: theme.spacing(3, 0, 2),
     },
     link: {
       color: theme.palette.info.dark,
@@ -55,7 +53,6 @@ const ResetPassword: React.FC = () => {
   const token = query.get('token') || '';
   const email = query.get('email') || '';
   const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.auth);
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const {
@@ -125,16 +122,9 @@ const ResetPassword: React.FC = () => {
               Show Password
             </LabeledCheckbox>
           </Box>
-          <Button
-            disabled={loading}
-            type='submit'
-            fullWidth
-            variant='contained'
-            color='primary'
-            className={classes.submit}
-          >
-            Reset Password
-          </Button>
+          <Box mt={4} mb={3}>
+            <SubmitButton fullWidth>Reset Password</SubmitButton>
+          </Box>
           <Divider className={classes.divider} />
           <Grid container justify='flex-end'>
             <Grid item>

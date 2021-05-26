@@ -15,19 +15,17 @@ import {
   Box,
 } from '@material-ui/core';
 import { APP_NAME } from '../../config/app';
-import { useAppDispatch, useAppSelector } from 'utils/hooks';
+import { useAppDispatch } from 'utils/hooks';
 import { signInWithEmail } from 'store/thunks';
 import FormLayout from '../../layouts/FormLayout';
 import LabeledCheckbox from '../../templates/LabeledCheckbox';
+import SubmitButton from 'templates/SubmitButton';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     form: {
       width: '100%', // Fix IE 11 issue.
       marginTop: theme.spacing(3),
-    },
-    submit: {
-      margin: theme.spacing(3, 0, 2),
     },
     link: {
       color: theme.palette.info.dark,
@@ -55,7 +53,6 @@ const schema = yup.object().shape({
 const SignIn: React.FC = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.auth);
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const history = useHistory();
@@ -122,16 +119,9 @@ const SignIn: React.FC = () => {
             }
             label='Remember me'
           />
-          <Button
-            disabled={loading}
-            type='submit'
-            fullWidth
-            variant='contained'
-            color='primary'
-            className={classes.submit}
-          >
-            Sign In
-          </Button>
+          <Box mt={4} mb={3}>
+            <SubmitButton fullWidth> Sign In</SubmitButton>
+          </Box>
           <Button size='small' onClick={() => history.push('/forgot-password')}>
             <span className={classes.link}>Forgot password?</span>
           </Button>

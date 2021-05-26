@@ -7,19 +7,17 @@ import * as yup from 'yup';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { TextField, Button, Divider, Grid, Box } from '@material-ui/core';
 import { APP_NAME } from '../../config/app';
-import { useAppDispatch, useAppSelector } from 'utils/hooks';
+import { useAppDispatch } from 'utils/hooks';
 import { createUser } from 'store/thunks';
 import FormLayout from '../../layouts/FormLayout';
 import LabeledCheckbox from '../../templates/LabeledCheckbox';
+import SubmitButton from 'templates/SubmitButton';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     form: {
       width: '100%', // Fix IE 11 issue.
       marginTop: theme.spacing(3),
-    },
-    submit: {
-      margin: theme.spacing(3, 0, 2),
     },
     link: {
       color: theme.palette.info.dark,
@@ -52,7 +50,6 @@ const SignUp: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.auth);
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const {
@@ -127,16 +124,9 @@ const SignUp: React.FC = () => {
               Show Password
             </LabeledCheckbox>
           </Box>
-          <Button
-            disabled={loading}
-            type='submit'
-            fullWidth
-            variant='contained'
-            color='primary'
-            className={classes.submit}
-          >
-            Create an account
-          </Button>
+          <Box mt={4} mb={3}>
+            <SubmitButton fullWidth> Create an account</SubmitButton>
+          </Box>
           <Divider className={classes.divider} />
           <Grid container justify='flex-end'>
             <Grid item>
