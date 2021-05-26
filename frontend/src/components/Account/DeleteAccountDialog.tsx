@@ -14,6 +14,7 @@ import { deleteAccount } from '../../store/slices/authSlice';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    triggerWrapper: { display: 'contents' },
     danger: {
       color: theme.palette.primary.contrastText,
       backgroundColor: theme.palette.error.main,
@@ -49,7 +50,9 @@ const DeleteAccountDialog: React.FC<DeleteAccountDialogProps> = (props) => {
 
   return (
     <React.Fragment>
-      <Box onClick={handleClickOpen}>{trigger}</Box>
+      <Box onClick={handleClickOpen} className={classes.triggerWrapper}>
+        {trigger}
+      </Box>
       <Dialog
         open={open}
         onClose={handleClose}
