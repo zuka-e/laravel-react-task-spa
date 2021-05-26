@@ -7,7 +7,7 @@ import {
   ExitToApp as ExitToAppIcon,
 } from '@material-ui/icons';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { putSignOut } from 'store/thunks';
+import { signOutFromAPI } from 'store/thunks';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,7 +25,7 @@ const AccountMenuList: React.FC = () => {
   const history = useHistory();
 
   const handleSignOut = () => {
-    dispatch(putSignOut());
+    dispatch(signOutFromAPI());
   };
 
   return (

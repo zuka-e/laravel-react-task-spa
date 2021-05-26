@@ -11,7 +11,7 @@ import {
   updatePassword,
   forgotPassword,
   resetPassword,
-  putSignOut,
+  signOutFromAPI,
   deleteAccount,
 } from 'store/thunks';
 
@@ -175,16 +175,16 @@ const authSlice = createSlice({
     builder.addCase(resetPassword.rejected, (state, action) => {
       state.loading = false;
     });
-    builder.addCase(putSignOut.pending, (state, action) => {
+    builder.addCase(signOutFromAPI.pending, (state, action) => {
       state.loading = true;
     });
-    builder.addCase(putSignOut.fulfilled, (state, action) => {
+    builder.addCase(signOutFromAPI.fulfilled, (state, action) => {
       state.user = null;
       state.signedIn = false;
       state.loading = false;
       state.flash.push({ type: 'success', message: 'ログアウトしました' });
     });
-    builder.addCase(putSignOut.rejected, (state, action) => {
+    builder.addCase(signOutFromAPI.rejected, (state, action) => {
       state.signedIn = false;
       state.loading = false;
     });

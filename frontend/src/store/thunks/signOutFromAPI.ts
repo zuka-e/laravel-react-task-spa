@@ -6,11 +6,11 @@ import { signOut } from 'store/slices/authSlice';
 import { authApiClient } from './utils/api';
 import { RejectWithValueType } from '.';
 
-export const putSignOut = createAsyncThunk<
+export const signOutFromAPI = createAsyncThunk<
   void,
   void,
   { rejectValue: RejectWithValueType }
->('auth/putSignOut', async (_, thunkApi) => {
+>('auth/signOutFromAPI', async (_, thunkApi) => {
   try {
     // status(response): ログイン状態によらず`204` 認証切れなら`419`
     await authApiClient.post(SIGNOUT_PATH);
@@ -28,4 +28,4 @@ export const putSignOut = createAsyncThunk<
   }
 });
 
-export default putSignOut;
+export default signOutFromAPI;
