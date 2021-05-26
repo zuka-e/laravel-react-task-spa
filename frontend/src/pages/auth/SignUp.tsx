@@ -5,18 +5,12 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import {
-  TextField,
-  Checkbox,
-  FormControlLabel,
-  Button,
-  Divider,
-  Grid,
-} from '@material-ui/core';
+import { TextField, Button, Divider, Grid, Box } from '@material-ui/core';
 import { APP_NAME } from '../../config/app';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { createUser } from '../../store/slices/authSlice';
 import FormLayout from '../../layouts/FormLayout';
+import LabeledCheckbox from '../../templates/LabeledCheckbox';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,12 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     link: {
       color: theme.palette.info.dark,
-    },
-    textFieldLabel: {
-      // marginTop: theme.spacing(-1),
-      marginBottom: theme.spacing(2),
-      marginLeft: 0,
-      color: theme.palette.text.hint,
     },
     divider: {
       marginTop: theme.spacing(1),
@@ -75,10 +63,6 @@ const SignUp: React.FC = () => {
     mode: 'onChange', // バリデーション判定タイミング
     resolver: yupResolver(schema),
   });
-
-  const handleVisiblePassword = () => {
-    setVisiblePassword(!visiblePassword);
-  };
 
   // エラー発生時はメッセージを表示する
   const onSubmit = async (data: FormData) => {
@@ -135,20 +119,14 @@ const SignUp: React.FC = () => {
             }
             error={!!errors?.password_confirmation}
           />
-          <div>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  size='small'
-                  color='primary'
-                  checked={visiblePassword}
-                  onChange={handleVisiblePassword}
-                />
-              }
-              className={classes.textFieldLabel}
-              label='Show Password'
-            />
-          </div>
+          <Box ml={1} mb={2}>
+            <LabeledCheckbox
+              state={visiblePassword}
+              setState={setVisiblePassword}
+            >
+              Show Password
+            </LabeledCheckbox>
+          </Box>
           <Button
             disabled={loading}
             type='submit'
