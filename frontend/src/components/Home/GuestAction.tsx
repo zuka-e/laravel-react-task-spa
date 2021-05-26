@@ -4,7 +4,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Button, List, ListItem } from '@material-ui/core';
 import { Menu as MenuIcon } from '@material-ui/icons';
 import PopoverControl from '../../templates/PopoverControl';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch } from '../../utils/hooks/useAppDipatch';
 import { createUser, signInWithEmail } from 'store/thunks';
 
 const useStyles = makeStyles((theme: Theme) =>

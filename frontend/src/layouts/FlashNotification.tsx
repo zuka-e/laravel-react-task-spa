@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+
 import Snackbar from '@material-ui/core/Snackbar';
 import { Alert, Color } from '@material-ui/lab';
-import { useAppSelector } from 'store/hooks';
+
+import { useAppSelector } from 'utils/hooks';
 
 export type FlashNotificationProps = {
   type: Color;

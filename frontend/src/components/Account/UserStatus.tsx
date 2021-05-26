@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Button, Grid } from '@material-ui/core';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch } from '../../utils/hooks/useAppDipatch';
 import { sendEmailVerificationLink } from 'store/thunks';
 import AlertMessage from '../../templates/AlertMessge';
 import { isVerified } from '../../utils/auth';

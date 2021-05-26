@@ -10,7 +10,7 @@ import ResetPassword from './pages/auth/ResetPassword';
 import NotFound from './pages/error/NotFound';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
-import { useAppDispatch } from './store/hooks';
+import { useAppDispatch } from './utils/hooks/useAppDipatch';
 import { setFlash } from './store/slices/authSlice';
 import { useQuery } from './utils/hooks';
 import { isReady, isSentEmail, isSignedIn } from './utils/auth';

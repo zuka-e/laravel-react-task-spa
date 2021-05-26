@@ -9,7 +9,7 @@ import {
   DialogContentText,
   Button,
 } from '@material-ui/core';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch } from '../../utils/hooks/useAppDipatch';
 import { deleteAccount } from 'store/thunks';
 
 const useStyles = makeStyles((theme: Theme) =>

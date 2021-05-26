@@ -18,7 +18,7 @@ import UserProfile from '../../components/Account/UserProfile';
 import Password from '../../components/Account/Password';
 import UserStatus from '../../components/Account/UserStatus';
 import DeleteAccountDialog from '../../components/Account/DeleteAccountDialog';
-import { useAuth } from '../../utils/hooks';
+import { useAuth } from '../../utils/hooks/useAuth';
 import { isGuest } from '../../utils/auth';
 
 const useStyles = makeStyles((theme: Theme) =>

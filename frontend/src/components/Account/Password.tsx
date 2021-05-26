@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Box, Grid, TextField } from '@material-ui/core';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch } from '../../utils/hooks/useAppDipatch';
 import { updatePassword } from 'store/thunks';
 import LabeledCheckbox from '../../templates/LabeledCheckbox';
 import AlertMessage from '../../templates/AlertMessge';

@@ -6,7 +6,7 @@ import {
   AccountCircle as AccountCircleIcon,
   ExitToApp as ExitToAppIcon,
 } from '@material-ui/icons';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { signOutFromAPI } from 'store/thunks';
 
 const useStyles = makeStyles((theme: Theme) =>

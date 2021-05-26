@@ -6,7 +6,7 @@ import { Container, Card, Box, Typography, Button } from '@material-ui/core';
 import Header from '../../layouts/Header';
 import Footer from '../../layouts/Footer';
 import { APP_NAME } from '../../config/app';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { deleteSentEmailState } from 'store/slices/authSlice';
 import { sendEmailVerificationLink } from 'store/thunks';
 import { isSentEmail, isVerified } from '../../utils/auth';

@@ -15,7 +15,7 @@ import {
   Box,
 } from '@material-ui/core';
 import { APP_NAME } from '../../config/app';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { signInWithEmail } from 'store/thunks';
 import FormLayout from '../../layouts/FormLayout';
 import LabeledCheckbox from '../../templates/LabeledCheckbox';

@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
+
 import Routes from './Routes';
 import Loading from './layouts/Loading';
 import FlashNotification from './layouts/FlashNotification';
 import { initializeAuthState, isReady } from './utils/auth';
-import { useAppSelector } from './store/hooks';
+import { useAppSelector } from './utils/hooks';
 
 const App: React.FC = () => {
   const { signedIn, loading } = useAppSelector((state) => state.auth);

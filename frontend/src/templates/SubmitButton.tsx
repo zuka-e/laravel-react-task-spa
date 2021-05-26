@@ -1,5 +1,6 @@
 import { Button } from '@material-ui/core';
-import { useAppSelector } from '../store/hooks';
+
+import { useAppSelector } from 'utils/hooks';
 
 type SubmitButtonProps = {
   variant?: 'text' | 'outlined' | 'contained';
