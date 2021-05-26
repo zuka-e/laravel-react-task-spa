@@ -9,7 +9,8 @@ import { TextField, Button, Divider, Grid, Box } from '@material-ui/core';
 import { APP_NAME } from '../../config/app';
 import { useQuery } from '../../utils/hooks';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { resetPassword, signInWithEmail } from '../../store/slices/authSlice';
+import { signInWithEmail } from 'store/thunks/signInWithEmail';
+import { resetPassword } from 'store/thunks/resetPassword';
 import FormLayout from '../../layouts/FormLayout';
 import LabeledCheckbox from '../../templates/LabeledCheckbox';
 

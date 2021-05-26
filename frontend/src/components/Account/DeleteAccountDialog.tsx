@@ -10,7 +10,7 @@ import {
   Button,
 } from '@material-ui/core';
 import { useAppDispatch } from '../../store/hooks';
-import { deleteAccount } from '../../store/slices/authSlice';
+import { deleteAccount } from 'store/thunks/deleteAccount';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

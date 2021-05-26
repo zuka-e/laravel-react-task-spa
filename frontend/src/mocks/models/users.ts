@@ -1,4 +1,4 @@
-import { SignInRequest } from '../../store/slices/authSlice';
+import { SignInRequest } from 'store/thunks/signInWithEmail';
 import { User } from '../../models/User';
 import { GUEST_EMAIL, GUEST_PASSWORD } from '../utils/const';
 import { digestText } from '../utils/hash';

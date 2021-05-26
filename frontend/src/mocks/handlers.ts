@@ -6,13 +6,9 @@ import {
   SIGNIN_PATH,
   SIGNUP_PATH,
 } from '../config/api';
-import {
-  FetchAuthUserResponse,
-  SignInRequest,
-  SignInResponse,
-  SignUpRequest,
-  SignUpResponse,
-} from '../store/slices/authSlice';
+import { FetchAuthUserResponse } from 'store/thunks/fetchAuthUser';
+import { SignInRequest, SignInResponse } from 'store/thunks/signInWithEmail';
+import { SignUpRequest, SignUpResponse } from 'store/thunks/createUser';
 import { User } from '../models/User';
 import {
   addUser,

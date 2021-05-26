@@ -7,7 +7,7 @@ import {
   ExitToApp as ExitToAppIcon,
 } from '@material-ui/icons';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { putSignOut } from '../../store/slices/authSlice';
+import { putSignOut } from 'store/thunks/putSignOut';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
