@@ -19,6 +19,7 @@ import Password from '../../components/Account/Password';
 import UserStatus from '../../components/Account/UserStatus';
 import DeleteAccountDialog from '../../components/Account/DeleteAccountDialog';
 import { useAuth } from '../../utils/hooks';
+import { isGuest } from '../../utils/auth';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -78,7 +79,11 @@ const Account: React.FC = () => {
             <CardContent>
               <DeleteAccountDialog
                 trigger={
-                  <Button variant='contained' className={classes.danger}>
+                  <Button
+                    disabled={isGuest()}
+                    variant='contained'
+                    className={classes.danger}
+                  >
                     アカウントを削除
                   </Button>
                 }
