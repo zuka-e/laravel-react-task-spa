@@ -9,9 +9,9 @@ import {
   Box,
   Grid,
 } from '@material-ui/core';
-import { Alert, AlertTitle } from '@material-ui/lab';
 import { APP_NAME } from '../config/app';
 import logo from '../images/logo_short.svg';
+import AlertMessage from '../templates/AlertMessge';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
     },
     logo: {
+      marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
       width: theme.spacing(10),
       height: theme.spacing(10),
@@ -49,18 +50,11 @@ const FormLayout: React.FC<FormLayoutProps> = (props) => {
   const { children, title, message } = props;
   const classes = useStyles();
 
-  const ErrorMessage = () => (
-    <Alert className={classes.errorBox} severity='error' elevation={2}>
-      <AlertTitle>Error</AlertTitle>
-      {message}
-    </Alert>
-  );
-
   return (
     <React.Fragment>
       <Container component='main' maxWidth='xs'>
         <Card className={classes.paper} elevation={2}>
-          {message && <ErrorMessage />}
+          {message && <AlertMessage severity='error' body={message} />}
           <Avatar
             className={classes.logo}
             src={logo}
