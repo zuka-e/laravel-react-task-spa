@@ -5,11 +5,11 @@ import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 
-import store from '../../store';
-import { isSentEmail, isSignedIn } from '../../utils/auth';
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import Routes from '../../Routes';
-import App from '../../App';
+import { isSentEmail, isSignedIn } from 'utils/auth';
+import store from 'store';
+import Routes from 'Routes';
+import App from 'App';
 
 describe('Sign Up', () => {
   const newEmail = 'test' + GUEST_EMAIL;

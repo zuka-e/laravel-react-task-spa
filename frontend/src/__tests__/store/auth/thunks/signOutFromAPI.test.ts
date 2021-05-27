@@ -1,4 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
+
+import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import authSlice, { signIn } from 'store/slices/authSlice';
 import {
   fetchAuthUser,
@@ -6,7 +8,6 @@ import {
   signInWithEmail,
   signOutFromAPI,
 } from 'store/thunks';
-import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 
 describe('Sign out from API', () => {
   const initializedStore = () =>

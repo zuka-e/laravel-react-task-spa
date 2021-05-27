@@ -1,8 +1,8 @@
-import { SignInRequest } from 'store/thunks/signInWithEmail';
-import { User } from '../../models/User';
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import { digestText } from '../utils/hash';
-import { load, save } from '../utils/storage';
+import { SignInRequest } from 'store/thunks/signInWithEmail';
+import { User } from 'models/User';
+import { digestText } from 'mocks/utils/hash';
+import { load, save } from 'mocks/utils/storage';
 
 export type UsersSchema = User & { password: string };
 

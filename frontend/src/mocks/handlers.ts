@@ -1,4 +1,5 @@
 import { DefaultRequestBody, RequestParams, rest } from 'msw';
+
 import {
   API_HOST,
   AUTH_USER_PATH,
@@ -6,7 +7,7 @@ import {
   SIGNIN_PATH,
   SIGNOUT_PATH,
   SIGNUP_PATH,
-} from '../config/api';
+} from 'config/api';
 import {
   SignUpRequest,
   SignUpResponse,
@@ -14,7 +15,7 @@ import {
   SignInRequest,
   SignInResponse,
 } from 'store/thunks';
-import { User } from '../models/User';
+import { User } from 'models/User';
 import {
   addUser,
   authenticate,

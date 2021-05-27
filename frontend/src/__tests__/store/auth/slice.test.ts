@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+
 import authSlice, {
   deleteSentEmailState,
   setFlash,

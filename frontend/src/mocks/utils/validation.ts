@@ -1,4 +1,4 @@
-import { users } from '../models/users';
+import { users } from 'mocks/models/users';
 
 export const hasValidToken = (requestToken: string) => {
   const sessionToken = sessionStorage.getItem('token');

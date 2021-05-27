@@ -1,14 +1,15 @@
 import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
 import { Provider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async';
-import { isSignedIn } from '../../utils/auth';
-import { GUEST_NAME, GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import store from '../../store';
-import App from '../../App';
-import { APP_NAME } from '../../config/app';
 import { MemoryRouter } from 'react-router-dom';
-import Routes from '../../Routes';
+
+import { APP_NAME, GUEST_NAME, GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
+import { isSignedIn } from 'utils/auth';
+import store from 'store';
+import Routes from 'Routes';
+import App from 'App';
 
 describe('SignIn', () => {
   const signInFormName = new RegExp('Sign in to ' + APP_NAME, 'i');
