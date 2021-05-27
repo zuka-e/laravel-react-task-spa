@@ -26,7 +26,13 @@ import {
   UsersSchema,
 } from './models/users';
 import { digestText } from './utils/hash';
-import { hasValidToken, isUniqueEmail } from './utils/validation';
+import {
+  CSRF_TOKEN,
+  XSRF_TOKEN,
+  X_XSRF_TOKEN,
+  hasValidToken,
+  isUniqueEmail,
+} from './utils/validation';
 
 // HTTPメソッドとリクエストパス(第一引数)を指定し、`Request handler`を生成
 // リクエストに対応するレスポンスのモックを`Response resolver`により作成
@@ -35,7 +41,7 @@ export const handlers = [
   rest.post<SignUpRequest, SignUpResponse, RequestParams>(
     API_HOST + SIGNUP_PATH,
     (req, res, ctx) => {
-      const token = req.headers.get('X-XSRF-TOKEN');
+      const token = req.headers.get(X_XSRF_TOKEN);
       const { email, password } = req.body;
 
       // token mismatch error
@@ -68,8 +74,8 @@ export const handlers = [
   rest.get(API_HOST + GET_CSRF_TOKEN_PATH, (_req, res, ctx) => {
     const randomString = Math.random().toString(36).substring(2, 15);
     const token = digestText(randomString);
-    sessionStorage.setItem('token', token);
-    return res(ctx.cookie('XSRF-TOKEN', token));
+    sessionStorage.setItem(CSRF_TOKEN, token);
+    return res(ctx.cookie(XSRF_TOKEN, token));
   }),
 
   rest.get<DefaultRequestBody, FetchAuthUserResponse, RequestParams>(
@@ -111,13 +117,13 @@ export const handlers = [
 
   rest.post(API_HOST + SIGNOUT_PATH, (req, res, ctx) => {
     const { session_id } = req.cookies;
-    const token = req.headers.get('X-XSRF-TOKEN');
+    const token = req.headers.get(X_XSRF_TOKEN);
 
     if (!session_id) return res(ctx.status(401));
 
     if (!token || !hasValidToken(token)) return res(ctx.status(419));
 
-    sessionStorage.removeItem('token');
+    sessionStorage.removeItem(CSRF_TOKEN);
     return res(ctx.status(204), ctx.cookie('session_id', ''));
   }),
 ];
