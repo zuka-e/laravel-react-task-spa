@@ -15,7 +15,7 @@ import {
   deleteAccount,
 } from 'store/thunks';
 
-type AuthState = {
+export type AuthState = {
   user: User | null;
   sentEmail: boolean;
   signedIn: boolean;
@@ -23,9 +23,11 @@ type AuthState = {
   flash: FlashNotificationProps[];
 };
 
+export const initialAuthState = { flash: [{}] } as AuthState;
+
 const authSlice = createSlice({
   name: 'auth',
-  initialState: { flash: [{}] } as AuthState,
+  initialState: initialAuthState,
   reducers: {
     setFlash(state, action: PayloadAction<FlashNotificationProps>) {
       const { type, message } = action.payload;
