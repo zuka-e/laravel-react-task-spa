@@ -6,6 +6,7 @@ import { Menu as MenuIcon } from '@material-ui/icons';
 import PopoverControl from '../../templates/PopoverControl';
 import { useAppDispatch } from '../../utils/hooks/useAppDipatch';
 import { createUser, signInWithEmail } from 'store/thunks';
+import { makeEmail } from 'utils/generator';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,15 +20,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const makeEmail = () => {
-  const username =
-    Math.random().toString(36).substring(2, 15) +
-    Math.random().toString(36).substring(2, 15);
-  const domain = 'example.com';
-  const email = username + '@' + domain;
-  return email;
-};
-
 const GuestAction: React.FC = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
@@ -39,15 +31,15 @@ const GuestAction: React.FC = () => {
   const handleGuestSignUp = () => {
     if (!password) return;
 
+    const user = {
+      name: 'ゲストユーザー',
+      email: makeEmail(),
+      password: password,
+      password_confirmation: password,
+    };
+
     history.push('/register'); // メール送信ページを表示するため
-    dispatch(
-      createUser({
-        name: 'ゲストユーザー',
-        email: makeEmail(),
-        password: password,
-        password_confirmation: password,
-      })
-    );
+    dispatch(createUser(user));
   };
 
   const handleGuestSignIn = () => {
