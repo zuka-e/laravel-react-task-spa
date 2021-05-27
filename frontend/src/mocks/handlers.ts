@@ -4,6 +4,7 @@ import {
   AUTH_USER_PATH,
   GET_CSRF_TOKEN_PATH,
   SIGNIN_PATH,
+  SIGNOUT_PATH,
   SIGNUP_PATH,
 } from '../config/api';
 import {
@@ -106,4 +107,16 @@ export const handlers = [
       }
     }
   ),
+
+  rest.post(API_HOST + SIGNOUT_PATH, (req, res, ctx) => {
+    const { session_id } = req.cookies;
+    const token = req.headers.get('X-XSRF-TOKEN');
+
+    if (!session_id) return res(ctx.status(401));
+
+    if (!token || !hasValidToken(token)) return res(ctx.status(419));
+
+    sessionStorage.removeItem('token');
+    return res(ctx.status(204), ctx.cookie('session_id', ''));
+  }),
 ];

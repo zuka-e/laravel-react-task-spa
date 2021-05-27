@@ -17,7 +17,7 @@ export type SignInResponse = {
 export type SignInRequest = {
   email: string;
   password: string;
-  remember: string | undefined;
+  remember?: string;
 };
 
 export const signInWithEmail = createAsyncThunk<
