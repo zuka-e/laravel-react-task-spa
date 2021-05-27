@@ -1,6 +1,6 @@
 import { SignInRequest } from 'store/thunks/signInWithEmail';
 import { User } from '../../models/User';
-import { GUEST_EMAIL, GUEST_PASSWORD } from '../utils/const';
+import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import { digestText } from '../utils/hash';
 import { load, save } from '../utils/storage';
 

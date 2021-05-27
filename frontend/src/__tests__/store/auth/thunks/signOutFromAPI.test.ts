@@ -6,7 +6,7 @@ import {
   signInWithEmail,
   signOutFromAPI,
 } from 'store/thunks';
-import { GUEST_EMAIL, GUEST_PASSWORD } from 'mocks/utils/const';
+import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 
 describe('Sign out from API', () => {
   const initializedStore = () =>

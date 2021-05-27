@@ -7,7 +7,7 @@ import { HelmetProvider } from 'react-helmet-async';
 
 import store from '../../store';
 import { isSentEmail, isSignedIn } from '../../utils/auth';
-import { GUEST_EMAIL, GUEST_PASSWORD } from '../../mocks/utils/const';
+import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import Routes from '../../Routes';
 import App from '../../App';
 

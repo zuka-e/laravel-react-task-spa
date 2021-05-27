@@ -3,11 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async';
 import { isSignedIn } from '../../utils/auth';
-import {
-  GUEST_EMAIL,
-  GUEST_NAME,
-  GUEST_PASSWORD,
-} from '../../mocks/utils/const';
+import { GUEST_NAME, GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import store from '../../store';
 import App from '../../App';
 import { APP_NAME } from '../../config/app';
