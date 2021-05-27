@@ -7,7 +7,6 @@ import { authApiClient } from './utils/api';
 import { RejectWithValueType } from '.';
 
 export type SignUpRequest = {
-  name: string;
   email: string;
   password: string;
   password_confirmation: string;
@@ -27,28 +26,22 @@ export const createUser = createAsyncThunk<
     await authApiClient.get(GET_CSRF_TOKEN_PATH);
     const response = await authApiClient.post(
       SIGNUP_PATH,
-      {
-        name: email,
-        email,
-        password,
-        password_confirmation,
-      },
+      { name: email, email, password, password_confirmation },
       { validateStatus: (status) => status === 201 }
     );
     return response?.data as SignUpResponse;
-    // 正常時はステータスコード`201`, `response.data`なし
+    // ステータスコード 201 以外を`catch`
   } catch (e) {
-    // ステータスコード 2xx 以外を`catch`
     const error: AxiosError = e; // cast the error for access
     if (error.response?.status === 422) {
+      // 他のバリデーションはフロントエンドで実施
       return thunkApi.rejectWithValue({
         error: {
-          // 他のバリデーションはフロントエンドで実施
           message: 'このメールアドレスは既に使用されています',
           data: error.response.data,
         },
       });
-    } // `authSlice`の`extraReducers`で`rejected`を呼び出す
+    } // `Slice`の`extraReducers`の`rejected`を呼び出す
     return thunkApi.rejectWithValue({
       error: {
         message: 'システムエラーが発生しました',

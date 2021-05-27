@@ -50,7 +50,6 @@ describe('authSlice reducers', () => {
   describe('deleteSentEmailState', () => {
     const password = generateRandomString();
     const createdUser: SignUpRequest = {
-      name: 'username',
       email: makeEmail(),
       password,
       password_confirmation: password,
@@ -59,7 +58,7 @@ describe('authSlice reducers', () => {
     const getSentEmailState = () => store.getState().auth.sentEmail;
 
     it('should update a`deleteSentEmailState`state to false', async () => {
-      // `true`の状態を用意する
+      // `true`の状態を用意する (手段は`createUser`のみ)
       expect(getSentEmailState()).toEqual(undefined);
       await store.dispatch(createUser(createdUser));
       expect(getSentEmailState()).toBeTruthy();
