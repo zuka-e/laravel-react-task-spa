@@ -82,7 +82,11 @@ export const handlers = [
     API_HOST + AUTH_USER_PATH,
     (req, res, ctx) => {
       const { session_id } = req.cookies;
+      const token = req.headers.get(X_XSRF_TOKEN);
+
       if (!session_id) return res(ctx.status(401));
+
+      if (!token || !hasValidToken(token)) return res(ctx.status(419));
 
       const uuid = digestText(session_id);
       const userData = usersData[uuid];
