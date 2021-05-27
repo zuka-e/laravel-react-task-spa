@@ -1,36 +1,32 @@
-import { configureStore } from '@reduxjs/toolkit';
-
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import authSlice, { signIn } from 'store/slices/authSlice';
+import { signIn } from 'store/slices/authSlice';
 import {
   fetchAuthUser,
   SignInRequest,
   signInWithEmail,
   signOutFromAPI,
 } from 'store/thunks';
+import { initializeStore, store } from 'mocks/utils/store';
+import {
+  getFlashState,
+  getUserState,
+  isSignedIn,
+} from 'mocks/utils/store/auth';
 
-describe('Sign out from API', () => {
-  const initializedStore = () =>
-    configureStore({ reducer: { auth: authSlice.reducer } });
-
-  let store = initializedStore();
-
-  const isSignedIn = () => store.getState().auth.signedIn;
-  const getUserState = () => store.getState().auth.user;
-
+describe('Logout thunk', () => {
   beforeEach(() => {
-    store = initializedStore();
+    initializeStore();
   });
 
   it('should throw an error without a session', async () => {
     // `store`によるログイン状態を用意する
     store.dispatch(signIn());
-    expect(isSignedIn()).toBeTruthy();
+    expect(isSignedIn(store)).toBeTruthy();
     // dispatch
     const response = await store.dispatch(signOutFromAPI());
     expect(signOutFromAPI.rejected.match(response)).toBeTruthy();
-    expect(isSignedIn()).toBeFalsy();
-    expect(isSignedIn()).not.toEqual(undefined);
+    expect(isSignedIn(store)).toBeFalsy();
+    expect(isSignedIn(store)).not.toEqual(undefined);
   });
 
   it('should sign out successfully with a session', async () => {
@@ -44,12 +40,18 @@ describe('Sign out from API', () => {
     const fetchAuthUserResponse = await store.dispatch(fetchAuthUser());
     expect(fetchAuthUser.fulfilled.match(fetchAuthUserResponse)).toBeTruthy();
     // ログアウト前の`store`を確認
-    expect(isSignedIn()).toBeTruthy();
-    expect(getUserState()).toBeTruthy();
+    expect(isSignedIn(store)).toBeTruthy();
+    expect(getUserState(store)).toBeTruthy();
     // dispatch
     const signOutResponse = await store.dispatch(signOutFromAPI());
     expect(signOutFromAPI.fulfilled.match(signOutResponse)).toBeTruthy();
-    expect(isSignedIn()).toBeFalsy();
-    expect(isSignedIn()).not.toEqual(undefined);
+
+    // state更新
+    expect(isSignedIn(store)).toBeFalsy();
+    expect(isSignedIn(store)).not.toEqual(undefined);
+    expect(getUserState(store)).toEqual(null);
+    expect(getFlashState(store).slice(-1)[0].message).toEqual(
+      'ログアウトしました'
+    );
   });
 });
