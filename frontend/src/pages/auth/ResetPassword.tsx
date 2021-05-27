@@ -69,9 +69,7 @@ const ResetPassword: React.FC = () => {
       setMessage(response.payload?.error?.message);
     } else {
       // 認証成功時は自動ログイン
-      dispatch(
-        signInWithEmail({ email, password: data.password, remember: undefined })
-      );
+      dispatch(signInWithEmail({ email, password: data.password }));
     }
   };
 

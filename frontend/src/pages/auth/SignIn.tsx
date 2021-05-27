@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
 type FormData = {
   email: string;
   password: string;
-  remember: string | undefined;
+  remember?: string;
 };
 
 // The schema-based form validation with Yup

@@ -44,7 +44,7 @@ const GuestAction: React.FC = () => {
 
   const handleGuestSignIn = () => {
     if (!email || !password) return;
-    dispatch(signInWithEmail({ email, password, remember: undefined }));
+    dispatch(signInWithEmail({ email, password }));
   };
 
   return (
