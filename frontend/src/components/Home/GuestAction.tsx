@@ -7,6 +7,7 @@ import PopoverControl from '../../templates/PopoverControl';
 import { useAppDispatch } from '../../utils/hooks/useAppDipatch';
 import { createUser, signInWithEmail } from 'store/thunks';
 import { makeEmail } from 'utils/generator';
+import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,17 +26,12 @@ const GuestAction: React.FC = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
 
-  const email = process.env.REACT_APP_GUEST_EMAIL;
-  const password = process.env.REACT_APP_GUEST_PASSWORD;
-
   const handleGuestSignUp = () => {
-    if (!password) return;
-
     const user = {
       name: 'ゲストユーザー',
       email: makeEmail(),
-      password: password,
-      password_confirmation: password,
+      password: GUEST_PASSWORD,
+      password_confirmation: GUEST_PASSWORD,
     };
 
     history.push('/register'); // メール送信ページを表示するため
@@ -43,7 +39,8 @@ const GuestAction: React.FC = () => {
   };
 
   const handleGuestSignIn = () => {
-    if (!email || !password) return;
+    const email = GUEST_EMAIL;
+    const password = GUEST_PASSWORD;
     dispatch(signInWithEmail({ email, password }));
   };
 
