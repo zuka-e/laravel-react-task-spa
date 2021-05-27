@@ -1,27 +1,17 @@
-import store from '../store';
+import store from 'store';
 import { fetchAuthUser } from 'store/thunks';
+import { GUEST_EMAIL } from 'config/app';
 import { localStorageKeys, localStorageValues } from './const';
 
-export const isReady = () => {
-  return store.getState().auth.signedIn !== undefined;
-};
+export const isReady = () => store.getState().auth.signedIn !== undefined;
 
-export const isSignedIn = () => {
-  return store.getState().auth.signedIn;
-};
+export const isSignedIn = () => store.getState().auth.signedIn;
 
-export const isSentEmail = () => {
-  return store.getState().auth.sentEmail;
-};
+export const isSentEmail = () => store.getState().auth.sentEmail;
 
-export const isVerified = () => {
-  return !!store.getState().auth.user?.emailVerifiedAt;
-};
+export const isVerified = () => !!store.getState().auth.user?.emailVerifiedAt;
 
-export const isGuest = () => {
-  const guestEmail = process.env.REACT_APP_GUEST_EMAIL;
-  return store.getState().auth.user?.email === guestEmail;
-};
+export const isGuest = () => store.getState().auth.user?.email === GUEST_EMAIL;
 
 // store`signedIn`更新時に実行すること -> `useEffect`
 export const initializeAuthState = () => {
