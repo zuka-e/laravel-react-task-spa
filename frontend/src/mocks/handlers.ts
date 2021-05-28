@@ -18,15 +18,14 @@ import {
 } from 'store/thunks';
 import { User } from 'models/User';
 import {
-  addUser,
   authenticate,
   isUniqueEmail,
   sanitizeUser,
-  saveUser,
   users,
   usersData,
   UsersSchema,
 } from './models/user';
+import * as userController from './controllers/userController';
 import { digestText } from './utils/hash';
 import {
   CSRF_TOKEN,
@@ -64,8 +63,7 @@ export const handlers = [
         password: digestText(password),
       };
 
-      addUser(newUser);
-      saveUser();
+      userController.store(newUser);
       return res(
         ctx.status(201),
         ctx.cookie('session_id', session_id, { httpOnly: true }),
