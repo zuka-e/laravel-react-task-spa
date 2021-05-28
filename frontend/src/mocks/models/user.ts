@@ -26,6 +26,9 @@ export const addUser = (userData: UsersSchema) => {
   users.push(sanitizeUser(userData));
 };
 
+export const isUniqueEmail = (email: string) =>
+  users.filter((user) => user.email === email).length === 0;
+
 export const authenticate = (request: SignInRequest) => {
   const { email, password } = request;
   const session_id = digestText(email);

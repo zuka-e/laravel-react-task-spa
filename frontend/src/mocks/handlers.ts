@@ -20,6 +20,7 @@ import { User } from 'models/User';
 import {
   addUser,
   authenticate,
+  isUniqueEmail,
   sanitizeUser,
   saveUser,
   users,
@@ -32,7 +33,6 @@ import {
   XSRF_TOKEN,
   X_XSRF_TOKEN,
   hasValidToken,
-  isUniqueEmail,
 } from './utils/validation';
 
 import './data';
