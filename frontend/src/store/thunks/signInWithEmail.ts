@@ -11,7 +11,7 @@ import { RejectWithValueType } from '.';
 
 export type SignInResponse = {
   user: User;
-  verified: true | undefined;
+  verified?: true;
 };
 
 export type SignInRequest = {

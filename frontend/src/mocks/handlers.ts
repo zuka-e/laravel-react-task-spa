@@ -100,22 +100,15 @@ export const handlers = [
   rest.post<SignInRequest, SignInResponse, RequestParams>(
     API_HOST + SIGNIN_PATH,
     (req, res, ctx) => {
-      try {
-        const authenticatedUser = authenticate(req.body);
-        return res(
-          ctx.status(200),
-          ctx.cookie('session_id', authenticatedUser.session_id, {
-            httpOnly: true,
-          }),
-          ctx.json({
-            user: authenticatedUser,
-            verified: undefined,
-          } as SignInResponse)
-        );
-      } catch (e) {
-        console.log(e);
-        return res(ctx.status(422));
-      }
+      const user = authenticate(req.body);
+
+      if (!user) return res(ctx.status(422));
+
+      return res(
+        ctx.status(200),
+        ctx.cookie('session_id', user.session_id, { httpOnly: true }),
+        ctx.json({ user: user, verified: undefined } as SignInResponse)
+      );
     }
   ),
 

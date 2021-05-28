@@ -37,8 +37,7 @@ export const authenticate = (request: SignInRequest) => {
 
   if (digestRequestPassword === digestPassword) {
     return { ...user, session_id };
-  }
-  throw Error('422: パスワードかメールアドレスが間違っています');
+  } else return false;
 };
 
 // `localStorage` 読み書き
