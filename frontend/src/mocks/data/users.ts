@@ -6,7 +6,7 @@ import {
   saveUser,
   usersData,
   UsersSchema,
-} from 'mocks/models/users';
+} from 'mocks/models/user';
 import { digestText } from 'mocks/utils/hash';
 import { exists } from 'mocks/utils/data';
 

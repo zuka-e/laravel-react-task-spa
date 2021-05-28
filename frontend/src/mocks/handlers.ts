@@ -25,7 +25,7 @@ import {
   users,
   usersData,
   UsersSchema,
-} from './models/users';
+} from './models/user';
 import { digestText } from './utils/hash';
 import {
   CSRF_TOKEN,

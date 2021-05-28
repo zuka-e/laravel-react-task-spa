@@ -1,4 +1,4 @@
-import { users } from 'mocks/models/users';
+import { users } from 'mocks/models/user';
 
 export const CSRF_TOKEN = 'csrf-token'; // session
 export const XSRF_TOKEN = 'XSRF-TOKEN'; // cookie
