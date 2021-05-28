@@ -3,7 +3,6 @@ import { AxiosError } from 'axios';
 
 import { AUTH_USER_PATH } from 'config/api';
 
-import { setFlash, signOut } from 'store/slices/authSlice';
 import { authApiClient } from './utils/api';
 import { RejectWithValueType } from '.';
 
@@ -16,6 +15,8 @@ export const deleteAccount = createAsyncThunk<
     await authApiClient.delete(AUTH_USER_PATH);
   } catch (e) {
     const error: AxiosError = e;
+    const { setFlash, signOut } = await import('store/slices/authSlice');
+
     if (error.response && [401, 419].includes(error.response.status)) {
       thunkApi.dispatch(signOut());
       thunkApi.dispatch(

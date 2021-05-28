@@ -2,7 +2,6 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError, AxiosResponse } from 'axios';
 
 import { VERIFICATION_NOTIFICATION_PATH } from 'config/api';
-import { setFlash, signOut } from 'store/slices/authSlice';
 import { authApiClient } from './utils/api';
 import { RejectWithValueType } from '.';
 
@@ -17,6 +16,8 @@ export const sendEmailVerificationLink = createAsyncThunk<
     return response.status;
   } catch (e) {
     const error: AxiosError = e;
+    const { setFlash, signOut } = await import('store/slices/authSlice');
+
     if (error.response && [401, 419].includes(error.response.status)) {
       thunkApi.dispatch(signOut());
       thunkApi.dispatch(

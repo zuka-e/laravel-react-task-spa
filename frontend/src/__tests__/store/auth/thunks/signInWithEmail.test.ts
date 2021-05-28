@@ -1,5 +1,4 @@
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import { initialAuthState } from 'store/slices/authSlice';
 import { SignInRequest, signInWithEmail } from 'store/thunks';
 import { initializeStore, store } from 'mocks/utils/store';
 import {
@@ -11,10 +10,6 @@ import {
 describe('Thunk authenticating user with email', () => {
   beforeEach(() => {
     initializeStore();
-  });
-
-  it('executes import before store/thunks', () => {
-    expect(initialAuthState).toBeTruthy();
   });
 
   it('should throw an error with a wrong input', async () => {

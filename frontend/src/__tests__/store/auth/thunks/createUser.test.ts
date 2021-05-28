@@ -1,5 +1,4 @@
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import { initialAuthState } from 'store/slices/authSlice';
 import { createUser, SignUpRequest } from 'store/thunks';
 import { makeEmail } from 'utils/generator';
 import { initializeStore, store } from 'mocks/utils/store';
@@ -50,8 +49,9 @@ describe('Registration thunk', () => {
     expect(getUserState(store)?.name).toEqual(newUser.email);
     expect(isSentEmail(store)).toBeTruthy();
     expect(isSignedIn(store)).toBeTruthy();
-    expect(getFlashState(store).length).toEqual(
-      initialAuthState.flash.length + 1
-    );
+    expect(getFlashState(store).slice(-1)[0]).toEqual({
+      type: 'success',
+      message: 'ユーザー登録が完了しました',
+    });
   });
 });

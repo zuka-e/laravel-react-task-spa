@@ -4,7 +4,6 @@ import { AxiosError } from 'axios';
 
 import { GET_CSRF_TOKEN_PATH, SIGNIN_PATH } from 'config/api';
 import { User } from 'models/User';
-import { setFlash } from 'store/slices/authSlice';
 import { authApiClient } from './utils/api';
 import { fetchAuthUser } from './fetchAuthUser';
 import { RejectWithValueType } from '.';
@@ -36,6 +35,8 @@ export const signInWithEmail = createAsyncThunk<
     return response?.data;
   } catch (e) {
     const error: AxiosError = e;
+    const { setFlash } = await import('store/slices/authSlice');
+
     if (error.response?.status === 422) {
       return thunkApi.rejectWithValue({
         error: {
