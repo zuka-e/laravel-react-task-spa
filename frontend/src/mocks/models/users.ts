@@ -1,8 +1,7 @@
-import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import { SignInRequest } from 'store/thunks/signInWithEmail';
 import { User } from 'models/User';
 import { digestText } from 'mocks/utils/hash';
-import { load, save } from 'mocks/utils/storage';
+import { load, save } from 'mocks/utils/data';
 
 export type UsersSchema = User & { password: string };
 
@@ -43,28 +42,3 @@ export const authenticate = (request: SignInRequest) => {
 // `localStorage` 読み書き
 export const saveUser = () => save('usersData', usersData);
 export const loadUser = () => load(usersData, 'usersData');
-
-export const initialize = () => {
-  loadUser();
-  if (Object.keys(usersData).length > 0) return;
-
-  const guestUser: UsersSchema = {
-    id: 1,
-    name: 'ゲストユーザー',
-    email: GUEST_EMAIL,
-    emailVerifiedAt: new Date(),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    password: digestText(GUEST_PASSWORD),
-  };
-
-  addUser(guestUser);
-  saveUser();
-};
-
-// 初期化実行
-try {
-  initialize();
-} catch (error) {
-  console.log(error); // ignore json parse error
-}

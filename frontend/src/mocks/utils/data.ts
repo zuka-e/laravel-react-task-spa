@@ -6,3 +6,5 @@ export const load = (data: object, key: string) => {
   const storedData = localStorage.getItem(key) || '{}';
   Object.assign(data, JSON.parse(storedData));
 };
+
+export const exists = (data: object) => Object.keys(data).length > 0;
