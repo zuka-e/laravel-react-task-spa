@@ -1,9 +1,8 @@
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import { User } from 'models/User';
-import { usersData, UsersSchema } from 'mocks/models/user';
-import { store } from 'mocks/controllers/userController';
+import { sanitizeUser, users, usersData, UsersSchema } from 'mocks/models/user';
 import { digestText } from 'mocks/utils/hash';
-import { exists, load } from 'mocks/utils/data';
+import { exists, load, save } from 'mocks/utils/data';
 
 export const guestUser: User = {
   id: 1,
@@ -36,7 +35,13 @@ const initialize = () => {
   initialUsers.forEach((user) => {
     const password = digestText(GUEST_PASSWORD);
     const userData: UsersSchema = { ...user, password };
-    store(userData);
+    const session_id = digestText(userData.email);
+    const uuid = digestText(session_id);
+
+    usersData[uuid] = userData;
+    users.push(sanitizeUser(userData));
+
+    save('usersData', userData);
   });
 };
 

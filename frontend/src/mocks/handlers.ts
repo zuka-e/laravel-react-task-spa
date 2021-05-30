@@ -21,9 +21,7 @@ import {
   authenticate,
   isUniqueEmail,
   sanitizeUser,
-  users,
   usersData,
-  UsersSchema,
 } from './models/user';
 import * as userController from './controllers/userController';
 import { digestText } from './utils/hash';
@@ -44,7 +42,7 @@ export const handlers = [
     API_HOST + SIGNUP_PATH,
     (req, res, ctx) => {
       const token = req.headers.get(X_XSRF_TOKEN);
-      const { email, password } = req.body;
+      const { email } = req.body;
 
       // token mismatch error
       if (!token || !hasValidToken(token)) return res(ctx.status(419));
@@ -52,22 +50,13 @@ export const handlers = [
       // validation error
       if (!isUniqueEmail(email)) return res(ctx.status(422));
 
+      const response = userController.store(req.body);
       const session_id = digestText(email);
-      const newUser: UsersSchema = {
-        id: users.length + 1,
-        name: email,
-        email,
-        emailVerifiedAt: null,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        password: digestText(password),
-      };
 
-      userController.store(newUser);
       return res(
         ctx.status(201),
         ctx.cookie('session_id', session_id, { httpOnly: true }),
-        ctx.json({ user: newUser } as SignUpResponse)
+        ctx.json(response)
       );
     }
   ),
