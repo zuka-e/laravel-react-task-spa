@@ -18,12 +18,7 @@ import {
 } from 'store/thunks';
 import { User } from 'models/User';
 import { generateRandomString } from 'utils/generator';
-import {
-  authenticate,
-  isUniqueEmail,
-  sanitizeUser,
-  usersData,
-} from './models/user';
+import { sanitizeUser } from './models/user';
 import * as userController from './controllers/userController';
 import { encrypt, decrypt, digestText } from './utils/crypto';
 import {
@@ -31,9 +26,10 @@ import {
   XSRF_TOKEN,
   X_XSRF_TOKEN,
   hasValidToken,
+  isUniqueEmail,
+  authenticate,
 } from './utils/validation';
-
-import './data';
+import { usersData } from './data';
 
 // HTTPメソッドとリクエストパス(第一引数)を指定し、`Request handler`を生成
 // リクエストに対応するレスポンスのモックを`Response resolver`により作成
