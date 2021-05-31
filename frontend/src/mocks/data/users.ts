@@ -1,6 +1,6 @@
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import { User } from 'models/User';
-import { UsersDataType, UsersSchema } from 'mocks/models/user';
+import { collection, UserDocument } from 'mocks/models';
 import { digestText } from 'mocks/utils/crypto';
 import { exists, load, save } from 'mocks/utils/data';
 
@@ -22,26 +22,23 @@ export const unverifiedUser: User = {
   updatedAt: new Date(),
 };
 
-export const usersData: UsersDataType = {};
-
 const initialUsers: User[] = [guestUser, unverifiedUser];
 
 const initialize = () => {
   try {
-    load(usersData, 'usersData');
+    load(collection.users, 'users');
   } catch (e) {
     console.log(e); // ignore SyntaxError at JSON.parse
   }
-  if (exists(usersData)) return;
+  if (exists(collection.users)) return;
 
   initialUsers.forEach((user) => {
     const password = digestText(GUEST_PASSWORD);
-    const userData: UsersSchema = { ...user, password };
+    const userDoc: UserDocument = { ...user, password };
     const uuid = String(user.id);
 
-    usersData[uuid] = userData;
-
-    save('usersData', userData);
+    collection.users[uuid] = userDoc;
+    save('users', userDoc);
   });
 };
 

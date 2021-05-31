@@ -1,10 +1,10 @@
 import { User } from 'models/User';
 
-export type UsersSchema = User & { password: string };
+export type UserDocument = User & { password: string };
 
-export type UsersDataType = { [uuid: string]: UsersSchema };
+export type UsersCollection = { [uuid: string]: UserDocument };
 
-export const sanitizeUser = (userData: UsersSchema): User => {
-  const { password, ...rest } = userData;
+export const sanitizeUser = (userDoc: UserDocument): User => {
+  const { password, ...rest } = userDoc;
   return rest;
 };

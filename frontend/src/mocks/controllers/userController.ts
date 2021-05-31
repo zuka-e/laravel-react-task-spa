@@ -1,12 +1,12 @@
-import { sanitizeUser, UsersSchema } from 'mocks/models/user';
-import { usersData } from 'mocks/data/users';
+import { sanitizeUser, UserDocument } from 'mocks/models/user';
+import { collection } from 'mocks/models';
 import { digestText } from 'mocks/utils/crypto';
 import { SignUpRequest, SignUpResponse } from 'store/thunks';
 import { save } from 'mocks/utils/data';
 
 export const store = (request: SignUpRequest): SignUpResponse => {
-  const newUserData: UsersSchema = {
-    id: Object.values(usersData).length + 1,
+  const newUserDoc: UserDocument = {
+    id: Object.values(collection.users).length + 1,
     name: request.email,
     email: request.email,
     emailVerifiedAt: null,
@@ -14,11 +14,11 @@ export const store = (request: SignUpRequest): SignUpResponse => {
     updatedAt: new Date(),
     password: digestText(request.password),
   };
-  const uuid = String(newUserData.id);
+  const uuid = String(newUserDoc.id);
 
-  usersData[uuid] = newUserData;
+  collection.users[uuid] = newUserDoc;
 
-  save('usersData', usersData);
+  save('users', collection.users);
 
-  return { user: sanitizeUser(newUserData) };
+  return { user: sanitizeUser(newUserDoc) };
 };

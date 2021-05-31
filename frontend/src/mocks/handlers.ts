@@ -18,9 +18,9 @@ import {
 } from 'store/thunks';
 import { User } from 'models/User';
 import { generateRandomString } from 'utils/generator';
-import { sanitizeUser } from './models/user';
-import * as userController from './controllers/userController';
-import { encrypt, decrypt, digestText } from './utils/crypto';
+import { collection, sanitizeUser } from 'mocks/models';
+import * as userController from 'mocks/controllers/userController';
+import { encrypt, decrypt, digestText } from 'mocks/utils/crypto';
 import {
   CSRF_TOKEN,
   XSRF_TOKEN,
@@ -28,8 +28,9 @@ import {
   hasValidToken,
   isUniqueEmail,
   authenticate,
-} from './utils/validation';
-import { usersData } from './data';
+} from 'mocks/utils/validation';
+
+import 'mocks/data';
 
 // HTTPメソッドとリクエストパス(第一引数)を指定し、`Request handler`を生成
 // リクエストに対応するレスポンスのモックを`Response resolver`により作成
@@ -82,9 +83,9 @@ export const handlers = [
 
       if (!uuid) return res(ctx.status(401));
 
-      const userData = usersData[uuid];
-      const statusCode = userData ? 200 : 401;
-      const user = userData ? sanitizeUser(userData) : null;
+      const userDoc = collection.users[uuid];
+      const statusCode = userDoc ? 200 : 401;
+      const user = userDoc ? sanitizeUser(userDoc) : null;
 
       return res(ctx.status(statusCode), ctx.json({ user: user as User }));
     }
@@ -105,8 +106,8 @@ export const handlers = [
 
       if (!uuid) return res(ctx.status(401));
 
-      const userData = usersData[uuid];
-      const statusCode = userData.emailVerifiedAt ? 204 : 202;
+      const userDoc = collection.users[uuid];
+      const statusCode = userDoc.emailVerifiedAt ? 204 : 202;
 
       return res(ctx.status(statusCode));
     }
