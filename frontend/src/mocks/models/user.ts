@@ -1,6 +1,6 @@
 import { User } from 'models/User';
 import { SignInRequest } from 'store/thunks/signInWithEmail';
-import { digestText } from 'mocks/utils/hash';
+import { digestText } from 'mocks/utils/crypto';
 
 export type UsersSchema = User & { password: string };
 
@@ -20,14 +20,12 @@ export const isUniqueEmail = (email: string) =>
   users.filter((user) => user.email === email).length === 0;
 
 export const authenticate = (request: SignInRequest) => {
-  const { email, password } = request;
-  const session_id = digestText(email);
-  const uuid = digestText(session_id);
-  const digestRequestPassword = digestText(password);
-  const user = usersData[uuid];
+  const user = Object.values(usersData).filter(
+    (user) => user.email === request.email
+  )[0];
+
+  const digestRequestPassword = digestText(request.password);
   const digestPassword = user?.password;
 
-  if (digestRequestPassword === digestPassword) {
-    return { ...user, session_id };
-  } else return false;
+  return digestRequestPassword === digestPassword ? user : false;
 };
