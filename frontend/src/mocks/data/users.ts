@@ -24,14 +24,7 @@ export const unverifiedUser: User = {
 
 const initialUsers: User[] = [guestUser, unverifiedUser];
 
-const initialize = () => {
-  try {
-    load(collection.users, 'users');
-  } catch (e) {
-    console.log(e); // ignore SyntaxError at JSON.parse
-  }
-  if (exists(collection.users)) return;
-
+export const reset = () => {
   initialUsers.forEach((user) => {
     const password = digestText(GUEST_PASSWORD);
     const userDoc: UserDocument = { ...user, password };
@@ -40,6 +33,16 @@ const initialize = () => {
     collection.users[uuid] = userDoc;
     save('users', userDoc);
   });
+};
+
+const initialize = () => {
+  try {
+    load(collection.users, 'users');
+  } catch (e) {
+    console.log(e); // ignore SyntaxError at JSON.parse
+  }
+  if (exists(collection.users)) return;
+  else reset();
 };
 
 // 初期化実行
