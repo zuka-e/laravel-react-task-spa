@@ -118,8 +118,10 @@ const authSlice = createSlice({
     builder.addCase(updateProfile.fulfilled, (state, action) => {
       if (!state.user) return; // `null`を排除 (state.user?利用不可)
 
+      state.loading = false;
+      state.user.name = action.payload.name;
+
       if (state.user.email !== action.payload.email) {
-        state.user.name = action.payload.username;
         state.user.email = action.payload.email;
         state.user.emailVerifiedAt = null;
         state.flash.push({
@@ -127,14 +129,12 @@ const authSlice = createSlice({
           message: '認証用メールを送信しました',
         });
       } else {
-        state.user.name = action.payload.username;
         state.user.email = action.payload.email;
         state.flash.push({
           type: 'success',
           message: 'ユーザー情報を更新しました',
         });
       }
-      state.loading = false;
     });
     builder.addCase(updateProfile.rejected, (state, action) => {
       state.loading = false;

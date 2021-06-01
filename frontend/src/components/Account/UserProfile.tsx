@@ -12,13 +12,13 @@ import { isGuest } from '../../utils/auth';
 
 // Input items
 type FormData = {
-  username: string;
+  name: string;
   email: string;
 };
 
 // The schema-based form validation with Yup
 const schema = yup.object().shape({
-  username: yup.string().min(2).max(30),
+  name: yup.string().min(2).max(30),
   email: yup.string().email().max(255),
 });
 
@@ -39,11 +39,11 @@ const UserProfile: React.FC<{ user: User }> = (props) => {
   const onSubmit = async (data: FormData) => {
     // フォーカスを当てていない場合`defaultValue`でなく`undefined`となる
     // その場合変更点がないので現在の値をセットする
-    if (!data.username) data.username = user.name;
+    if (!data.name) data.name = user.name;
     if (!data.email) data.email = user.email;
 
     // 全ての項目で変更点がない場合はリクエストを送らない
-    if (data.username === user.name && data.email === user.email) {
+    if (data.name === user.name && data.email === user.email) {
       setMessage('プロフィールが変更されておりません');
       return;
     }
@@ -65,13 +65,13 @@ const UserProfile: React.FC<{ user: User }> = (props) => {
             variant='outlined'
             margin='normal'
             fullWidth
-            id='username'
+            id='name'
             label='Username'
-            autoComplete='username'
+            autoComplete='name'
             defaultValue={user.name}
-            {...register('username')}
-            helperText={errors?.username?.message || '8-30 characters'}
-            error={!!errors?.username}
+            {...register('name')}
+            helperText={errors?.name?.message || '8-30 characters'}
+            error={!!errors?.name}
           />
         </Grid>
         <Grid item md={6} xs={12}>

@@ -5,18 +5,25 @@ import { UPDATE_USER_INFO_PATH } from 'config/api';
 import { authApiClient } from './utils/api';
 import { RejectWithValueType } from '.';
 
+export type UpdateProfileResponse = {
+  name: string;
+  email: string;
+};
+
+export type UpdateProfileRequest = {
+  name: string;
+  email: string;
+};
+
 export const updateProfile = createAsyncThunk<
-  { username: string; email: string },
-  { username: string; email: string },
+  UpdateProfileResponse,
+  UpdateProfileRequest,
   { rejectValue: RejectWithValueType }
 >('auth/updateProfile', async (payload, thunkApi) => {
-  const { username, email } = payload;
+  const { name, email } = payload;
   try {
-    await authApiClient.put(UPDATE_USER_INFO_PATH, {
-      name: username,
-      email,
-    });
-    return { username, email };
+    await authApiClient.put(UPDATE_USER_INFO_PATH, { name, email });
+    return { name, email }; // fulfill時は、requestの値をそのまま`return`
   } catch (e) {
     const error: AxiosError = e;
     const { setFlash, signOut } = await import('store/slices/authSlice');
@@ -26,8 +33,7 @@ export const updateProfile = createAsyncThunk<
       thunkApi.dispatch(
         setFlash({ type: 'error', message: 'ログインしてください' })
       );
-    }
-    if (error.response?.status === 422) {
+    } else if (error.response?.status === 422) {
       return thunkApi.rejectWithValue({
         error: {
           message: 'このメールアドレスは既に使用されています',
