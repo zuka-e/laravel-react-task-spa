@@ -1,8 +1,9 @@
-import { sanitizeUser, UserDocument } from 'mocks/models/user';
-import { collection } from 'mocks/models';
-import { digestText } from 'mocks/utils/crypto';
 import { SignUpRequest, SignUpResponse } from 'store/thunks';
+import { collection } from 'mocks/models';
+import { sanitizeUser, UserDocument } from 'mocks/models/user';
+import { auth } from 'mocks/utils';
 import { save } from 'mocks/utils/data';
+import { digestText } from 'mocks/utils/crypto';
 
 export const store = (request: SignUpRequest): SignUpResponse => {
   const newUserDoc: UserDocument = {
@@ -17,7 +18,7 @@ export const store = (request: SignUpRequest): SignUpResponse => {
   const uuid = String(newUserDoc.id);
 
   collection.users[uuid] = newUserDoc;
-
+  auth.login(newUserDoc);
   save('users', collection.users);
 
   return { user: sanitizeUser(newUserDoc) };

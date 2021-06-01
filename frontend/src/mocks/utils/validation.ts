@@ -1,6 +1,7 @@
 import { SignInRequest } from 'store/thunks';
-import { collection } from 'mocks/models';
+import { collection, sanitizeUser } from 'mocks/models';
 import { digestText } from './crypto';
+import { auth } from '.';
 
 export const CSRF_TOKEN = 'csrf-token'; // session
 export const XSRF_TOKEN = 'XSRF-TOKEN'; // cookie
@@ -12,19 +13,31 @@ export const hasValidToken = (requestToken: string) => {
 };
 
 export const isUniqueEmail = (email: string) => {
-  const matchedUserDocs = Object.values(collection.users).filter(
+  const matchedUsers = Object.values(collection.users).filter(
     (user) => user.email === email
   );
-  return matchedUserDocs.length === 0;
+  // 合致するデータがない場合`matchedUsers[0]`は`undefied`
+  const matchedEmail = matchedUsers[0]?.email;
+  const ownEmail = auth.getUser()?.email;
+  // 一致する`email`がないか、もしあっても自身のものであれば`true`(unique)
+  return !matchedEmail || matchedEmail === ownEmail;
 };
 
 export const authenticate = (request: SignInRequest) => {
-  const user = Object.values(collection.users).filter(
+  const matchedUserDocs = Object.values(collection.users).filter(
     (user) => user.email === request.email
-  )[0];
+  );
+  const userDocWithTheRequestedEmail = matchedUserDocs[0];
+
+  if (!userDocWithTheRequestedEmail) return null;
 
   const digestRequestPassword = digestText(request.password);
-  const digestPassword = user?.password;
+  const digestPassword = userDocWithTheRequestedEmail.password;
 
-  return digestRequestPassword === digestPassword ? user : false;
+  if (digestRequestPassword === digestPassword) {
+    auth.login(userDocWithTheRequestedEmail);
+    return sanitizeUser(userDocWithTheRequestedEmail);
+  } else {
+    return null;
+  }
 };

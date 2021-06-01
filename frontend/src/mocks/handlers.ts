@@ -7,6 +7,7 @@ import {
   SIGNIN_PATH,
   SIGNOUT_PATH,
   SIGNUP_PATH,
+  UPDATE_USER_INFO_PATH,
   VERIFICATION_NOTIFICATION_PATH,
 } from 'config/api';
 import {
@@ -15,11 +16,16 @@ import {
   FetchAuthUserResponse,
   SignInRequest,
   SignInResponse,
+  UpdateProfileRequest,
+  UpdateProfileResponse,
 } from 'store/thunks';
 import { User } from 'models/User';
 import { generateRandomString } from 'utils/generator';
 import { collection, sanitizeUser } from 'mocks/models';
-import * as userController from 'mocks/controllers/userController';
+import {
+  createUserController,
+  updateProfileController,
+} from 'mocks/controllers';
 import { encrypt, decrypt, digestText } from 'mocks/utils/crypto';
 import {
   CSRF_TOKEN,
@@ -50,7 +56,7 @@ export const handlers = [
 
       const sessionId = generateRandomString(32);
       const encryptedSessionId = encrypt(sessionId);
-      const response = userController.store(req.body);
+      const response = createUserController.store(req.body);
 
       sessionStorage.setItem(sessionId, String(response.user.id));
       return res(
@@ -128,6 +134,39 @@ export const handlers = [
         ctx.status(200),
         ctx.cookie('session_id', encryptedSessionId, { httpOnly: true }),
         ctx.json({ user: user, verified: undefined } as SignInResponse)
+      );
+    }
+  ),
+
+  rest.put<UpdateProfileRequest, UpdateProfileResponse, RequestParams>(
+    API_HOST + UPDATE_USER_INFO_PATH,
+    (req, res, ctx) => {
+      const encryptedSessionId = req.cookies.session_id;
+      const token = req.headers.get(X_XSRF_TOKEN);
+
+      if (!token || !hasValidToken(token)) return res(ctx.status(419));
+
+      if (!isUniqueEmail(req.body.email)) return res(ctx.status(422));
+
+      if (!encryptedSessionId) return res(ctx.status(401));
+
+      const sessionId = decrypt(encryptedSessionId);
+      const uuid = sessionStorage.getItem(sessionId);
+
+      if (!uuid) return res(ctx.status(401));
+
+      const userDoc = collection.users[uuid];
+
+      if (!userDoc) return res(ctx.status(401));
+
+      const currentUser = userDoc;
+      const request = req.body;
+      const response = updateProfileController.update({ currentUser, request });
+
+      return res(
+        ctx.status(200),
+        ctx.cookie('session_id', encryptedSessionId, { httpOnly: true }),
+        ctx.json(response)
       );
     }
   ),
