@@ -1,7 +1,6 @@
 import { SignUpRequest, SignUpResponse } from 'store/thunks';
-import { collection } from 'mocks/models';
+import { auth, collection } from 'mocks/models';
 import { sanitizeUser, UserDocument } from 'mocks/models/user';
-import { auth } from 'mocks/utils';
 import { save } from 'mocks/utils/models';
 import { digestText } from 'mocks/utils/crypto';
 

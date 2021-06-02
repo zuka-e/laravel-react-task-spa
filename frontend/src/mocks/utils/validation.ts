@@ -1,7 +1,6 @@
 import { SignInRequest } from 'store/thunks';
-import { collection, sanitizeUser } from 'mocks/models';
+import { auth, collection, sanitizeUser } from 'mocks/models';
 import { digestText } from './crypto';
-import { auth } from '.';
 
 export const CSRF_TOKEN = 'csrf-token'; // session
 export const XSRF_TOKEN = 'XSRF-TOKEN'; // cookie
