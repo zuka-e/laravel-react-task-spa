@@ -1,9 +1,8 @@
-import { UserDocument } from 'mocks/models';
-import { exists } from 'mocks/utils/models';
+import { db, UserDocument } from 'mocks/models';
 
 const user = {} as UserDocument;
 
-export const getUser = () => (exists(user) ? user : null);
+export const getUser = () => (db.exists(user) ? user : null);
 
 export const setUser = (userDoc: UserDocument) => Object.assign(user, userDoc);
 

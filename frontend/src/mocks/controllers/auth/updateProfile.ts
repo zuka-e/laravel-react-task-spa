@@ -1,7 +1,5 @@
 import { UpdateProfileRequest, UpdateProfileResponse } from 'store/thunks';
-import { UserDocument } from 'mocks/models/user';
-import { collection } from 'mocks/models';
-import { save } from 'mocks/utils/models';
+import { db, UserDocument } from 'mocks/models';
 
 type UpdateProfileProps = {
   currentUser: UserDocument;
@@ -18,8 +16,8 @@ export const update = (props: UpdateProfileProps) => {
 
   const uuid = String(currentUser.id);
 
-  collection.users[uuid] = newUserDoc;
-  save('users', collection.users);
+  db.collection('users')[uuid] = newUserDoc;
+  db.save('users', db.collection('users'));
 
   const response: UpdateProfileResponse = {
     name: newUserDoc.name,

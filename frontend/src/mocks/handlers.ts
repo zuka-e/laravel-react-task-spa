@@ -21,7 +21,7 @@ import {
 } from 'store/thunks';
 import { User } from 'models/User';
 import { generateRandomString } from 'utils/generator';
-import { collection, sanitizeUser } from 'mocks/models';
+import { db, sanitizeUser } from 'mocks/models';
 import {
   createUserController,
   updateProfileController,
@@ -89,7 +89,7 @@ export const handlers = [
 
       if (!uuid) return res(ctx.status(401));
 
-      const userDoc = collection.users[uuid];
+      const userDoc = db.collection('users')[uuid];
       const statusCode = userDoc ? 200 : 401;
       const user = userDoc ? sanitizeUser(userDoc) : null;
 
@@ -112,7 +112,7 @@ export const handlers = [
 
       if (!uuid) return res(ctx.status(401));
 
-      const userDoc = collection.users[uuid];
+      const userDoc = db.collection('users')[uuid];
       const statusCode = userDoc.emailVerifiedAt ? 204 : 202;
 
       return res(ctx.status(statusCode));
@@ -155,7 +155,7 @@ export const handlers = [
 
       if (!uuid) return res(ctx.status(401));
 
-      const userDoc = collection.users[uuid];
+      const userDoc = db.collection('users')[uuid];
 
       if (!userDoc) return res(ctx.status(401));
 

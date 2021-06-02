@@ -1,5 +1,5 @@
 import { SignInRequest } from 'store/thunks';
-import { auth, collection, sanitizeUser } from 'mocks/models';
+import { db, auth, sanitizeUser } from 'mocks/models';
 import { digestText } from './crypto';
 
 export const CSRF_TOKEN = 'csrf-token'; // session
@@ -12,7 +12,7 @@ export const hasValidToken = (requestToken: string) => {
 };
 
 export const isUniqueEmail = (email: string) => {
-  const matchedUsers = Object.values(collection.users).filter(
+  const matchedUsers = Object.values(db.collection('users')).filter(
     (user) => user.email === email
   );
   // 合致するデータがない場合`matchedUsers[0]`は`undefied`
@@ -23,7 +23,7 @@ export const isUniqueEmail = (email: string) => {
 };
 
 export const authenticate = (request: SignInRequest) => {
-  const matchedUserDocs = Object.values(collection.users).filter(
+  const matchedUserDocs = Object.values(db.collection('users')).filter(
     (user) => user.email === request.email
   );
   const userDocWithTheRequestedEmail = matchedUserDocs[0];
