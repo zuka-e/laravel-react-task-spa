@@ -1,5 +1,5 @@
 import { UserDocument } from 'mocks/models';
-import { exists } from 'mocks/utils/data';
+import { exists } from 'mocks/utils/models';
 
 const user = {} as UserDocument;
 

@@ -1,7 +1,7 @@
 import { UpdateProfileRequest, UpdateProfileResponse } from 'store/thunks';
 import { UserDocument } from 'mocks/models/user';
 import { collection } from 'mocks/models';
-import { save } from 'mocks/utils/data';
+import { save } from 'mocks/utils/models';
 
 type UpdateProfileProps = {
   currentUser: UserDocument;

@@ -1,8 +1,8 @@
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import { User } from 'models/User';
 import { collection, UserDocument } from 'mocks/models';
+import { exists, load, save } from 'mocks/utils/models';
 import { digestText } from 'mocks/utils/crypto';
-import { exists, load, save } from 'mocks/utils/data';
 
 export const guestUser: User = {
   id: 1,
