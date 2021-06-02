@@ -14,8 +14,8 @@ export const guestUser: User = {
 
 export const unverifiedUser: User = {
   id: 2,
-  name: 'ゲストユーザー',
-  email: GUEST_EMAIL + 'any_string',
+  name: '未認証ユーザー',
+  email: GUEST_EMAIL + '_any_string',
   emailVerifiedAt: null,
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -24,23 +24,21 @@ export const unverifiedUser: User = {
 const initialUsers: User[] = [guestUser, unverifiedUser];
 
 export const reset = () => {
+  db.reset();
   initialUsers.forEach((user) => {
     const password = digestText(GUEST_PASSWORD);
     const userDoc: UserDocument = { ...user, password };
-    const uuid = String(user.id);
-
-    db.collection('users')[uuid] = userDoc;
+    db.create('users', userDoc);
   });
-  db.save('users', db.collection('users'));
 };
 
 const initialize = () => {
   try {
-    db.load(db.collection('users'), 'users');
+    db.load('users');
   } catch (e) {
     console.log(e); // ignore SyntaxError at JSON.parse
   }
-  if (db.exists(db.collection('users'))) return;
+  if (db.exists('users')) return;
   else reset();
 };
 

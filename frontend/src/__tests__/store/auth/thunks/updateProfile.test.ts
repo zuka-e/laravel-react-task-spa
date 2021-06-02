@@ -91,7 +91,7 @@ describe('Thunk updating the user profile', () => {
     it('should send a verification email if updating a email', async () => {
       await store.dispatch(signInWithEmail(signInRequest)); // ログイン
       const currentUser = getUserState(store);
-      expect(JSON.stringify(currentUser)).toBe(JSON.stringify(guestUser));
+      expect(currentUser?.name).toBe(guestUser.name);
       if (!currentUser) return;
       // dispatch
       const request = { name: currentUser.name, email: newEmail };

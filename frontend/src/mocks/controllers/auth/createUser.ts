@@ -4,20 +4,14 @@ import { sanitizeUser, UserDocument } from 'mocks/models/user';
 import { digestText } from 'mocks/utils/crypto';
 
 export const store = (request: SignUpRequest): SignUpResponse => {
-  const newUserDoc: UserDocument = {
-    id: Object.values(db.collection('users')).length + 1,
+  const newUserDoc = {
     name: request.email,
     email: request.email,
-    emailVerifiedAt: null,
-    createdAt: new Date(),
-    updatedAt: new Date(),
     password: digestText(request.password),
-  };
-  const uuid = String(newUserDoc.id);
+  } as UserDocument;
 
-  db.collection('users')[uuid] = newUserDoc;
+  db.create('users', newUserDoc);
   auth.login(newUserDoc);
-  db.save('users', db.collection('users'));
 
   return { user: sanitizeUser(newUserDoc) };
 };
