@@ -5,6 +5,12 @@ import { UPDATE_PASSWORD_PATH } from 'config/api';
 import { authApiClient } from './utils/api';
 import { RejectWithValueType } from '.';
 
+export type UpdatePasswordRequest = {
+  current_password: string;
+  password: string;
+  password_confirmation: string;
+};
+
 export const updatePassword = createAsyncThunk<
   void,
   { current_password: string; password: string; password_confirmation: string },
@@ -26,8 +32,7 @@ export const updatePassword = createAsyncThunk<
       thunkApi.dispatch(
         setFlash({ type: 'error', message: 'ログインしてください' })
       );
-    }
-    if (error.response?.status === 422) {
+    } else if (error.response?.status === 422) {
       return thunkApi.rejectWithValue({
         error: {
           message: 'パスワードが間違っています',

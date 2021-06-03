@@ -7,6 +7,7 @@ import {
   SIGNIN_PATH,
   SIGNOUT_PATH,
   SIGNUP_PATH,
+  UPDATE_PASSWORD_PATH,
   UPDATE_USER_INFO_PATH,
   VERIFICATION_NOTIFICATION_PATH,
 } from 'config/api';
@@ -18,12 +19,14 @@ import {
   SignInResponse,
   UpdateProfileRequest,
   UpdateProfileResponse,
+  UpdatePasswordRequest,
 } from 'store/thunks';
 import { User } from 'models/User';
 import { generateRandomString } from 'utils/generator';
 import { db, sanitizeUser } from 'mocks/models';
 import {
   createUserController,
+  updatePasswordController,
   updateProfileController,
 } from 'mocks/controllers';
 import { encrypt, decrypt, digestText } from 'mocks/utils/crypto';
@@ -34,6 +37,9 @@ import {
   hasValidToken,
   isUniqueEmail,
   authenticate,
+  isValidPassword,
+  getUserFromSession,
+  regenerateSessionId,
 } from 'mocks/utils/validation';
 
 import 'mocks/data';
@@ -167,6 +173,30 @@ export const handlers = [
         ctx.status(200),
         ctx.cookie('session_id', encryptedSessionId, { httpOnly: true }),
         ctx.json(response)
+      );
+    }
+  ),
+
+  rest.put<UpdatePasswordRequest, undefined, RequestParams>(
+    API_HOST + UPDATE_PASSWORD_PATH,
+    (req, res, ctx) => {
+      const token = req.headers.get(X_XSRF_TOKEN);
+      const currentUser = getUserFromSession(req.cookies.session_id);
+
+      if (!currentUser) return res(ctx.status(401));
+
+      if (!token || !hasValidToken(token)) return res(ctx.status(419));
+
+      if (!isValidPassword(req.body.current_password, currentUser.password))
+        return res(ctx.status(422));
+
+      updatePasswordController.update({ currentUser, request: req.body });
+
+      const newSessionId = regenerateSessionId(req.cookies.session_id);
+
+      return res(
+        ctx.status(200),
+        ctx.cookie('session_id', newSessionId, { httpOnly: true })
       );
     }
   ),
