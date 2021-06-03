@@ -21,17 +21,13 @@ import {
   UpdateProfileResponse,
   UpdatePasswordRequest,
 } from 'store/thunks';
-import { User } from 'models/User';
-import { generateRandomString } from 'utils/generator';
-import { db, sanitizeUser } from 'mocks/models';
+import { auth, sanitizeUser } from 'mocks/models';
 import {
   createUserController,
   updatePasswordController,
   updateProfileController,
 } from 'mocks/controllers';
-import { encrypt, decrypt, digestText } from 'mocks/utils/crypto';
 import {
-  CSRF_TOKEN,
   XSRF_TOKEN,
   X_XSRF_TOKEN,
   hasValidToken,
@@ -40,6 +36,8 @@ import {
   isValidPassword,
   getUserFromSession,
   regenerateSessionId,
+  createSessionId,
+  generateCsrfToken,
 } from 'mocks/utils/validation';
 
 import 'mocks/data';
@@ -60,11 +58,9 @@ export const handlers = [
       // validation error
       if (!isUniqueEmail(email)) return res(ctx.status(422));
 
-      const sessionId = generateRandomString(32);
-      const encryptedSessionId = encrypt(sessionId);
       const response = createUserController.store(req.body);
+      const encryptedSessionId = createSessionId(response.user.id);
 
-      sessionStorage.setItem(sessionId, String(response.user.id));
       return res(
         ctx.status(201),
         ctx.cookie('session_id', encryptedSessionId, { httpOnly: true }),
@@ -74,52 +70,40 @@ export const handlers = [
   ),
 
   rest.get(API_HOST + GET_CSRF_TOKEN_PATH, (_req, res, ctx) => {
-    const randomString = Math.random().toString(36).substring(2, 15);
-    const token = digestText(randomString);
-    sessionStorage.setItem(CSRF_TOKEN, token);
-    return res(ctx.cookie(XSRF_TOKEN, token));
+    const csrfToken = generateCsrfToken();
+    return res(ctx.cookie(XSRF_TOKEN, csrfToken));
   }),
 
   rest.get<DefaultRequestBody, FetchAuthUserResponse, RequestParams>(
     API_HOST + AUTH_USER_PATH,
     (req, res, ctx) => {
-      const encryptedSessionId = req.cookies.session_id;
+      const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);
+
+      if (!currentUser) return res(ctx.status(401));
 
       if (!token || !hasValidToken(token)) return res(ctx.status(419));
 
-      if (!encryptedSessionId) return res(ctx.status(401));
+      auth.login(currentUser);
+      const response: FetchAuthUserResponse = {
+        user: sanitizeUser(currentUser),
+      };
 
-      const sessionId = decrypt(encryptedSessionId);
-      const uuid = sessionStorage.getItem(sessionId);
-
-      if (!uuid) return res(ctx.status(401));
-
-      const userDoc = db.collection('users')[uuid];
-      const statusCode = userDoc ? 200 : 401;
-      const user = userDoc ? sanitizeUser(userDoc) : null;
-
-      return res(ctx.status(statusCode), ctx.json({ user: user as User }));
+      return res(ctx.status(200), ctx.json(response));
     }
   ),
 
   rest.post<DefaultRequestBody, FetchAuthUserResponse, RequestParams>(
     API_HOST + VERIFICATION_NOTIFICATION_PATH,
     (req, res, ctx) => {
-      const encryptedSessionId = req.cookies.session_id;
+      const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);
+
+      if (!currentUser) return res(ctx.status(401));
 
       if (!token || !hasValidToken(token)) return res(ctx.status(419));
 
-      if (!encryptedSessionId) return res(ctx.status(401));
-
-      const sessionId = decrypt(encryptedSessionId);
-      const uuid = sessionStorage.getItem(sessionId);
-
-      if (!uuid) return res(ctx.status(401));
-
-      const userDoc = db.collection('users')[uuid];
-      const statusCode = userDoc.emailVerifiedAt ? 204 : 202;
+      const statusCode = currentUser.emailVerifiedAt ? 204 : 202;
 
       return res(ctx.status(statusCode));
     }
@@ -132,42 +116,8 @@ export const handlers = [
 
       if (!user) return res(ctx.status(422));
 
-      const sessionId = generateRandomString(32);
-      const encryptedSessionId = encrypt(sessionId);
-
-      sessionStorage.setItem(sessionId, String(user.id));
-      return res(
-        ctx.status(200),
-        ctx.cookie('session_id', encryptedSessionId, { httpOnly: true }),
-        ctx.json({ user: user, verified: undefined } as SignInResponse)
-      );
-    }
-  ),
-
-  rest.put<UpdateProfileRequest, UpdateProfileResponse, RequestParams>(
-    API_HOST + UPDATE_USER_INFO_PATH,
-    (req, res, ctx) => {
-      const encryptedSessionId = req.cookies.session_id;
-      const token = req.headers.get(X_XSRF_TOKEN);
-
-      if (!token || !hasValidToken(token)) return res(ctx.status(419));
-
-      if (!isUniqueEmail(req.body.email)) return res(ctx.status(422));
-
-      if (!encryptedSessionId) return res(ctx.status(401));
-
-      const sessionId = decrypt(encryptedSessionId);
-      const uuid = sessionStorage.getItem(sessionId);
-
-      if (!uuid) return res(ctx.status(401));
-
-      const userDoc = db.collection('users')[uuid];
-
-      if (!userDoc) return res(ctx.status(401));
-
-      const currentUser = userDoc;
-      const request = req.body;
-      const response = updateProfileController.update({ currentUser, request });
+      const encryptedSessionId = createSessionId(user.id);
+      const response: SignInResponse = { user: sanitizeUser(user) };
 
       return res(
         ctx.status(200),
@@ -177,11 +127,37 @@ export const handlers = [
     }
   ),
 
+  rest.put<UpdateProfileRequest, UpdateProfileResponse, RequestParams>(
+    API_HOST + UPDATE_USER_INFO_PATH,
+    (req, res, ctx) => {
+      const currentUser = getUserFromSession(req.cookies.session_id);
+      const token = req.headers.get(X_XSRF_TOKEN);
+
+      if (!currentUser) return res(ctx.status(401));
+
+      if (!token || !hasValidToken(token)) return res(ctx.status(419));
+
+      if (!isUniqueEmail(req.body.email)) return res(ctx.status(422));
+
+      const newSessionId = regenerateSessionId(req.cookies.session_id);
+      const response = updateProfileController.update({
+        currentUser,
+        request: req.body,
+      });
+
+      return res(
+        ctx.status(200),
+        ctx.cookie('session_id', newSessionId, { httpOnly: true }),
+        ctx.json(response)
+      );
+    }
+  ),
+
   rest.put<UpdatePasswordRequest, undefined, RequestParams>(
     API_HOST + UPDATE_PASSWORD_PATH,
     (req, res, ctx) => {
-      const token = req.headers.get(X_XSRF_TOKEN);
       const currentUser = getUserFromSession(req.cookies.session_id);
+      const token = req.headers.get(X_XSRF_TOKEN);
 
       if (!currentUser) return res(ctx.status(401));
 
@@ -209,7 +185,8 @@ export const handlers = [
 
     if (!token || !hasValidToken(token)) return res(ctx.status(419));
 
-    sessionStorage.clear();
+    auth.logout();
+    sessionStorage.removeItem(session_id);
     return res(ctx.status(204), ctx.cookie('session_id', ''));
   }),
 ];
