@@ -142,15 +142,67 @@ const reset = <K extends keyof DB>(key?: K) => {
   }
 };
 
+interface Model {
+  /**
+   * 1. 指定された`key`を持つJSONデータを`localStorage`から取得
+   * 2. 指定された`key`を持つ`Collection`に取得したデータをコピー (上書き)
+   *
+   * @param  key - 各`Collection`に割り当てられたキー名
+   */
+  load<K extends keyof DB>(key: K): void;
+  /**
+   * 指定された`Collection`の`Document`の存在有無を確認
+   *
+   * @param  key - 各`Collection`に割り当てられたキー名
+   */
+  exists<K extends keyof DB>(key: K): boolean;
+  /**
+   * 指定された`Collection`のコピーを返却
+   *
+   * @param  key - 各`Collection`に割り当てられたキー名
+   */
+  collection<K extends keyof DB>(key: K): DB[K];
+  /**
+   * 指定された`Collection`に引数の`Document`を新たに作成
+   *
+   * @param  key - 各`Collection`に割り当てられたキー名
+   * @param  doc - `Document`
+   */
+  create<K extends keyof DB, T extends DB[K]>(key: K, doc: T[keyof T]): void;
+  /**
+   * 指定された`value`をプロパティ(`column`)の値として持つ`Document`を検索
+   *
+   * @returns 合致する`Document`の配列
+   */
+  where<K extends keyof DB, T extends DB[K]>(
+    key: K,
+    column: keyof T[keyof T],
+    value: any
+  ): Document[];
+  /**
+   * 指定された`Collection`の`Document`を更新
+   *
+   * @param  key - 各`Collection`に割り当てられたキー名
+   * @param  doc - `Document`
+   */
+  update<K extends keyof DB, T extends DB[K]>(key: K, doc: T[keyof T]): void;
+  /**
+   * 指定された`Collection`の`Document`を初期化 (指定しない場合、全ての`Collection`が対象)
+   *
+   * @param  key - 各`Collection`に割り当てられたキー名
+   */
+  reset<K extends keyof DB>(key?: K): void;
+}
+
 /**
- * データを操作する各メソッドをプロパティとして持つ
+ * データを操作するメソッドを持つ
  */
-export const db = {
+export const db: Model = {
   load,
   exists,
   collection,
-  where,
   create,
+  where,
   update,
   reset,
 };
