@@ -5,6 +5,7 @@ import {
   AUTH_USER_PATH,
   FORGOT_PASSWORD_PATH,
   GET_CSRF_TOKEN_PATH,
+  RESET_PASSWORD_PATH,
   SIGNIN_PATH,
   SIGNOUT_PATH,
   SIGNUP_PATH,
@@ -22,10 +23,12 @@ import {
   UpdateProfileResponse,
   UpdatePasswordRequest,
   ForgotPasswordRequest,
+  ResetPasswordRequest,
 } from 'store/thunks';
 import { auth, db, sanitizeUser } from 'mocks/models';
 import {
   createUserController,
+  resetPasswordController,
   updatePasswordController,
   updateProfileController,
 } from 'mocks/controllers';
@@ -40,6 +43,7 @@ import {
   regenerateSessionId,
   createSessionId,
   generateCsrfToken,
+  isValidPasswordResetToken,
 } from 'mocks/utils/validation';
 
 import 'mocks/data';
@@ -188,6 +192,22 @@ export const handlers = [
       if (!requestedUser) return res(ctx.status(422));
 
       return res(ctx.status(200));
+    }
+  ),
+
+  rest.post<ResetPasswordRequest, undefined, RequestParams>(
+    API_HOST + RESET_PASSWORD_PATH,
+    (req, res, ctx) => {
+      if (!isValidPasswordResetToken(req.body)) return res(ctx.status(422));
+
+      resetPasswordController.reset(req.body);
+
+      const newSessionId = regenerateSessionId(req.cookies.session_id);
+
+      return res(
+        ctx.status(200),
+        ctx.cookie('session_id', newSessionId, { httpOnly: true })
+      );
     }
   ),
 

@@ -1,7 +1,8 @@
-import { SignInRequest } from 'store/thunks';
+import { ResetPasswordRequest, SignInRequest } from 'store/thunks';
 import { generateRandomString } from 'utils/generator';
 import { db, auth } from 'mocks/models';
 import { encrypt, decrypt, digestText } from './crypto';
+import { GUEST_EMAIL } from 'config/app';
 
 export const CSRF_TOKEN = 'csrf-token'; // session
 export const XSRF_TOKEN = 'XSRF-TOKEN'; // cookie
@@ -136,3 +137,16 @@ export const authenticate = (request: SignInRequest) => {
     return null;
   }
 };
+
+/**
+ * パスワードリセット用のトークンを生成 (パスワードリセットリンクのパラメータにする)
+ */
+export const validPasswordResetTokenOf = {
+  [GUEST_EMAIL]: generateRandomString(32),
+};
+
+/**
+ * リクエストの`email`と`token`のセットが一致するか検証
+ */
+export const isValidPasswordResetToken = (request: ResetPasswordRequest) =>
+  validPasswordResetTokenOf[request.email] === request.token;

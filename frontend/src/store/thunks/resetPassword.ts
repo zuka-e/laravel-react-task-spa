@@ -5,14 +5,18 @@ import { GET_CSRF_TOKEN_PATH, RESET_PASSWORD_PATH } from 'config/api';
 import { authApiClient } from './utils/api';
 import { RejectWithValueType } from '.';
 
+export type ResetPasswordResponse = {};
+
+export type ResetPasswordRequest = {
+  email: string;
+  password: string;
+  password_confirmation: string;
+  token: string;
+};
+
 export const resetPassword = createAsyncThunk<
-  void,
-  {
-    email: string;
-    password: string;
-    password_confirmation: string;
-    token: string;
-  },
+  ResetPasswordResponse,
+  ResetPasswordRequest,
   { rejectValue: RejectWithValueType }
 >('auth/resetPassword', async (payload, thunkApi) => {
   const { email, password, password_confirmation, token } = payload;
