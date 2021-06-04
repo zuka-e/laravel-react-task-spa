@@ -1,4 +1,4 @@
-import { UserDocument, UsersCollection } from './user';
+import { UsersCollection } from './user';
 
 const initilalState = {
   count: {
@@ -35,12 +35,11 @@ const collection = <K extends keyof DB>(key: K) => {
 const create = <K extends keyof DB, T extends DB[K]>(key: K, doc: T['id']) => {
   const defaultValues = {
     id: count[key] + 1,
-    emailVerifiedAt: null,
     createdAt: new Date(),
     updatedAt: new Date(),
-  } as UserDocument;
+  };
   // `guestUser`など、プロパティ設定がある場合はデフォルト値を上書きする
-  const newDoc: UserDocument = { ...defaultValues, ...doc };
+  const newDoc = { ...defaultValues, ...doc };
   const newState = { ...database[key], [String(newDoc.id)]: newDoc };
 
   database[key] = newState;

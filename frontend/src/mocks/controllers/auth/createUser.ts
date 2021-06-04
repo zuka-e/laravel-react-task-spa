@@ -7,6 +7,7 @@ export const store = (request: SignUpRequest): SignUpResponse => {
   const newUserDoc = {
     name: request.email,
     email: request.email,
+    emailVerifiedAt: null,
     password: digestText(request.password),
   } as UserDocument;
 
