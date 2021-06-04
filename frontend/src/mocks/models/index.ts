@@ -48,6 +48,20 @@ const create = <K extends keyof DB, T extends DB[K]>(key: K, doc: T['id']) => {
   save(key);
 };
 
+/**
+ * 指定された`value`をプロパティ(`column`)の値として持つ`Document`を検索
+ *
+ * @returns 合致する`Document`の配列
+ */
+const where = <K extends keyof DB, T extends DB[K]>(
+  key: K,
+  column: keyof T['id'],
+  value: any
+) =>
+  Object.values(database[key]).filter(
+    (doc) => doc[column as keyof typeof doc] === value
+  );
+
 const update = <K extends keyof DB, T extends DB[K]>(key: K, doc: T['id']) => {
   const uuid = String(doc.id);
   const newState = { ...database[key], [uuid]: doc };
@@ -70,6 +84,7 @@ export const db = {
   load,
   exists,
   collection,
+  where,
   create,
   update,
   reset,

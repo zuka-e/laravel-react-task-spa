@@ -3,6 +3,7 @@ import { DefaultRequestBody, RequestParams, rest } from 'msw';
 import {
   API_HOST,
   AUTH_USER_PATH,
+  FORGOT_PASSWORD_PATH,
   GET_CSRF_TOKEN_PATH,
   SIGNIN_PATH,
   SIGNOUT_PATH,
@@ -20,8 +21,9 @@ import {
   UpdateProfileRequest,
   UpdateProfileResponse,
   UpdatePasswordRequest,
+  ForgotPasswordRequest,
 } from 'store/thunks';
-import { auth, sanitizeUser } from 'mocks/models';
+import { auth, db, sanitizeUser } from 'mocks/models';
 import {
   createUserController,
   updatePasswordController,
@@ -174,6 +176,18 @@ export const handlers = [
         ctx.status(200),
         ctx.cookie('session_id', newSessionId, { httpOnly: true })
       );
+    }
+  ),
+
+  rest.post<ForgotPasswordRequest, undefined, RequestParams>(
+    API_HOST + FORGOT_PASSWORD_PATH,
+    (req, res, ctx) => {
+      const { email } = req.body;
+      const requestedUser = db.where('users', 'email', email)[0];
+
+      if (!requestedUser) return res(ctx.status(422));
+
+      return res(ctx.status(200));
     }
   ),
 
