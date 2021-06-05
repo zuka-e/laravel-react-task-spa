@@ -1,8 +1,19 @@
 import { User } from 'models/User';
+import { CollectionBase, DocumentBase } from '.';
 
-export type UserDocument = User & { password: string };
+export interface UserDocument extends DocumentBase {
+  id: number;
+  name: string;
+  email: string;
+  emailVerifiedAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+  password: string;
+}
 
-export type UsersCollection = { [uuid: string]: UserDocument };
+export interface UsersCollection extends CollectionBase {
+  [uuid: string]: UserDocument;
+}
 
 export const sanitizeUser = (userDoc: UserDocument): User => {
   const { password, ...rest } = userDoc;
