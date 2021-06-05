@@ -8,7 +8,7 @@ describe('Thunk for a forgot password', () => {
     initializeStore();
   });
 
-  describe('Rejucted', () => {
+  describe('Rejected', () => {
     const request: ForgotPasswordRequest = {
       email: GUEST_EMAIL + 'a',
     };

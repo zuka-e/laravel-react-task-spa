@@ -9,12 +9,12 @@ import {
   isSignedIn,
 } from 'mocks/utils/store/auth';
 
-describe('Thunk register a user', () => {
+describe('Thunk for an user registration', () => {
   beforeEach(() => {
     initializeStore();
   });
 
-  describe('Rejucted', () => {
+  describe('Rejected', () => {
     it('should throw an error with an existing email', async () => {
       const newUser: SignUpRequest = {
         email: GUEST_EMAIL,

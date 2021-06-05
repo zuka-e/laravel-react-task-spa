@@ -12,7 +12,7 @@ describe('Thunk authenticating user with email', () => {
     initializeStore();
   });
 
-  describe('Rejucted', () => {
+  describe('Rejected', () => {
     it('should throw an error with a wrong input', async () => {
       const signInRequest: SignInRequest = {
         email: GUEST_EMAIL + 'a',

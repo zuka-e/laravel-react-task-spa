@@ -34,7 +34,7 @@ describe('Thunk for resetting the password', () => {
     initializeStore();
   });
 
-  describe('Rejucted', () => {
+  describe('Rejected', () => {
     const invalidReq = { ...request, token: '' };
 
     it('should be an error with a set of email and token', async () => {

@@ -27,7 +27,7 @@ describe('Thunk updating the user password', () => {
     reset();
   });
 
-  describe('Rejucted', () => {
+  describe('Rejected', () => {
     const request: UpdatePasswordRequest = {
       current_password: GUEST_PASSWORD,
       password: GUEST_PASSWORD,

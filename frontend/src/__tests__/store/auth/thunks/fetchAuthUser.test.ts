@@ -10,7 +10,7 @@ describe('Thunk fetching the authenticated user', () => {
     initializeStore();
   });
 
-  describe('Rejucted', () => {
+  describe('Rejected', () => {
     it('should throw an error without a session', async () => {
       // `store`によるログイン状態を用意する
       store.dispatch(signIn());

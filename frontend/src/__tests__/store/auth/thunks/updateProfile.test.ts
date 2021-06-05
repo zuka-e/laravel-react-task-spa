@@ -22,7 +22,7 @@ describe('Thunk updating the user profile', () => {
     reset();
   });
 
-  describe('Rejucted', () => {
+  describe('Rejected', () => {
     const request = { name: '', email: '' };
 
     it('should throw an error without a session', async () => {
