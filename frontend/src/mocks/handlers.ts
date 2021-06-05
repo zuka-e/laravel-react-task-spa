@@ -28,6 +28,7 @@ import {
 import { auth, db, sanitizeUser } from 'mocks/models';
 import {
   createUserController,
+  deleteAccountController,
   resetPasswordController,
   updatePasswordController,
   updateProfileController,
@@ -223,4 +224,22 @@ export const handlers = [
     sessionStorage.removeItem(session_id);
     return res(ctx.status(204), ctx.cookie('session_id', ''));
   }),
+
+  rest.delete<DefaultRequestBody, undefined, RequestParams>(
+    API_HOST + AUTH_USER_PATH,
+    (req, res, ctx) => {
+      const currentUser = getUserFromSession(req.cookies.session_id);
+      const token = req.headers.get(X_XSRF_TOKEN);
+
+      if (!currentUser) return res(ctx.status(401));
+
+      if (!token || !hasValidToken(token)) return res(ctx.status(419));
+
+      deleteAccountController.remove(currentUser);
+      auth.logout();
+      sessionStorage.clear();
+
+      return res(ctx.status(204), ctx.cookie('session_id', ''));
+    }
+  ),
 ];

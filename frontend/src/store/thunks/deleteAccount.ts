@@ -6,8 +6,10 @@ import { AUTH_USER_PATH } from 'config/api';
 import { authApiClient } from './utils/api';
 import { RejectWithValueType } from '.';
 
+type DeleteAccountResponse = {};
+
 export const deleteAccount = createAsyncThunk<
-  any,
+  DeleteAccountResponse,
   void,
   { rejectValue: RejectWithValueType }
 >('auth/deleteAccount', async (_, thunkApi) => {

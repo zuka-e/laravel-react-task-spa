@@ -3,18 +3,22 @@ import { UsersCollection } from './user';
 /**
  * 継承した`interface`は動的プロパティ`Document`を持つ
  */
-export interface Collection {
-  [uuid: string]: Document;
+export interface CollectionBase {
+  [uuid: string]: DocumentBase;
 }
 
 /**
  * 継承した`interface`は必須プロパティを持つ
  */
-export interface Document {
+export interface DocumentBase {
   id: number;
   createdAt: Date;
   updatedAt: Date;
 }
+
+type Collection<T extends keyof DB> = DB[T];
+
+type Doc<T extends keyof DB> = Collection<T>['id'];
 
 /**
  * 初期値: テスト毎に`localStorage`をこの状態にリセット
@@ -128,6 +132,22 @@ const update = <K extends keyof DB, T extends DB[K]>(key: K, doc: T['id']) => {
 };
 
 /**
+ * 指定された`Collection`の`Document`を削除
+ *
+ * @param  model - 各`Collection`に割り当てられたキー名
+ * @param  docId - `Document`のID
+ * @returns 削除された`Document` | `undefined`(`docId`が存在しない場合)
+ */
+const remove = <T extends keyof DB>(model: T, docId: keyof DB[T]) => {
+  const { [docId]: deleted, ...newState } = database[model];
+
+  database[model] = newState as Collection<T>;
+  save(model);
+
+  return deleted as Doc<T>;
+};
+
+/**
  * 指定された`Collection`の`Document`を初期化 (指定しない場合、全ての`Collection`が対象)
  *
  * @param  key - 各`Collection`に割り当てられたキー名
@@ -187,6 +207,14 @@ interface Model {
    */
   update<K extends keyof DB, T extends DB[K]>(key: K, doc: T[keyof T]): void;
   /**
+   * 指定された`Collection`から`Document`を削除
+   *
+   * @param  model - モデル名
+   * @param  docId - `Document`のID
+   * @returns 削除された`Document` | `undefined`(`docId`が存在しない場合)
+   */
+  remove<T extends keyof DB>(model: T, docId: keyof DB[T]): Doc<T> | undefined;
+  /**
    * 指定された`Collection`の`Document`を初期化 (指定しない場合、全ての`Collection`が対象)
    *
    * @param  key - 各`Collection`に割り当てられたキー名
@@ -204,6 +232,7 @@ export const db: Model = {
   create,
   where,
   update,
+  remove,
   reset,
 };
 
