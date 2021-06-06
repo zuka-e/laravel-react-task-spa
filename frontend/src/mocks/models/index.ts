@@ -1,24 +1,20 @@
 import { UsersCollection } from './user';
 
 /**
- * 継承した`interface`は動的プロパティ`Document`を持つ
+ * `extends`した`interface`は動的プロパティ`DocumentBase`を持つ
  */
 export interface CollectionBase {
   [uuid: string]: DocumentBase;
 }
 
 /**
- * 継承した`interface`は必須プロパティを持つ
+ * `extends`した`interface`は必須プロパティを持つ
  */
 export interface DocumentBase {
   id: number;
   createdAt: Date;
   updatedAt: Date;
 }
-
-type Collection<T extends keyof DB> = DB[T];
-
-type Doc<T extends keyof DB> = Collection<T>['id'];
 
 /**
  * 初期値: テスト毎に`localStorage`をこの状態にリセット
@@ -36,7 +32,13 @@ const initilalState = {
 };
 
 // `initilalState`が変更されないようにスプレッド演算子でコピー
+/**
+ * 各`Document`の作成回数 (`id`に使用)
+ */
 const count = { ...initilalState.count };
+/**
+ * データの実体 (`Collection`の集合)
+ */
 const database = { ...initilalState.database };
 
 /**
@@ -45,97 +47,91 @@ const database = { ...initilalState.database };
 type DB = typeof database;
 
 /**
+ * モデル指定の`Collection`
+ */
+type Collection<T extends keyof DB> = DB[T];
+
+/**
+ * モデル指定の`Document`
+ */
+type Doc<T extends keyof DB> = Collection<T>['id'];
+
+/**
  * 1. 指定された`key`を持つJSONデータを`localStorage`から取得
  * 2. 指定された`key`を持つ`Collection`に取得したデータをコピー (上書き)
- *
- * @param  key - 各`Collection`に割り当てられたキー名
  */
-const load = <K extends keyof DB>(key: K) => {
-  const storedData = localStorage.getItem(key) || '{}';
-  Object.assign(database[key], JSON.parse(storedData));
+const load = <T extends keyof DB>(model: T) => {
+  const storedData = localStorage.getItem(model) || '{}';
+  Object.assign(database[model], JSON.parse(storedData));
 };
 
 /**
  * 指定された`Collection`をJSON変換して`localStorage`に保存
- *
- * @param  key - 各`Collection`に割り当てられたキー名
  */
-const save = <K extends keyof DB>(key: K) => {
-  localStorage.setItem(key, JSON.stringify(database[key]));
+const save = <T extends keyof DB>(model: T) => {
+  localStorage.setItem(model, JSON.stringify(database[model]));
 };
 
 /**
  * 指定された`Collection`の`Document`の存在有無を確認
- *
- * @param  key - 各`Collection`に割り当てられたキー名
  */
-const exists = <K extends keyof DB>(key: K) =>
-  Object.keys(database[key]).length > 0;
+const exists = <T extends keyof DB>(model: T) =>
+  Object.keys(database[model]).length > 0;
 
 /**
  * 指定された`Collection`のコピーを返却
- *
- * @param  key - 各`Collection`に割り当てられたキー名
  */
-const collection = <K extends keyof DB>(key: K) => {
-  const collectionClone = { ...database[key] };
+const collection = <T extends keyof DB>(model: T) => {
+  const collectionClone = { ...database[model] };
   return collectionClone; // 参照のみ許可 (直接データを返さない)
 };
 
 /**
  * 指定された`Collection`に引数の`Document`を新たに作成
- *
- * @param  key - 各`Collection`に割り当てられたキー名
- * @param  doc - `Document`
  */
-const create = <K extends keyof DB, T extends DB[K]>(key: K, doc: T['id']) => {
+const create = <T extends keyof DB>(model: T, doc: Doc<T>) => {
   const defaultValues = {
-    id: count[key] + 1,
+    id: count[model] + 1,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
   // `guestUser`など、プロパティ設定がある場合はデフォルト値を上書きする
   const newDoc = { ...defaultValues, ...doc };
-  const newState = { ...database[key], [String(newDoc.id)]: newDoc };
+  const newState = { ...database[model], [String(newDoc.id)]: newDoc };
 
-  database[key] = newState;
-  count[key] += 1;
-  save(key);
+  database[model] = newState;
+  count[model] += 1;
+  save(model);
 };
 
 /**
  * 指定された`value`をプロパティ(`column`)の値として持つ`Document`を検索
- *
- * @returns 合致する`Document`の配列
  */
-const where = <K extends keyof DB, T extends DB[K]>(
-  key: K,
-  column: keyof T['id'],
+const where = <T extends keyof DB>(
+  model: T,
+  column: keyof Doc<T>,
   value: any
-) =>
-  Object.values(database[key]).filter(
+) => {
+  const matchedDocs = Object.values(database[model]).filter(
     (doc) => doc[column as keyof typeof doc] === value
   );
+  return matchedDocs as Doc<T>[];
+};
 
 /**
  * 指定された`Collection`の`Document`を更新
- *
- * @param  key - 各`Collection`に割り当てられたキー名
- * @param  doc - `Document`
  */
-const update = <K extends keyof DB, T extends DB[K]>(key: K, doc: T['id']) => {
+const update = <T extends keyof DB>(model: T, doc: Doc<T>) => {
   const uuid = String(doc.id);
-  const newState = { ...database[key], [uuid]: doc };
+  const newState = { ...database[model], [uuid]: doc };
 
-  database[key] = newState;
-  save(key);
+  database[model] = newState;
+  save(model);
 };
 
 /**
  * 指定された`Collection`の`Document`を削除
  *
- * @param  model - 各`Collection`に割り当てられたキー名
- * @param  docId - `Document`のID
  * @returns 削除された`Document` | `undefined`(`docId`が存在しない場合)
  */
 const remove = <T extends keyof DB>(model: T, docId: keyof DB[T]) => {
@@ -149,13 +145,11 @@ const remove = <T extends keyof DB>(model: T, docId: keyof DB[T]) => {
 
 /**
  * 指定された`Collection`の`Document`を初期化 (指定しない場合、全ての`Collection`が対象)
- *
- * @param  key - 各`Collection`に割り当てられたキー名
  */
-const reset = <K extends keyof DB>(key?: K) => {
-  if (key) {
-    database[key] = initilalState.database[key];
-    count[key] = initilalState.count[key];
+const reset = <T extends keyof DB>(model?: T) => {
+  if (model) {
+    database[model] = initilalState.database[model];
+    count[model] = initilalState.count[model];
   } else {
     Object.assign(database, initilalState.database);
     Object.assign(count, initilalState.count);
@@ -164,62 +158,47 @@ const reset = <K extends keyof DB>(key?: K) => {
 
 interface Model {
   /**
-   * 1. 指定された`key`を持つJSONデータを`localStorage`から取得
-   * 2. 指定された`key`を持つ`Collection`に取得したデータをコピー (上書き)
-   *
-   * @param  key - 各`Collection`に割り当てられたキー名
+   * 1. 指定された`model`を持つJSONデータを`localStorage`から取得
+   * 2. 指定された`model`を持つ`Collection`に取得したデータをコピー (上書き)
    */
-  load<K extends keyof DB>(key: K): void;
+  load<T extends keyof DB>(model: T): void;
   /**
    * 指定された`Collection`の`Document`の存在有無を確認
-   *
-   * @param  key - 各`Collection`に割り当てられたキー名
    */
-  exists<K extends keyof DB>(key: K): boolean;
+  exists<T extends keyof DB>(model: T): boolean;
   /**
    * 指定された`Collection`のコピーを返却
-   *
-   * @param  key - 各`Collection`に割り当てられたキー名
    */
-  collection<K extends keyof DB>(key: K): DB[K];
+  collection<T extends keyof DB>(model: T): DB[T];
   /**
    * 指定された`Collection`に引数の`Document`を新たに作成
-   *
-   * @param  key - 各`Collection`に割り当てられたキー名
    * @param  doc - `Document`
    */
-  create<K extends keyof DB, T extends DB[K]>(key: K, doc: T[keyof T]): void;
+  create<T extends keyof DB>(model: T, doc: Doc<T>): void;
   /**
    * 指定された`value`をプロパティ(`column`)の値として持つ`Document`を検索
    *
    * @returns 合致する`Document`の配列
    */
-  where<K extends keyof DB, T extends DB[K]>(
-    key: K,
-    column: keyof T[keyof T],
+  where<T extends keyof DB>(
+    model: T,
+    column: keyof Doc<T>,
     value: any
-  ): Document[];
+  ): Doc<T>[];
   /**
    * 指定された`Collection`の`Document`を更新
-   *
-   * @param  key - 各`Collection`に割り当てられたキー名
-   * @param  doc - `Document`
    */
-  update<K extends keyof DB, T extends DB[K]>(key: K, doc: T[keyof T]): void;
+  update<T extends keyof DB>(model: T, doc: Doc<T>): void;
   /**
    * 指定された`Collection`から`Document`を削除
    *
-   * @param  model - モデル名
-   * @param  docId - `Document`のID
    * @returns 削除された`Document` | `undefined`(`docId`が存在しない場合)
    */
   remove<T extends keyof DB>(model: T, docId: keyof DB[T]): Doc<T> | undefined;
   /**
    * 指定された`Collection`の`Document`を初期化 (指定しない場合、全ての`Collection`が対象)
-   *
-   * @param  key - 各`Collection`に割り当てられたキー名
    */
-  reset<K extends keyof DB>(key?: K): void;
+  reset<T extends keyof DB>(model?: T): void;
 }
 
 /**
