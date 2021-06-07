@@ -1,7 +1,8 @@
 import axios from 'axios';
-import store from '../store';
-import { signOut } from '../store/slices/authSlice';
-import { API_HOST, API_VERSION } from '../config/api';
+
+import { API_HOST, API_VERSION } from 'config/api';
+import store from 'store';
+import { signOut } from 'store/slices/authSlice';
 
 const apiClient = (params?: { nonApiRoute: true }) => {
   const nonApiRoute = !!params?.nonApiRoute; // 引数なし -> false

@@ -1,14 +1,15 @@
 import { useState } from 'react';
+
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Box, Grid, TextField } from '@material-ui/core';
-import { User } from '../../models/User';
-import { useAppDispatch } from '../../utils/hooks/useAppDipatch';
+
+import { User } from 'models/User';
 import { updateProfile } from 'store/thunks';
-import AlertMessage from '../../templates/AlertMessge';
-import SubmitButton from '../../templates/SubmitButton';
-import { isGuest } from '../../utils/auth';
+import { useAppDispatch } from 'utils/hooks';
+import { isGuest } from 'utils/auth';
+import { AlertMessage, SubmitButton } from 'templates';
 
 // Input items
 type FormData = {

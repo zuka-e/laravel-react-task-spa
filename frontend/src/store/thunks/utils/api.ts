@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import { API_HOST } from 'config/api';
 
 // `store`の利用不可、それを利用した関数も同様 (以下のエラー発生)

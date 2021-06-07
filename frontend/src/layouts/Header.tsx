@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import { Link } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { pink } from '@material-ui/core/colors';
@@ -15,12 +16,13 @@ import {
   Person as PersonIcon,
   Menu as MenuIcon,
 } from '@material-ui/icons';
-import { APP_NAME } from '../config/app';
-import { isSignedIn } from '../utils/auth';
+
+import { APP_NAME } from 'config/app';
+import { isSignedIn } from 'utils/auth';
+import { PopoverControl } from 'templates';
+import { AccountMenuList } from 'components/Header';
 import Sidebar from './Sidebar';
-import PopoverControl from '../templates/PopoverControl';
-import AccountMenuList from '../components/Header/AccountMenuList';
-import logo from '../images/logo.svg';
+import logo from 'images/logo.svg';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

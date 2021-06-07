@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
   Box,
@@ -9,8 +10,9 @@ import {
   DialogContentText,
   Button,
 } from '@material-ui/core';
-import { useAppDispatch } from '../../utils/hooks/useAppDipatch';
+
 import { deleteAccount } from 'store/thunks';
+import { useAppDispatch } from 'utils/hooks';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

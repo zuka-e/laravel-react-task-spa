@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -6,12 +7,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { TextField, Button, Divider, Grid, Box } from '@material-ui/core';
-import { APP_NAME } from '../../config/app';
-import { useAppDispatch } from 'utils/hooks';
+
+import { APP_NAME } from 'config/app';
 import { createUser } from 'store/thunks';
-import FormLayout from '../../layouts/FormLayout';
-import LabeledCheckbox from '../../templates/LabeledCheckbox';
-import SubmitButton from 'templates/SubmitButton';
+import { useAppDispatch } from 'utils/hooks';
+import { FormLayout } from 'layouts';
+import { LabeledCheckbox, SubmitButton } from 'templates';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

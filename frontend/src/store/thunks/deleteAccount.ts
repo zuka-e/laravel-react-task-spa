@@ -2,7 +2,6 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 
 import { AUTH_USER_PATH } from 'config/api';
-
 import { authApiClient } from './utils/api';
 import { RejectWithValueType } from '.';
 

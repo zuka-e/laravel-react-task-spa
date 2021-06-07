@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
+
 import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
+
 import Home from './pages';
 import SignUp from './pages/auth/SignUp';
 import EmailVerification from './pages/auth/EmailVerification';
@@ -10,9 +12,8 @@ import ResetPassword from './pages/auth/ResetPassword';
 import NotFound from './pages/error/NotFound';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
-import { useAppDispatch } from './utils/hooks/useAppDipatch';
 import { setFlash } from './store/slices/authSlice';
-import { useQuery } from './utils/hooks';
+import { useAppDispatch, useQuery } from './utils/hooks';
 import { isReady, isSentEmail, isSignedIn } from './utils/auth';
 
 const GuestRoute = ({ ...rest }) => {

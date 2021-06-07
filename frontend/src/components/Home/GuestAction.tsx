@@ -1,13 +1,15 @@
 import React from 'react';
+
 import { useHistory } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Button, List, ListItem } from '@material-ui/core';
 import { Menu as MenuIcon } from '@material-ui/icons';
-import PopoverControl from '../../templates/PopoverControl';
-import { useAppDispatch } from '../../utils/hooks/useAppDipatch';
+
+import { GUEST_EMAIL, GUEST_NAME, GUEST_PASSWORD } from 'config/app';
 import { createUser, signInWithEmail } from 'store/thunks';
+import { useAppDispatch } from 'utils/hooks';
 import { makeEmail } from 'utils/generator';
-import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
+import { PopoverControl } from 'templates';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,7 +30,7 @@ const GuestAction: React.FC = () => {
 
   const handleGuestSignUp = () => {
     const user = {
-      name: 'ゲストユーザー',
+      name: GUEST_NAME,
       email: makeEmail(),
       password: GUEST_PASSWORD,
       password_confirmation: GUEST_PASSWORD,

@@ -1,10 +1,12 @@
 import React from 'react';
+
 import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Container, Grid, Typography, Button, Box } from '@material-ui/core';
-import filingSystem from '../../images/filing_system.svg';
-import drag from '../../images/drag.svg';
-import search from '../../images/search.svg';
+
+import filingSystem from 'images/filing_system.svg';
+import drag from 'images/drag.svg';
+import search from 'images/search.svg';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

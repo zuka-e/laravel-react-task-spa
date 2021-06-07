@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
+
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import Routes from './Routes';
-import Loading from './layouts/Loading';
-import FlashNotification from './layouts/FlashNotification';
+import { Loading, FlashNotification } from './layouts';
 import { initializeAuthState, isReady } from './utils/auth';
 import { useAppSelector } from './utils/hooks';
 

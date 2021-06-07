@@ -13,10 +13,3 @@ export const generateRandomString = (length?: number) => {
   }
   return result;
 };
-
-export const makeEmail = () => {
-  const username = generateRandomString() + generateRandomString();
-  const domain = 'example.com';
-  const email = username + '@' + domain;
-  return email;
-};

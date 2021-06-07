@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
@@ -9,9 +10,10 @@ import {
   Box,
   Grid,
 } from '@material-ui/core';
-import { APP_NAME } from '../config/app';
-import logo from '../images/logo_short.svg';
-import AlertMessage from '../templates/AlertMessge';
+
+import { APP_NAME } from 'config/app';
+import { AlertMessage } from 'templates';
+import logo from 'images/logo_short.svg';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

@@ -1,9 +1,11 @@
 import React from 'react';
+
 import { Box, Button, Grid } from '@material-ui/core';
-import { useAppDispatch } from '../../utils/hooks/useAppDipatch';
+
 import { sendEmailVerificationLink } from 'store/thunks';
-import AlertMessage from '../../templates/AlertMessge';
-import { isVerified } from '../../utils/auth';
+import { useAppDispatch } from 'utils/hooks';
+import { isVerified } from 'utils/auth';
+import { AlertMessage } from 'templates';
 
 const UserStatus: React.FC = () => {
   const dispatch = useAppDispatch();

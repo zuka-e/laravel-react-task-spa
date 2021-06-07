@@ -1,5 +1,4 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-
 import { AxiosError } from 'axios';
 
 import { GET_CSRF_TOKEN_PATH, SIGNIN_PATH } from 'config/api';
