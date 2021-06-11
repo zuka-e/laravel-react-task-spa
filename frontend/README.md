@@ -1,4 +1,4 @@
-# 環境構築及び初期設定 ( Frontend )
+# フロントエンドの環境構築及び初期設定に関する実装
 
 ## 概要
 
@@ -28,9 +28,9 @@ SPA構築の基本ライブラリとして**React**を使用し、開発環境�
 - [React Hook Form](https://react-hook-form.com/) (7.6.5) - [フォーム](#フォーム)生成
 - [Yup](https://github.com/jquense/yup) (0.32.9) - [スキーマ構築](#yup)
 - [Jest](https://jestjs.io/ja) (27.0.4) - [テスト](#テスト)
-- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro) (27.0.4)  - UIテスト
-- [Mock Service Worker](https://mswjs.io) (0.28.2) - [APIモック](#APIモック)
-- [markdown-to-jsx](https://github.com/probablyup/markdown-to-jsx) (7.1.3) - Markdown
+- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro) (27.0.4)  - [UIテスト](#react-testing-library)
+- [Mock Service Worker](https://mswjs.io) (0.28.2) - [APIモック](#mock-server-worker-msw)
+- [markdown-to-jsx](https://github.com/probablyup/markdown-to-jsx) (7.1.3) - [Markdown](#markdown)
 
 ## ディレクトリ構成
 
@@ -291,6 +291,8 @@ const Home: React.FC = () => {
 ```
 
 以上で、コンポーネントをレンダリングする際に同時に`title`タグも変更されるようにすることができました。  
+
+> 参考： [devias-io/material-kit-react](https://github.com/devias-io/material-kit-react/tree/main/src/pages) - GitHub  
 
 ## 状態管理
 
@@ -727,7 +729,7 @@ type FormData = {
 
 上記では、メールアドレスとパスワードでログインする場合の入力項目です。`remember`はログイン状態を維持するか決定するオプションで、フォームのチェックボックスにチェックを入れると`"on"`が送信され、外すと何も送信されません。よって、`string | undefined`ですが、それを`?`を使用して表しています。  
 
-次に、Yupによるスキーマを構築します。ここでバリデーションに利用できるAPIは[YupのGithub](https://github.com/jquense/yup)から確認できます。  
+次に、Yupによるスキーマを構築します。ここでバリデーションに利用できるAPIは[こちらのGitHubのページ](https://github.com/jquense/yup)から確認できます。  
 
 ```tsx :src/pages/auth/SignIn.tsx
 import * as yup from 'yup';
@@ -1116,3 +1118,214 @@ afterAll(() => {
 以上で、以降`yarn test`を実行した場合に行われたAPIリクエストはMSWによって捕捉されるようになりました。  
 
 > 参考： [Node - Getting Started - Mock Service Worker Docs](https://mswjs.io/docs/getting-started/integrate/node#using-create-react-app)  
+
+### GitHub Actions
+
+**GitHub Actions** は、事前に規定したイベントが発生した際に、自動的に任意のコマンドを実行することができるサービスです。イベントに指定可能なものとして、リポジトリへのPushやPull Request があり、特定のBranchの場合に限定するといった条件を指定することも可能です。  
+
+> 参考： [ワークフローをトリガーするイベント - GitHub Docs](https://docs.github.com/ja/actions/reference/events-that-trigger-workflows)  
+
+GitHub Actions の導入や基本的な使用方法などについては別の記事で説明するとして、以降では今回作成したテストを実行する手順を確認していきます。方針としては、まず依存関係のインストールを行います。このときキャッシュが存在すれば手順をスキップします。次に`.env`ファイルを用意し、ビルド、テストを順に行います。  
+
+キャッシュを利用した依存関係インストールを行うコードは以下のようになります。  
+
+```yml :.github/workflows/test.yml
+- name: Cache Node.js modules
+  id: yarn-cache
+  uses: actions/cache@v2
+  with:
+    path: ./frontend/node_modules
+    key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+    restore-keys: |
+      ${{ runner.os }}-yarn-
+- name: Install dependencies
+  if: steps.yarn-cache.outputs.cache-hit != 'true'
+  run: yarn --frozen-lockfile
+```
+
+初回は通常通りインストールを行い、キャッシュを`path`に指定したパスに保存し、`if`を用いることでインストール実行の条件を定めます。また、インストール時`--frozen-lockfile`を指定することで`yarn.lock`が更新されないようにします。  
+
+> 参考：  
+> [Node - Yarn](https://github.com/actions/cache/blob/main/examples.md#node---yarn) - cache/examples.md at main · actions/cache - GitHub  
+> [Skipping steps based on cache-hit](https://github.com/actions/cache#Skipping-steps-based-on-cache-hit) - actions/cache - GitHub  
+> [Installing dependencies](https://docs.github.com/en/actions/guides/building-and-testing-nodejs#example-using-yarn) - Building and testing Node.js - GitHub Docs  
+
+次に、`.env`ファイルの作成、ビルド、テストを行います。  
+
+```yml :.github/workflows/test.yml
+- name: Set environment variables
+  run: mv .env.example .env
+
+- run: yarn build --if-present
+- run: yarn test
+```
+
+実行するコマンド自体は以上となります。次に、これらを複数のNodeバージョンで実行するように設定を加えます。  
+
+```yml :.github/workflows/test.yml
+strategy:
+  matrix:
+    node-version: [10.x, 12.x, 14.x, 15.x]
+
+steps:
+  - name: Check out repository code
+    uses: actions/checkout@v2
+
+  - name: Use Node.js ${{ matrix.node-version }}
+    uses: actions/setup-node@v1
+    with:
+      node-version: ${{ matrix.node-version }}
+```
+
+> 参考： [Specifying the Node.js version](https://docs.github.com/en/actions/guides/building-and-testing-nodejs#specifying-the-nodejs-version) - Building and testing Node.js - GitHub Docs  
+
+最後に、作業ディレクトリの指定を行います。今回はフロントエンドのコードがリポジトリのルートではなく`frontend`ディレクトリに存在するので`working-directory`を`./frontend`としています。  
+
+```yml :.github/workflows/test.yml
+defaults:
+  run:
+    working-directory: ./frontend
+```
+
+最終的には以下のようなコードを`.github/workflows/test.yml`に作成します。(尚、複数の`job`が存在する場合のコードを示すためにバックエンド側の記述も一部含まれています。)  
+
+```yml :.github/workflows/test.yml
+name: CI
+
+on: [push]
+
+jobs:
+  phpunit: # バックエンド側
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      ...
+
+  build: # フロントエンド側
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x, 15.x]
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache Node.js modules
+        id: yarn-cache
+        uses: actions/cache@v2
+        with:
+          path: ./frontend/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn --frozen-lockfile
+
+      - name: Set environment variables
+        run: mv .env.example .env
+
+      - run: yarn build --if-present
+      - run: yarn test
+```
+
+以降は、GitHubにコードをpushすることで、作成したテストが指定したNodeのバージョンで実行されることになります。  
+
+> 参考： [Building and testing Node.js - GitHub Docs](https://docs.github.com/en/actions/guides/building-and-testing-nodejs)  
+
+## Markdown
+
+ReactでMarkdownを扱うには、Markdown記法で記述された文章をJSXに変換することが求められます。これを実現する方法として、[markdown-to-jsx](https://github.com/probablyup/markdown-to-jsx)を使用します。  
+
+> 参考： [material-ui/Terms.js at master · mui-org/material-ui](https://github.com/mui-org/material-ui/blob/master/docs/src/pages/premium-themes/onepirate/Terms.js) - GitHub  
+
+## markdown-to-jsx
+
+markdown-to-jsxを利用することで、Markdownの各要素 (`h1`や`p`など) を任意のコンポーネントに変換することが可能で、これによってMaterial-UIとの併用も容易に実現できます。  
+
+利用する際には型定義ファイルも必要になるので同時にインストールを行います。  
+
+```bash
+yarn add markdown-to-jsx @types/markdown-to-jsx
+```
+
+Markdownへの変換は`Markdown`コンポーネントによって行われ、この時`options`プロパティによってどのようなコンポーネントに変換するか指定することができます。  
+
+`Markdown`を利用する度に毎回このような指定を行うのはコードの重複になるので、`options`を指定したコンポーネントを新たに作成し、JSXに変換する際にはこちらを利用することにします。  
+
+`Markdown.tsx`というファイルを作成し、単に`options`指定した`Markdown`を`export`するような実装を行います。まず`options`が空の状態のコードは以下のようになります。  
+
+```tsx :src/templates/Markdown.tsx
+import { ReactNode } from 'react';
+import MarkdownToJsx, { MarkdownToJSX } from 'markdown-to-jsx';
+
+const options: MarkdownToJSX.Options = {};
+
+const Markdown: React.FC = ({ children }) => {
+  return (
+    <MarkdownToJsx options={options}>
+      {children as string & ReactNode}
+    </MarkdownToJsx>
+  );
+};
+
+export default Markdown;
+```
+
+上記のコードでは、`Markdown`ではなく`MarkdownToJsx`を`import`しています。これは`default export`されているので任意の名前にすることが可能で、ここでは`MarkdownToJsx`という名前にしています。`Markdown`コンポーネントとして作成しており名前が衝突するのでこのような方法を採っています。  
+
+次に、`MarkdownToJsx`をマウスオーバーして得られた型情報から、`options`の型は`MarkdownToJSX.Options`であることが判明したので、そのための`namespace`を`import`しています。  
+
+そして、`MarkdownToJsx`に与える`children`は`string`であることが求められるので、`as string`記述して型アサーションを行うことで対処します。  
+
+それでは次に`options`を指定してMaterial-UIを使用できるようにしていきます。  
+
+```tsx :src/templates/Markdown.tsx
+const options: MarkdownToJSX.Options = {
+  overrides: {
+    h1: {
+      component: (props) => (
+        <Typography gutterBottom component='h1' variant='h3' {...props} />
+      ),
+    },
+    li: {
+      component: (props) => <Typography component='li' {...props} />,
+    },
+  }
+};
+```
+
+上記のように、`overrides`のHTML要素プロパティに対し、変換に使用するコンポーネントを指定することでデフォルトの変換機能を上書きすることができます。これでMarkdownにMaterial-UIをスタイルを適用することができるようになりました。  
+
+> 参考： [material-ui/Markdown.js at master · mui-org/material-ui](https://github.com/mui-org/material-ui/blob/master/docs/src/pages/premium-themes/onepirate/modules/components/Markdown.js) - GitHub  
+
+`h1`などの見出しは`id`属性が自動的に付与されます。しかし日本語では機能しないのでその場合は`options`に以下のような指定を行います。  
+
+```tsx :src/templates/Markdown.tsx
+const options: MarkdownToJSX.Options = {
+  slugify: (str) => str, // 自動生成されるid属性を日本語で利用
+  overrides: {
+      ...
+```
+
+> 参考： [options.slugify](https://github.com/probablyup/markdown-to-jsx#optionsslugify) - probablyup/markdown-to-jsx - GitHub  
+
+以上で、MarkdownをReactで扱うための準備は完了です。  
+
+## まとめ
+
+以上、SPAのフロントエンドを構成する上で必要となる要素 (状態管理やルーティングなど) 及びそれらを実現するための技術 (ReduxやReact Routerなど) について、その意義を確認しつつ初めに行うべき実装を記述してきました。  
+
+今回利用したパッケージ群はその選定理由に導入容易性を含んでおり、比較的簡単に実装まで行うことができたと思います。しかし一方で、無意味なコードや重複を避け、無駄がなく可読性や再利用性が高いコードを構成するためには、それぞれの公式ドキュメントやコードを読み理解した上で実装することが必要だと思いました。ここで今まで初期設定という形で実装してきたコードもそれを志向しています。  
