@@ -14,7 +14,7 @@ import {
   isSignedIn,
 } from 'mocks/utils/store/auth';
 import { CSRF_TOKEN } from 'mocks/utils/validation';
-import { reset } from 'mocks/data';
+import { refresh } from 'mocks/data';
 
 describe('Thunk updating the user password', () => {
   const signInRequest: SignInRequest = {
@@ -24,7 +24,7 @@ describe('Thunk updating the user password', () => {
 
   beforeEach(() => {
     initializeStore();
-    reset();
+    refresh();
   });
 
   describe('Rejected', () => {

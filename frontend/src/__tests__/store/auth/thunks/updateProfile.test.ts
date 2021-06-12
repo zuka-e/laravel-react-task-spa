@@ -9,7 +9,7 @@ import {
   isSignedIn,
 } from 'mocks/utils/store/auth';
 import { CSRF_TOKEN } from 'mocks/utils/validation';
-import { guestUser, reset, unverifiedUser } from 'mocks/data';
+import { guestUser, refresh, unverifiedUser } from 'mocks/data';
 
 describe('Thunk updating the user profile', () => {
   const signInRequest: SignInRequest = {
@@ -19,7 +19,7 @@ describe('Thunk updating the user profile', () => {
 
   beforeEach(() => {
     initializeStore();
-    reset();
+    refresh();
   });
 
   describe('Rejected', () => {

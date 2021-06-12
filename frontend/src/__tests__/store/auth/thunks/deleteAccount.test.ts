@@ -6,7 +6,6 @@ import {
   SignInRequest,
   signInWithEmail,
 } from 'store/thunks';
-import { reset } from 'mocks/data';
 import { initializeStore, store } from 'mocks/utils/store';
 import {
   getFlashState,
@@ -15,6 +14,7 @@ import {
   isSignedIn,
 } from 'mocks/utils/store/auth';
 import { CSRF_TOKEN } from 'mocks/utils/validation';
+import { refresh } from 'mocks/data';
 
 describe('Thunk for an account delete', () => {
   const signInRequest: SignInRequest = {
@@ -24,7 +24,7 @@ describe('Thunk for an account delete', () => {
 
   beforeEach(() => {
     initializeStore();
-    reset();
+    refresh();
   });
 
   describe('Rejected', () => {

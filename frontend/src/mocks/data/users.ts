@@ -23,13 +23,18 @@ export const unverifiedUser: User = {
 
 const initialUsers: User[] = [guestUser, unverifiedUser];
 
-export const reset = () => {
-  db.reset();
+const seed = () => {
+  const password = digestText(GUEST_PASSWORD);
+
   initialUsers.forEach((user) => {
-    const password = digestText(GUEST_PASSWORD);
     const userDoc: UserDocument = { ...user, password };
     db.create('users', userDoc);
   });
+};
+
+export const refresh = () => {
+  db.reset('users');
+  seed();
 };
 
 const initialize = () => {
@@ -39,7 +44,7 @@ const initialize = () => {
     console.log(e); // ignore SyntaxError at JSON.parse
   }
   if (db.exists('users')) return;
-  else reset();
+  else seed();
 };
 
 // 初期化実行
