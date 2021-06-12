@@ -6,16 +6,15 @@ import '@testing-library/jest-dom';
 import { server } from './mocks/server';
 
 beforeAll(() => {
-  // Enable the mocking in tests.
-  server.listen();
+  server.listen(); // Enable the mocking in tests.
+  window.scrollTo = jest.fn();
 });
 
 afterEach(() => {
-  // Reset any runtime handlers tests may use.
-  server.resetHandlers();
+  server.resetHandlers(); // Reset any runtime handlers tests may use.
 });
 
 afterAll(() => {
-  // Clean up once the tests are done.
-  server.close();
+  server.close(); // Clean up once the tests are done.
+  jest.clearAllMocks();
 });
