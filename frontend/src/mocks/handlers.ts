@@ -222,7 +222,10 @@ export const handlers = [
 
     auth.logout();
     sessionStorage.removeItem(session_id);
-    return res(ctx.status(204), ctx.cookie('session_id', ''));
+    return res(
+      ctx.status(204),
+      ctx.cookie('session_id', '', { httpOnly: true })
+    );
   }),
 
   rest.delete<DefaultRequestBody, undefined, RequestParams>(
@@ -239,7 +242,10 @@ export const handlers = [
       auth.logout();
       sessionStorage.clear();
 
-      return res(ctx.status(204), ctx.cookie('session_id', ''));
+      return res(
+        ctx.status(204),
+        ctx.cookie('session_id', '', { httpOnly: true })
+      );
     }
   ),
 ];
