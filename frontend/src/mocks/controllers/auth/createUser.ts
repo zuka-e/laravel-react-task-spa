@@ -11,8 +11,8 @@ export const store = (request: SignUpRequest): SignUpResponse => {
     password: digestText(request.password),
   } as UserDocument;
 
-  db.create('users', newUserDoc);
-  auth.login(newUserDoc);
+  const createdUser = db.create('users', newUserDoc);
+  auth.login(createdUser);
 
-  return { user: sanitizeUser(newUserDoc) };
+  return { user: sanitizeUser(createdUser) };
 };

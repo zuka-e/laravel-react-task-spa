@@ -62,7 +62,8 @@ type Doc<T extends keyof DB> = Collection<T>['id'];
  */
 const load = <T extends keyof DB>(model: T) => {
   const storedData = localStorage.getItem(model) || '{}';
-  Object.assign(database[model], JSON.parse(storedData));
+  database[model] = JSON.parse(storedData);
+  count[model] = Object.keys(database[model]).length;
 };
 
 /**
@@ -102,6 +103,7 @@ const create = <T extends keyof DB>(model: T, doc: Doc<T>) => {
   database[model] = newState;
   count[model] += 1;
   save(model);
+  return newDoc;
 };
 
 /**
@@ -174,7 +176,7 @@ interface Model {
    * 指定された`Collection`に引数の`Document`を新たに作成
    * @param  doc - `Document`
    */
-  create<T extends keyof DB>(model: T, doc: Doc<T>): void;
+  create<T extends keyof DB>(model: T, doc: Doc<T>): Doc<T>;
   /**
    * 指定された`value`をプロパティ(`column`)の値として持つ`Document`を検索
    *
