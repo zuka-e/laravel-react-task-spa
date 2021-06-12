@@ -92,6 +92,7 @@ export const handlers = [
       if (!token || !hasValidToken(token)) return res(ctx.status(419));
 
       auth.login(currentUser);
+
       const response: FetchAuthUserResponse = {
         user: sanitizeUser(currentUser),
       };
@@ -221,7 +222,7 @@ export const handlers = [
     if (!token || !hasValidToken(token)) return res(ctx.status(419));
 
     auth.logout();
-    sessionStorage.removeItem(session_id);
+
     return res(
       ctx.status(204),
       ctx.cookie('session_id', '', { httpOnly: true })
@@ -239,8 +240,6 @@ export const handlers = [
       if (!token || !hasValidToken(token)) return res(ctx.status(419));
 
       deleteAccountController.remove(currentUser);
-      auth.logout();
-      sessionStorage.clear();
 
       return res(
         ctx.status(204),
