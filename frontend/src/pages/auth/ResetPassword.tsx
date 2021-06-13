@@ -1,23 +1,18 @@
 import React, { useState } from 'react';
+
 import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import {
-  TextField,
-  Checkbox,
-  FormControlLabel,
-  Button,
-  Divider,
-  Grid,
-} from '@material-ui/core';
-import { APP_NAME } from '../../config/app';
-import { useQuery } from '../../utils/hooks';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { resetPassword, signInWithEmail } from '../../store/slices/authSlice';
-import FormLayout from '../../layouts/FormLayout';
+import { TextField, Button, Divider, Grid, Box } from '@material-ui/core';
+
+import { APP_NAME } from 'config/app';
+import { signInWithEmail, resetPassword } from 'store/thunks';
+import { useAppDispatch, useQuery } from 'utils/hooks';
+import { FormLayout } from 'layouts';
+import { LabeledCheckbox, SubmitButton } from 'templates';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,21 +20,8 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%', // Fix IE 11 issue.
       marginTop: theme.spacing(3),
     },
-    submit: {
-      margin: theme.spacing(3, 0, 2),
-    },
     link: {
       color: theme.palette.info.dark,
-    },
-    textFieldLabel: {
-      // marginTop: theme.spacing(-1),
-      marginBottom: theme.spacing(2),
-      marginLeft: 0,
-      color: theme.palette.text.hint,
-    },
-    divider: {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(2),
     },
   })
 );
@@ -67,7 +49,6 @@ const ResetPassword: React.FC = () => {
   const token = query.get('token') || '';
   const email = query.get('email') || '';
   const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.auth);
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const {
@@ -81,10 +62,6 @@ const ResetPassword: React.FC = () => {
     // `defaultValues`はフォーム入力では変更不可
   });
 
-  const handleVisiblePassword = () => {
-    setVisiblePassword(!visiblePassword);
-  };
-
   // エラー発生時はメッセージを表示する
   const onSubmit = async (data: FormData) => {
     const response = await dispatch(resetPassword(data));
@@ -92,9 +69,7 @@ const ResetPassword: React.FC = () => {
       setMessage(response.payload?.error?.message);
     } else {
       // 認証成功時は自動ログイン
-      dispatch(
-        signInWithEmail({ email, password: data.password, remember: undefined })
-      );
+      dispatch(signInWithEmail({ email, password: data.password }));
     }
   };
 
@@ -133,31 +108,20 @@ const ResetPassword: React.FC = () => {
             }
             error={!!errors?.password_confirmation}
           />
-          <div>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  size='small'
-                  color='primary'
-                  checked={visiblePassword}
-                  onChange={handleVisiblePassword}
-                />
-              }
-              className={classes.textFieldLabel}
-              label='Show Password'
-            />
-          </div>
-          <Button
-            disabled={loading}
-            type='submit'
-            fullWidth
-            variant='contained'
-            color='primary'
-            className={classes.submit}
-          >
-            Reset Password
-          </Button>
-          <Divider className={classes.divider} />
+          <Box ml={1} mb={2}>
+            <LabeledCheckbox
+              state={visiblePassword}
+              setState={setVisiblePassword}
+            >
+              Show Password
+            </LabeledCheckbox>
+          </Box>
+          <Box mt={4} mb={3}>
+            <SubmitButton fullWidth>Reset Password</SubmitButton>
+          </Box>
+          <Box mt={1} mb={2}>
+            <Divider />
+          </Box>
           <Grid container justify='flex-end'>
             <Grid item>
               <Button size='small' onClick={() => history.push('/')}>

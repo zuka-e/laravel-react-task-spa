@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
   Box,
@@ -9,11 +10,13 @@ import {
   DialogContentText,
   Button,
 } from '@material-ui/core';
-import { useAppDispatch } from '../../store/hooks';
-import { deleteAccount } from '../../store/slices/authSlice';
+
+import { deleteAccount } from 'store/thunks';
+import { useAppDispatch } from 'utils/hooks';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    triggerWrapper: { display: 'contents' },
     danger: {
       color: theme.palette.primary.contrastText,
       backgroundColor: theme.palette.error.main,
@@ -49,7 +52,9 @@ const DeleteAccountDialog: React.FC<DeleteAccountDialogProps> = (props) => {
 
   return (
     <React.Fragment>
-      <Box onClick={handleClickOpen}>{trigger}</Box>
+      <Box onClick={handleClickOpen} className={classes.triggerWrapper}>
+        {trigger}
+      </Box>
       <Dialog
         open={open}
         onClose={handleClose}

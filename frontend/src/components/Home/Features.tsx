@@ -1,10 +1,12 @@
 import React from 'react';
+
 import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Container, Grid, Typography, Button, Box } from '@material-ui/core';
-import filingSystem from '../../images/filing_system.svg';
-import drag from '../../images/drag.svg';
-import search from '../../images/search.svg';
+
+import filingSystem from 'images/filing_system.svg';
+import drag from 'images/drag.svg';
+import search from 'images/search.svg';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,6 +48,15 @@ const useStyles = makeStyles((theme: Theme) =>
 const Features: React.FC = () => {
   const classes = useStyles();
 
+  const basename = (filename: string) => {
+    const startIndex =
+      filename.lastIndexOf('/') !== -1 ? filename.lastIndexOf('/') + 1 : 0;
+    const endIndex =
+      filename.indexOf('.') !== -1 ? filename.indexOf('.') : filename.length;
+
+    return filename.slice(startIndex, endIndex);
+  };
+
   const FeaturesLayout: React.FC<{
     children: React.ReactNode;
     image: string;
@@ -53,7 +64,7 @@ const Features: React.FC = () => {
   }> = ({ children, image, title }) => (
     <Grid item md={4} sm={9} xs={11}>
       <Box className={classes.feature}>
-        <img src={image} alt={image} width='100%' height='100%' />
+        <img src={image} alt={basename(image)} width='100%' height='100%' />
         <Typography variant='h3' component='h2' className={classes.title}>
           {title}
         </Typography>

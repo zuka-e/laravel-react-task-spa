@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react';
+
 import Snackbar from '@material-ui/core/Snackbar';
-import Alert from '@material-ui/lab/Alert';
-import { useAppSelector } from '../store/hooks';
+import { Alert, Color } from '@material-ui/lab';
+
+import { useAppSelector } from 'utils/hooks';
+
+export type FlashNotificationProps = {
+  type: Color;
+  message: string;
+};
 
 const FlashNotification = () => {
   const { flash } = useAppSelector((state) => state.auth);
   const [open, setOpen] = useState(true);
-
   const lastFlash = flash.slice(-1)[0];
 
   // `flash`(store) の変更を監視
@@ -19,7 +25,8 @@ const FlashNotification = () => {
     setOpen(false);
   };
 
-  if (!lastFlash.message) return <></>;
+  // `flash`が初期値のみ場合表示しない
+  if (!lastFlash.message) return <React.Fragment />;
 
   return (
     <Snackbar
@@ -27,6 +34,7 @@ const FlashNotification = () => {
       open={open}
       autoHideDuration={5000}
       onClose={handleClose}
+      aria-label='flash'
     >
       <Alert onClose={handleClose} severity={lastFlash.type} elevation={12}>
         {lastFlash.message}

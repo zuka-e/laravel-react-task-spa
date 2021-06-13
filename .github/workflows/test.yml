@@ -1,9 +1,9 @@
-name: PHPUnit
+name: CI
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
-  test:
+  phpunit:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -46,3 +46,40 @@ jobs:
         env:
           DB_HOST: 127.0.0.1 # <- localhost
         run: ./vendor/bin/phpunit
+
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x, 15.x]
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache Node.js modules
+        id: yarn-cache
+        uses: actions/cache@v2
+        with:
+          path: ./frontend/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn --frozen-lockfile
+
+      - name: Set environment variables
+        run: mv .env.example .env
+
+      - run: yarn build --if-present
+      - run: yarn test

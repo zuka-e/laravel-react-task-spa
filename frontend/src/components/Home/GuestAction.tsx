@@ -1,11 +1,15 @@
 import React from 'react';
+
 import { useHistory } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Button, List, ListItem } from '@material-ui/core';
 import { Menu as MenuIcon } from '@material-ui/icons';
-import PopoverControl from '../../templates/PopoverControl';
-import { useAppDispatch } from '../../store/hooks';
-import { createUser, signInWithEmail } from '../../store/slices/authSlice';
+
+import { GUEST_EMAIL, GUEST_NAME, GUEST_PASSWORD } from 'config/app';
+import { createUser, signInWithEmail } from 'store/thunks';
+import { useAppDispatch } from 'utils/hooks';
+import { makeEmail } from 'utils/generator';
+import { PopoverControl } from 'templates';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,40 +23,27 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const makeEmail = () => {
-  const username =
-    Math.random().toString(36).substring(2, 15) +
-    Math.random().toString(36).substring(2, 15);
-  const domain = 'example.com';
-  const email = username + '@' + domain;
-  return email;
-};
-
 const GuestAction: React.FC = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const history = useHistory();
 
-  const email = process.env.REACT_APP_GUEST_EMAIL;
-  const password = process.env.REACT_APP_GUEST_PASSWORD;
-
   const handleGuestSignUp = () => {
-    if (!password) return;
+    const user = {
+      name: GUEST_NAME,
+      email: makeEmail(),
+      password: GUEST_PASSWORD,
+      password_confirmation: GUEST_PASSWORD,
+    };
 
     history.push('/register'); // メール送信ページを表示するため
-    dispatch(
-      createUser({
-        name: 'ゲストユーザー',
-        email: makeEmail(),
-        password: password,
-        password_confirmation: password,
-      })
-    );
+    dispatch(createUser(user));
   };
 
   const handleGuestSignIn = () => {
-    if (!email || !password) return;
-    dispatch(signInWithEmail({ email, password, remember: undefined }));
+    const email = GUEST_EMAIL;
+    const password = GUEST_PASSWORD;
+    dispatch(signInWithEmail({ email, password }));
   };
 
   return (

@@ -1,18 +1,15 @@
-import { AnyAction, configureStore, ThunkAction } from '@reduxjs/toolkit';
-import rootReducer, { RootState } from './rootReducer';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 
-// 'rootReducer'に設定したものを'store'として利用
-const store = configureStore({
-  reducer: rootReducer,
+import authSlice from './slices/authSlice';
+
+export const rootReducer = combineReducers({
+  auth: authSlice.reducer,
 });
-export type AppDispatch = typeof store.dispatch;
 
-// ThunkAction<戻り値, 'getState'のタイプ, 追加の引数, 許容Actionタイプ> を設定
-export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  AnyAction
->;
+const store = configureStore({ reducer: rootReducer });
+
+export type RootState = ReturnType<typeof rootReducer>;
+
+export type AppDispatch = typeof store.dispatch;
 
 export default store;

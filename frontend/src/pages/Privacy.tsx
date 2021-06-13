@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
+
 import { Helmet } from 'react-helmet-async';
-import { APP_NAME } from '../config/app';
-import Header from '../layouts/Header';
-import Footer from '../layouts/Footer';
-import MarkdownWithToc from '../layouts/MarkdownWithToc';
+
+import { APP_NAME } from 'config/app';
+import { Header, Footer, MarkdownWithToc } from 'layouts';
 
 const Privacy: React.FC = () => {
   useEffect(() => {

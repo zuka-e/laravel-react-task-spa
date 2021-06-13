@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Backdrop, CircularProgress } from '@material-ui/core';
-import { useAppSelector } from '../store/hooks';
+
+import { useAppSelector } from 'utils/hooks';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

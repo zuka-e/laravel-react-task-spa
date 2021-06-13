@@ -1,11 +1,12 @@
 import React from 'react';
+
 import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Container, Typography, Button } from '@material-ui/core';
-import { APP_NAME } from '../../config/app';
-import Header from '../../layouts/Header';
-import Footer from '../../layouts/Footer';
+
+import { APP_NAME } from 'config/app';
+import { Header, Footer } from 'layouts';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
