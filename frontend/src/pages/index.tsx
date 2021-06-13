@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+
 import { Helmet } from 'react-helmet-async';
-import { APP_NAME } from '../config/app';
-import Header from '../layouts/Header';
-import Footer from '../layouts/Footer';
-import Hero from '../components/Home/Hero';
-import Features from '../components/Home/Features';
-import { isSignedIn } from '../utils/auth';
+
+import { APP_NAME } from 'config/app';
+import { isSignedIn } from 'utils/auth';
+import { Header, Footer } from 'layouts';
+import { Hero, Features } from 'components/Home';
 
 const LP = () => (
   <React.Fragment>
@@ -23,6 +23,10 @@ const renderHome = () => {
 };
 
 const Home: React.FC = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <React.Fragment>
       <Helmet>

@@ -3,3 +3,18 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
+import { server } from './mocks/server';
+
+beforeAll(() => {
+  server.listen(); // Enable the mocking in tests.
+  window.scrollTo = jest.fn();
+});
+
+afterEach(() => {
+  server.resetHandlers(); // Reset any runtime handlers tests may use.
+});
+
+afterAll(() => {
+  server.close(); // Clean up once the tests are done.
+  jest.clearAllMocks();
+});

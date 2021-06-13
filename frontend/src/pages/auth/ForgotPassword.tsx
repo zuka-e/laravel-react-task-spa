@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
+
 import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { TextField, Button, Divider, Grid } from '@material-ui/core';
-import { APP_NAME } from '../../config/app';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { forgotPassword } from '../../store/slices/authSlice';
-import FormLayout from '../../layouts/FormLayout';
+import { TextField, Button, Divider, Grid, Box } from '@material-ui/core';
+
+import { APP_NAME } from 'config/app';
+import { forgotPassword } from 'store/thunks';
+import { useAppDispatch } from 'utils/hooks';
+import { FormLayout } from 'layouts';
+import { SubmitButton } from 'templates';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -17,15 +20,8 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%', // Fix IE 11 issue.
       marginTop: theme.spacing(3),
     },
-    submit: {
-      margin: theme.spacing(3, 0, 2),
-    },
     link: {
       color: theme.palette.info.dark,
-    },
-    divider: {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(2),
     },
   })
 );
@@ -44,7 +40,6 @@ const ForgotPassword: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.auth);
   const [message, setMessage] = useState<string | undefined>('');
   const {
     register, // 入力項目の登録
@@ -82,17 +77,12 @@ const ForgotPassword: React.FC = () => {
             helperText={errors?.email?.message}
             error={!!errors?.email}
           />
-          <Button
-            disabled={loading}
-            type='submit'
-            fullWidth
-            variant='contained'
-            color='primary'
-            className={classes.submit}
-          >
-            Send password reset email
-          </Button>
-          <Divider className={classes.divider} />
+          <Box mt={4} mb={3}>
+            <SubmitButton fullWidth>Send password reset email</SubmitButton>
+          </Box>
+          <Box mt={1} mb={2}>
+            <Divider />
+          </Box>
           <Grid container justify='flex-end'>
             <Grid item>
               Back to

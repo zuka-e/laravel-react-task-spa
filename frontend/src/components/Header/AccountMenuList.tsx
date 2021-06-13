@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { useHistory } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
@@ -6,8 +7,9 @@ import {
   AccountCircle as AccountCircleIcon,
   ExitToApp as ExitToAppIcon,
 } from '@material-ui/icons';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { putSignOut } from '../../store/slices/authSlice';
+
+import { signOutFromAPI } from 'store/thunks';
+import { useAppDispatch, useAppSelector } from 'utils/hooks';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,11 +27,11 @@ const AccountMenuList: React.FC = () => {
   const history = useHistory();
 
   const handleSignOut = () => {
-    dispatch(putSignOut());
+    dispatch(signOutFromAPI());
   };
 
   return (
-    <List component='nav' aria-label='sign-out' className={classes.root}>
+    <List component='nav' aria-label='account-menu' className={classes.root}>
       <ListItem button onClick={() => history.push('/account')}>
         <ListItemIcon>
           <AccountCircleIcon />

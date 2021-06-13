@@ -1,8 +1,10 @@
 import React from 'react';
+
 import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Container, Grid, Link, Box, Typography } from '@material-ui/core';
-import { APP_NAME } from '../config/app';
+
+import { APP_NAME } from 'config/app';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

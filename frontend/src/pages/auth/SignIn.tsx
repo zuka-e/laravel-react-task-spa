@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -12,11 +13,14 @@ import {
   Button,
   Divider,
   Grid,
+  Box,
 } from '@material-ui/core';
-import { APP_NAME } from '../../config/app';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { signInWithEmail } from '../../store/slices/authSlice';
-import FormLayout from '../../layouts/FormLayout';
+
+import { APP_NAME } from 'config/app';
+import { signInWithEmail } from 'store/thunks';
+import { useAppDispatch } from 'utils/hooks';
+import { FormLayout } from 'layouts';
+import { LabeledCheckbox, SubmitButton } from 'templates';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -24,21 +28,8 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%', // Fix IE 11 issue.
       marginTop: theme.spacing(3),
     },
-    submit: {
-      margin: theme.spacing(3, 0, 2),
-    },
     link: {
       color: theme.palette.info.dark,
-    },
-    textFieldLabel: {
-      marginTop: theme.spacing(-1),
-      marginBottom: theme.spacing(2),
-      marginLeft: 0,
-      color: theme.palette.text.hint,
-    },
-    divider: {
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(2),
     },
   })
 );
@@ -47,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
 type FormData = {
   email: string;
   password: string;
-  remember: string | undefined;
+  remember?: string;
 };
 
 // The schema-based form validation with Yup
@@ -59,7 +50,6 @@ const schema = yup.object().shape({
 const SignIn: React.FC = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
-  const { loading } = useAppSelector((state) => state.auth);
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const history = useHistory();
@@ -71,10 +61,6 @@ const SignIn: React.FC = () => {
     mode: 'onChange', // バリデーション判定タイミング
     resolver: yupResolver(schema),
   });
-
-  const handleVisiblePassword = () => {
-    setVisiblePassword(!visiblePassword);
-  };
 
   // エラー発生時はメッセージを表示する
   const onSubmit = async (data: FormData) => {
@@ -116,40 +102,29 @@ const SignIn: React.FC = () => {
             helperText={errors?.password?.message || '8-20 characters'}
             error={!!errors?.password}
           />
-          <div>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  size='small'
-                  color='primary'
-                  checked={visiblePassword}
-                  onChange={handleVisiblePassword}
-                />
-              }
-              className={classes.textFieldLabel}
-              label='Show Password'
-            />
-          </div>
+          <Box ml={1} mb={2}>
+            <LabeledCheckbox
+              state={visiblePassword}
+              setState={setVisiblePassword}
+            >
+              Show Password
+            </LabeledCheckbox>
+          </Box>
           <FormControlLabel
             control={
               <Checkbox {...register('remember')} value='on' color='primary' />
             }
             label='Remember me'
           />
-          <Button
-            disabled={loading}
-            type='submit'
-            fullWidth
-            variant='contained'
-            color='primary'
-            className={classes.submit}
-          >
-            Sign In
-          </Button>
+          <Box mt={4} mb={3}>
+            <SubmitButton fullWidth> Sign In</SubmitButton>
+          </Box>
           <Button size='small' onClick={() => history.push('/forgot-password')}>
             <span className={classes.link}>Forgot password?</span>
           </Button>
-          <Divider className={classes.divider} />
+          <Box mt={1} mb={2}>
+            <Divider />
+          </Box>
           <Grid container justify='flex-end'>
             <Grid item>
               New to {APP_NAME}?&nbsp;

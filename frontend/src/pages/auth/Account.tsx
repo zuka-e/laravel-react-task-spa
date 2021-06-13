@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Helmet } from 'react-helmet-async';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
@@ -10,15 +11,17 @@ import {
   Container,
   Button,
 } from '@material-ui/core';
-import { APP_NAME } from '../../config/app';
-import Loading from '../../layouts/Loading';
-import Header from '../../layouts/Header';
-import Footer from '../../layouts/Footer';
-import UserProfile from '../../components/Account/UserProfile';
-import Password from '../../components/Account/Password';
-import UserStatus from '../../components/Account/UserStatus';
-import DeleteAccountDialog from '../../components/Account/DeleteAccountDialog';
-import { useAuth } from '../../utils/hooks';
+
+import { APP_NAME } from 'config/app';
+import { isGuest } from 'utils/auth';
+import { useAuth } from 'utils/hooks/useAuth';
+import { Loading, Header, Footer } from 'layouts';
+import {
+  UserProfile,
+  Password,
+  UserStatus,
+  DeleteAccountDialog,
+} from 'components/Account';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -78,7 +81,11 @@ const Account: React.FC = () => {
             <CardContent>
               <DeleteAccountDialog
                 trigger={
-                  <Button variant='contained' className={classes.danger}>
+                  <Button
+                    disabled={isGuest()}
+                    variant='contained'
+                    className={classes.danger}
+                  >
                     アカウントを削除
                   </Button>
                 }
