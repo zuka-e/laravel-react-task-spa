@@ -7,6 +7,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
+use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class TaskCardTest extends TestCase
@@ -21,6 +22,16 @@ class TaskCardTest extends TestCase
     private static string $URL_PREFIX;
     private static User $FIRST_USER;
 
+    private function login(User $user)
+    {
+        $response = $this->postJson('api/login', [
+            'email' => $user->email,
+            'password' => 'password'
+        ]);
+        $response->assertOk(); // 200
+        return $response;
+    }
+
     public function setUp(): void
     {
         parent::setUp();
@@ -34,7 +45,12 @@ class TaskCardTest extends TestCase
 
     public function test_20_items_in_one_page()
     {
-        $user_id = self::$FIRST_USER->id;
+        $user = self::$FIRST_USER;
+
+        // ログイン
+        $this->login($user);
+
+        $user_id = $user->id;
         $url = self::$URL_PREFIX . "/users/${user_id}/task_cards";
         $response = $this->getJson($url);
         $response->assertJson(
@@ -47,12 +63,17 @@ class TaskCardTest extends TestCase
 
     public function test_sort_in_descending_order()
     {
-        $first_task = TaskCard::factory()->for(self::$FIRST_USER)->create([
+        $user = self::$FIRST_USER;
+
+        // ログイン
+        $this->login($user);
+
+        $first_task = TaskCard::factory()->for($user)->create([
             'title' => 'first task title',
             'created_at' => Carbon::now()->addDay(-1)
         ]);
 
-        $user_id = self::$FIRST_USER->id;
+        $user_id = $user->id;
         $url = self::$URL_PREFIX . "/users/${user_id}/task_cards?page=2";
         $response = $this->getJson($url); // 2ページ目
         $response->assertJson(fn (AssertableJson $json) => $json->has(
@@ -68,23 +89,18 @@ class TaskCardTest extends TestCase
     public function test_cannot_create_task_without_auth()
     {
         $user = self::$FIRST_USER;
-
-        // 認証前
         $user_id = self::$FIRST_USER->id;
         $url = self::$URL_PREFIX . "/users/${user_id}/task_cards";
+
+        // 認証前
         $response = $this->postJson($url, [
             'title' => 'test',
             'user_id' => $user->id
         ]);
         $response->assertUnauthorized(); // 401
 
-        // ログイン処理
-        // $this->get('/sanctum/csrf-cookie');
-        $response = $this->postJson('api/login', [
-            'email' => $user->email,
-            'password' => 'password'
-        ]);
-        $response->assertOk(); // 200
+        // ログイン
+        $this->login($user);
 
         // 認証後
         $this->assertDatabaseMissing('task_cards', [
@@ -92,8 +108,6 @@ class TaskCardTest extends TestCase
             'user_id' => $user->id
         ]);
 
-        $user_id = self::$FIRST_USER->id;
-        $url = self::$URL_PREFIX . "/users/${user_id}/task_cards";
         $response = $this->postJson($url, [
             'title' => 'authenticated',
             'user_id' => $user->id
@@ -104,5 +118,33 @@ class TaskCardTest extends TestCase
             'title' => 'authenticated',
             'user_id' => $user->id
         ]);
+    }
+
+    public function test_cannot_create_task_without_verificarion()
+    {
+        $unverifiedUser = User::factory()->unverified()->create();
+        $user = self::$FIRST_USER;
+        $user_id = self::$FIRST_USER->id;
+        $url = self::$URL_PREFIX . "/users/${user_id}/task_cards";
+
+        // ログイン
+        $this->login($unverifiedUser);
+
+        // メール認証なし
+        $response = $this->postJson($url, [
+            'title' => 'verification required',
+            'user_id' => Auth::user()->id
+        ]);
+        $response->assertForbidden(); // 403
+
+        // 認証済みユーザーとしてログイン
+        $this->actingAs($user);
+
+        // メール認証あり
+        $response = $this->postJson($url, [
+            'title' => 'verification required',
+            'user_id' => Auth::user()->id
+        ]);
+        $response->assertCreated(); // 201
     }
 }

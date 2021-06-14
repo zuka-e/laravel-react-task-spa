@@ -28,7 +28,7 @@ return [
     | of your password brokers setup in your "auth" configuration file.
     |
     */
-
+    // ref. `config/auth.php`, "'passwords' => [..."
     'passwords' => 'users',
 
     /*
@@ -61,7 +61,7 @@ return [
     |
     */
 
-    'home' => RouteServiceProvider::HOME,
+    'home' => env('SPA_URL'),
 
     /*
     |--------------------------------------------------------------------------
@@ -135,8 +135,8 @@ return [
         Features::registration(),
         Features::resetPasswords(),
         Features::emailVerification(),
-        // Features::updateProfileInformation(),
-        // Features::updatePasswords(),
+        Features::updateProfileInformation(),
+        Features::updatePasswords(),
         // Features::twoFactorAuthentication([
         //     'confirmPassword' => true,
         // ]),
