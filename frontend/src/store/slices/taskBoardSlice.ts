@@ -1,11 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { TaskBoard } from 'models';
-import { fetchTaskBoards, FetchTaskBoardsResponse } from 'store/thunks/boards';
+import { TaskBoardsCollection } from 'models';
+import {
+  fetchTaskBoards,
+  fetchTaskBoard,
+  FetchTaskBoardsResponse,
+} from 'store/thunks/boards';
 
 type TaskBoardState = {
   loading: boolean;
-  docs: { [id: string]: TaskBoard };
+  docs: TaskBoardsCollection;
 } & FetchTaskBoardsResponse;
 
 const initialState: TaskBoardState = {
@@ -31,6 +35,17 @@ const taskBoardSlice = createSlice({
       state.loading = false;
     });
     builder.addCase(fetchTaskBoards.rejected, (state, _action) => {
+      state.loading = false;
+    });
+    builder.addCase(fetchTaskBoard.pending, (state, _action) => {
+      state.loading = true;
+    });
+    builder.addCase(fetchTaskBoard.fulfilled, (state, action) => {
+      const docId = action.payload.data.id;
+      state.docs[docId] = action.payload.data;
+      state.loading = false;
+    });
+    builder.addCase(fetchTaskBoard.rejected, (state, _action) => {
       state.loading = false;
     });
   },

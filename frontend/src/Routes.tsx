@@ -54,6 +54,9 @@ const Routes: React.FC = () => {
       <AuthRoute exact path='/users/:userId/boards'>
         <TaskBoard.Index />
       </AuthRoute>
+      <AuthRoute exact path='/users/:userId/boards/:boardId'>
+        <TaskBoard.Show />
+      </AuthRoute>
 
       <Route path='*' component={NotFound} />
     </Switch>

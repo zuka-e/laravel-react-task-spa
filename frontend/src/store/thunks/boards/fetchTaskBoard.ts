@@ -3,26 +3,28 @@ import { AxiosError } from 'axios';
 
 import { apiClient } from 'utils/api';
 import { TaskBoard } from 'models';
-import { DataWithPagination, RejectWithValueType } from 'store/thunks';
+import { RejectWithValueType } from 'store/thunks';
 
-export type FetchTaskBoardsResponse = DataWithPagination<TaskBoard>;
+export type FetchTaskBoardResponse = {
+  data: TaskBoard;
+};
 
-export type FetchTaskBoardsRequest = {
+export type FetchTaskBoardRequest = {
   userId: string;
+  boardId: string;
   page?: string;
 };
 
-export const fetchTaskBoards = createAsyncThunk<
-  FetchTaskBoardsResponse,
-  FetchTaskBoardsRequest,
+export const fetchTaskBoard = createAsyncThunk<
+  FetchTaskBoardResponse,
+  FetchTaskBoardRequest,
   { rejectValue: RejectWithValueType }
->('auth/fetchTaskBoards', async (payload, thunkApi) => {
+>('auth/fetchTaskBoard', async (payload, thunkApi) => {
   try {
-    const { userId, page } = payload;
+    const { userId, boardId, page } = payload;
     const query = page ? `?page=${page}` : '';
-    const url = `/users/${userId}/task_boards` + query;
+    const url = `/users/${userId}/task_boards/${boardId}` + query;
     const response = await apiClient().get(url);
-
     return response?.data;
   } catch (e) {
     const error = e as AxiosError<RejectWithValueType>;
@@ -35,4 +37,4 @@ export const fetchTaskBoards = createAsyncThunk<
   }
 });
 
-export default fetchTaskBoards;
+export default fetchTaskBoard;

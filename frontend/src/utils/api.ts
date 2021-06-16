@@ -4,7 +4,7 @@ import { API_HOST, API_VERSION } from 'config/api';
 import store from 'store';
 import { setFlash, signOut } from 'store/slices/authSlice';
 
-const apiClient = (params?: { nonApiRoute: true }) => {
+export const apiClient = (params?: { nonApiRoute: true }) => {
   const nonApiRoute = !!params?.nonApiRoute; // 引数なし -> false
   const baseURL = nonApiRoute ? API_HOST : API_HOST + '/api/' + API_VERSION;
   const apiClient = axios.create({
@@ -40,4 +40,7 @@ const apiClient = (params?: { nonApiRoute: true }) => {
   return apiClient;
 };
 
-export default apiClient;
+export const isLoading = () => {
+  const state = store.getState();
+  return state.auth.loading || state.boards.loading;
+};

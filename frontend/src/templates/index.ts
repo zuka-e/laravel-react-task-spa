@@ -5,4 +5,6 @@ export { default as SubmitButton } from './SubmitButton';
 export { default as LightTooltip } from './LightTooltip';
 export { default as LinkWrapper } from './LinkWrapper';
 export { default as ScrolledBox } from './ScrolledBox';
+export { default as ScrolledGridContainer } from './ScrolledGridContainer';
 export { default as ScrolledTypography } from './ScrolledTypography';
+export { default as TypographyWithLimitedRows } from './TypographyWithLimitedRows';
