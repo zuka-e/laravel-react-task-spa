@@ -15,9 +15,19 @@ class TaskCardSeeder extends Seeder
      */
     public function run()
     {
-        $user = User::factory()->create();
+        $user =  UserSeeder::$guestUser;
+        $anotherUser =  UserSeeder::$anotherUser;
 
-        // 'User'に属するデータを生成
-        TaskCard::factory()->count(21)->for($user)->create();
+        foreach ($user->taskBoards()->get() as $board) {
+            foreach ($board->taskLists as $list) {
+                TaskCard::factory()->count(5)->for($list)->for($user)->create();
+            }
+        }
+
+        foreach ($anotherUser->taskBoards()->get() as $board) {
+            foreach ($board->taskLists as $list) {
+                TaskCard::factory()->count(5)->for($list)->for($anotherUser)->create();
+            }
+        }
     }
 }

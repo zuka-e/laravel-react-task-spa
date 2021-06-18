@@ -22,7 +22,8 @@ class TaskListFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'title' => $this->faker->sentence,
+            'description' => $this->faker->paragraph . $this->faker->paragraph,
         ];
     }
 }

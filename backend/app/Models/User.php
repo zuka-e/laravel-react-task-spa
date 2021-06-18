@@ -41,8 +41,18 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    public function taskBoards()
+    {
+        return $this->hasMany(TaskBoard::class);
+    }
+
+    public function taskLists()
+    {
+        return $this->hasManyThrough(TaskList::class, TaskBoard::class);
+    }
+
     public function taskCards()
     {
-        return $this->hasMany(TaskCard::class);
+        return $this->hasManyThrough(TaskCard::class, TaskList::class);
     }
 }

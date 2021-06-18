@@ -28,4 +28,9 @@ class TaskCard extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function taskList()
+    {
+        return $this->belongsTo(TaskList::class);
+    }
 }
