@@ -10,7 +10,7 @@ export type TaskBoard = {
 export type TaskBoardsCollection = CollectionBase<TaskBoard>;
 
 export type TaskList = {
-  taskBoardId: string;
+  boardId: string;
   title: string;
   description: string;
   cards: TaskCard[];
@@ -19,7 +19,7 @@ export type TaskList = {
 export type TaskListsCollection = CollectionBase<TaskList>;
 
 export type TaskCard = {
-  taskListId: string;
+  listId: string;
   title: string;
   content: string;
   deadline: Date;
