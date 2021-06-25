@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import { useParams } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Container, Grid, Divider, Box } from '@material-ui/core';
+import { Container, Grid, Divider } from '@material-ui/core';
 
 import { useAppDispatch, useAppSelector, useQuery } from 'utils/hooks';
 import { fetchTaskBoard, FetchTaskBoardRequest } from 'store/thunks/boards';
@@ -14,14 +14,38 @@ import {
 } from 'templates';
 import { MenuButton, TaskList } from 'components/boards/TaskBoard';
 
+const boxWidth = '370px';
+// const styles = {
+//   openInfoBox: { maxWidth: '100%', minWidth: boxWidth },
+// };
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     main: {
       paddingTop: theme.spacing(2),
-      paddingBottom: theme.spacing(4),
+      paddingRight: 0,
+    },
+    listItems: {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(4),
     },
     listItem: {
-      minWidth: '375px',
+      minWidth: boxWidth,
+      padding: theme.spacing(1),
+    },
+    sideBox: {
+      transition: theme.transitions.create('all'),
+      overflow: 'hidden',
+      position: 'relative',
+      width: '100%',
+      maxWidth: 0,
+      minWidth: 0,
+      '& > div': {
+        position: 'absolute',
+        height: '100%',
+        maxWidth: '100%',
+        minWidth: boxWidth,
+        borderLeft: '1px solid ' + theme.palette.divider,
+      },
     },
   })
 );
@@ -58,19 +82,26 @@ const TaskBoard: React.FC = () => {
             </PopoverControl>
           </Grid>
         </ScrolledGridContainer>
-        <Box mb={2}>
-          <Divider />
-        </Box>
-        <ScrolledGridContainer spacing={2}>
-          {board.lists?.map((list, i) => (
-            <Grid item key={list.id} className={classes.listItem}>
-              <TaskList list={list} listIndex={i} />
+        <Divider />
+        <Grid container justify='space-between' wrap='nowrap'>
+          <ScrolledGridContainer className={classes.listItems}>
+            {board.lists?.map((list, i) => (
+              <Grid item key={list.id} className={classes.listItem}>
+                <TaskList list={list} listIndex={i} />
+              </Grid>
+            ))}
+            <Grid item className={classes.listItem}>
+              {/* <AddTaskButton list id={boardId} /> */}
             </Grid>
-          ))}
-          <Grid item className={classes.listItem}>
-            {/* <AddTaskButton list id={boardId} /> */}
+          </ScrolledGridContainer>
+          <Grid
+            item
+            className={classes.sideBox}
+            // style={open ? styles.openInfoBox : undefined}
+          >
+            {/* <InfoBox /> */}
           </Grid>
-        </ScrolledGridContainer>
+        </Grid>
       </Container>
     </BaseLayout>
   );
