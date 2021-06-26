@@ -4,12 +4,8 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Card, CardContent, Box } from '@material-ui/core';
 
 import * as Model from 'models';
-import {
-  LabeledSelect,
-  ScrolledBox,
-  TypographyWithLimitedRows,
-} from 'templates';
-import { ListCardHeader } from '.';
+import { LabeledSelect, ScrolledBox } from 'templates';
+import { ListCardHeader, TaskCard } from '.';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,22 +16,23 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const cardFilter = {
+const cardFilter = {
   ALL: 'All',
   TODO: 'Incompleted',
   DONE: 'Completed',
 } as const;
 
-type CardFilter = typeof cardFilter[keyof typeof cardFilter];
-export interface TaskListProps {
+type FilterName = typeof cardFilter[keyof typeof cardFilter];
+
+export type TaskListProps = {
   list: Model.TaskList;
   listIndex: number;
-}
+};
 
 const TaskList: React.FC<TaskListProps> = (props) => {
-  const { list } = props;
+  const { list, listIndex } = props;
   const classes = useStyles();
-  const [filterValue, setfilterValue] = useState<CardFilter>(cardFilter.ALL);
+  const [filterValue, setfilterValue] = useState<FilterName>(cardFilter.ALL);
 
   const filteredCards = list.cards.filter((card) => {
     if (filterValue === cardFilter.TODO) return !card.done;
@@ -44,7 +41,7 @@ const TaskList: React.FC<TaskListProps> = (props) => {
   });
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setfilterValue(event.target.value as CardFilter); // unknown型から変換
+    setfilterValue(event.target.value as FilterName); // unknown型から変換
   };
 
   return (
@@ -64,14 +61,7 @@ const TaskList: React.FC<TaskListProps> = (props) => {
         <ScrolledBox maxHeight='90vh' mr={-0.5} pr={0.5}>
           {filteredCards.map((card, i) => (
             <Box key={card.id} mb={1}>
-              <Card elevation={2}>
-                <CardContent>
-                  <TypographyWithLimitedRows>
-                    {card.title + card.title}
-                  </TypographyWithLimitedRows>
-                  {/* <TaskCard card={card} index={i} listIndex={listIndex} /> */}
-                </CardContent>
-              </Card>
+              <TaskCard card={card} cardIndex={i} listIndex={listIndex} />
             </Box>
           ))}
         </ScrolledBox>
