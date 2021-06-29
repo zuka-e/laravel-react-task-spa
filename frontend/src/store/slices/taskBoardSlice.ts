@@ -1,19 +1,26 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { TaskBoardsCollection } from 'models';
+import { TaskBoard, TaskBoardsCollection, TaskCard, TaskList } from 'models';
 import {
   fetchTaskBoards,
   fetchTaskBoard,
   FetchTaskBoardsResponse,
 } from 'store/thunks/boards';
 
+export type InfoBoxProps = {
+  type?: 'board' | 'list' | 'card';
+  data?: TaskBoard | TaskList | TaskCard;
+};
+
 type TaskBoardState = {
   loading: boolean;
+  infoBox: { open: number } & InfoBoxProps;
   docs: TaskBoardsCollection;
 } & FetchTaskBoardsResponse;
 
 const initialState: TaskBoardState = {
   loading: false,
+  infoBox: { open: 0 },
   docs: {},
   data: [],
   links: {} as TaskBoardState['links'],
@@ -23,7 +30,19 @@ const initialState: TaskBoardState = {
 const taskBoardSlice = createSlice({
   name: 'taskBoard',
   initialState,
-  reducers: {},
+  reducers: {
+    openInfoBox(state, action: PayloadAction<InfoBoxProps>) {
+      state.infoBox.open += 1;
+      state.infoBox.type = action.payload.type;
+      state.infoBox.data = action.payload.data;
+    },
+    closeInfoBox(state) {
+      state.infoBox.open = 0;
+    },
+    removeInfoBox(state) {
+      state.infoBox = initialState.infoBox;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchTaskBoards.pending, (state, _action) => {
       state.loading = true;
@@ -50,5 +69,8 @@ const taskBoardSlice = createSlice({
     });
   },
 });
+
+export const { openInfoBox, closeInfoBox, removeInfoBox } =
+  taskBoardSlice.actions;
 
 export default taskBoardSlice;

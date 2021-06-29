@@ -12,12 +12,12 @@ import {
   ScrolledGridContainer,
   ScrolledTypography,
 } from 'templates';
-import { MenuButton, TaskList } from 'components/boards/TaskBoard';
+import { MenuButton, TaskList, InfoBox } from 'components/boards/TaskBoard';
 
 const boxWidth = '370px';
-// const styles = {
-//   openInfoBox: { maxWidth: '100%', minWidth: boxWidth },
-// };
+const styles = {
+  openInfoBox: { maxWidth: '100%', minWidth: boxWidth },
+};
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     main: {
@@ -97,9 +97,9 @@ const TaskBoard: React.FC = () => {
           <Grid
             item
             className={classes.sideBox}
-            // style={open ? styles.openInfoBox : undefined}
+            style={state.infoBox.open ? styles.openInfoBox : undefined}
           >
-            {/* <InfoBox /> */}
+            <InfoBox type={state.infoBox.type} data={state.infoBox.data} />
           </Grid>
         </Grid>
       </Container>
