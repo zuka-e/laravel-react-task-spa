@@ -3,12 +3,14 @@ import React, { useState } from 'react';
 import { ClickAwayListener } from '@material-ui/core';
 
 import theme from 'theme';
+import { TaskCard } from 'models';
 import {
   InfoBoxProps,
   closeInfoBox,
   removeInfoBox,
 } from 'store/slices/taskBoardSlice';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
+import { TaskCardDetails } from '.';
 
 const InfoBox: React.FC<InfoBoxProps> = (props) => {
   const { type, data } = props;
@@ -20,7 +22,7 @@ const InfoBox: React.FC<InfoBoxProps> = (props) => {
       case 'list':
         return <React.Fragment />; //<TaskListDetails />
       case 'card':
-        return <React.Fragment />; //<TaskCardDetails />
+        return <TaskCardDetails card={data as TaskCard} />;
     }
   };
 
