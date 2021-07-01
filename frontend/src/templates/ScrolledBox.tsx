@@ -1,26 +1,28 @@
-import { withStyles } from '@material-ui/core/styles';
-import { CSSProperties } from '@material-ui/core/styles/withStyles';
-import { Box } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { Box, BoxProps } from '@material-ui/core';
 
-const scrollbar: CSSProperties = {
-  overflowX: 'hidden',
-  overflowY: 'hidden',
-  '&:hover': {
-    overflowX: 'auto',
-    overflowY: 'auto',
-  },
-  '&::-webkit-scrollbar': {
-    width: '2px',
-    height: '1px',
-  },
-  '&::-webkit-scrollbar-track': {
-    backgroundColor: '#eee',
-  },
-  '&::-webkit-scrollbar-thumb': {
-    backgroundColor: '#ccc',
-  },
+type ScrollProps = {
+  hover?: boolean;
 };
 
-const ScrolledBox = withStyles({ root: scrollbar })(Box);
+const useStyles = makeStyles({
+  root: {
+    overflow: (props: ScrollProps) => (props.hover ? 'hidden' : 'auto'),
+    '&:hover': {
+      overflow: (props: ScrollProps) => (props.hover ? 'auto' : undefined),
+    },
+    '&::-webkit-scrollbar': {
+      width: (props: ScrollProps) => (props.hover ? '2px' : '8px'),
+      height: (props: ScrollProps) => (props.hover ? '2px' : '8px'),
+    },
+    '&::-webkit-scrollbar-track': { backgroundColor: '#eee' },
+    '&::-webkit-scrollbar-thumb': { backgroundColor: '#ccc' },
+  },
+});
+
+const ScrolledBox = (props: BoxProps & ScrollProps) => {
+  const { root } = useStyles(props);
+  return <Box className={root} {...props} />;
+};
 
 export default ScrolledBox;
