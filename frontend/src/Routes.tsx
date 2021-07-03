@@ -9,6 +9,7 @@ import SignIn from './pages/auth/SignIn';
 import Account from './pages/auth/Account';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import ResetPassword from './pages/auth/ResetPassword';
+import * as TaskBoard from 'pages/boards';
 import NotFound from './pages/error/NotFound';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
@@ -49,6 +50,14 @@ const Routes: React.FC = () => {
       <AuthRoute exact path='/account' component={Account} />
       <GuestRoute exact path='/forgot-password' component={ForgotPassword} />
       <GuestRoute exact path='/reset-password' component={ResetPassword} />
+
+      <AuthRoute exact path='/users/:userId/boards'>
+        <TaskBoard.Index />
+      </AuthRoute>
+      <AuthRoute exact path='/users/:userId/boards/:boardId'>
+        <TaskBoard.Show />
+      </AuthRoute>
+
       <Route path='*' component={NotFound} />
     </Switch>
   );
