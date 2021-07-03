@@ -34,7 +34,9 @@ const ListCardHeader: React.FC<ListCardHeaderProps> = (props) => {
   const { root, content, title, action } = useStyles();
 
   const Title = () => (
-    <ScrolledTypography className={title}>{list.title}</ScrolledTypography>
+    <ScrolledTypography title={list.title} className={title}>
+      {list.title}
+    </ScrolledTypography>
   );
 
   const Subheader = () => (

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import { useParams } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Container, Grid, Divider } from '@material-ui/core';
+import { Container, Grid, Divider, Box } from '@material-ui/core';
 
 import { useAppDispatch, useAppSelector, useQuery } from 'utils/hooks';
 import { fetchTaskBoard, FetchTaskBoardRequest } from 'store/thunks/boards';
@@ -73,7 +73,7 @@ const TaskBoard: React.FC = () => {
     <BaseLayout subtitle={board.title}>
       <Container component='main' maxWidth={false} className={classes.main}>
         <ScrolledGridContainer justify='space-between' alignItems='center'>
-          <ScrolledTypography variant='h1' color='textSecondary'>
+          <ScrolledTypography title={board.title} variant='h1' fontSize='2rem'>
             {board.title}
           </ScrolledTypography>
           <Grid item>
@@ -82,7 +82,9 @@ const TaskBoard: React.FC = () => {
             </PopoverControl>
           </Grid>
         </ScrolledGridContainer>
-        <Divider />
+        <Box mt={1}>
+          <Divider />
+        </Box>
         <Grid container justify='space-between' wrap='nowrap'>
           <ScrolledGridContainer className={classes.listItems}>
             {board.lists?.map((list, i) => (
