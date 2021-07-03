@@ -4,12 +4,16 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async';
 import { ThemeProvider } from '@material-ui/core/styles';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import reportWebVitals from './reportWebVitals';
 import store from './store';
 import theme from './theme';
 import App from './App';
+
+import 'config/moment';
 
 if (process.env.NODE_ENV === 'development') {
   const { worker } = require('./mocks/browser');
@@ -21,8 +25,10 @@ ReactDOM.render(
     <Provider store={store}>
       <HelmetProvider>
         <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <App />
+          <MuiPickersUtilsProvider utils={MomentUtils}>
+            <CssBaseline />
+            <App />
+          </MuiPickersUtilsProvider>
         </ThemeProvider>
       </HelmetProvider>
     </Provider>
