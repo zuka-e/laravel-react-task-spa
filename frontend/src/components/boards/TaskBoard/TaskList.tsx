@@ -45,7 +45,7 @@ const TaskList: React.FC<TaskListProps> = (props) => {
   };
 
   return (
-    <Card id={list.id} elevation={7} className={classes.taskList}>
+    <Card elevation={7} className={classes.taskList}>
       <ListCardHeader list={list} />
 
       <Box mx={1}>

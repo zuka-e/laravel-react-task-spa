@@ -27,10 +27,10 @@ const useStyles = makeStyles((theme: Theme) =>
     listItems: {
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(4),
-    },
-    listItem: {
-      minWidth: boxWidth,
-      padding: theme.spacing(1),
+      '& > .listItem': {
+        minWidth: boxWidth,
+        padding: theme.spacing(1),
+      },
     },
     sideBox: {
       transition: theme.transitions.create('all'),
@@ -88,11 +88,11 @@ const TaskBoard: React.FC = () => {
         <Grid container justify='space-between' wrap='nowrap'>
           <ScrolledGridContainer className={classes.listItems}>
             {board.lists?.map((list, i) => (
-              <Grid item key={list.id} className={classes.listItem}>
+              <Grid item key={list.id} id={list.id} className='listItem'>
                 <TaskList list={list} listIndex={i} />
               </Grid>
             ))}
-            <Grid item className={classes.listItem}>
+            <Grid item className='listItem'>
               {/* <AddTaskButton list id={boardId} /> */}
             </Grid>
           </ScrolledGridContainer>
