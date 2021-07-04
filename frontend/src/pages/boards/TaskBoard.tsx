@@ -101,7 +101,7 @@ const TaskBoard: React.FC = () => {
             className={classes.sideBox}
             style={state.infoBox.open ? styles.openInfoBox : undefined}
           >
-            <InfoBox type={state.infoBox.type} data={state.infoBox.data} />
+            <InfoBox {...state.infoBox} />
           </Grid>
         </Grid>
       </Container>

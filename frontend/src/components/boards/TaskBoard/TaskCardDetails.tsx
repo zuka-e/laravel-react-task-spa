@@ -24,9 +24,8 @@ import {
 import { KeyboardDateTimePicker } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
-import theme from 'theme';
 import { TaskCard } from 'models';
-import { closeInfoBox, removeInfoBox } from 'store/slices/taskBoardSlice';
+import { removeInfoBox } from 'store/slices/taskBoardSlice';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -80,11 +79,7 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
   };
 
   const handleClose = () => {
-    dispatch(closeInfoBox());
-    setTimeout(
-      () => dispatch(removeInfoBox()),
-      theme.transitions.duration.standard + 200
-    );
+    dispatch(removeInfoBox());
   };
 
   const handleDateChange = (date: MaterialUiPickersDate) => {
