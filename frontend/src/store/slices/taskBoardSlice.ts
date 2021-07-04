@@ -7,6 +7,8 @@ import {
   FetchTaskBoardsResponse,
 } from 'store/thunks/boards';
 
+export const infoBoxTypes = ['board', 'list', 'card'];
+
 export type InfoBoxProps = {
   open?: boolean;
   type?: 'board' | 'list' | 'card';
