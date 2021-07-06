@@ -62,6 +62,7 @@ const TaskList: React.FC<TaskListProps> = (props) => {
           <Grid container alignItems='center' justify='space-between'>
             <Grid item>
               <LabeledSelect
+                color='contrastS'
                 label='Filter'
                 options={cardFilter}
                 selectedValue={filterValue}
