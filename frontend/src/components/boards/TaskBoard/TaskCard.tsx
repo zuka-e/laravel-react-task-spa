@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Card, ClickAwayListener } from '@material-ui/core';
+import { Card } from '@material-ui/core';
 
 import theme from 'theme';
 import * as Model from 'models';
 import { useAppDispatch } from 'utils/hooks';
 import { openInfoBox } from 'store/slices/taskBoardSlice';
 import { TypographyWithLimitedRows } from 'templates';
+import { isSelected } from 'utils/boards';
 
 const defaultPadding = theme.spacing(1.5);
 const borderWidth = '2px';
@@ -36,24 +37,18 @@ type TaskCardProps = {
 
 const TaskCard: React.FC<TaskCardProps> = (props) => {
   const { card } = props;
-  const classes = useStyles();
-  const [selected, setSelected] = useState(false);
+  const { root, selected } = useStyles();
   const dispatch = useAppDispatch();
-  const className = `card ${classes.root} ${selected && classes.selected}`;
+  const className = `card ${root} ${isSelected(card) && selected}`;
 
-  const handleClick = () => {
-    setSelected(true);
-    dispatch(openInfoBox({ type: 'card', data: card }));
-  };
+  const handleClick = () => dispatch(openInfoBox({ type: 'card', data: card }));
 
   return (
-    <ClickAwayListener onClickAway={() => setSelected(false)}>
-      <Card onClick={handleClick} className={className}>
-        <TypographyWithLimitedRows title={card.title} className='cardTitle'>
-          {card.title}
-        </TypographyWithLimitedRows>
-      </Card>
-    </ClickAwayListener>
+    <Card onClick={handleClick} className={className}>
+      <TypographyWithLimitedRows title={card.title} className='cardTitle'>
+        {card.title}
+      </TypographyWithLimitedRows>
+    </Card>
   );
 };
 
