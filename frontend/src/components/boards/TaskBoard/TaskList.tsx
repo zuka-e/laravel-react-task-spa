@@ -1,17 +1,25 @@
 import React, { useState } from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Card, CardContent, Box } from '@material-ui/core';
+import { Card, CardContent, Box, Grid, Typography } from '@material-ui/core';
 
 import * as Model from 'models';
+import { isSelected } from 'utils/boards';
 import { LabeledSelect, ScrolledBox } from 'templates';
 import { ListCardHeader, TaskCard } from '.';
 
+const borderWidth = '2px';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    taskList: {
-      backgroundColor: theme.palette.secondary.light,
+    root: {
+      backgroundColor: theme.palette.secondary.main,
       color: theme.palette.secondary.contrastText,
+    },
+    selected: {
+      boxShadow: theme.shadows[3],
+      backgroundColor: theme.palette.secondary.dark,
+      border: borderWidth + ' solid ' + theme.palette.primary.main,
+      '& > .listWrapper': { margin: `-${borderWidth}` },
     },
   })
 );
@@ -31,8 +39,9 @@ export type TaskListProps = {
 
 const TaskList: React.FC<TaskListProps> = (props) => {
   const { list, listIndex } = props;
-  const classes = useStyles();
+  const { root, selected } = useStyles();
   const [filterValue, setfilterValue] = useState<FilterName>(cardFilter.ALL);
+  const className = `list ${root} ${isSelected(list) && selected}`;
 
   const filteredCards = list.cards.filter((card) => {
     if (filterValue === cardFilter.TODO) return !card.done;
@@ -45,28 +54,40 @@ const TaskList: React.FC<TaskListProps> = (props) => {
   };
 
   return (
-    <Card elevation={7} className={classes.taskList}>
-      <ListCardHeader list={list} />
+    <Card elevation={7} className={className}>
+      <div className='listWrapper'>
+        <ListCardHeader list={list} />
 
-      <Box mx={1}>
-        <LabeledSelect
-          label='Filter'
-          options={cardFilter}
-          selectedValue={filterValue}
-          onChange={handleChange}
-        />
-      </Box>
+        <Box px={1}>
+          <Grid container alignItems='center' justify='space-between'>
+            <Grid item>
+              <LabeledSelect
+                label='Filter'
+                options={cardFilter}
+                selectedValue={filterValue}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item>
+              <Box p={1}>
+                <Typography title='タスク数'>{filteredCards.length}</Typography>
+              </Box>
+            </Grid>
+          </Grid>
+        </Box>
 
-      <CardContent>
-        <ScrolledBox maxHeight='90vh' mr={-0.5} pr={0.5}>
-          {filteredCards.map((card, i) => (
-            <Box key={card.id} mb={1}>
-              <TaskCard card={card} cardIndex={i} listIndex={listIndex} />
-            </Box>
-          ))}
-        </ScrolledBox>
-      </CardContent>
-      {/* <AddTaskButton card id={list.id} />*/}
+        <CardContent>
+          <ScrolledBox maxHeight='90vh' mr={-0.5} pr={0.5}>
+            {filteredCards.map((card, i) => (
+              <Box key={card.id} mb={1}>
+                <TaskCard card={card} cardIndex={i} listIndex={listIndex} />
+              </Box>
+            ))}
+          </ScrolledBox>
+        </CardContent>
+
+        {/* <AddTaskButton card id={list.id} />*/}
+      </div>
     </Card>
   );
 };
