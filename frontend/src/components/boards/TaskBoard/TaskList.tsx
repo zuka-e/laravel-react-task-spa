@@ -4,7 +4,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Card, CardContent, Box, Grid, Typography } from '@material-ui/core';
 
 import * as Model from 'models';
-import { isSelected } from 'utils/boards';
+import { useAppSelector } from 'utils/hooks';
 import { LabeledSelect, ScrolledBox } from 'templates';
 import { ListCardHeader, TaskCard } from '.';
 
@@ -40,8 +40,11 @@ export type TaskListProps = {
 const TaskList: React.FC<TaskListProps> = (props) => {
   const { list, listIndex } = props;
   const { root, selected } = useStyles();
+  const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);
   const [filterValue, setfilterValue] = useState<FilterName>(cardFilter.ALL);
-  const className = `list ${root} ${isSelected(list) && selected}`;
+
+  const isSelected = () => list.id === selectedId;
+  const className = `list ${root} ${isSelected() && selected}`;
 
   const filteredCards = list.cards.filter((card) => {
     if (filterValue === cardFilter.TODO) return !card.done;

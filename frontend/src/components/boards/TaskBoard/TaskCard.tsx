@@ -5,10 +5,9 @@ import { Card } from '@material-ui/core';
 
 import theme from 'theme';
 import * as Model from 'models';
-import { useAppDispatch } from 'utils/hooks';
+import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { openInfoBox } from 'store/slices/taskBoardSlice';
 import { TypographyWithLimitedRows } from 'templates';
-import { isSelected } from 'utils/boards';
 
 const defaultPadding = theme.spacing(1.5);
 const borderWidth = '2px';
@@ -38,8 +37,11 @@ type TaskCardProps = {
 const TaskCard: React.FC<TaskCardProps> = (props) => {
   const { card } = props;
   const { root, selected } = useStyles();
+  const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);
   const dispatch = useAppDispatch();
-  const className = `card ${root} ${isSelected(card) && selected}`;
+
+  const isSelected = () => card.id === selectedId;
+  const className = `card ${root} ${isSelected() && selected}`;
 
   const handleClick = () => dispatch(openInfoBox({ type: 'card', data: card }));
 
