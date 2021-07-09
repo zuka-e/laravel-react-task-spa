@@ -15,9 +15,6 @@ import {
 import { MenuButton, TaskList, InfoBox } from 'components/boards/TaskBoard';
 
 const boxWidth = '370px';
-const styles = {
-  openInfoBox: { maxWidth: '100%', minWidth: boxWidth },
-};
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     main: {
@@ -32,21 +29,6 @@ const useStyles = makeStyles((theme: Theme) =>
         padding: theme.spacing(1),
       },
     },
-    sideBox: {
-      transition: theme.transitions.create('all'),
-      overflow: 'hidden',
-      position: 'relative',
-      width: '100%',
-      maxWidth: 0,
-      minWidth: 0,
-      '& > div': {
-        position: 'absolute',
-        height: '100%',
-        maxWidth: '100%',
-        minWidth: boxWidth,
-        borderLeft: '1px solid ' + theme.palette.divider,
-      },
-    },
   })
 );
 
@@ -58,7 +40,6 @@ const TaskBoard: React.FC = () => {
   const board = useDeepEqualSelector(
     (state) => state.boards.docs[params.boardId]
   );
-  const infoBox = useDeepEqualSelector((state) => state.boards.infoBox);
 
   useEffect(() => {
     const request: FetchTaskBoardRequest = {
@@ -98,13 +79,7 @@ const TaskBoard: React.FC = () => {
               {/* <AddTaskButton list id={boardId} /> */}
             </Grid>
           </ScrolledGridContainer>
-          <Grid
-            item
-            className={classes.sideBox}
-            style={infoBox.open ? styles.openInfoBox : undefined}
-          >
-            <InfoBox {...infoBox} />
-          </Grid>
+          <InfoBox />
         </Grid>
       </Container>
     </BaseLayout>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { ClickAwayListener } from '@material-ui/core';
 
 import theme from 'theme';
@@ -9,17 +10,43 @@ import {
   InfoBoxProps,
   removeInfoBox,
 } from 'store/slices/taskBoardSlice';
-import { useAppDispatch, useAppSelector } from 'utils/hooks';
+import {
+  useAppDispatch,
+  useAppSelector,
+  useDeepEqualSelector,
+} from 'utils/hooks';
 import { TaskListDetails, TaskCardDetails } from '.';
 
-const InfoBox: React.FC<InfoBoxProps> = (props) => {
-  const [state, setState] = useState(props);
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      transition: theme.transitions.create('all'),
+      overflow: 'hidden',
+      position: 'relative',
+      width: '100%',
+      maxWidth: 0,
+      minWidth: 0,
+      '& > .infoWrapper': {
+        position: 'absolute',
+        height: '100%',
+        maxWidth: '100%',
+        borderLeft: '1px solid ' + theme.palette.divider,
+      },
+    },
+    open: { maxWidth: '100%' },
+  })
+);
+
+const InfoBox: React.FC = () => {
+  const classes = useStyles();
+  const infoBox = useDeepEqualSelector((state) => state.boards.infoBox);
+  const [state, setState] = useState(infoBox);
 
   useEffect(() => {
-    if (!props.open)
-      setTimeout(() => setState(props), theme.transitions.duration.standard);
-    else setState(props);
-  }, [props]);
+    if (!infoBox.open)
+      setTimeout(() => setState(infoBox), theme.transitions.duration.standard);
+    else setState(infoBox);
+  }, [infoBox]);
 
   const renderInfoBox = () => {
     switch (state.type) {
@@ -32,12 +59,15 @@ const InfoBox: React.FC<InfoBoxProps> = (props) => {
     }
   };
 
-  const NoContent = () => (
-    <h2 style={{ textAlign: 'center' }}>There is no content</h2>
+  return (
+    <div className={`${classes.root} ${state.open && classes.open}`}>
+      {state.type ? (
+        <Wrapper {...infoBox}>{renderInfoBox()}</Wrapper>
+      ) : (
+        <h2 style={{ textAlign: 'center' }}>There is no content</h2>
+      )}
+    </div>
   );
-
-  if (!state.type) return <NoContent />;
-  else return <Wrapper {...state}>{renderInfoBox()}</Wrapper>;
 };
 
 /**
@@ -83,7 +113,7 @@ const Wrapper: React.FC<InfoBoxProps> = (props) => {
 
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
-      <div>{props.children}</div>
+      <div className='infoWrapper'>{props.children}</div>
     </ClickAwayListener>
   );
 };
