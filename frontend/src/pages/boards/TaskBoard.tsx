@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Container, Grid, Divider, Box } from '@material-ui/core';
 
-import { useAppDispatch, useAppSelector, useQuery } from 'utils/hooks';
+import { useAppDispatch, useDeepEqualSelector, useQuery } from 'utils/hooks';
 import { fetchTaskBoard, FetchTaskBoardRequest } from 'store/thunks/boards';
 import { BaseLayout, StandbyScreen } from 'layouts';
 import {
@@ -55,8 +55,10 @@ const TaskBoard: React.FC = () => {
   const query = { page: useQuery().get('page') || '' };
   const params = useParams<{ userId: string; boardId: string }>();
   const dispatch = useAppDispatch();
-  const state = useAppSelector((state) => state.boards);
-  const board = state.docs[params.boardId];
+  const board = useDeepEqualSelector(
+    (state) => state.boards.docs[params.boardId]
+  );
+  const infoBox = useDeepEqualSelector((state) => state.boards.infoBox);
 
   useEffect(() => {
     const request: FetchTaskBoardRequest = {
@@ -99,9 +101,9 @@ const TaskBoard: React.FC = () => {
           <Grid
             item
             className={classes.sideBox}
-            style={state.infoBox.open ? styles.openInfoBox : undefined}
+            style={infoBox.open ? styles.openInfoBox : undefined}
           >
-            <InfoBox {...state.infoBox} />
+            <InfoBox {...infoBox} />
           </Grid>
         </Grid>
       </Container>

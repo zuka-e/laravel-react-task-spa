@@ -6,7 +6,12 @@ import { Container, Grid, Card, Typography, Box } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 
 import { fetchTaskBoards, FetchTaskBoardsRequest } from 'store/thunks/boards';
-import { useAppDispatch, useAppSelector, useQuery } from 'utils/hooks';
+import {
+  useAppDispatch,
+  useAppSelector,
+  useDeepEqualSelector,
+  useQuery,
+} from 'utils/hooks';
 import { BaseLayout, StandbyScreen } from 'layouts';
 import { LinkWrapper, ScrolledBox } from 'templates';
 import { BoardCardHeader } from 'components/boards/TaskBoardIndex';
@@ -26,10 +31,9 @@ const TaskBoardIndex: React.FC = () => {
   const query = { page: useQuery().get('page') || '' };
   const params = useParams<{ userId: string }>();
   const dispatch = useAppDispatch();
-  const state = useAppSelector((state) => state.boards);
-  const boards = state.data;
-  const count = state.meta.last_page;
-  const currentPage = state.meta.current_page;
+  const boards = useDeepEqualSelector((state) => state.boards.data);
+  const count = useAppSelector((state) => state.boards.meta.last_page);
+  const currentPage = useAppSelector((state) => state.boards.meta.current_page);
 
   useEffect(() => {
     const request: FetchTaskBoardsRequest = {

@@ -6,9 +6,9 @@ import { useAppSelector } from '.';
 /**
  * - 二つのオブジェクトの各プロパティ値の等価性を検証
  * - node`assert`の`deepStrictEqual`をロジックに使用
- * `useSelector`の比較メソッド用に`boolean`を返却する仕様
+ * - `useSelector`の比較メソッド用に`boolean`を返却する仕様
  *
- * @returns {boolean} 等価の場合`true`
+ * @returns 等価の場合`true`
  */
 const deepEqual = <T>(left: T, right: T) => {
   try {
