@@ -44,7 +44,7 @@ const TaskList: React.FC<TaskListProps> = (props) => {
   const [filterValue, setfilterValue] = useState<FilterName>(cardFilter.ALL);
 
   const isSelected = () => list.id === selectedId;
-  const className = `list ${root} ${isSelected() && selected}`;
+  const className = `${root} ${isSelected() && selected}`;
 
   const filteredCards = list.cards.filter((card) => {
     if (filterValue === cardFilter.TODO) return !card.done;

@@ -6,6 +6,7 @@ import { Card } from '@material-ui/core';
 import theme from 'theme';
 import * as Model from 'models';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
+import { activateEventAttr as activateInfoBoxEventAttr } from 'utils/infoBox';
 import { openInfoBox } from 'store/slices/taskBoardSlice';
 import { TypographyWithLimitedRows } from 'templates';
 
@@ -41,13 +42,17 @@ const TaskCard: React.FC<TaskCardProps> = (props) => {
   const dispatch = useAppDispatch();
 
   const isSelected = () => card.id === selectedId;
-  const className = `card ${root} ${isSelected() && selected}`;
+  const className = `${root} ${isSelected() && selected}`;
 
-  const handleClick = () => dispatch(openInfoBox({ type: 'card', data: card }));
+  const handleClick = () => {
+    isSelected() && activateInfoBoxEventAttr('shown');
+    if (isSelected()) return;
+    else dispatch(openInfoBox({ type: 'card', data: card }));
+  };
 
   return (
     <Card onClick={handleClick} className={className}>
-      <TypographyWithLimitedRows title={card.title} className='cardTitle'>
+      <TypographyWithLimitedRows title={card.title}>
         {card.title}
       </TypographyWithLimitedRows>
     </Card>

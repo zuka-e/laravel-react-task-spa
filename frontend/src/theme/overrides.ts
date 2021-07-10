@@ -14,6 +14,11 @@ const overrides: Overrides = {
       },
     },
   },
+  MuiButtonBase: {
+    root: {
+      '& *': { pointerEvents: 'none' }, // `event.target`として捕捉されるのを防ぐ
+    },
+  },
   MuiButton: { root: { textTransform: 'unset' } }, // Buttonテキストの大文字変換設定を解除
   MuiList: { dense: { paddingTop: '4px', paddingBottom: '4px' } },
   MuiListItemIcon: { root: { minWidth: undefined, paddingRight: '16px' } },
