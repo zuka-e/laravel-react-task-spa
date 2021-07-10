@@ -1,6 +1,3 @@
-import { State } from 'models';
-import { InfoBoxProps } from 'store/slices/taskBoardSlice';
-
 /**
  * イベント発生時に`eventState`を指定することで`ClickAwayListener`の適用を免れる
  *
@@ -22,9 +19,8 @@ export const deactivateEventAttr = (type: keyof typeof eventState) => {
 export const isItself = () => eventState.shown;
 
 /** @returns 別のデータを表示する操作を行った場合`true` */
-export const hasChanged = (state: State<InfoBoxProps>) =>
-  state.prev?.type !== state.current.type ||
-  state.prev?.data?.id !== state.current.data?.id;
+export const hasChanged = <T extends { id: string }>(prev?: T, current?: T) =>
+  prev?.id !== current?.id;
 
 /**
  * @returns `Button`及び`Popover`状態でのクリックを除外

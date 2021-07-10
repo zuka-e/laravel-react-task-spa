@@ -4,12 +4,8 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { ClickAwayListener } from '@material-ui/core';
 
 import theme from 'theme';
-import { TaskList, TaskCard, State } from 'models';
-import {
-  closeInfoBox,
-  InfoBoxProps,
-  removeInfoBox,
-} from 'store/slices/taskBoardSlice';
+import { TaskList, TaskCard } from 'models';
+import { closeInfoBox, removeInfoBox } from 'store/slices/taskBoardSlice';
 import { useAppDispatch, useDeepEqualSelector, usePrevious } from 'utils/hooks';
 import {
   deactivateEventAttr,
@@ -90,8 +86,10 @@ const InfoBox: React.FC = () => {
  */
 const Wrapper: React.FC = (props) => {
   const dispatch = useAppDispatch();
-  const currentState = useDeepEqualSelector((state) => state.boards.infoBox);
-  const state: State<InfoBoxProps> = {
+  const currentState = useDeepEqualSelector(
+    (state) => state.boards.infoBox.data
+  );
+  const state = {
     current: currentState,
     prev: usePrevious(currentState) || currentState,
   };
@@ -108,7 +106,7 @@ const Wrapper: React.FC = (props) => {
       deactivateEventAttr('shown');
       return;
     }
-    if (hasChanged(state)) {
+    if (hasChanged(state.current, state.prev)) {
       state.prev = state.current;
       return;
     }

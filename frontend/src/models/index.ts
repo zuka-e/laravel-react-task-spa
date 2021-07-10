@@ -14,9 +14,4 @@ export interface DocumentBase {
   updatedAt: Date;
 }
 
-export type State<T = {}> = {
-  current: T;
-  prev?: T;
-};
-
 export * from './Task';
