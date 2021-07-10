@@ -4,7 +4,6 @@ import moment from 'moment';
 import { useParams } from 'react-router-dom';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import {
-  Box,
   Grid,
   Card,
   CardHeader,
@@ -49,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     label: { flex: '0 0 100px', marginRight: theme.spacing(2) },
     text: { whiteSpace: 'pre-wrap' },
-    timeout: { color: theme.palette.error.main },
+    descriptionBlock: { marginTop: theme.spacing(2) },
   })
 );
 
@@ -126,9 +125,9 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = (props) => {
           </Grid>
           <Grid item>{moment(list.updatedAt).calendar()}</Grid>
         </Grid>
-        <Box my={2}>
+        <div className={classes.descriptionBlock}>
           <Typography className={classes.text}>{list.description}</Typography>
-        </Box>
+        </div>
       </CardContent>
     </Card>
   );

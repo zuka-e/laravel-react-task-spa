@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import { useParams } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Container, Grid, Divider, Box } from '@material-ui/core';
+import { Container, Grid, Divider } from '@material-ui/core';
 
 import { useAppDispatch, useDeepEqualSelector, useQuery } from 'utils/hooks';
 import { fetchTaskBoard, FetchTaskBoardRequest } from 'store/thunks/boards';
@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: theme.spacing(2),
       paddingRight: 0,
     },
+    divider: { marginTop: theme.spacing(1) },
     listItems: {
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(4),
@@ -65,9 +66,7 @@ const TaskBoard: React.FC = () => {
             </PopoverControl>
           </Grid>
         </ScrolledGridContainer>
-        <Box mt={1}>
-          <Divider />
-        </Box>
+        <Divider classes={{ root: classes.divider }} />
         <Grid container justify='space-between' wrap='nowrap'>
           <ScrolledGridContainer className={classes.listItems}>
             {board.lists?.map((list, i) => (

@@ -1,5 +1,4 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { Box, BoxProps } from '@material-ui/core';
 
 type ScrollProps = {
   hover?: boolean;
@@ -20,9 +19,13 @@ const useStyles = makeStyles({
   },
 });
 
-const ScrolledBox = (props: BoxProps & ScrollProps) => {
+type ScrolledDivProps = ScrollProps &
+  React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+
+const ScrolledDiv = (props: ScrolledDivProps) => {
+  const { className, ...other } = props;
   const { root } = useStyles(props);
-  return <Box className={root} {...props} />;
+  return <div className={`${root} ${className || ''}`} {...other} />;
 };
 
-export default ScrolledBox;
+export default ScrolledDiv;
