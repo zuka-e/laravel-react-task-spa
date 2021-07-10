@@ -59,6 +59,12 @@ const InfoBox: React.FC = () => {
     };
   }, [dispatch, previousState, currentState.open, currentState.type]);
 
+  useEffect(() => {
+    return function cleanup() {
+      dispatch(removeInfoBox());
+    };
+  }, [dispatch]);
+
   const renderInfoBox = () => {
     switch (currentState.type) {
       case 'board':
