@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { ClickAwayListener } from '@material-ui/core';
 
 import theme from 'theme';
 import { TaskList, TaskCard, State } from 'models';
-import { InfoBoxProps, removeInfoBox } from 'store/slices/taskBoardSlice';
 import {
-  useAppDispatch,
-  useAppSelector,
-  useDeepEqualSelector,
-} from 'utils/hooks';
+  closeInfoBox,
+  InfoBoxProps,
+  removeInfoBox,
+} from 'store/slices/taskBoardSlice';
+import { useAppDispatch, useDeepEqualSelector, usePrevious } from 'utils/hooks';
 import {
   deactivateEventAttr,
   isIgnoredTarget,
@@ -41,30 +41,43 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const InfoBox: React.FC = () => {
   const classes = useStyles();
-  const infoBox = useDeepEqualSelector((state) => state.boards.infoBox);
-  const [state, setState] = useState(infoBox);
+  const dispatch = useAppDispatch();
+  const currentState = useDeepEqualSelector((state) => state.boards.infoBox);
+  const previousState = usePrevious(
+    currentState.type ? currentState : undefined
+  );
 
   useEffect(() => {
-    if (!infoBox.open)
-      setTimeout(() => setState(infoBox), theme.transitions.duration.standard);
-    else setState(infoBox);
-  }, [infoBox]);
+    if (!previousState) return; // `open`を実行していない(`prev`が存在していない)場合
+    if (currentState.open) return; // `close`されていない場合
+    if (!currentState.type) return; // 既に`remove`されている場合
+
+    /** `close`後`transition`動作を待機してから`remove` */
+    const timeoutId = setTimeout(() => {
+      dispatch(removeInfoBox());
+    }, theme.transitions.duration.standard);
+
+    /** Prevent memory leaks */
+    return function cleanup() {
+      clearTimeout(timeoutId);
+    };
+  }, [dispatch, previousState, currentState.open, currentState.type]);
 
   const renderInfoBox = () => {
-    switch (state.type) {
+    switch (currentState.type) {
       case 'board':
         return <React.Fragment />; // <TaskBoardDetails/>
       case 'list':
-        return <TaskListDetails list={state.data as TaskList} />;
+        return <TaskListDetails list={currentState.data as TaskList} />;
       case 'card':
-        return <TaskCardDetails card={state.data as TaskCard} />;
+        return <TaskCardDetails card={currentState.data as TaskCard} />;
     }
   };
 
   return (
-    <div className={`${classes.root} ${state.open && classes.open}`}>
-      {state.type ? (
-        <Wrapper {...infoBox}>{renderInfoBox()}</Wrapper>
+    <div className={`${classes.root} ${currentState.open && classes.open}`}>
+      {currentState.type ? (
+        <Wrapper>{renderInfoBox()}</Wrapper>
       ) : (
         <h2 style={{ textAlign: 'center' }}>There is no content</h2>
       )}
@@ -75,13 +88,12 @@ const InfoBox: React.FC = () => {
 /**
  * 要素外のクリックで`open`状態を解除する機能を付与するためのラッパー。
  */
-const Wrapper: React.FC<InfoBoxProps> = (props) => {
+const Wrapper: React.FC = (props) => {
   const dispatch = useAppDispatch();
-  const currentState = useAppSelector((state) => state.boards.infoBox);
-  const [prevState, setPrevState] = useState<InfoBoxProps>(currentState);
+  const currentState = useDeepEqualSelector((state) => state.boards.infoBox);
   const state: State<InfoBoxProps> = {
     current: currentState,
-    prev: prevState,
+    prev: usePrevious(currentState) || currentState,
   };
 
   /**
@@ -97,12 +109,12 @@ const Wrapper: React.FC<InfoBoxProps> = (props) => {
       return;
     }
     if (hasChanged(state)) {
-      setPrevState(currentState);
+      state.prev = state.current;
       return;
     }
     if (isIgnoredTarget(event.target as HTMLElement)) return;
 
-    dispatch(removeInfoBox());
+    dispatch(closeInfoBox());
   };
 
   return (

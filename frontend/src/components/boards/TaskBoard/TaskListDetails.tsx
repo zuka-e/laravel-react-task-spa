@@ -22,7 +22,7 @@ import {
 } from '@material-ui/icons';
 
 import { TaskList } from 'models';
-import { removeInfoBox } from 'store/slices/taskBoardSlice';
+import { closeInfoBox } from 'store/slices/taskBoardSlice';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -66,7 +66,7 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = (props) => {
   const baseUrl = `${window.location.origin}${window.location.pathname}`;
 
   const handleClose = () => {
-    dispatch(removeInfoBox());
+    dispatch(closeInfoBox());
   };
 
   return (
