@@ -9,21 +9,6 @@ import {
   MenuItem,
 } from '@material-ui/core';
 
-import theme from 'theme';
-
-const makeColor = (color: LabeledSelectProps['color']) => {
-  switch (color) {
-    case 'secondary':
-      return theme.palette.secondary.main;
-    case 'contrastP':
-      return theme.palette.primary.contrastText;
-    case 'contrastS':
-      return theme.palette.secondary.contrastText;
-    default:
-      return theme.palette.primary.main;
-  }
-};
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -32,20 +17,35 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     label: {
       fontWeight: 'bold',
-      '&.MuiFormLabel-root.Mui-focused': {
-        color: (props: LabeledSelectProps) => makeColor(props.color),
+      '&.inputLabelDefault.Mui-focused': {
+        color: theme.palette.primary.contrastText,
+      },
+      '&.inputLabelPrimary.Mui-focused': {
+        color: theme.palette.primary.main,
+      },
+      '&.inputLabelSecondary.Mui-focused': {
+        color: theme.palette.secondary.main,
       },
     },
     input: {
-      '&.MuiInput-underline:after': {
-        borderColor: (props: LabeledSelectProps) => makeColor(props.color),
+      '&:after': {
+        borderColor: theme.palette.primary.contrastText,
+      },
+      '&.inputDefault:after': {
+        color: theme.palette.primary.contrastText,
+      },
+      '&.inputPrimary:after': {
+        color: theme.palette.primary.main,
+      },
+      '&.inputSecondary:after': {
+        color: theme.palette.secondary.main,
       },
     },
   })
 );
 
 type LabeledSelectProps = {
-  color?: 'primary' | 'secondary' | 'contrastP' | 'contrastS';
+  color?: 'primary' | 'secondary';
   label: string;
   options: object;
   selectedValue: string;
@@ -53,15 +53,19 @@ type LabeledSelectProps = {
 };
 
 const LabeledSelect: React.FC<LabeledSelectProps> = (props) => {
-  const { label, options, selectedValue, onChange } = props;
-  const classes = useStyles(props);
+  const { color, label, options, selectedValue, onChange } = props;
+  const classes = useStyles();
 
   const htmlId = 'filter';
   const labelId = htmlId + '-label';
 
   return (
-    <FormControl className={classes.root}>
-      <InputLabel id={labelId} className={classes.label}>
+    <FormControl classes={{ root: classes.root }}>
+      <InputLabel
+        id={labelId}
+        classes={{ focused: classes.label }}
+        className={`inputLabel${color || 'Default'}`}
+      >
         {label}
       </InputLabel>
       <Select
@@ -69,7 +73,12 @@ const LabeledSelect: React.FC<LabeledSelectProps> = (props) => {
         id={htmlId}
         value={selectedValue}
         onChange={onChange}
-        input={<Input className={classes.input} />}
+        input={
+          <Input
+            classes={{ underline: classes.input }}
+            className={`input${color || 'Default'}`}
+          />
+        }
       >
         {Object.values(options).map((option, index) => (
           <MenuItem key={index} value={option}>

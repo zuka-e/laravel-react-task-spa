@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: theme.spacing(2),
       paddingRight: 0,
     },
+    title: { fontSize: '2rem' },
     divider: { marginTop: theme.spacing(1) },
     listItems: {
       marginTop: theme.spacing(1),
@@ -57,7 +58,11 @@ const TaskBoard: React.FC = () => {
     <BaseLayout subtitle={board.title}>
       <Container component='main' maxWidth={false} className={classes.main}>
         <ScrolledGridContainer justify='space-between' alignItems='center'>
-          <ScrolledTypography title={board.title} variant='h1' fontSize='2rem'>
+          <ScrolledTypography
+            title={board.title}
+            variant='h1'
+            className={classes.title}
+          >
             {board.title}
           </ScrolledTypography>
           <Grid item>

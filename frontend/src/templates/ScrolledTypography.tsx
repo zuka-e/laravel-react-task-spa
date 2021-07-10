@@ -1,10 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography, TypographyProps } from '@material-ui/core';
 
-type FontProps = {
-  fontSize?: string;
-};
-
 const useStyles = makeStyles({
   root: {
     whiteSpace: 'nowrap',
@@ -13,12 +9,11 @@ const useStyles = makeStyles({
     '&::-webkit-scrollbar': { height: '2px' },
     '&::-webkit-scrollbar-track': { backgroundColor: '#eee' },
     '&::-webkit-scrollbar-thumb': { backgroundColor: '#ccc' },
-    fontSize: (prop: FontProps) => prop.fontSize,
   },
 });
 
-const ScrolledTypography = (props: TypographyProps & FontProps) => {
-  const { root } = useStyles(props);
+const ScrolledTypography = (props: TypographyProps) => {
+  const { root } = useStyles();
   return <Typography classes={{ root }} {...props} />;
 };
 
