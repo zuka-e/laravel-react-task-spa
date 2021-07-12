@@ -135,10 +135,14 @@ describe('SignIn', () => {
     });
   });
   describe('After authenticated', () => {
-    it('should display the username on the account menu', () => {
+    it('should display the username on the account menu', async () => {
       // `Header`部 `AccountMenuButton`ボタン
       userEvent.click(screen.getByRole('button', { name: 'account-menu' }));
-      expect(screen.getByRole('button', { name: GUEST_NAME })).toBeVisible();
+      /** `setTimeout`の影響で`await`を要する */
+      const buttonToAccountMenu = await screen.findByRole('button', {
+        name: GUEST_NAME,
+      });
+      expect(buttonToAccountMenu).toBeVisible();
       expect(isSignedIn()).toBeTruthy();
     });
   });

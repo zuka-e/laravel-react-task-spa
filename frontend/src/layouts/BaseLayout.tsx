@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 
 import { APP_NAME } from 'config/app';
-import { isLoading } from 'utils/api';
 import { Header, Footer, Progressbar } from 'layouts';
 
 type BaseLayoutProps = { subtitle: string };
@@ -21,7 +20,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = (props) => {
         </title>
       </Helmet>
       <Header />
-      {isLoading() && <Progressbar />}
+      <Progressbar />
       {props.children}
       <Footer />
     </React.Fragment>

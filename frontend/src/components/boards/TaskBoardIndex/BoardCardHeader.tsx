@@ -6,7 +6,7 @@ import { CardHeader, Typography, Tooltip, IconButton } from '@material-ui/core';
 import { MoreVert as MoreVertIcon } from '@material-ui/icons';
 
 import { TaskBoard } from 'models';
-import { ScrolledTypography, PopoverControl, LightTooltip } from 'templates';
+import { PopoverControl, LightTooltip } from 'templates';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -14,11 +14,12 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: theme.spacing(1),
       justifyContent: 'space-between',
     },
-    content: {
-      maxWidth: '93%',
-    },
-    action: {
-      alignSelf: 'flex-end',
+    content: { maxWidth: '93%' },
+    action: { alignSelf: 'flex-end' },
+    title: {
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
     },
   })
 );
@@ -29,11 +30,11 @@ type BoardCardHeaderProps = {
 
 const BoardCardHeader: React.FC<BoardCardHeaderProps> = (props) => {
   const { board } = props;
-  const { root, content, action } = useStyles();
+  const { root, content, action, title } = useStyles();
 
   const Title = () => (
     <LightTooltip title={board.title} enterDelay={100}>
-      <ScrolledTypography>{board.title}</ScrolledTypography>
+      <Typography className={title}>{board.title}</Typography>
     </LightTooltip>
   );
 

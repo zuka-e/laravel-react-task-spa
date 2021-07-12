@@ -39,8 +39,3 @@ export const apiClient = (params?: { nonApiRoute: true }) => {
 
   return apiClient;
 };
-
-export const isLoading = () => {
-  const state = store.getState();
-  return state.auth.loading || state.boards.loading;
-};

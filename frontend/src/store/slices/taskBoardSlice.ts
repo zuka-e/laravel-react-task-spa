@@ -7,20 +7,23 @@ import {
   FetchTaskBoardsResponse,
 } from 'store/thunks/boards';
 
+export const infoBoxTypes = ['board', 'list', 'card'];
+
 export type InfoBoxProps = {
+  open?: boolean;
   type?: 'board' | 'list' | 'card';
   data?: TaskBoard | TaskList | TaskCard;
 };
 
 type TaskBoardState = {
   loading: boolean;
-  infoBox: { open: number } & InfoBoxProps;
+  infoBox: InfoBoxProps;
   docs: TaskBoardsCollection;
 } & FetchTaskBoardsResponse;
 
 const initialState: TaskBoardState = {
   loading: false,
-  infoBox: { open: 0 },
+  infoBox: { open: false },
   docs: {},
   data: [],
   links: {} as TaskBoardState['links'],
@@ -32,12 +35,12 @@ const taskBoardSlice = createSlice({
   initialState,
   reducers: {
     openInfoBox(state, action: PayloadAction<InfoBoxProps>) {
-      state.infoBox.open += 1;
+      state.infoBox.open = true;
       state.infoBox.type = action.payload.type;
       state.infoBox.data = action.payload.data;
     },
     closeInfoBox(state) {
-      state.infoBox.open = 0;
+      state.infoBox.open = false;
     },
     removeInfoBox(state) {
       state.infoBox = initialState.infoBox;

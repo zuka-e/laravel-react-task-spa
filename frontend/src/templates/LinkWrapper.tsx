@@ -1,9 +1,9 @@
 import { Link as RouterLink } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { Link } from '@material-ui/core';
 
-const LinkWrapper: React.FC<{ to: string }> = (props) => {
-  const useStyles = makeStyles({
+const useStyles = makeStyles(() =>
+  createStyles({
     root: {
       color: 'inherit',
       '&:hover': {
@@ -11,7 +11,10 @@ const LinkWrapper: React.FC<{ to: string }> = (props) => {
         textDecoration: 'none',
       },
     },
-  });
+  })
+);
+
+const LinkWrapper: React.FC<{ to: string }> = (props) => {
   const { root } = useStyles();
 
   return (

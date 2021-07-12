@@ -9,21 +9,18 @@ import {
   CardHeader,
   CardContent,
   CardActions,
-  FormControlLabel,
-  Checkbox,
   IconButton,
   Typography,
   Breadcrumbs,
+  Tooltip,
 } from '@material-ui/core';
 import {
   Close as CloseIcon,
   ListAlt as ListAltIcon,
-  Assignment as AssignmentIcon,
+  FolderOpen as FolderOpenIcon,
 } from '@material-ui/icons';
-import { KeyboardDateTimePicker } from '@material-ui/pickers';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
-import { TaskCard } from 'models';
+import { TaskList } from 'models';
 import { closeInfoBox } from 'store/slices/taskBoardSlice';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
 
@@ -49,59 +46,42 @@ const useStyles = makeStyles((theme: Theme) =>
         alignItems: 'center',
       },
     },
-    label: { flex: '0 0 100px' },
-    timeout: { color: theme.palette.error.main },
+    label: { flex: '0 0 100px', marginRight: theme.spacing(2) },
     text: { whiteSpace: 'pre-wrap' },
-    contentBlock: { marginTop: theme.spacing(2) },
+    descriptionBlock: { marginTop: theme.spacing(2) },
   })
 );
 
-type TaskCardDetailsProps = {
-  card: TaskCard;
+type TaskListDetailsProps = {
+  list: TaskList;
 };
 
-const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
-  const { card } = props;
+const TaskListDetails: React.FC<TaskListDetailsProps> = (props) => {
+  const { list } = props;
   const classes = useStyles();
-  const params = useParams<{ userId: string; boardId: string }>();
+  const { boardId } = useParams<{ userId: string; boardId: string }>();
+  const boardName = useAppSelector((state) => state.boards.docs[boardId].title);
   const dispatch = useAppDispatch();
-  const state = useAppSelector((state) => state.boards);
-  const board = state.docs[params.boardId];
-  const list = board.lists.find((list) => list.id === card.listId);
   const baseUrl = `${window.location.origin}${window.location.pathname}`;
-
-  const isInTime = (date: Date) => moment(date).isBefore(new Date(), 'minute');
-
-  const handleToggleDone = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    e.preventDefault();
-  };
 
   const handleClose = () => {
     dispatch(closeInfoBox());
-  };
-
-  const handleDateChange = (date: MaterialUiPickersDate) => {
-    // State managements
-  };
-
-  const handleDateClose = () => {
-    // API requests
   };
 
   return (
     <Card className={classes.root}>
       <CardActions disableSpacing>
         <Breadcrumbs aria-label='breadcrumb' className={classes.breadcrumbs}>
-          <a href={`${baseUrl}#${list?.id}`}>
+          <Tooltip title={boardName}>
+            <Typography>
+              <FolderOpenIcon className={classes.icon} />
+              {'Board'}
+            </Typography>
+          </Tooltip>
+          <a href={`${baseUrl}#${list?.id}`} title={list.title}>
             <ListAltIcon className={classes.icon} />
-            {list?.title}
+            {list.title}
           </a>
-          <Typography>
-            <AssignmentIcon className={classes.icon} />
-            {'Card'}
-          </Typography>
         </Breadcrumbs>
         <IconButton
           aria-label='close'
@@ -116,58 +96,41 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
         className={classes.cardHeader}
         title={
           <Typography className={classes.text} variant='h5' component='p'>
-            {card.title}
+            {list.title}
           </Typography>
         }
       />
       <CardContent className={classes.rows}>
-        <FormControlLabel
-          control={
-            <Checkbox
-              color='primary'
-              checked={card.done}
-              onClick={handleToggleDone}
-            />
-          }
-          label={card.done ? 'Completed' : 'Incompleted'}
-        />
         <Grid container>
           <Grid item className={classes.label}>
-            <label className={isInTime(card.deadline) ? classes.timeout : ''}>
-              締切日時
-            </label>
+            <label>タスク総数</label>
           </Grid>
-          <Grid item>
-            <KeyboardDateTimePicker
-              variant='inline'
-              format='YYYY/MM/DD/ HH:mm'
-              ampm={false}
-              disablePast
-              autoOk
-              value={card.deadline}
-              onChange={handleDateChange}
-              onClose={handleDateClose}
-            />
+          <Grid item>{list.cards.length}</Grid>
+        </Grid>
+        <Grid container>
+          <Grid item className={classes.label}>
+            <label>(完了済)</label>
           </Grid>
+          <Grid item>{list.cards.filter((card) => card.done).length}</Grid>
         </Grid>
         <Grid container>
           <Grid item className={classes.label}>
             <label>作成日時</label>
           </Grid>
-          <Grid item>{moment(card.createdAt).calendar()}</Grid>
+          <Grid item>{moment(list.createdAt).calendar()}</Grid>
         </Grid>
         <Grid container>
           <Grid item className={classes.label}>
             <label>変更日時</label>
           </Grid>
-          <Grid item>{moment(card.updatedAt).calendar()}</Grid>
+          <Grid item>{moment(list.updatedAt).calendar()}</Grid>
         </Grid>
-        <div className={classes.contentBlock}>
-          <Typography className={classes.text}>{card.content}</Typography>
+        <div className={classes.descriptionBlock}>
+          <Typography className={classes.text}>{list.description}</Typography>
         </div>
       </CardContent>
     </Card>
   );
 };
 
-export default TaskCardDetails;
+export default TaskListDetails;
