@@ -10,6 +10,7 @@ class UserSeeder extends Seeder
 {
     public static User $guestUser;
     public static User $anotherUser;
+
     /**
      * Run the database seeds.
      *
