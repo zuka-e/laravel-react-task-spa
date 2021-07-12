@@ -12,16 +12,15 @@ class TaskCardController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\Models\User  $user  // Dependency Injection
-     * => $user: パラメータの {user} を'id'として'User'から自動で取得
+     * @param  \App\Models\User  $user -> パラメータ`{user}`を'id'として'User'を検索 (DI)
      * @return \Illuminate\Http\Response
      */
     public function index(User $user)
     {
-        // カスタマイズされたJSONとして返却
-        return new TaskCardCollection(
-            TaskCard::where('user_id', $user->id)->orderBy('created_at', 'desc')->paginate(20)
-        );
+        // // カスタマイズされたJSONとして返却
+        // return new TaskCardCollection(
+        //     TaskCard::where('user_id', $user->id)->orderBy('created_at', 'desc')->paginate(20)
+        // );
     }
 
     /**
@@ -33,9 +32,9 @@ class TaskCardController extends Controller
      */
     public function store(Request $request, $user, TaskCard $taskCard)
     {
-        $taskCard->title = $request->title;
-        $taskCard->user_id = $user;
-        if ($taskCard->save()) return $taskCard;
+        // $taskCard->title = $request->title;
+        // $taskCard->user_id = $user;
+        // if ($taskCard->save()) return $taskCard;
     }
 
     /**
@@ -46,11 +45,11 @@ class TaskCardController extends Controller
      */
     public function show(User $user, TaskCard $taskCard)
     {
-        // 自動取得した'taskCard'が '$user'に属するデータでなければ404エラー
-        if ($taskCard->user_id != $user->id) {
-            abort(404);
-        }
-        return $taskCard;
+        // // 自動取得した'taskCard'が '$user'に属するデータでなければ404エラー
+        // if ($taskCard->user_id != $user->id) {
+        //     abort(404);
+        // }
+        // return $taskCard;
     }
 
     /**
