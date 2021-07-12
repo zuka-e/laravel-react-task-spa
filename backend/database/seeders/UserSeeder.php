@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
     public function run()
     {
         self::$guestUser =  User::factory()->create([
-            'name' => 'ゲストユーザー',
+            'name' => env('GUEST_NAME'),
             'email' => env('GUEST_EMAIL'),
             'password' => Hash::make(env('GUEST_PASSWORD')),
         ]);
