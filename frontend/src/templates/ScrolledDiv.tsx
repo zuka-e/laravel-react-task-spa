@@ -1,5 +1,4 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, GridProps } from '@material-ui/core';
 
 type ScrollProps = {
   hover?: boolean;
@@ -30,18 +29,23 @@ const useStyles = makeStyles({
   },
 });
 
-const ScrolledGridContainer = (props: GridProps & ScrollProps) => {
+type ScrolledDivProps = ScrollProps &
+  React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+
+const ScrolledDiv = (props: ScrolledDivProps) => {
+  const { className, ...other } = props;
   const classes = useStyles();
 
-  const makeClasses = () => {
+  const makeClassName = () => {
     let className = classes.root;
     if (props.hover) className += ` ${classes.hover}`;
     if (props.small) className += ` ${classes.small}`;
+    if (props.className) className += ` ${props.className}`;
 
-    return { root: className };
+    return className;
   };
 
-  return <Grid container wrap='nowrap' classes={makeClasses()} {...props} />;
+  return <div className={makeClassName()} {...other} />;
 };
 
-export default ScrolledGridContainer;
+export default ScrolledDiv;

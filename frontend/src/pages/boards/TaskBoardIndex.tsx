@@ -2,13 +2,18 @@ import React, { useEffect } from 'react';
 
 import { useHistory, useParams } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Container, Grid, Card, Typography, Box } from '@material-ui/core';
+import { Container, Grid, Card, Typography } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 
 import { fetchTaskBoards, FetchTaskBoardsRequest } from 'store/thunks/boards';
-import { useAppDispatch, useAppSelector, useQuery } from 'utils/hooks';
+import {
+  useAppDispatch,
+  useAppSelector,
+  useDeepEqualSelector,
+  useQuery,
+} from 'utils/hooks';
 import { BaseLayout, StandbyScreen } from 'layouts';
-import { LinkWrapper, ScrolledBox } from 'templates';
+import { LinkWrapper, ScrolledDiv } from 'templates';
 import { BoardCardHeader } from 'components/boards/TaskBoardIndex';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -16,6 +21,19 @@ const useStyles = makeStyles((theme: Theme) =>
     main: {
       paddingTop: theme.spacing(4),
       paddingBottom: theme.spacing(4),
+    },
+    content: {
+      height: '150px',
+      padding: theme.spacing(2),
+      marginTop: theme.spacing(0.5),
+      marginRight: theme.spacing(0.5),
+    },
+    pagination: {
+      marginTop: theme.spacing(4),
+      marginBottom: theme.spacing(4),
+    },
+    paginationUl: {
+      justifyContent: 'center',
     },
   })
 );
@@ -26,10 +44,9 @@ const TaskBoardIndex: React.FC = () => {
   const query = { page: useQuery().get('page') || '' };
   const params = useParams<{ userId: string }>();
   const dispatch = useAppDispatch();
-  const state = useAppSelector((state) => state.boards);
-  const boards = state.data;
-  const count = state.meta.last_page;
-  const currentPage = state.meta.current_page;
+  const boards = useDeepEqualSelector((state) => state.boards.data);
+  const count = useAppSelector((state) => state.boards.meta.last_page);
+  const currentPage = useAppSelector((state) => state.boards.meta.current_page);
 
   useEffect(() => {
     const request: FetchTaskBoardsRequest = {
@@ -52,9 +69,9 @@ const TaskBoardIndex: React.FC = () => {
             <Grid item lg={3} md={4} xs={6} key={board.id}>
               <Card elevation={7}>
                 <LinkWrapper to={`/users/${params.userId}/boards/${board.id}`}>
-                  <ScrolledBox height='150px' p={2} mt={0.5} mr={0.5}>
+                  <ScrolledDiv className={classes.content}>
                     <Typography>{board.description}</Typography>
-                  </ScrolledBox>
+                  </ScrolledDiv>
                 </LinkWrapper>
                 <BoardCardHeader board={board} />
               </Card>
@@ -64,16 +81,15 @@ const TaskBoardIndex: React.FC = () => {
       </Container>
 
       {count && currentPage && (
-        <Box display='flex' justifyContent='center' my={4}>
-          <Pagination
-            count={count}
-            page={currentPage}
-            siblingCount={2}
-            color='primary'
-            size='large'
-            onChange={handleChange}
-          />
-        </Box>
+        <Pagination
+          count={count}
+          page={currentPage}
+          siblingCount={2}
+          color='primary'
+          size='large'
+          onChange={handleChange}
+          classes={{ root: classes.pagination, ul: classes.paginationUl }}
+        />
       )}
     </BaseLayout>
   );

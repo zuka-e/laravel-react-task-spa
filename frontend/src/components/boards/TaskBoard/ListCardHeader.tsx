@@ -7,6 +7,7 @@ import { MoreVert as MoreVertIcon } from '@material-ui/icons';
 
 import { TaskList } from 'models';
 import { PopoverControl, ScrolledTypography } from 'templates';
+import { ListMenu } from '.';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,7 +54,7 @@ const ListCardHeader: React.FC<ListCardHeaderProps> = (props) => {
 
   const Action = () => (
     <PopoverControl trigger={<MenuButton />}>
-      {/* <ListMenu listId={list.id} /> */}
+      <ListMenu list={list} />
     </PopoverControl>
   );
 
