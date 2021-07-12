@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class TaskCardCollection extends ResourceCollection
+class TaskBoardCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.

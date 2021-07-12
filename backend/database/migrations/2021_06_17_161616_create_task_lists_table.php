@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTaskCardsTable extends Migration
+class CreateTaskListsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,22 @@ class CreateTaskCardsTable extends Migration
      */
     public function up()
     {
-        Schema::create('task_cards', function (Blueprint $table) {
+        Schema::create('task_lists', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
+            $table->uuid('task_board_id');
             $table->string('title', 191);
-            $table->text('content')->nullable();
-            $table->dateTime('deadline')->nullable();
-            $table->boolean('done')->default(false);
+            $table->text('description')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->foreign('task_board_id')
+                ->references('id')
+                ->on('task_boards')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });
@@ -37,6 +41,6 @@ class CreateTaskCardsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('task_cards');
+        Schema::dropIfExists('task_lists');
     }
 }

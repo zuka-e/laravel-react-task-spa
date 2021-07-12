@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class TaskCard extends Model
+class TaskBoard extends Model
 {
     use HasFactory;
 
     protected static function booted()
     {
-        static::creating(function ($task_card) {
-            $task_card->id = (string)Str::uuid();
+        static::creating(function ($task_board) {
+            $task_board->id = (string)Str::uuid();
         });
     }
 
@@ -33,25 +33,25 @@ class TaskCard extends Model
 
     protected $fillable = [
         'title',
-        'content',
-        'deadline',
-        'done'
+        'description',
     ];
 
     protected $hidden = [];
 
-    protected $casts = [
-        'done' => 'boolean'
-    ];
+    protected $casts = [];
 
-    // 使用例: TaskCard::find(1)->user;
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function taskList()
+    public function taskLists()
     {
-        return $this->belongsTo(TaskList::class);
+        return $this->hasMany(TaskList::class);
+    }
+
+    public function taskCards()
+    {
+        return $this->hasManyThrough(TaskCard::class, TaskList::class);
     }
 }

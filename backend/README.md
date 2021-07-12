@@ -309,10 +309,10 @@ Route::group([
 | GET | /api/v1/users/{user}/task_cards | index
 | GET | /api/v1/users/{user}/task_cards/create | create
 | POST | /api/v1/users/{user}/task_cards | store
-| GET | /api/v1/users/{user}/task_cards/{post} | show
-| GET | /api/v1/users/{user}/task_cards/{post}/edit | edit
-| PUT/PATCH | /api/v1/users/{user}/task_cards/{post} | update
-| DELETE | /api/v1/users/{user}/task_cards/{post} | destroy
+| GET | /api/v1/users/{user}/task_cards/{task_card} | show
+| GET | /api/v1/users/{user}/task_cards/{task_card}/edit | edit
+| PUT/PATCH | /api/v1/users/{user}/task_cards/{task_card} | update
+| DELETE | /api/v1/users/{user}/task_cards/{task_card} | destroy
 
 今の段階では`index`アクションのみ扱うので、`only`メソッドを使用してその他のルートの出力を停止しています。  
 なお、ルート設定は`artisan`コマンドの`route:list`で確認可能です。  
