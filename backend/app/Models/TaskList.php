@@ -14,6 +14,10 @@ class TaskList extends Model
         'description',
     ];
 
+    protected $hidden = [];
+
+    protected $casts = [];
+
     public function user()
     {
         return $this->belongsTo(User::class);

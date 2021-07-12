@@ -21,6 +21,7 @@ class CreateTaskCardsTable extends Migration
                 ->onDelete('cascade');
             $table->string('title', 191);
             $table->text('content')->nullable();
+            $table->dateTime('deadline')->nullable();
             $table->boolean('done')->default(false);
             $table->timestamps();
         });

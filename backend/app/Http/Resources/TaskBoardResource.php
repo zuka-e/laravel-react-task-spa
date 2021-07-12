@@ -14,6 +14,14 @@ class TaskBoardResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'userId' => $this->user_id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'lists' => $this->when($this->lists, $this->lists),
+            'createdAt' => $this->created_at,
+            'updatedAt' => $this->updated_at,
+        ];
     }
 }

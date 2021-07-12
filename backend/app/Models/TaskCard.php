@@ -12,12 +12,11 @@ class TaskCard extends Model
     protected $fillable = [
         'title',
         'content',
+        'deadline',
         'done'
     ];
 
-    protected $hidden = [
-        'user_id',
-    ];
+    protected $hidden = [];
 
     protected $casts = [
         'done' => 'boolean'

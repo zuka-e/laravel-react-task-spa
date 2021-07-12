@@ -14,6 +14,16 @@ class TaskCardResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'userId' => $this->user_id,
+            'listId' => $this->task_list_id,
+            'title' => $this->title,
+            'content' => $this->content,
+            'deadline' => $this->deadline,
+            'done' => $this->done,
+            'createdAt' => $this->created_at,
+            'updatedAt' => $this->updated_at,
+        ];
     }
 }
