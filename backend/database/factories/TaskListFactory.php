@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\TaskCard;
+use App\Models\TaskList;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class TaskCardFactory extends Factory
+class TaskListFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = TaskCard::class;
+    protected $model = TaskList::class;
 
     /**
      * Define the model's default state.
@@ -23,7 +23,7 @@ class TaskCardFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence,
-            'content' => $this->faker->paragraph,
+            'description' => $this->faker->paragraph . $this->faker->paragraph,
         ];
     }
 }

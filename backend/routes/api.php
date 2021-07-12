@@ -18,24 +18,47 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/home', fn () => Auth::user());
 
+/*
+|--------------------------------------------------------------
+|  Version 1.0
+|--------------------------------------------------------------
+*/
 Route::group([
-    'namespace' => 'App\Http\Controllers',
     'prefix' => 'v1',
+    'namespace' => 'App\Http\Controllers',
     'middleware' => 'auth:sanctum'
 ], function () {
+
+    /*
+    |--------------------------------------------------------------
+    | Auth
+    |--------------------------------------------------------------
+    */
     Route::get('/users/auth', fn () => new UserResource(Auth::user()));
+
     Route::delete('/users/auth', function (Request $request) {
-        $request->user()->delete();
+        $request->usefr()->delete();
         return response()->json([], 204);
     });
-    Route::middleware('verified')
-        ->apiResource('users.task_cards', TaskCardController::class)
-        ->only('index', 'show');
-    Route::middleware('verified')
-        ->apiResource('users.task_cards', TaskCardController::class)
-        ->only('store');
+
+    /*
+    |--------------------------------------------------------------
+    | Task
+    |--------------------------------------------------------------
+    */
+    Route::group([
+        'middleware' => 'verified'
+    ], function () {
+        Route::apiResource('users.task_boards', TaskBoardController::class)
+            ->only('index', 'show');
+    });
 });
 
+/*
+|--------------------------------------------------------------
+| Not Found
+|--------------------------------------------------------------
+*/
 Route::any('/{any?}', function ($any = null) {
     return response()->json([
         'error' => [
