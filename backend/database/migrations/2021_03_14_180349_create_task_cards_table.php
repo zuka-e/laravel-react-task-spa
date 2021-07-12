@@ -14,16 +14,19 @@ class CreateTaskCardsTable extends Migration
     public function up()
     {
         Schema::create('task_cards', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')
-                ->constrained()
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->uuid('user_id');
             $table->string('title', 191);
             $table->text('content')->nullable();
             $table->dateTime('deadline')->nullable();
             $table->boolean('done')->default(false);
             $table->timestamps();
+
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
     }
 
