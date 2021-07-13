@@ -11,7 +11,7 @@ export interface CollectionBase {
  * `extends`した`interface`は必須プロパティを持つ
  */
 export interface DocumentBase {
-  id: number;
+  id: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -22,7 +22,7 @@ export interface DocumentBase {
  * @property count 各`Document`の作成回数 (`id`に使用)
  * @property database `Collection`の集合
  */
-const initilalState = {
+const initialState = {
   count: {
     users: 0,
   },
@@ -31,15 +31,15 @@ const initilalState = {
   },
 };
 
-// `initilalState`が変更されないようにスプレッド演算子でコピー
+// `initialState`が変更されないようにスプレッド演算子でコピー
 /**
  * 各`Document`の作成回数 (`id`に使用)
  */
-const count = { ...initilalState.count };
+const count = { ...initialState.count };
 /**
  * データの実体 (`Collection`の集合)
  */
-const database = { ...initilalState.database };
+const database = { ...initialState.database };
 
 /**
  * `Collection`の集合
@@ -150,11 +150,11 @@ const remove = <T extends keyof DB>(model: T, docId: keyof DB[T]) => {
  */
 const reset = <T extends keyof DB>(model?: T) => {
   if (model) {
-    database[model] = initilalState.database[model];
-    count[model] = initilalState.count[model];
+    database[model] = initialState.database[model];
+    count[model] = initialState.count[model];
   } else {
-    Object.assign(database, initilalState.database);
-    Object.assign(count, initilalState.count);
+    Object.assign(database, initialState.database);
+    Object.assign(count, initialState.count);
   }
 };
 
