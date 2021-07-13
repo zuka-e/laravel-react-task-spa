@@ -9,7 +9,7 @@ import { useAppSelector } from 'utils/hooks';
 const MenuAfterAuth: React.FC = () => {
   const history = useHistory();
   const currentUser = useAppSelector((state) => state.auth.user);
-  const userId = String(currentUser?.id);
+  const userId = currentUser?.id;
 
   const path = {
     boards: `/users/${userId}/boards`,

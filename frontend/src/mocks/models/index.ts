@@ -1,3 +1,4 @@
+import { generateRandomString } from 'utils/generator';
 import { UsersCollection } from './user';
 
 /**
@@ -11,7 +12,7 @@ export interface CollectionBase {
  * `extends`した`interface`は必須プロパティを持つ
  */
 export interface DocumentBase {
-  id: number;
+  id: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -22,7 +23,7 @@ export interface DocumentBase {
  * @property count 各`Document`の作成回数 (`id`に使用)
  * @property database `Collection`の集合
  */
-const initilalState = {
+const initialState = {
   count: {
     users: 0,
   },
@@ -31,15 +32,15 @@ const initilalState = {
   },
 };
 
-// `initilalState`が変更されないようにスプレッド演算子でコピー
+// `initialState`が変更されないようにスプレッド演算子でコピー
 /**
  * 各`Document`の作成回数 (`id`に使用)
  */
-const count = { ...initilalState.count };
+const count = { ...initialState.count };
 /**
  * データの実体 (`Collection`の集合)
  */
-const database = { ...initilalState.database };
+const database = { ...initialState.database };
 
 /**
  * `Collection`の集合
@@ -91,14 +92,14 @@ const collection = <T extends keyof DB>(model: T) => {
  * 指定された`Collection`に引数の`Document`を新たに作成
  */
 const create = <T extends keyof DB>(model: T, doc: Doc<T>) => {
-  const defaultValues = {
-    id: count[model] + 1,
+  const defaultValues: DocumentBase = {
+    id: generateRandomString(),
     createdAt: new Date(),
     updatedAt: new Date(),
   };
   // `guestUser`など、プロパティ設定がある場合はデフォルト値を上書きする
   const newDoc = { ...defaultValues, ...doc };
-  const newState = { ...database[model], [String(newDoc.id)]: newDoc };
+  const newState = { ...database[model], [newDoc.id]: newDoc };
 
   database[model] = newState;
   count[model] += 1;
@@ -124,8 +125,7 @@ const where = <T extends keyof DB>(
  * 指定された`Collection`の`Document`を更新
  */
 const update = <T extends keyof DB>(model: T, doc: Doc<T>) => {
-  const uuid = String(doc.id);
-  const newState = { ...database[model], [uuid]: doc };
+  const newState = { ...database[model], [doc.id]: doc };
 
   database[model] = newState;
   save(model);
@@ -150,11 +150,11 @@ const remove = <T extends keyof DB>(model: T, docId: keyof DB[T]) => {
  */
 const reset = <T extends keyof DB>(model?: T) => {
   if (model) {
-    database[model] = initilalState.database[model];
-    count[model] = initilalState.count[model];
+    database[model] = initialState.database[model];
+    count[model] = initialState.count[model];
   } else {
-    Object.assign(database, initilalState.database);
-    Object.assign(count, initilalState.count);
+    Object.assign(database, initialState.database);
+    Object.assign(count, initialState.count);
   }
 };
 
