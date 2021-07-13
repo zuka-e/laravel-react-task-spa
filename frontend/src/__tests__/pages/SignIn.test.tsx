@@ -139,10 +139,9 @@ describe('SignIn', () => {
       // `Header`部 `AccountMenuButton`ボタン
       userEvent.click(screen.getByRole('button', { name: 'account-menu' }));
       /** `setTimeout`の影響で`await`を要する */
-      const buttonToAccountMenu = await screen.findByRole('button', {
-        name: GUEST_NAME,
-      });
-      expect(buttonToAccountMenu).toBeVisible();
+      expect(
+        await screen.findByRole('button', { name: GUEST_NAME })
+      ).toBeVisible();
       expect(isSignedIn()).toBeTruthy();
     });
   });

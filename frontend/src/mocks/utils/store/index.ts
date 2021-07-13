@@ -1,16 +1,7 @@
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
+import storeApi from 'store';
 
-import { rootReducer } from 'store';
-
-const options = {
-  reducer: rootReducer,
-  middleware: getDefaultMiddleware({
-    serializableCheck: false,
-  }),
-};
-
-export let store = configureStore(options);
+export const store = { ...storeApi };
 
 export const initializeStore = () => {
-  store = configureStore(options);
+  Object.assign(store, { ...storeApi });
 };
