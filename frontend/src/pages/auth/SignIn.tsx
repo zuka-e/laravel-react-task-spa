@@ -104,11 +104,10 @@ const SignIn: React.FC = () => {
           />
           <Box ml={1} mb={2}>
             <LabeledCheckbox
-              state={visiblePassword}
-              setState={setVisiblePassword}
-            >
-              Show Password
-            </LabeledCheckbox>
+              label='Show Password'
+              checked={visiblePassword}
+              setChecked={setVisiblePassword}
+            />
           </Box>
           <FormControlLabel
             control={

@@ -115,11 +115,10 @@ const SignUp: React.FC = () => {
           />
           <Box ml={1} mb={2}>
             <LabeledCheckbox
-              state={visiblePassword}
-              setState={setVisiblePassword}
-            >
-              Show Password
-            </LabeledCheckbox>
+              label='Show Password'
+              checked={visiblePassword}
+              setChecked={setVisiblePassword}
+            />
           </Box>
           <Box mt={4} mb={3}>
             <SubmitButton fullWidth> Create an account</SubmitButton>

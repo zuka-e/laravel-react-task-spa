@@ -108,9 +108,11 @@ const Password: React.FC = () => {
         </Grid>
       </Grid>
       <Box ml={1} mb={2}>
-        <LabeledCheckbox state={visiblePassword} setState={setVisiblePassword}>
-          Show Password
-        </LabeledCheckbox>
+        <LabeledCheckbox
+          label='Show Password'
+          checked={visiblePassword}
+          setChecked={setVisiblePassword}
+        />
       </Box>
       <Box mb={1}>
         {!isGuest() && (
