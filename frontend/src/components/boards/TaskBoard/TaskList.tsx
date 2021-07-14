@@ -75,7 +75,7 @@ const TaskList: React.FC<TaskListProps> = (props) => {
               <LabeledSelect
                 label='Filter'
                 options={cardFilter}
-                selectedValue={filterValue}
+                value={filterValue}
                 onChange={handleChange}
               />
             </Grid>
