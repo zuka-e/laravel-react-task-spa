@@ -7,7 +7,7 @@ import { Container, Card, Box, Typography, Button } from '@material-ui/core';
 
 import { APP_NAME } from 'config/app';
 import { deleteSentEmailState } from 'store/slices/authSlice';
-import { sendEmailVerificationLink } from 'store/thunks';
+import { sendEmailVerificationLink } from 'store/thunks/auth';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { isSentEmail, isVerified } from 'utils/auth';
 import { Header, Footer } from 'layouts';

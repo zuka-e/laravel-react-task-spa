@@ -6,7 +6,7 @@ import authSlice, {
   signIn,
   signOut,
 } from 'store/slices/authSlice';
-import { createUser, SignUpRequest } from 'store/thunks';
+import { createUser, SignUpRequest } from 'store/thunks/auth';
 import { FlashNotificationProps } from 'layouts/FlashNotification';
 import { generateRandomString, makeEmail } from 'utils/generator';
 

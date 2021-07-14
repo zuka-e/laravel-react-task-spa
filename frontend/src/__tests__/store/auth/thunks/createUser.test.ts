@@ -1,5 +1,5 @@
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import { createUser, SignUpRequest } from 'store/thunks';
+import { createUser, SignUpRequest } from 'store/thunks/auth';
 import { makeEmail } from 'utils/generator';
 import { initializeStore, store } from 'mocks/utils/store';
 import {

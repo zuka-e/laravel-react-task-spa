@@ -13,7 +13,7 @@ import {
   resetPassword,
   signOutFromAPI,
   deleteAccount,
-} from 'store/thunks';
+} from 'store/thunks/auth';
 
 export type AuthState = {
   user: User | null;

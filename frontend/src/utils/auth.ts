@@ -1,6 +1,6 @@
 import { GUEST_EMAIL } from 'config/app';
 import store from 'store';
-import { fetchAuthUser } from 'store/thunks';
+import { fetchAuthUser } from 'store/thunks/auth';
 import { localStorageKeys, localStorageValues } from './const';
 
 export const isReady = () => store.getState().auth.signedIn !== undefined;

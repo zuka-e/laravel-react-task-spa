@@ -8,7 +8,7 @@ import {
   ExitToApp as ExitToAppIcon,
 } from '@material-ui/icons';
 
-import { signOutFromAPI } from 'store/thunks';
+import { signOutFromAPI } from 'store/thunks/auth';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
 
 const useStyles = makeStyles((theme: Theme) =>

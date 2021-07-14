@@ -6,7 +6,7 @@ import { Button, List, ListItem } from '@material-ui/core';
 import { Menu as MenuIcon } from '@material-ui/icons';
 
 import { GUEST_EMAIL, GUEST_NAME, GUEST_PASSWORD } from 'config/app';
-import { createUser, signInWithEmail } from 'store/thunks';
+import { createUser, signInWithEmail } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { makeEmail } from 'utils/generator';
 import { PopoverControl } from 'templates';

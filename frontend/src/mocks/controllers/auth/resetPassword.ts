@@ -1,4 +1,4 @@
-import { ResetPasswordRequest } from 'store/thunks';
+import { ResetPasswordRequest } from 'store/thunks/auth';
 import { auth, db, UserDocument } from 'mocks/models';
 import { digestText } from 'mocks/utils/crypto';
 

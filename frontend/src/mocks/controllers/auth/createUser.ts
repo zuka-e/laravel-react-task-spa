@@ -1,4 +1,4 @@
-import { SignUpRequest, SignUpResponse } from 'store/thunks';
+import { SignUpRequest, SignUpResponse } from 'store/thunks/auth';
 import { db, auth } from 'mocks/models';
 import { sanitizeUser, UserDocument } from 'mocks/models/user';
 import { digestText } from 'mocks/utils/crypto';

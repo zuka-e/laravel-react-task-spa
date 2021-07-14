@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Box, Grid, TextField } from '@material-ui/core';
 
-import { updatePassword } from 'store/thunks';
+import { updatePassword } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { isGuest } from 'utils/auth';
 import { LabeledCheckbox, AlertMessage, SubmitButton } from 'templates';

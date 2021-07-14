@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { User } from 'models/User';
-import { fetchAuthUser } from 'store/thunks';
+import { fetchAuthUser } from 'store/thunks/auth';
 import { useAppDispatch, useAppSelector } from '.';
 
 // `user`更新、取得、存在確認用

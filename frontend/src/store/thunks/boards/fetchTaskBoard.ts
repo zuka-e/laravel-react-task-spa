@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import { apiClient } from 'utils/api';
 import { TaskBoard } from 'models';
-import { RejectWithValueType } from 'store/thunks';
+import { RejectWithValueType } from 'store/thunks/auth';
 
 export type FetchTaskBoardResponse = {
   data: TaskBoard;

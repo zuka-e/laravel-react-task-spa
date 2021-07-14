@@ -11,7 +11,7 @@ import {
   Button,
 } from '@material-ui/core';
 
-import { deleteAccount } from 'store/thunks';
+import { deleteAccount } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 
 const useStyles = makeStyles((theme: Theme) =>

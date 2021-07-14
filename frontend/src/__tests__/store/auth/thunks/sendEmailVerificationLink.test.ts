@@ -4,7 +4,7 @@ import {
   sendEmailVerificationLink,
   SignInRequest,
   signInWithEmail,
-} from 'store/thunks';
+} from 'store/thunks/auth';
 import { unverifiedUser } from 'mocks/data/users';
 import { initializeStore, store } from 'mocks/utils/store';
 import {

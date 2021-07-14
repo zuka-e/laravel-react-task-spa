@@ -9,7 +9,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { TextField, Button, Divider, Grid, Box } from '@material-ui/core';
 
 import { APP_NAME } from 'config/app';
-import { signInWithEmail, resetPassword } from 'store/thunks';
+import { signInWithEmail, resetPassword } from 'store/thunks/auth';
 import { useAppDispatch, useQuery } from 'utils/hooks';
 import { FormLayout } from 'layouts';
 import { LabeledCheckbox, SubmitButton } from 'templates';
