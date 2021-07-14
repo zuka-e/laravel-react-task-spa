@@ -6,7 +6,7 @@ import '@testing-library/jest-dom';
 import { server } from './mocks/server';
 
 beforeAll(() => {
-  server.listen(); // Enable the mocking in tests.
+  server.listen({ onUnhandledRequest: 'warn' }); // Enable the mocking in tests.
   window.scrollTo = jest.fn();
 });
 
