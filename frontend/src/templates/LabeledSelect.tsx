@@ -48,7 +48,7 @@ type LabeledSelectProps = {
 } & SelectProps;
 
 const LabeledSelect: React.FC<LabeledSelectProps> = (props) => {
-  const { label, options, color, value, onChange, ...selectProps } = props;
+  const { label, options, color, ...selectProps } = props;
   const classes = useStyles();
 
   const htmlId = 'filter';
@@ -59,24 +59,24 @@ const LabeledSelect: React.FC<LabeledSelectProps> = (props) => {
       <InputLabel
         id={labelId}
         classes={{ focused: classes.label }}
-        className={`inputLabel-${color || 'default'}`}
+        className={`inputLabel-${props.color || 'default'}`}
       >
-        {label}
+        {props.label}
       </InputLabel>
       <Select
         labelId={labelId}
         id={htmlId}
-        value={value}
-        onChange={onChange}
+        value={props.value}
+        onChange={props.onChange}
         input={
           <Input
             classes={{ underline: classes.input }}
-            className={`input-${color || 'default'}`}
+            className={`input-${props.color || 'default'}`}
           />
         }
         {...selectProps}
       >
-        {Object.values(options).map((option, index) => (
+        {Object.values(props.options).map((option, index) => (
           <MenuItem key={index} value={option}>
             {option}
           </MenuItem>

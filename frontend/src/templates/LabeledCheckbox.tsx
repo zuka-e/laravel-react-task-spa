@@ -14,7 +14,7 @@ type LabeledCheckboxProps = {
 } & CheckboxProps;
 
 const LabeledCheckbox: React.FC<LabeledCheckboxProps> = (props) => {
-  const { label, setChecked, ...checkboxProps } = props;
+  const { label, checked, setChecked, ...checkboxProps } = props;
   const classes = useStyles();
 
   const handleChange = () => {
