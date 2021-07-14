@@ -3,7 +3,6 @@
 export type RejectWithValueType = {
   error: {
     message?: string;
-    data: any;
   };
 };
 

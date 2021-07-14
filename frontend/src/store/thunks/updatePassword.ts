@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 
 import { UPDATE_PASSWORD_PATH } from 'config/api';
-import { authApiClient } from './utils/api';
+import { apiClient } from 'utils/api';
 import { RejectWithValueType } from '.';
 
 export type UpdatePasswordRequest = {
@@ -18,35 +18,18 @@ export const updatePassword = createAsyncThunk<
 >('auth/updatePassword', async (payload, thunkApi) => {
   const { current_password, password, password_confirmation } = payload;
   try {
-    await authApiClient.put(UPDATE_PASSWORD_PATH, {
+    await apiClient().put(UPDATE_PASSWORD_PATH, {
       current_password,
       password,
       password_confirmation,
     });
   } catch (e) {
     const error: AxiosError = e;
-    const { setFlash, signOut } = await import('store/slices/authSlice');
-
-    if (error.response && [401, 419].includes(error.response.status)) {
-      thunkApi.dispatch(signOut());
-      thunkApi.dispatch(
-        setFlash({ type: 'error', message: 'ログインしてください' })
-      );
-    } else if (error.response?.status === 422) {
+    if (error.response?.status === 422) {
       return thunkApi.rejectWithValue({
-        error: {
-          message: 'パスワードが間違っています',
-          data: error.response.data,
-        },
+        error: { message: 'パスワードが間違っています' },
       });
     }
-    return thunkApi.rejectWithValue({
-      error: {
-        message: 'システムエラーが発生しました',
-        data: error?.response?.data,
-      },
-    });
+    return thunkApi.rejectWithValue(error.response?.data);
   }
 });
-
-export default updatePassword;

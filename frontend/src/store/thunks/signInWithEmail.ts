@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 
 import { GET_CSRF_TOKEN_PATH, SIGNIN_PATH } from 'config/api';
 import { User } from 'models/User';
-import { authApiClient } from './utils/api';
+import { apiClient } from 'utils/api';
 import { fetchAuthUser } from './fetchAuthUser';
 import { RejectWithValueType } from '.';
 
@@ -25,8 +25,8 @@ export const signInWithEmail = createAsyncThunk<
 >('auth/signInWithEmail', async (payload, thunkApi) => {
   const { email, password, remember } = payload;
   try {
-    await authApiClient.get(GET_CSRF_TOKEN_PATH);
-    const response = await authApiClient.post(SIGNIN_PATH, {
+    await apiClient({ apiRoute: false }).get(GET_CSRF_TOKEN_PATH);
+    const response = await apiClient().post(SIGNIN_PATH, {
       email,
       password,
       remember,
@@ -34,37 +34,28 @@ export const signInWithEmail = createAsyncThunk<
     return response?.data;
   } catch (e) {
     const error: AxiosError = e;
-    const { setFlash } = await import('store/slices/authSlice');
 
-    if (error.response?.status === 422) {
-      return thunkApi.rejectWithValue({
-        error: {
-          message: 'メールアドレスまたはパスワードが間違っています',
-          data: error.response.data,
-        },
-      });
-    } else if (error.response?.status === 429) {
-      return thunkApi.rejectWithValue({
-        error: {
-          message:
-            '所定回数を超えて誤った入力が行われたため、アクセスを制限しております',
-          data: error.response.data,
-        },
-      });
-    } // 認証用メールから遷移して、認証リンクが無効だった場合
-    else if (error.response?.status === 403) {
-      thunkApi.dispatch(fetchAuthUser());
-      thunkApi.dispatch(
-        setFlash({ type: 'warning', message: '認証に失敗しました' })
-      );
+    switch (error.response?.status) {
+      case 403: // 認証用メールから遷移して、認証リンクが無効だった場合
+        const { setFlash } = await import('store/slices/authSlice');
+        thunkApi.dispatch(fetchAuthUser());
+        thunkApi.dispatch(
+          setFlash({ type: 'warning', message: '認証に失敗しました' })
+        );
+        break;
+      case 422:
+        return thunkApi.rejectWithValue({
+          error: { message: 'メールアドレスまたはパスワードが間違っています' },
+        });
+      case 429:
+        return thunkApi.rejectWithValue({
+          error: {
+            message:
+              '所定回数を超えて誤った入力が行われたため、アクセスを制限しております',
+          },
+        });
+      default:
+        return thunkApi.rejectWithValue(error.response?.data);
     }
-    return thunkApi.rejectWithValue({
-      error: {
-        message: 'システムエラーが発生しました',
-        data: error?.response?.data,
-      },
-    });
   }
 });
-
-export default signInWithEmail;

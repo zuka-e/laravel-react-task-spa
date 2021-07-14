@@ -1,5 +1,4 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosError } from 'axios';
 
 import { apiClient } from 'utils/api';
 import { TaskBoard } from 'models';
@@ -27,12 +26,8 @@ export const fetchTaskBoard = createAsyncThunk<
     const response = await apiClient().get(url);
     return response?.data;
   } catch (e) {
-    const error = e as AxiosError<RejectWithValueType>;
     return thunkApi.rejectWithValue({
-      error: {
-        message: 'システムエラーが発生しました',
-        data: error?.response?.data,
-      },
+      error: { message: 'システムエラーが発生しました' },
     });
   }
 });
