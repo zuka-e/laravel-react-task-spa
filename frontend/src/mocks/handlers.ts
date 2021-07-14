@@ -1,18 +1,6 @@
 import { DefaultRequestBody, RequestParams, rest } from 'msw';
 
-import {
-  API_HOST,
-  AUTH_USER_PATH,
-  FORGOT_PASSWORD_PATH,
-  GET_CSRF_TOKEN_PATH,
-  RESET_PASSWORD_PATH,
-  SIGNIN_PATH,
-  SIGNOUT_PATH,
-  SIGNUP_PATH,
-  UPDATE_PASSWORD_PATH,
-  UPDATE_USER_INFO_PATH,
-  VERIFICATION_NOTIFICATION_PATH,
-} from 'config/api';
+import { url } from 'config/api';
 import {
   SignUpRequest,
   SignUpResponse,
@@ -54,7 +42,7 @@ import 'mocks/data';
 
 export const handlers = [
   rest.post<SignUpRequest, SignUpResponse, RequestParams>(
-    API_HOST + SIGNUP_PATH,
+    url('SIGNUP_PATH'),
     (req, res, ctx) => {
       const token = req.headers.get(X_XSRF_TOKEN);
       const { email } = req.body;
@@ -76,13 +64,13 @@ export const handlers = [
     }
   ),
 
-  rest.get(API_HOST + GET_CSRF_TOKEN_PATH, (_req, res, ctx) => {
+  rest.get(url('GET_CSRF_TOKEN_PATH'), (_req, res, ctx) => {
     const csrfToken = generateCsrfToken();
     return res(ctx.cookie(XSRF_TOKEN, csrfToken));
   }),
 
   rest.get<DefaultRequestBody, FetchAuthUserResponse, RequestParams>(
-    API_HOST + AUTH_USER_PATH,
+    url('AUTH_USER_PATH'),
     (req, res, ctx) => {
       const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);
@@ -102,7 +90,7 @@ export const handlers = [
   ),
 
   rest.post<DefaultRequestBody, FetchAuthUserResponse, RequestParams>(
-    API_HOST + VERIFICATION_NOTIFICATION_PATH,
+    url('VERIFICATION_NOTIFICATION_PATH'),
     (req, res, ctx) => {
       const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);
@@ -118,7 +106,7 @@ export const handlers = [
   ),
 
   rest.post<SignInRequest, SignInResponse, RequestParams>(
-    API_HOST + SIGNIN_PATH,
+    url('SIGNIN_PATH'),
     (req, res, ctx) => {
       const user = authenticate(req.body);
 
@@ -136,7 +124,7 @@ export const handlers = [
   ),
 
   rest.put<UpdateProfileRequest, UpdateProfileResponse, RequestParams>(
-    API_HOST + UPDATE_USER_INFO_PATH,
+    url('UPDATE_USER_INFO_PATH'),
     (req, res, ctx) => {
       const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);
@@ -162,7 +150,7 @@ export const handlers = [
   ),
 
   rest.put<UpdatePasswordRequest, undefined, RequestParams>(
-    API_HOST + UPDATE_PASSWORD_PATH,
+    url('UPDATE_PASSWORD_PATH'),
     (req, res, ctx) => {
       const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);
@@ -186,7 +174,7 @@ export const handlers = [
   ),
 
   rest.post<ForgotPasswordRequest, undefined, RequestParams>(
-    API_HOST + FORGOT_PASSWORD_PATH,
+    url('FORGOT_PASSWORD_PATH'),
     (req, res, ctx) => {
       const { email } = req.body;
       const requestedUser = db.where('users', 'email', email)[0];
@@ -198,7 +186,7 @@ export const handlers = [
   ),
 
   rest.post<ResetPasswordRequest, undefined, RequestParams>(
-    API_HOST + RESET_PASSWORD_PATH,
+    url('RESET_PASSWORD_PATH'),
     (req, res, ctx) => {
       if (!isValidPasswordResetToken(req.body)) return res(ctx.status(422));
 
@@ -213,7 +201,7 @@ export const handlers = [
     }
   ),
 
-  rest.post(API_HOST + SIGNOUT_PATH, (req, res, ctx) => {
+  rest.post(url('SIGNOUT_PATH'), (req, res, ctx) => {
     const { session_id } = req.cookies;
     const token = req.headers.get(X_XSRF_TOKEN);
 
@@ -230,7 +218,7 @@ export const handlers = [
   }),
 
   rest.delete<DefaultRequestBody, undefined, RequestParams>(
-    API_HOST + AUTH_USER_PATH,
+    url('AUTH_USER_PATH'),
     (req, res, ctx) => {
       const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);
