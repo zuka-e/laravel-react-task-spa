@@ -1,15 +1,23 @@
 import axios, { AxiosError } from 'axios';
 
-import { API_HOST, API_VERSION } from 'config/api';
+import { API_HOST, API_ROUTE } from 'config/api';
 
-export const apiClient = (options?: { apiRoute?: boolean }) => {
-  /** @returns `true` even if `apiRoute` is `undefined` */
+type ApiClientOption = {
+  apiRoute?: boolean;
+  intercepted?: boolean;
+};
+
+export const apiClient = (options?: ApiClientOption) => {
+  /** @returns `true` even if the param is `undefined` (default) */
   const isNonApiRoute = () => options?.apiRoute === false;
-  const baseURL = API_HOST + (isNonApiRoute() ? '' : '/api/' + API_VERSION);
+  const isNotIntercepted = () => options?.intercepted === false;
+
   const apiClient = axios.create({
-    baseURL: baseURL,
+    baseURL: isNonApiRoute() ? API_HOST : API_ROUTE,
     withCredentials: true,
   });
+
+  if (isNotIntercepted()) return apiClient;
 
   apiClient.interceptors.response.use(
     (response) => response, // response = 2xx の場合は素通り
@@ -33,10 +41,12 @@ export const apiClient = (options?: { apiRoute?: boolean }) => {
             setFlash({ type: 'error', message: '不正なリクエストです' })
           );
           return Promise.reject(error);
-        default:
+        case 500:
           store.dispatch(
             setFlash({ type: 'error', message: 'システムエラーが発生しました' })
           );
+          return Promise.reject(error);
+        default:
           return Promise.reject(error); // `return`欠落 -> "response undefined"
       }
     }

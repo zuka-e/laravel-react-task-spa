@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 
 import { AUTH_USER_PATH } from 'config/api';
 import { User } from 'models/User';
-import { authApiClient } from './utils/api';
+import { apiClient } from 'utils/api';
 import { RejectWithValueType } from '.';
 
 export type FetchAuthUserResponse = {
@@ -16,14 +16,12 @@ export const fetchAuthUser = createAsyncThunk<
   { rejectValue: RejectWithValueType }
 >('auth/fetchAuthUser', async (_, thunkApi) => {
   try {
-    const response = await authApiClient.get(AUTH_USER_PATH);
-    return response?.data as FetchAuthUserResponse;
+    const response = await apiClient({ intercepted: false }).get(
+      AUTH_USER_PATH
+    );
+    return response?.data;
   } catch (e) {
     const error: AxiosError = e;
-    return thunkApi.rejectWithValue({
-      error: { data: error?.response?.data },
-    });
+    return thunkApi.rejectWithValue(error.response?.data);
   }
 });
-
-export default fetchAuthUser;
