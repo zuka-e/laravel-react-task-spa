@@ -1,10 +1,11 @@
+// `createAsyncThunk` returns a standard Redux thunk action creator.
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 
 import { GET_CSRF_TOKEN_PATH, SIGNUP_PATH } from 'config/api';
 import { User } from 'models/User';
 import { apiClient } from 'utils/api';
-import { RejectWithValueType } from '.';
+import { RejectWithValue } from './types';
 
 export type SignUpRequest = {
   email: string;
@@ -19,7 +20,7 @@ export type SignUpResponse = {
 export const createUser = createAsyncThunk<
   SignUpResponse,
   SignUpRequest,
-  { rejectValue: RejectWithValueType }
+  { rejectValue: RejectWithValue }
 >('auth/createUser', async (payload, thunkApi) => {
   const { email, password, password_confirmation } = payload;
   try {

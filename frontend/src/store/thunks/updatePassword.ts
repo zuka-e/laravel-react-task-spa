@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 
 import { UPDATE_PASSWORD_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
-import { RejectWithValueType } from '.';
+import { RejectWithValue } from './types';
 
 export type UpdatePasswordRequest = {
   current_password: string;
@@ -14,7 +14,7 @@ export type UpdatePasswordRequest = {
 export const updatePassword = createAsyncThunk<
   void,
   { current_password: string; password: string; password_confirmation: string },
-  { rejectValue: RejectWithValueType }
+  { rejectValue: RejectWithValue }
 >('auth/updatePassword', async (payload, thunkApi) => {
   const { current_password, password, password_confirmation } = payload;
   try {

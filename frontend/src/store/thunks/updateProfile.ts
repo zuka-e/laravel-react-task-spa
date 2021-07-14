@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 
 import { UPDATE_USER_INFO_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
-import { RejectWithValueType } from '.';
+import { RejectWithValue } from './types';
 
 export type UpdateProfileResponse = {
   name: string;
@@ -18,7 +18,7 @@ export type UpdateProfileRequest = {
 export const updateProfile = createAsyncThunk<
   UpdateProfileResponse,
   UpdateProfileRequest,
-  { rejectValue: RejectWithValueType }
+  { rejectValue: RejectWithValue }
 >('auth/updateProfile', async (payload, thunkApi) => {
   const { name, email } = payload;
   try {
