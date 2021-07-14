@@ -76,7 +76,7 @@ const PopoverControl: React.FC<PopoverControlProps> = (props) => {
    */
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     const targetElement = event.currentTarget; // 値の確保
-    const readinessTime = 1; // 適当な待機時間
+    const readinessTime = 10; // 適当な待機時間
     setTimeout(() => setAnchorEl(targetElement), readinessTime);
     setClassName(undefined);
   };
