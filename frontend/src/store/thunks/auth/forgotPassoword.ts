@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 
 import { GET_CSRF_TOKEN_PATH, FORGOT_PASSWORD_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
-import { RejectWithValueType } from '.';
+import { RejectWithValue } from '../types';
 
 export type ForgotPasswordResponse = {};
 
@@ -14,7 +14,7 @@ export type ForgotPasswordRequest = {
 export const forgotPassword = createAsyncThunk<
   ForgotPasswordResponse,
   ForgotPasswordRequest,
-  { rejectValue: RejectWithValueType }
+  { rejectValue: RejectWithValue }
 >('auth/forgotPassword', async (payload, thunkApi) => {
   const { email } = payload;
   try {

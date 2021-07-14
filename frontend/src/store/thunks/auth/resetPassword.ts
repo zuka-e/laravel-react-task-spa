@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 
 import { GET_CSRF_TOKEN_PATH, RESET_PASSWORD_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
-import { RejectWithValueType } from '.';
+import { RejectWithValue } from '../types';
 
 export type ResetPasswordResponse = {};
 
@@ -17,7 +17,7 @@ export type ResetPasswordRequest = {
 export const resetPassword = createAsyncThunk<
   ResetPasswordResponse,
   ResetPasswordRequest,
-  { rejectValue: RejectWithValueType }
+  { rejectValue: RejectWithValue }
 >('auth/resetPassword', async (payload, thunkApi) => {
   const { email, password, password_confirmation, token } = payload;
   try {

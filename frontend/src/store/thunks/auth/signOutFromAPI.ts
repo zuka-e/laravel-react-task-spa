@@ -3,12 +3,12 @@ import { AxiosError } from 'axios';
 
 import { SIGNOUT_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
-import { RejectWithValueType } from '.';
+import { RejectWithValue } from '../types';
 
 export const signOutFromAPI = createAsyncThunk<
   void,
   void,
-  { rejectValue: RejectWithValueType }
+  { rejectValue: RejectWithValue }
 >('auth/signOutFromAPI', async (_, thunkApi) => {
   try {
     // status(response): ログイン状態によらず`204` 認証切れなら`419`

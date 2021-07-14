@@ -5,7 +5,7 @@ import { GET_CSRF_TOKEN_PATH, SIGNIN_PATH } from 'config/api';
 import { User } from 'models/User';
 import { apiClient } from 'utils/api';
 import { fetchAuthUser } from './fetchAuthUser';
-import { RejectWithValueType } from '.';
+import { RejectWithValue } from '../types';
 
 export type SignInResponse = {
   user: User;
@@ -21,7 +21,7 @@ export type SignInRequest = {
 export const signInWithEmail = createAsyncThunk<
   SignInResponse,
   SignInRequest,
-  { rejectValue: RejectWithValueType }
+  { rejectValue: RejectWithValue }
 >('auth/signInWithEmail', async (payload, thunkApi) => {
   const { email, password, remember } = payload;
   try {
