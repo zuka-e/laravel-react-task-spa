@@ -1,7 +1,6 @@
-import { GUEST_EMAIL } from 'config/app';
 import store from 'store';
+import { GUEST_EMAIL } from 'config/app';
 import { fetchAuthUser } from 'store/thunks/auth';
-import { localStorageKeys, localStorageValues } from './const';
 
 export const isReady = () => store.getState().auth.signedIn !== undefined;
 
@@ -16,6 +15,13 @@ export const isGuest = () => store.getState().auth.user?.email === GUEST_EMAIL;
 
 // store`signedIn`更新時に実行すること -> `useEffect`
 export const initializeAuthState = () => {
+  const localStorageKeys = {
+    SIGNED_IN: 'SIGNED_IN',
+  } as const;
+  const localStorageValues = {
+    TRUE: 'TRUE',
+    FALSE: 'FALSE',
+  } as const;
   const { SIGNED_IN } = localStorageKeys;
   const { TRUE, FALSE } = localStorageValues;
 
