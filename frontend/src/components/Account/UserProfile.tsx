@@ -5,9 +5,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Box, Grid, TextField } from '@material-ui/core';
 
-import { User } from 'models/User';
 import { updateProfile } from 'store/thunks/auth';
-import { useAppDispatch } from 'utils/hooks';
+import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { isGuest } from 'utils/auth';
 import { AlertMessage, SubmitButton } from 'templates';
 
@@ -23,8 +22,13 @@ const schema = yup.object().shape({
   email: yup.string().email().max(255),
 });
 
-const UserProfile: React.FC<{ user: User }> = (props) => {
-  const { user } = props;
+const UserProfile = () => {
+  // ページが表示されている場合
+  // `signedIn`=== `true` -> `user` !== `null` -> `user!`
+  const user = {
+    name: useAppSelector((state) => state.auth.user!.name),
+    email: useAppSelector((state) => state.auth.user!.email),
+  };
   const dispatch = useAppDispatch();
   const [message, setMessage] = useState<string | undefined>('');
   const {
@@ -44,10 +48,11 @@ const UserProfile: React.FC<{ user: User }> = (props) => {
     if (!data.email) data.email = user.email;
 
     // 全ての項目で変更点がない場合はリクエストを送らない
-    if (data.name === user.name && data.email === user.email) {
+    if (data.name === user?.name && data.email === user?.email) {
       setMessage('プロフィールが変更されておりません');
       return;
     }
+
     const response = await dispatch(updateProfile(data));
     if (updateProfile.rejected.match(response)) {
       setMessage(response.payload?.error?.message);
@@ -69,7 +74,7 @@ const UserProfile: React.FC<{ user: User }> = (props) => {
             id='name'
             label='Username'
             autoComplete='name'
-            defaultValue={user.name}
+            defaultValue={user?.name}
             {...register('name')}
             helperText={errors?.name?.message || '8-30 characters'}
             error={!!errors?.name}
@@ -84,7 +89,7 @@ const UserProfile: React.FC<{ user: User }> = (props) => {
             id='email'
             label='Email Address'
             autoComplete='email'
-            defaultValue={user.email}
+            defaultValue={user?.email}
             {...register('email')}
             helperText={errors?.email?.message}
             error={!!errors?.email}
