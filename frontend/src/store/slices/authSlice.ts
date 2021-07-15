@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Color } from '@material-ui/lab';
 
 import { User } from 'models/User';
-import { FlashNotificationProps } from 'layouts/FlashNotification';
 import {
   createUser,
   fetchAuthUser,
@@ -15,6 +15,11 @@ import {
   deleteAccount,
 } from 'store/thunks/auth';
 
+export type FlashNotificationProps = {
+  type: Color;
+  message: string;
+};
+
 export type AuthState = {
   user: User | null;
   sentEmail: boolean;
@@ -23,7 +28,9 @@ export type AuthState = {
   flash: FlashNotificationProps[];
 };
 
-export const initialAuthState = { flash: [{}] } as AuthState;
+export const initialAuthState = {
+  flash: [] as AuthState['flash'],
+} as AuthState;
 
 const authSlice = createSlice({
   name: 'auth',

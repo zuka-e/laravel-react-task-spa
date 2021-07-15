@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import authSlice, {
+  FlashNotificationProps,
   deleteSentEmailState,
   setFlash,
   signIn,
   signOut,
 } from 'store/slices/authSlice';
 import { createUser, SignUpRequest } from 'store/thunks/auth';
-import { FlashNotificationProps } from 'layouts/FlashNotification';
 import { generateRandomString, makeEmail } from 'utils/generator';
 
 describe('authSlice reducers', () => {
@@ -33,17 +33,17 @@ describe('authSlice reducers', () => {
     const getFlashState = () => store.getState().auth.flash;
 
     it('should added a new flash to a`flash`state, once', () => {
-      expect(getFlashState()).toEqual([{}]);
+      expect(getFlashState()).toEqual([]);
       store.dispatch(setFlash(emptyNewFlash));
-      expect(getFlashState()).toEqual([{}, emptyNewFlash]);
+      expect(getFlashState()).toEqual([emptyNewFlash]);
     });
 
     it('should added new flashes to a`flash`state, more than once', () => {
-      expect(getFlashState()).toEqual([{}]);
+      expect(getFlashState()).toEqual([]);
       store.dispatch(setFlash(hugeNewFlash));
-      expect(getFlashState()).toEqual([{}, hugeNewFlash]);
+      expect(getFlashState()).toEqual([hugeNewFlash]);
       store.dispatch(setFlash(emptyNewFlash));
-      expect(getFlashState()).toEqual([{}, hugeNewFlash, emptyNewFlash]);
+      expect(getFlashState()).toEqual([hugeNewFlash, emptyNewFlash]);
     });
   });
 
