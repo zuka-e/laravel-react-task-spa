@@ -15,7 +15,7 @@ import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import { setFlash } from './store/slices/authSlice';
 import { useAppDispatch, useQuery } from './utils/hooks';
-import { isReady, isSentEmail, isSignedIn } from './utils/auth';
+import { isSentEmail, isSignedIn } from './utils/auth';
 
 const GuestRoute = ({ ...rest }) => {
   if (isSentEmail()) return <Redirect to='/email-verification' />;
@@ -23,7 +23,7 @@ const GuestRoute = ({ ...rest }) => {
 };
 
 const AuthRoute = ({ ...rest }) => {
-  return isReady() && isSignedIn() ? <Route {...rest} /> : <Redirect to='/' />;
+  return isSignedIn() ? <Route {...rest} /> : <Redirect to='/' />;
 };
 
 const Routes: React.FC = () => {

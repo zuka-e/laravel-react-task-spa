@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const EmailVerification: React.FC = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
-  const { sentEmail } = useAppSelector((state) => state.auth);
+  const sentEmail = useAppSelector((state) => state.auth.sentEmail);
   const history = useHistory();
 
   // 一時的に表示させるページ
