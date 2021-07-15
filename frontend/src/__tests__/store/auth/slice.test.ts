@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import authSlice, {
   FlashNotificationProps,
-  deleteSentEmailState,
+  removeEmailVerificationPage,
   setFlash,
   signIn,
   signOut,
@@ -47,7 +47,7 @@ describe('authSlice reducers', () => {
     });
   });
 
-  describe('deleteSentEmailState', () => {
+  describe('removeEmailVerificationPage', () => {
     const password = generateRandomString();
     const createdUser: SignUpRequest = {
       email: makeEmail(),
@@ -55,17 +55,18 @@ describe('authSlice reducers', () => {
       password_confirmation: password,
     };
 
-    const getSentEmailState = () => store.getState().auth.sentEmail;
+    const getAfterRegistrationState = () =>
+      store.getState().auth.afterRegistration;
 
-    it('should update a`deleteSentEmailState`state to false', async () => {
+    it('should update a`removeEmailVerificationPage`state to false', async () => {
       // `true`の状態を用意する (手段は`createUser`のみ)
-      expect(getSentEmailState()).toEqual(undefined);
+      expect(getAfterRegistrationState()).toEqual(undefined);
       await store.dispatch(createUser(createdUser));
-      expect(getSentEmailState()).toBeTruthy();
+      expect(getAfterRegistrationState()).toBeTruthy();
 
-      store.dispatch(deleteSentEmailState());
-      expect(getSentEmailState()).toBeFalsy();
-      expect(getSentEmailState()).not.toEqual(undefined);
+      store.dispatch(removeEmailVerificationPage());
+      expect(getAfterRegistrationState()).toBeFalsy();
+      expect(getAfterRegistrationState()).not.toEqual(undefined);
     });
   });
 

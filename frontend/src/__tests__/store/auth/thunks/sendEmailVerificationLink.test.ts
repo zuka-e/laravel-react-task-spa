@@ -11,7 +11,7 @@ import {
   getFlashState,
   getUserState,
   isLoading,
-  isSentEmail,
+  isAfterRegistration,
   isSignedIn,
 } from 'mocks/utils/store/auth';
 import { CSRF_TOKEN } from 'mocks/utils/validation';
@@ -77,7 +77,7 @@ describe('Thunk requsting the Email verification link', () => {
       expect(sendEmailVerificationLink.fulfilled.match(response)).toBeTruthy();
 
       expect(isLoading(store)).toBeFalsy();
-      expect(isSentEmail(store)).toBeFalsy();
+      expect(isAfterRegistration(store)).toBeFalsy();
       expect(getFlashState(store).slice(-1)[0]).toEqual({
         type: 'error',
         message: '既に認証済みです',

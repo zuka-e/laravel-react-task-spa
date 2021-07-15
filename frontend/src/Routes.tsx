@@ -15,10 +15,10 @@ import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import { setFlash } from './store/slices/authSlice';
 import { useAppDispatch, useQuery } from './utils/hooks';
-import { isSentEmail, isSignedIn } from './utils/auth';
+import { isAfterRegistration, isSignedIn } from './utils/auth';
 
 const GuestRoute = ({ ...rest }) => {
-  if (isSentEmail()) return <Redirect to='/email-verification' />;
+  if (isAfterRegistration()) return <Redirect to='/email-verification' />;
   return isSignedIn() ? <Redirect to='/' /> : <Route {...rest} />;
 };
 

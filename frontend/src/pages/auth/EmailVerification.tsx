@@ -6,10 +6,10 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Container, Card, Box, Typography, Button } from '@material-ui/core';
 
 import { APP_NAME } from 'config/app';
-import { deleteSentEmailState } from 'store/slices/authSlice';
+import { removeEmailVerificationPage } from 'store/slices/authSlice';
 import { sendEmailVerificationLink } from 'store/thunks/auth';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
-import { isSentEmail, isVerified } from 'utils/auth';
+import { isAfterRegistration, isVerified } from 'utils/auth';
 import { Header, Footer } from 'layouts';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -28,19 +28,21 @@ const useStyles = makeStyles((theme: Theme) =>
 const EmailVerification: React.FC = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
-  const sentEmail = useAppSelector((state) => state.auth.sentEmail);
+  const afterRegistration = useAppSelector(
+    (state) => state.auth.afterRegistration
+  );
   const history = useHistory();
 
   // 一時的に表示させるページ
-  // `sentEmail`: `SignUp`直後に`true` (`replace`しない -> 表示させる)
+  // `afterRegistration`: `SignUp`直後に`true` (`replace`しない -> 表示させる)
   useEffect(() => {
-    if (!isSentEmail() || isVerified()) history.replace('/');
-  }, [history, sentEmail]);
+    if (!isAfterRegistration() || isVerified()) history.replace('/');
+  }, [history, afterRegistration]);
 
   // DOMアンマウント時に実行 (cleanup function)
   useEffect(() => {
     return () => {
-      dispatch(deleteSentEmailState());
+      dispatch(removeEmailVerificationPage());
     };
   }, [dispatch]);
 

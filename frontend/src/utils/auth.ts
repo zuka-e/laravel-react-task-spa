@@ -7,7 +7,8 @@ export const isReady = () => store.getState().auth.signedIn !== undefined;
 
 export const isSignedIn = () => store.getState().auth.signedIn;
 
-export const isSentEmail = () => store.getState().auth.sentEmail;
+export const isAfterRegistration = () =>
+  store.getState().auth.afterRegistration;
 
 export const isVerified = () => !!store.getState().auth.user?.emailVerifiedAt;
 
