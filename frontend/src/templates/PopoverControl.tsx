@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Popover, PopoverOrigin } from '@material-ui/core';
@@ -70,6 +70,14 @@ const PopoverControl: React.FC<PopoverControlProps> = (props) => {
   const htmlId = open ? 'menu' : undefined;
   const { anchorOrigin, transformOrigin } = makePopoverOriginSet(position);
 
+  const timeout = { id: {} as NodeJS.Timeout };
+  useEffect(() => {
+    /** Prevent memory leaks */
+    return function cleanup() {
+      clearTimeout(timeout.id);
+    };
+  }, [timeout.id]);
+
   /**
    * - `open`時には`class (display: 'contents')`を排除
    * - 時間差を設けてこれを実行することで`Warning: Failed prop type`を回避
@@ -77,7 +85,9 @@ const PopoverControl: React.FC<PopoverControlProps> = (props) => {
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     const targetElement = event.currentTarget; // 値の確保
     const readinessTime = 10; // 適当な待機時間
-    setTimeout(() => setAnchorEl(targetElement), readinessTime);
+    timeout.id = setTimeout(() => {
+      setAnchorEl(targetElement);
+    }, readinessTime);
     setClassName(undefined);
   };
 
