@@ -21,7 +21,7 @@ import {
   Password,
   UserStatus,
   DeleteAccountDialog,
-} from 'components/Account';
+} from 'components/account';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

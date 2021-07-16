@@ -5,9 +5,9 @@ import { Helmet } from 'react-helmet-async';
 import { APP_NAME } from 'config/app';
 import { isSignedIn } from 'utils/auth';
 import { Header, Footer } from 'layouts';
-import { Hero, Features } from 'components/Home';
+import { Hero, Features } from 'components/home/LandingPage';
 
-const LP = () => (
+const LandingPage = () => (
   <React.Fragment>
     <Hero />
     <Features />
@@ -18,7 +18,7 @@ const renderHome = () => {
   if (isSignedIn()) {
     // return <Dashboard />;
   } else {
-    return <LP />;
+    return <LandingPage />;
   }
 };
 

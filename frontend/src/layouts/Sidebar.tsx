@@ -11,7 +11,7 @@ import {
 import { Menu as MenuIcon } from '@material-ui/icons';
 
 import { isSignedIn } from 'utils/auth';
-import { MenuAfterAuth } from 'components/Sidebar';
+import { MenuAfterAuth } from 'components/layouts/Sidebar';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
