@@ -1,17 +1,17 @@
 import React from 'react';
 
 import { useHistory } from 'react-router-dom';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import {
   AccountCircle as AccountCircleIcon,
   ExitToApp as ExitToAppIcon,
 } from '@material-ui/icons';
 
-import { signOutFromAPI } from 'store/thunks';
+import { signOutFromAPI } from 'store/thunks/auth';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     root: {
       maxWidth: '300px',
@@ -20,11 +20,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const AccountMenuList: React.FC = () => {
+const AccountMenuList = () => {
   const classes = useStyles();
-  const dispatch = useAppDispatch();
-  const { user } = useAppSelector((state) => state.auth);
   const history = useHistory();
+  const username = useAppSelector((state) => state.auth.user?.name);
+  const dispatch = useAppDispatch();
+
+  const handleClick = (path: string) => () => history.push(path);
 
   const handleSignOut = () => {
     dispatch(signOutFromAPI());
@@ -32,11 +34,11 @@ const AccountMenuList: React.FC = () => {
 
   return (
     <List component='nav' aria-label='account-menu' className={classes.root}>
-      <ListItem button onClick={() => history.push('/account')}>
+      <ListItem button onClick={handleClick('/account')} title={username}>
         <ListItemIcon>
           <AccountCircleIcon />
         </ListItemIcon>
-        <ListItemText primary={user?.name} />
+        <ListItemText primary={username} />
       </ListItem>
       <ListItem button onClick={handleSignOut}>
         <ListItemIcon>

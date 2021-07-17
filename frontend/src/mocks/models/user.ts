@@ -2,7 +2,7 @@ import { User } from 'models/User';
 import { CollectionBase, DocumentBase } from '.';
 
 export interface UserDocument extends DocumentBase {
-  id: number;
+  id: string;
   name: string;
   email: string;
   emailVerifiedAt: Date | null;

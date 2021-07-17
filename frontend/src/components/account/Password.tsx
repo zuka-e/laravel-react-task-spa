@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Box, Grid, TextField } from '@material-ui/core';
 
-import { updatePassword } from 'store/thunks';
+import { updatePassword } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { isGuest } from 'utils/auth';
 import { LabeledCheckbox, AlertMessage, SubmitButton } from 'templates';
@@ -108,9 +108,11 @@ const Password: React.FC = () => {
         </Grid>
       </Grid>
       <Box ml={1} mb={2}>
-        <LabeledCheckbox state={visiblePassword} setState={setVisiblePassword}>
-          Show Password
-        </LabeledCheckbox>
+        <LabeledCheckbox
+          label='Show Password'
+          checked={visiblePassword}
+          setChecked={setVisiblePassword}
+        />
       </Box>
       <Box mb={1}>
         {!isGuest() && (

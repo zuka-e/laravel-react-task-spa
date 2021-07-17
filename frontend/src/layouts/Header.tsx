@@ -20,7 +20,7 @@ import {
 import { APP_NAME } from 'config/app';
 import { isSignedIn } from 'utils/auth';
 import { PopoverControl } from 'templates';
-import { AccountMenuList } from 'components/Header';
+import { AccountMenuList } from 'components/layouts/Header';
 import Sidebar from './Sidebar';
 import logo from 'images/logo.svg';
 

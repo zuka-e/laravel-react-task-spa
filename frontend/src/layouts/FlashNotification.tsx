@@ -1,32 +1,25 @@
 import React, { useEffect, useState } from 'react';
 
 import Snackbar from '@material-ui/core/Snackbar';
-import { Alert, Color } from '@material-ui/lab';
+import { Alert } from '@material-ui/lab';
 
-import { useAppSelector } from 'utils/hooks';
-
-export type FlashNotificationProps = {
-  type: Color;
-  message: string;
-};
+import { useDeepEqualSelector } from 'utils/hooks';
 
 const FlashNotification = () => {
-  const { flash } = useAppSelector((state) => state.auth);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
+  const flash = useDeepEqualSelector((state) => state.auth.flash);
   const lastFlash = flash.slice(-1)[0];
 
   // `flash`(store) の変更を監視
-  useEffect(() => {
-    setOpen(true);
-  }, [flash]);
+  useEffect(() => setOpen(true), [flash]);
 
   const handleClose = (_event?: React.SyntheticEvent, reason?: string) => {
     if (reason === 'clickaway') return;
-    setOpen(false);
+    else setOpen(false);
   };
 
-  // `flash`が初期値のみ場合表示しない
-  if (!lastFlash.message) return <React.Fragment />;
+  // `flash`が初期値の場合表示しない
+  if (flash.length === 0) return <React.Fragment />;
 
   return (
     <Snackbar

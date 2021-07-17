@@ -4,12 +4,11 @@ import { useHistory } from 'react-router-dom';
 import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { Folder as FolderIcon } from '@material-ui/icons';
 
-import { useAppSelector } from 'utils/hooks';
+import { useDeepEqualSelector } from 'utils/hooks';
 
 const MenuAfterAuth: React.FC = () => {
   const history = useHistory();
-  const currentUser = useAppSelector((state) => state.auth.user);
-  const userId = String(currentUser?.id);
+  const userId = useDeepEqualSelector((state) => state.auth.user?.id);
 
   const path = {
     boards: `/users/${userId}/boards`,

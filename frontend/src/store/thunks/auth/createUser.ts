@@ -1,10 +1,11 @@
+// `createAsyncThunk` returns a standard Redux thunk action creator.
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosError } from 'axios';
 
 import { GET_CSRF_TOKEN_PATH, SIGNUP_PATH } from 'config/api';
 import { User } from 'models/User';
-import { authApiClient } from './utils/api';
-import { RejectWithValueType } from '.';
+import { apiClient } from 'utils/api';
+import { RejectWithValue } from '../types';
 
 export type SignUpRequest = {
   email: string;
@@ -19,36 +20,25 @@ export type SignUpResponse = {
 export const createUser = createAsyncThunk<
   SignUpResponse,
   SignUpRequest,
-  { rejectValue: RejectWithValueType }
+  { rejectValue: RejectWithValue }
 >('auth/createUser', async (payload, thunkApi) => {
   const { email, password, password_confirmation } = payload;
   try {
-    await authApiClient.get(GET_CSRF_TOKEN_PATH);
-    const response = await authApiClient.post(
+    await apiClient({ apiRoute: false }).get(GET_CSRF_TOKEN_PATH);
+    const response = await apiClient().post(
       SIGNUP_PATH,
       { name: email, email, password, password_confirmation },
-      { validateStatus: (status) => status === 201 }
+      { validateStatus: (status) => status === 201 } // `201`以外 error
     );
     return response?.data as SignUpResponse;
-    // ステータスコード 201 以外を`catch`
   } catch (e) {
     const error: AxiosError = e; // cast the error for access
     if (error.response?.status === 422) {
       // 他のバリデーションはフロントエンドで実施
       return thunkApi.rejectWithValue({
-        error: {
-          message: 'このメールアドレスは既に使用されています',
-          data: error.response.data,
-        },
+        error: { message: 'このメールアドレスは既に使用されています' },
       });
     } // `Slice`の`extraReducers`の`rejected`を呼び出す
-    return thunkApi.rejectWithValue({
-      error: {
-        message: 'システムエラーが発生しました',
-        data: error?.response?.data,
-      },
-    });
+    return thunkApi.rejectWithValue(error.response?.data);
   }
 });
-
-export default createUser;

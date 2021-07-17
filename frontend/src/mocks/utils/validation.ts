@@ -1,4 +1,4 @@
-import { ResetPasswordRequest, SignInRequest } from 'store/thunks';
+import { ResetPasswordRequest, SignInRequest } from 'store/thunks/auth';
 import { generateRandomString } from 'utils/generator';
 import { db, auth } from 'mocks/models';
 import { encrypt, decrypt, digestText } from './crypto';
@@ -15,7 +15,7 @@ export const X_XSRF_TOKEN = 'X-XSRF-TOKEN'; // header
  * @param  userId - リクエストユーザーのID
  * @returns 暗号化済みセッションID (`cookie`格納用)
  */
-export const createSessionId = (userId: string | number | null) => {
+export const createSessionId = (userId: string | null) => {
   const sessionId = generateRandomString(32);
   const encryptedSessionId = encrypt(sessionId);
 
