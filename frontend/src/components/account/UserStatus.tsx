@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Box, Button, Grid } from '@material-ui/core';
 
-import { sendEmailVerificationLink } from 'store/thunks';
+import { sendEmailVerificationLink } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { isVerified } from 'utils/auth';
 import { AlertMessage } from 'templates';

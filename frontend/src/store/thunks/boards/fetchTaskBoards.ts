@@ -1,11 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosError } from 'axios';
 
-import { apiClient } from 'utils/api';
+import { apiClient, ResponseWithPagination } from 'utils/api';
 import { TaskBoard } from 'models';
-import { DataWithPagination, RejectWithValueType } from 'store/thunks';
+import { RejectWithValue } from '../types';
 
-export type FetchTaskBoardsResponse = DataWithPagination<TaskBoard>;
+export type FetchTaskBoardsResponse = ResponseWithPagination<TaskBoard>;
 
 export type FetchTaskBoardsRequest = {
   userId: string;
@@ -15,7 +14,7 @@ export type FetchTaskBoardsRequest = {
 export const fetchTaskBoards = createAsyncThunk<
   FetchTaskBoardsResponse,
   FetchTaskBoardsRequest,
-  { rejectValue: RejectWithValueType }
+  { rejectValue: RejectWithValue }
 >('auth/fetchTaskBoards', async (payload, thunkApi) => {
   try {
     const { userId, page } = payload;
@@ -25,12 +24,8 @@ export const fetchTaskBoards = createAsyncThunk<
 
     return response?.data;
   } catch (e) {
-    const error = e as AxiosError<RejectWithValueType>;
     return thunkApi.rejectWithValue({
-      error: {
-        message: 'システムエラーが発生しました',
-        data: error?.response?.data,
-      },
+      error: { message: 'システムエラーが発生しました' },
     });
   }
 });

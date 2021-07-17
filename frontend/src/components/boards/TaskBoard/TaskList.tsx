@@ -1,12 +1,28 @@
 import React, { useState } from 'react';
 
+import moment from 'moment';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Card, CardActions, CardContent, Grid, Chip } from '@material-ui/core';
+import {
+  Card,
+  CardHeader,
+  IconButton,
+  Typography,
+  CardActions,
+  CardContent,
+  Grid,
+  Chip,
+} from '@material-ui/core';
+import { MoreVert as MoreVertIcon } from '@material-ui/icons';
 
 import * as Model from 'models';
 import { useAppSelector } from 'utils/hooks';
-import { LabeledSelect, ScrolledDiv } from 'templates';
-import { ListCardHeader, TaskCard } from '.';
+import {
+  PopoverControl,
+  ScrolledTypography,
+  LabeledSelect,
+  ScrolledDiv,
+} from 'templates';
+import { ListMenu, TaskCard } from '.';
 
 const borderWidth = '2px';
 const useStyles = makeStyles((theme: Theme) =>
@@ -21,6 +37,10 @@ const useStyles = makeStyles((theme: Theme) =>
       border: borderWidth + ' solid ' + theme.palette.primary.main,
       '& > .listWrapper': { margin: `-${borderWidth}` },
     },
+    header: { paddingBottom: 0 },
+    headerContent: { maxWidth: '93%' },
+    headerTitle: { fontWeight: 'bold' },
+    headerAction: { marginTop: -theme.spacing(0.5) },
     cardItemBox: {
       maxHeight: '90vh',
       marginRight: theme.spacing(-0.5),
@@ -67,7 +87,38 @@ const TaskList: React.FC<TaskListProps> = (props) => {
   return (
     <Card elevation={7} className={rootClass}>
       <div className='listWrapper'>
-        <ListCardHeader list={list} />
+        <CardHeader
+          classes={{
+            root: classes.header,
+            content: classes.headerContent,
+            action: classes.headerAction,
+          }}
+          disableTypography
+          title={
+            <ScrolledTypography
+              title={list.title}
+              className={classes.headerTitle}
+            >
+              {list.title}
+            </ScrolledTypography>
+          }
+          subheader={
+            <Typography color='textSecondary' variant='body2'>
+              {moment(list.updatedAt).calendar()}
+            </Typography>
+          }
+          action={
+            <PopoverControl
+              trigger={
+                <IconButton size='small'>
+                  <MoreVertIcon />
+                </IconButton>
+              }
+            >
+              <ListMenu list={list} />
+            </PopoverControl>
+          }
+        />
 
         <CardActions>
           <Grid container alignItems='center' justify='space-between'>
@@ -75,7 +126,7 @@ const TaskList: React.FC<TaskListProps> = (props) => {
               <LabeledSelect
                 label='Filter'
                 options={cardFilter}
-                selectedValue={filterValue}
+                value={filterValue}
                 onChange={handleChange}
               />
             </Grid>

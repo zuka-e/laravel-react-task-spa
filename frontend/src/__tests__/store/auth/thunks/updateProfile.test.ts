@@ -1,6 +1,10 @@
 import { GUEST_EMAIL, GUEST_NAME, GUEST_PASSWORD } from 'config/app';
 import { signIn } from 'store/slices/authSlice';
-import { SignInRequest, signInWithEmail, updateProfile } from 'store/thunks';
+import {
+  SignInRequest,
+  signInWithEmail,
+  updateProfile,
+} from 'store/thunks/auth';
 import { initializeStore, store } from 'mocks/utils/store';
 import {
   getFlashState,

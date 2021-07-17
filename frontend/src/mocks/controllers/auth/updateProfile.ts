@@ -1,4 +1,4 @@
-import { UpdateProfileRequest, UpdateProfileResponse } from 'store/thunks';
+import { UpdateProfileRequest, UpdateProfileResponse } from 'store/thunks/auth';
 import { db, UserDocument } from 'mocks/models';
 
 type UpdateProfileProps = {

@@ -6,6 +6,7 @@ import {
   InputLabel,
   Input,
   Select,
+  SelectProps,
   MenuItem,
 } from '@material-ui/core';
 
@@ -17,43 +18,37 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     label: {
       fontWeight: 'bold',
-      '&.inputLabelDefault.Mui-focused': {
+      '&.inputLabel-default.Mui-focused': {
         color: theme.palette.primary.contrastText,
       },
-      '&.inputLabelPrimary.Mui-focused': {
+      '&.inputLabel-primary.Mui-focused': {
         color: theme.palette.primary.main,
       },
-      '&.inputLabelSecondary.Mui-focused': {
+      '&.inputLabel-secondary.Mui-focused': {
         color: theme.palette.secondary.main,
       },
     },
     input: {
-      '&:after': {
+      '&.input-default:after': {
         borderColor: theme.palette.primary.contrastText,
       },
-      '&.inputDefault:after': {
-        color: theme.palette.primary.contrastText,
+      '&.input-primary:after': {
+        borderColor: theme.palette.primary.main,
       },
-      '&.inputPrimary:after': {
-        color: theme.palette.primary.main,
-      },
-      '&.inputSecondary:after': {
-        color: theme.palette.secondary.main,
+      '&.input-secondary:after': {
+        borderColor: theme.palette.secondary.main,
       },
     },
   })
 );
 
 type LabeledSelectProps = {
-  color?: 'primary' | 'secondary';
   label: string;
   options: object;
-  selectedValue: string;
-  onChange: (e: React.ChangeEvent<{ value: unknown }>) => void;
-};
+} & SelectProps;
 
 const LabeledSelect: React.FC<LabeledSelectProps> = (props) => {
-  const { color, label, options, selectedValue, onChange } = props;
+  const { label, options, color, ...selectProps } = props;
   const classes = useStyles();
 
   const htmlId = 'filter';
@@ -64,23 +59,24 @@ const LabeledSelect: React.FC<LabeledSelectProps> = (props) => {
       <InputLabel
         id={labelId}
         classes={{ focused: classes.label }}
-        className={`inputLabel${color || 'Default'}`}
+        className={`inputLabel-${props.color || 'default'}`}
       >
-        {label}
+        {props.label}
       </InputLabel>
       <Select
         labelId={labelId}
         id={htmlId}
-        value={selectedValue}
-        onChange={onChange}
+        value={props.value}
+        onChange={props.onChange}
         input={
           <Input
             classes={{ underline: classes.input }}
-            className={`input${color || 'Default'}`}
+            className={`input-${props.color || 'default'}`}
           />
         }
+        {...selectProps}
       >
-        {Object.values(options).map((option, index) => (
+        {Object.values(props.options).map((option, index) => (
           <MenuItem key={index} value={option}>
             {option}
           </MenuItem>

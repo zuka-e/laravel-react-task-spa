@@ -1,8 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit';
+import storeApi from 'store';
 
-import { rootReducer } from 'store';
+export const store = { ...storeApi };
 
-export let store = configureStore({ reducer: rootReducer });
-
-export const initializeStore = () =>
-  (store = configureStore({ reducer: rootReducer }));
+export const initializeStore = () => {
+  Object.assign(store, { ...storeApi });
+};

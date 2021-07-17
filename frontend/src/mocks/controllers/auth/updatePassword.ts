@@ -1,4 +1,4 @@
-import { UpdatePasswordRequest } from 'store/thunks';
+import { UpdatePasswordRequest } from 'store/thunks/auth';
 import { db, UserDocument } from 'mocks/models';
 import { digestText } from 'mocks/utils/crypto';
 

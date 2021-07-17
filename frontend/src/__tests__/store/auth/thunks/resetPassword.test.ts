@@ -4,7 +4,7 @@ import {
   ResetPasswordRequest,
   SignInRequest,
   signInWithEmail,
-} from 'store/thunks';
+} from 'store/thunks/auth';
 import { initializeStore, store } from 'mocks/utils/store';
 import { getFlashState, isLoading, isSignedIn } from 'mocks/utils/store/auth';
 import { validPasswordResetTokenOf } from 'mocks/utils/validation';

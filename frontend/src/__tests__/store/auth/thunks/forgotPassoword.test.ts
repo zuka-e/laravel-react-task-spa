@@ -1,5 +1,5 @@
 import { GUEST_EMAIL } from 'config/app';
-import { forgotPassword, ForgotPasswordRequest } from 'store/thunks';
+import { forgotPassword, ForgotPasswordRequest } from 'store/thunks/auth';
 import { initializeStore, store } from 'mocks/utils/store';
 import { getFlashState, isLoading, isSignedIn } from 'mocks/utils/store/auth';
 

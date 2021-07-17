@@ -1,6 +1,6 @@
 import { Link as RouterLink } from 'react-router-dom';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
-import { Link } from '@material-ui/core';
+import { Link, LinkProps } from '@material-ui/core';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -14,13 +14,21 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const LinkWrapper: React.FC<{ to: string }> = (props) => {
+type LinkWrapperProps = {
+  to: string;
+} & LinkProps;
+
+const LinkWrapper = (props: LinkWrapperProps) => {
+  const { to, ...linkProps } = props;
   const { root } = useStyles();
 
   return (
-    <Link component={RouterLink} to={props.to} classes={{ root }}>
-      {props.children}
-    </Link>
+    <Link
+      classes={{ root }}
+      component={RouterLink}
+      to={props.to}
+      {...linkProps}
+    />
   );
 };
 

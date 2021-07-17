@@ -6,7 +6,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 
 import { APP_NAME, GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import { isSentEmail, isSignedIn } from 'utils/auth';
+import { isAfterRegistration, isSignedIn } from 'utils/auth';
 import store from 'store';
 import Routes from 'Routes';
 import App from 'App';
@@ -166,7 +166,7 @@ describe('Sign Up', () => {
       expect(screen.getByText(successMessage)).toBeVisible();
 
       // `EmailVerification`
-      expect(isSentEmail()).toBeTruthy();
+      expect(isAfterRegistration()).toBeTruthy();
       expect(
         screen.getByRole('heading', { name: emailVerificationTitle })
       ).toBeVisible();
@@ -179,7 +179,7 @@ describe('Sign Up', () => {
 
   describe('After authenticated', () => {
     it('should not display a EmailVerification after a page transition', () => {
-      expect(isSentEmail()).toBeFalsy();
+      expect(isAfterRegistration()).toBeFalsy();
       expect(
         screen.queryByRole('heading', { name: emailVerificationTitle })
       ).toBeNull();

@@ -9,7 +9,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { TextField, Button, Divider, Grid, Box } from '@material-ui/core';
 
 import { APP_NAME } from 'config/app';
-import { createUser } from 'store/thunks';
+import { createUser } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { FormLayout } from 'layouts';
 import { LabeledCheckbox, SubmitButton } from 'templates';
@@ -115,11 +115,10 @@ const SignUp: React.FC = () => {
           />
           <Box ml={1} mb={2}>
             <LabeledCheckbox
-              state={visiblePassword}
-              setState={setVisiblePassword}
-            >
-              Show Password
-            </LabeledCheckbox>
+              label='Show Password'
+              checked={visiblePassword}
+              setChecked={setVisiblePassword}
+            />
           </Box>
           <Box mt={4} mb={3}>
             <SubmitButton fullWidth> Create an account</SubmitButton>

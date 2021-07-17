@@ -1,11 +1,11 @@
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import { createUser, SignUpRequest } from 'store/thunks';
+import { createUser, SignUpRequest } from 'store/thunks/auth';
 import { makeEmail } from 'utils/generator';
 import { initializeStore, store } from 'mocks/utils/store';
 import {
   getFlashState,
   getUserState,
-  isSentEmail,
+  isAfterRegistration,
   isSignedIn,
 } from 'mocks/utils/store/auth';
 
@@ -35,7 +35,7 @@ describe('Thunk for an user registration', () => {
   describe('Fulfilled', () => {
     it('should create a new user', async () => {
       expect(getUserState(store)).toBeFalsy();
-      expect(isSentEmail(store)).toBeFalsy();
+      expect(isAfterRegistration(store)).toBeFalsy();
       expect(isSignedIn(store)).toBeFalsy();
 
       const newUser: SignUpRequest = {
@@ -50,7 +50,7 @@ describe('Thunk for an user registration', () => {
       expect(response.payload.user.name).toEqual(newUser.email);
 
       expect(getUserState(store)?.name).toEqual(newUser.email);
-      expect(isSentEmail(store)).toBeTruthy();
+      expect(isAfterRegistration(store)).toBeTruthy();
       expect(isSignedIn(store)).toBeTruthy();
       expect(getFlashState(store).slice(-1)[0]).toEqual({
         type: 'success',

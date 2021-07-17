@@ -1,10 +1,11 @@
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import { User } from 'models/User';
+import { generateRandomString } from 'utils/generator';
 import { db, UserDocument } from 'mocks/models';
 import { digestText } from 'mocks/utils/crypto';
 
 export const guestUser: User = {
-  id: 1,
+  id: generateRandomString(32),
   name: 'ゲストユーザー',
   email: GUEST_EMAIL,
   emailVerifiedAt: new Date(),
@@ -13,7 +14,7 @@ export const guestUser: User = {
 };
 
 export const unverifiedUser: User = {
-  id: 2,
+  id: generateRandomString(32),
   name: '未認証ユーザー',
   email: GUEST_EMAIL + '_any_string',
   emailVerifiedAt: null,
