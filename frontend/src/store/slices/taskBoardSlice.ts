@@ -10,9 +10,9 @@ import {
 export const infoBoxTypes = ['board', 'list', 'card'];
 
 export type InfoBoxProps = {
-  open?: boolean;
-  type?: 'board' | 'list' | 'card';
-  data?: TaskBoard | TaskList | TaskCard;
+  open: boolean;
+  type: 'board' | 'list' | 'card';
+  data: TaskBoard | TaskList | TaskCard;
 };
 
 type TaskBoardState = {
@@ -21,20 +21,20 @@ type TaskBoardState = {
   docs: TaskBoardsCollection;
 } & FetchTaskBoardsResponse;
 
-const initialState: TaskBoardState = {
+const initialState = {
   loading: false,
-  infoBox: { open: false },
+  infoBox: {} as InfoBoxProps,
   docs: {},
   data: [],
   links: {} as TaskBoardState['links'],
   meta: {} as TaskBoardState['meta'],
-};
+} as TaskBoardState;
 
 const taskBoardSlice = createSlice({
   name: 'taskBoard',
   initialState,
   reducers: {
-    openInfoBox(state, action: PayloadAction<InfoBoxProps>) {
+    openInfoBox(state, action: PayloadAction<Omit<InfoBoxProps, 'open'>>) {
       state.infoBox.open = true;
       state.infoBox.type = action.payload.type;
       state.infoBox.data = action.payload.data;
