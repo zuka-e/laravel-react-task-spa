@@ -1,4 +1,7 @@
-import { generateRandomString } from 'utils/generator';
+import { uuid } from 'mocks/utils/uuid';
+import { TaskBoardsCollection } from './taskBoard';
+import { TaskCardsCollection } from './taskCard';
+import { TaskListsCollection } from './taskList';
 import { UsersCollection } from './user';
 
 /**
@@ -26,9 +29,15 @@ export interface DocumentBase {
 const initialState = {
   count: {
     users: 0,
+    taskBoards: 0,
+    taskLists: 0,
+    taskCards: 0,
   },
   database: {
     users: {} as UsersCollection,
+    taskBoards: {} as TaskBoardsCollection,
+    taskLists: {} as TaskListsCollection,
+    taskCards: {} as TaskCardsCollection,
   },
 };
 
@@ -45,7 +54,7 @@ const database = { ...initialState.database };
 /**
  * `Collection`の集合
  */
-type DB = typeof database;
+export type DB = typeof database;
 
 /**
  * モデル指定の`Collection`
@@ -55,7 +64,7 @@ type Collection<T extends keyof DB> = DB[T];
 /**
  * モデル指定の`Document`
  */
-type Doc<T extends keyof DB> = Collection<T>['id'];
+export type Doc<T extends keyof DB> = Collection<T>['id'];
 
 /**
  * 1. 指定された`key`を持つJSONデータを`localStorage`から取得
@@ -93,7 +102,7 @@ const collection = <T extends keyof DB>(model: T) => {
  */
 const create = <T extends keyof DB>(model: T, doc: Doc<T>) => {
   const defaultValues: DocumentBase = {
-    id: generateRandomString(),
+    id: uuid(),
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -174,9 +183,12 @@ interface Model {
   collection<T extends keyof DB>(model: T): DB[T];
   /**
    * 指定された`Collection`に引数の`Document`を新たに作成
-   * @param  doc - `Document`
+   * @param  doc - `Document` | `Document`から`DocumentBase`を除外した型
    */
-  create<T extends keyof DB>(model: T, doc: Doc<T>): Doc<T>;
+  create<T extends keyof DB>(
+    model: T,
+    doc: Doc<T> | Omit<Doc<T>, keyof DocumentBase>
+  ): Doc<T>;
   /**
    * 指定された`value`をプロパティ(`column`)の値として持つ`Document`を検索
    *
@@ -206,7 +218,7 @@ interface Model {
 /**
  * データを操作するメソッドを持つ
  */
-export const db: Model = {
+export const db: Readonly<Model> = {
   load,
   exists,
   collection,
@@ -219,3 +231,6 @@ export const db: Model = {
 
 export * as auth from './auth';
 export * from './user';
+export * from './taskBoard';
+export * from './taskList';
+export * from './taskCard';
