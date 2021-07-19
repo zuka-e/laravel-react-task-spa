@@ -1,6 +1,5 @@
 import { DefaultRequestBody, RequestParams, rest } from 'msw';
 
-import { url } from 'config/api';
 import {
   SignUpRequest,
   SignUpResponse,
@@ -21,6 +20,7 @@ import {
   updatePasswordController,
   updateProfileController,
 } from 'mocks/controllers';
+import { url } from 'mocks/utils/route';
 import {
   XSRF_TOKEN,
   X_XSRF_TOKEN,

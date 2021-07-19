@@ -31,7 +31,7 @@ export const RESET_PASSWORD_PATH =
 export const AUTH_USER_PATH =
   process.env.REACT_APP_AUTH_USER_PATH || '/users/auth';
 
-const paths = {
+export const paths = {
   GET_CSRF_TOKEN_PATH,
   SIGNUP_PATH,
   VERIFICATION_NOTIFICATION_PATH,
@@ -43,9 +43,3 @@ const paths = {
   RESET_PASSWORD_PATH,
   AUTH_USER_PATH,
 } as const;
-
-export const url = (pathName: keyof typeof paths) => {
-  const path = paths[pathName];
-  const nonApiRouteList = [GET_CSRF_TOKEN_PATH];
-  return nonApiRouteList.includes(path) ? API_HOST + path : API_ROUTE + path;
-};
