@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import { useHistory, useParams } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Container, Grid, Card, Typography } from '@material-ui/core';
+import { Container, Grid, Card, Divider, Typography } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 
 import { fetchTaskBoards, FetchTaskBoardsRequest } from 'store/thunks/boards';
@@ -73,6 +73,7 @@ const TaskBoardIndex: React.FC = () => {
                     <Typography>{board.description}</Typography>
                   </ScrolledDiv>
                 </LinkWrapper>
+                <Divider />
                 <BoardCardHeader board={board} />
               </Card>
             </Grid>
