@@ -1,7 +1,17 @@
-import storeApi from 'store';
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 
-export const store = { ...storeApi };
+import { rootReducer } from 'store';
+
+const options = {
+  reducer: rootReducer,
+  middleware: getDefaultMiddleware({
+    serializableCheck: false,
+  }),
+};
+
+export const store = configureStore(options);
 
 export const initializeStore = () => {
-  Object.assign(store, { ...storeApi });
+  const newStore = configureStore(options);
+  Object.assign(store, { ...newStore });
 };
