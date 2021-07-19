@@ -80,7 +80,7 @@ const TaskBoardIndex: React.FC = () => {
         </Grid>
       </Container>
 
-      {count && currentPage && (
+      {boards.length > 0 && count && currentPage && (
         <Pagination
           count={count}
           page={currentPage}
