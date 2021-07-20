@@ -1,7 +1,7 @@
 import faker from 'faker';
 
 import { Doc, db } from 'mocks/models';
-import { guestUser, anotherUser } from './users';
+import { guestUser, otherUser } from './users';
 
 type SeederProps = {
   count: number;
@@ -38,9 +38,9 @@ const initialize = () => {
     runSeeder({ count: 2, belongsTo: { user: guestUser, board: board } });
   });
 
-  const anotherUserBoards = db.where('taskBoards', 'userId', anotherUser.id);
-  anotherUserBoards.forEach((board) => {
-    runSeeder({ count: 2, belongsTo: { user: anotherUser, board: board } });
+  const otherUserBoards = db.where('taskBoards', 'userId', otherUser.id);
+  otherUserBoards.forEach((board) => {
+    runSeeder({ count: 2, belongsTo: { user: otherUser, board: board } });
   });
 };
 

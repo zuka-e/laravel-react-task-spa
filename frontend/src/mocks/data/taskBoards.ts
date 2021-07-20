@@ -1,7 +1,7 @@
 import faker from 'faker';
 
 import { Doc, db } from 'mocks/models';
-import { guestUser, anotherUser } from './users';
+import { guestUser, otherUser } from './users';
 
 type SeederProps = {
   count: number;
@@ -29,7 +29,7 @@ const initialize = () => {
   if (db.exists('taskBoards')) return;
 
   runSeeder({ count: 2, belongsTo: { user: guestUser } });
-  runSeeder({ count: 1, belongsTo: { user: anotherUser } });
+  runSeeder({ count: 1, belongsTo: { user: otherUser } });
 };
 
 // 初期化実行

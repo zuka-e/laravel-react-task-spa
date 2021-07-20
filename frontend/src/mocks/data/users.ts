@@ -15,10 +15,10 @@ export const guestUser: UserDocument = {
   password: digestText(GUEST_PASSWORD),
 };
 
-export const anotherUser: UserDocument = {
+export const otherUser: UserDocument = {
   id: uuid(),
-  name: 'another_ユーザー',
-  email: 'another_' + GUEST_EMAIL,
+  name: 'other_ユーザー',
+  email: 'other_' + GUEST_EMAIL,
   emailVerifiedAt: new Date(),
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -35,7 +35,7 @@ export const unverifiedUser: UserDocument = {
   password: digestText(GUEST_PASSWORD),
 };
 
-const initialUsers: UserDocument[] = [guestUser, anotherUser, unverifiedUser];
+const initialUsers: UserDocument[] = [guestUser, otherUser, unverifiedUser];
 
 const runSeeder = (props: { count: number }) => {
   initialUsers.forEach((user) => {
