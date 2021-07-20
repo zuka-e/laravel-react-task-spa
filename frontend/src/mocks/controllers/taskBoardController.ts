@@ -18,6 +18,8 @@ export const show = (req: RestRequest) => {
     req.params.boardId
   )[0] as TaskBoard;
 
+  if (!board) return;
+
   board.lists = db.where(
     'taskLists',
     'boardId',

@@ -44,11 +44,11 @@ export const handlers = [
 
       if (!token || !hasValidToken(token)) return res(ctx.status(419));
 
-      const response = {
-        data: taskBoardController.show(req),
-      };
+      const board = taskBoardController.show(req);
 
-      return res(ctx.status(200), ctx.json(response));
+      if (!board) return res(ctx.status(404));
+
+      return res(ctx.status(200), ctx.json({ data: board }));
     }
   ),
 ];
