@@ -27,5 +27,24 @@ export const handlers = [
       return res(ctx.status(200), ctx.json(response));
     }
   ),
-];
 
+  rest.get(
+    API_ROUTE + makePath(['users', ':userId'], ['task_boards', ':boardId']),
+    (req, res, ctx) => {
+      const currentUser = getUserFromSession(req.cookies.session_id);
+      const token = req.headers.get(X_XSRF_TOKEN);
+
+      if (!currentUser) return res(ctx.status(401));
+
+      if (currentUser.id !== req.params.userId) return res(ctx.status(403));
+
+      if (!token || !hasValidToken(token)) return res(ctx.status(419));
+
+      const response = {
+        data: taskBoardController.show(req),
+      };
+
+      return res(ctx.status(200), ctx.json(response));
+    }
+  ),
+];

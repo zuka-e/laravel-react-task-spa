@@ -131,6 +131,20 @@ const where = <T extends keyof DB>(
 };
 
 /**
+ * 指定された`list`の値の何れかをプロパティ(`column`)の値として持つ`Document`を検索
+ */
+const whereIn = <T extends keyof DB>(
+  model: T,
+  column: keyof Doc<T>,
+  list: any[]
+) => {
+  const matchedDocs = Object.values(database[model]).filter((doc) =>
+    list.includes(doc[column as keyof typeof doc])
+  );
+  return matchedDocs as Doc<T>[];
+};
+
+/**
  * 指定された`Collection`の`Document`を更新
  */
 const update = <T extends keyof DB>(model: T, doc: Doc<T>) => {
@@ -200,6 +214,16 @@ interface Model {
     value: any
   ): Doc<T>[];
   /**
+   * 指定された`list`の値の何れかをプロパティ(`column`)の値として持つ`Document`を検索
+   *
+   * @returns 合致する`Document`の配列
+   */
+  whereIn<T extends keyof DB>(
+    model: T,
+    column: keyof Doc<T>,
+    list: any[]
+  ): Doc<T>[];
+  /**
    * 指定された`Collection`の`Document`を更新
    */
   update<T extends keyof DB>(model: T, doc: Doc<T>): void;
@@ -224,6 +248,7 @@ export const db: Readonly<Model> = {
   collection,
   create,
   where,
+  whereIn,
   update,
   remove,
   reset,
