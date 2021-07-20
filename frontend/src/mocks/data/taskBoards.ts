@@ -1,7 +1,31 @@
 import faker from 'faker';
 
-import { Doc, db } from 'mocks/models';
-import { guestUser, otherUser } from './users';
+import { Doc, db, TaskBoardDocument } from 'mocks/models';
+import { uuid } from 'mocks/utils/uuid';
+import { guestUser, otherUser, unverifiedUser } from './users';
+
+export const boardOfGuestUser: TaskBoardDocument = {
+  id: uuid(),
+  userId: guestUser.id,
+  title: 'ゲストユーザーのBoard',
+  description: 'ゲストユーザーが所有するTaskBoard',
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+export const boardOfUnverifiedUser: TaskBoardDocument = {
+  id: uuid(),
+  userId: unverifiedUser.id,
+  title: '未認証ユーザーのBoard',
+  description: '未認証ユーザーが所有するTaskBoard',
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+const initialBoards: TaskBoardDocument[] = [
+  boardOfGuestUser,
+  boardOfUnverifiedUser,
+];
 
 type SeederProps = {
   count: number;
@@ -11,6 +35,10 @@ type SeederProps = {
 const runSeeder = (props: SeederProps) => {
   const user = db.where('users', 'id', props.belongsTo.user.id)[0];
   if (!user) throw Error('The specified data does not exist');
+
+  initialBoards.forEach((board) => {
+    db.create('taskBoards', board);
+  });
 
   [...Array(props.count)].forEach(() => {
     db.create('taskBoards', {
