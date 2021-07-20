@@ -18,6 +18,8 @@ export const handlers = [
 
       if (!currentUser) return res(ctx.status(401));
 
+      if (!currentUser.emailVerifiedAt) return res(ctx.status(403));
+
       if (currentUser.id !== req.params.userId) return res(ctx.status(403));
 
       if (!token || !hasValidToken(token)) return res(ctx.status(419));
@@ -35,6 +37,8 @@ export const handlers = [
       const token = req.headers.get(X_XSRF_TOKEN);
 
       if (!currentUser) return res(ctx.status(401));
+
+      if (!currentUser.emailVerifiedAt) return res(ctx.status(403));
 
       if (currentUser.id !== req.params.userId) return res(ctx.status(403));
 
