@@ -4,10 +4,12 @@ import {
   getDefaultMiddleware,
 } from '@reduxjs/toolkit';
 
+import { appSlice } from './slices/appSlice';
 import authSlice from './slices/authSlice';
 import taskBoardSlice from './slices/taskBoardSlice';
 
 export const rootReducer = combineReducers({
+  app: appSlice.reducer,
   auth: authSlice.reducer,
   boards: taskBoardSlice.reducer,
 });
