@@ -1,7 +1,7 @@
 import faker from 'faker';
 
 import { TaskBoard, TaskList, TaskCard } from 'models';
-import { initializeStore, store } from 'mocks/utils/store';
+import { initializeStore, store } from 'mocks/store';
 import { guestUser } from 'mocks/data';
 
 describe('taskBoardSlice reducers', () => {

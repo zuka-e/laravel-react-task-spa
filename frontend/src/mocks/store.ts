@@ -15,3 +15,5 @@ export const initializeStore = () => {
   const newStore = configureStore(options);
   Object.assign(store, { ...newStore });
 };
+
+export default store;

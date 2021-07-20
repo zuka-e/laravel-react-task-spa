@@ -1,6 +1,6 @@
 import { GUEST_EMAIL } from 'config/app';
 import { forgotPassword, ForgotPasswordRequest } from 'store/thunks';
-import { initializeStore, store } from 'mocks/utils/store';
+import { initializeStore, store } from 'mocks/store';
 import { getFlashState, isLoading, isSignedIn } from 'mocks/utils/store/auth';
 
 describe('Thunk for a forgot password', () => {

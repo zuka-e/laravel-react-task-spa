@@ -6,7 +6,7 @@ import {
   signInWithEmail,
   signOutFromAPI,
 } from 'store/thunks';
-import { initializeStore, store } from 'mocks/utils/store';
+import { initializeStore, store } from 'mocks/store';
 import {
   getFlashState,
   getUserState,
