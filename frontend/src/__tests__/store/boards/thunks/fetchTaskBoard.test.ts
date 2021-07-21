@@ -1,6 +1,6 @@
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import { signIn } from 'store/slices/authSlice';
-import { SignInRequest, signInWithEmail } from 'store/thunks';
+import { SignInRequest, signInWithEmail } from 'store/thunks/auth';
 import { fetchTaskBoard } from 'store/thunks/boards';
 import { initializeStore, store } from 'mocks/store';
 import {
