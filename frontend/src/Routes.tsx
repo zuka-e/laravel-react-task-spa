@@ -8,19 +8,20 @@ import {
 } from 'react-router-dom';
 
 import Home from './pages';
-import SignUp from './pages/auth/SignUp';
-import EmailVerification from './pages/auth/EmailVerification';
-import SignIn from './pages/auth/SignIn';
-import Account from './pages/auth/Account';
-import ForgotPassword from './pages/auth/ForgotPassword';
-import ResetPassword from './pages/auth/ResetPassword';
+import { Privacy, Terms } from './pages/static';
+import {
+  SignUp,
+  EmailVerification,
+  SignIn,
+  Account,
+  ForgotPassword,
+  ResetPassword,
+} from './pages/auth';
 import * as TaskBoard from 'pages/boards';
-import NotFound from './pages/error/NotFound';
-import Terms from './pages/Terms';
-import Privacy from './pages/Privacy';
+import { NotFound } from './pages/error';
 import { setFlash } from './store/slices/authSlice';
 import { useAppDispatch, useAppSelector, useQuery } from './utils/hooks';
-import { isReady, isSentEmail, isSignedIn } from './utils/auth';
+import { isAfterRegistration, isSignedIn } from './utils/auth';
 
 const Route = ({ ...rest }) => {
   const notFound = useAppSelector((state) => state.app.notFound);
@@ -28,12 +29,12 @@ const Route = ({ ...rest }) => {
 };
 
 const GuestRoute = ({ ...rest }) => {
-  if (isSentEmail()) return <Redirect to='/email-verification' />;
+  if (isAfterRegistration()) return <Redirect to='/email-verification' />;
   return isSignedIn() ? <Redirect to='/' /> : <Route {...rest} />;
 };
 
 const AuthRoute = ({ ...rest }) => {
-  return isReady() && isSignedIn() ? <Route {...rest} /> : <Redirect to='/' />;
+  return isSignedIn() ? <Route {...rest} /> : <Redirect to='/' />;
 };
 
 const Routes: React.FC = () => {

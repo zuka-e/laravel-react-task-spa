@@ -17,7 +17,7 @@ import {
 } from '@material-ui/core';
 
 import { APP_NAME } from 'config/app';
-import { signInWithEmail } from 'store/thunks';
+import { signInWithEmail } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { FormLayout } from 'layouts';
 import { LabeledCheckbox, SubmitButton } from 'templates';
@@ -104,11 +104,10 @@ const SignIn: React.FC = () => {
           />
           <Box ml={1} mb={2}>
             <LabeledCheckbox
-              state={visiblePassword}
-              setState={setVisiblePassword}
-            >
-              Show Password
-            </LabeledCheckbox>
+              label='Show Password'
+              checked={visiblePassword}
+              setChecked={setVisiblePassword}
+            />
           </Box>
           <FormControlLabel
             control={

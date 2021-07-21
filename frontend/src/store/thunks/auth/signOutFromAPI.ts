@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 
 import { SIGNOUT_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
-import { RejectWithValue } from './types';
+import { RejectWithValue } from '../types';
 
 export const signOutFromAPI = createAsyncThunk<
   void,

@@ -25,7 +25,7 @@ import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 import { TaskCard } from 'models';
 import { closeInfoBox } from 'store/slices/taskBoardSlice';
-import { useAppDispatch, useAppSelector } from 'utils/hooks';
+import { useAppDispatch, useDeepEqualSelector } from 'utils/hooks';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -65,9 +65,11 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
   const classes = useStyles();
   const params = useParams<{ userId: string; boardId: string }>();
   const dispatch = useAppDispatch();
-  const state = useAppSelector((state) => state.boards);
-  const board = state.docs[params.boardId];
-  const list = board.lists.find((list) => list.id === card.listId);
+  const list = useDeepEqualSelector((state) =>
+    state.boards.docs[params.boardId].lists.find(
+      (list) => list.id === card.listId
+    )
+  );
   const baseUrl = `${window.location.origin}${window.location.pathname}`;
 
   const isInTime = (date: Date) => moment(date).isBefore(new Date(), 'minute');

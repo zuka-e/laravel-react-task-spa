@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import Routes from './Routes';
-import { Loading, FlashNotification } from './layouts';
 import { initializeAuthState, isReady } from './utils/auth';
 import { useAppSelector } from './utils/hooks';
+import { Loading, FlashNotification } from './layouts';
+import Routes from './Routes';
 
 const App: React.FC = () => {
-  const { signedIn, loading } = useAppSelector((state) => state.auth);
+  const signedIn = useAppSelector((state) => state.auth.signedIn);
 
   // `localStorage`と`store`のログイン状態を初期化
   useEffect(() => {
@@ -20,7 +20,7 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      {loading && <Loading />}
+      <Loading />
       <FlashNotification />
       <Routes />
     </Router>

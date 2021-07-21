@@ -1,6 +1,10 @@
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import { signIn } from 'store/slices/authSlice';
-import { fetchAuthUser, SignInRequest, signInWithEmail } from 'store/thunks';
+import {
+  fetchAuthUser,
+  SignInRequest,
+  signInWithEmail,
+} from 'store/thunks/auth';
 import { initializeStore, store } from 'mocks/store';
 import { getUserState, isSignedIn } from 'mocks/utils/store/auth';
 import { CSRF_TOKEN } from 'mocks/utils/validation';

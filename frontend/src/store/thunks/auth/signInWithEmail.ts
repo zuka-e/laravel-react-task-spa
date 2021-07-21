@@ -5,7 +5,7 @@ import { GET_CSRF_TOKEN_PATH, SIGNIN_PATH } from 'config/api';
 import { User } from 'models/User';
 import { apiClient } from 'utils/api';
 import { fetchAuthUser } from './fetchAuthUser';
-import { RejectWithValue } from './types';
+import { RejectWithValue } from '../types';
 
 export type SignInResponse = {
   user: User;

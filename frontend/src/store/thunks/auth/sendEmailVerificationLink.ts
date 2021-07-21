@@ -3,7 +3,7 @@ import { AxiosError, AxiosResponse } from 'axios';
 
 import { VERIFICATION_NOTIFICATION_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
-import { RejectWithValue } from './types';
+import { RejectWithValue } from '../types';
 
 export const sendEmailVerificationLink = createAsyncThunk<
   AxiosResponse['status'],

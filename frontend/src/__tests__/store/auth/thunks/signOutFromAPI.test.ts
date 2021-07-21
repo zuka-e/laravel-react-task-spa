@@ -5,7 +5,7 @@ import {
   SignInRequest,
   signInWithEmail,
   signOutFromAPI,
-} from 'store/thunks';
+} from 'store/thunks/auth';
 import { initializeStore, store } from 'mocks/store';
 import {
   getFlashState,

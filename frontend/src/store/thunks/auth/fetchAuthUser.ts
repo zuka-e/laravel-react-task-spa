@@ -4,7 +4,7 @@ import { AxiosError } from 'axios';
 import { AUTH_USER_PATH } from 'config/api';
 import { User } from 'models/User';
 import { apiClient } from 'utils/api';
-import { RejectWithValue } from './types';
+import { RejectWithValue } from '../types';
 
 export type FetchAuthUserResponse = {
   user: User;

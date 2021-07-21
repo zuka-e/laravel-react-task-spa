@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 
 import { GET_CSRF_TOKEN_PATH, RESET_PASSWORD_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
-import { RejectWithValue } from './types';
+import { RejectWithValue } from '../types';
 
 export type ResetPasswordResponse = {};
 

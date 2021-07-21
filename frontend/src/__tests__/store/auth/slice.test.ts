@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import authSlice, {
-  deleteSentEmailState,
+  FlashNotificationProps,
+  removeEmailVerificationPage,
   setFlash,
   signIn,
   signOut,
 } from 'store/slices/authSlice';
-import { createUser, SignUpRequest } from 'store/thunks';
-import { FlashNotificationProps } from 'layouts/FlashNotification';
+import { createUser, SignUpRequest } from 'store/thunks/auth';
 import { generateRandomString, makeEmail } from 'utils/generator';
 
 describe('authSlice reducers', () => {
@@ -33,21 +33,21 @@ describe('authSlice reducers', () => {
     const getFlashState = () => store.getState().auth.flash;
 
     it('should added a new flash to a`flash`state, once', () => {
-      expect(getFlashState()).toEqual([{}]);
+      expect(getFlashState()).toEqual([]);
       store.dispatch(setFlash(emptyNewFlash));
-      expect(getFlashState()).toEqual([{}, emptyNewFlash]);
+      expect(getFlashState()).toEqual([emptyNewFlash]);
     });
 
     it('should added new flashes to a`flash`state, more than once', () => {
-      expect(getFlashState()).toEqual([{}]);
+      expect(getFlashState()).toEqual([]);
       store.dispatch(setFlash(hugeNewFlash));
-      expect(getFlashState()).toEqual([{}, hugeNewFlash]);
+      expect(getFlashState()).toEqual([hugeNewFlash]);
       store.dispatch(setFlash(emptyNewFlash));
-      expect(getFlashState()).toEqual([{}, hugeNewFlash, emptyNewFlash]);
+      expect(getFlashState()).toEqual([hugeNewFlash, emptyNewFlash]);
     });
   });
 
-  describe('deleteSentEmailState', () => {
+  describe('removeEmailVerificationPage', () => {
     const password = generateRandomString();
     const createdUser: SignUpRequest = {
       email: makeEmail(),
@@ -55,17 +55,18 @@ describe('authSlice reducers', () => {
       password_confirmation: password,
     };
 
-    const getSentEmailState = () => store.getState().auth.sentEmail;
+    const getAfterRegistrationState = () =>
+      store.getState().auth.afterRegistration;
 
-    it('should update a`deleteSentEmailState`state to false', async () => {
+    it('should update a`removeEmailVerificationPage`state to false', async () => {
       // `true`の状態を用意する (手段は`createUser`のみ)
-      expect(getSentEmailState()).toEqual(undefined);
+      expect(getAfterRegistrationState()).toEqual(undefined);
       await store.dispatch(createUser(createdUser));
-      expect(getSentEmailState()).toBeTruthy();
+      expect(getAfterRegistrationState()).toBeTruthy();
 
-      store.dispatch(deleteSentEmailState());
-      expect(getSentEmailState()).toBeFalsy();
-      expect(getSentEmailState()).not.toEqual(undefined);
+      store.dispatch(removeEmailVerificationPage());
+      expect(getAfterRegistrationState()).toBeFalsy();
+      expect(getAfterRegistrationState()).not.toEqual(undefined);
     });
   });
 

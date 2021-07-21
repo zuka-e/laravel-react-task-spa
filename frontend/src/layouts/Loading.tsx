@@ -1,5 +1,3 @@
-import React, { useEffect, useState } from 'react';
-
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Backdrop, CircularProgress } from '@material-ui/core';
 
@@ -14,17 +12,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Loading: React.FC = () => {
+const Loading = () => {
   const classes = useStyles();
-  const { loading } = useAppSelector((state) => state.auth);
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    setOpen(!!loading);
-  }, [loading]);
+  const loading = useAppSelector((state) => state.auth.loading);
 
   return (
-    <Backdrop className={classes.backdrop} open={open}>
+    <Backdrop className={classes.backdrop} open={!!loading}>
       <CircularProgress color='inherit' />
     </Backdrop>
   );

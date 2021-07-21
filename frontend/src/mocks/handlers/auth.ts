@@ -11,7 +11,7 @@ import {
   UpdatePasswordRequest,
   ForgotPasswordRequest,
   ResetPasswordRequest,
-} from 'store/thunks';
+} from 'store/thunks/auth';
 import { auth, db, sanitizeUser } from 'mocks/models';
 import {
   createUserController,

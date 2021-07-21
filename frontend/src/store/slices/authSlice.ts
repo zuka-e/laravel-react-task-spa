@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Color } from '@material-ui/lab';
 
 import { User } from 'models/User';
-import { FlashNotificationProps } from 'layouts/FlashNotification';
 import {
   createUser,
   fetchAuthUser,
@@ -13,17 +13,24 @@ import {
   resetPassword,
   signOutFromAPI,
   deleteAccount,
-} from 'store/thunks';
+} from 'store/thunks/auth';
+
+export type FlashNotificationProps = {
+  type: Color;
+  message: string;
+};
 
 export type AuthState = {
   user: User | null;
-  sentEmail: boolean;
+  afterRegistration: boolean;
   signedIn: boolean;
   loading: boolean;
   flash: FlashNotificationProps[];
 };
 
-export const initialAuthState = { flash: [{}] } as AuthState;
+export const initialAuthState = {
+  flash: [] as AuthState['flash'],
+} as AuthState;
 
 const authSlice = createSlice({
   name: 'auth',
@@ -33,8 +40,8 @@ const authSlice = createSlice({
       const { type, message } = action.payload;
       state.flash.push({ type, message });
     },
-    deleteSentEmailState(state) {
-      state.sentEmail = false;
+    removeEmailVerificationPage(state) {
+      state.afterRegistration = false;
     },
     signIn(state) {
       state.signedIn = true;
@@ -50,7 +57,7 @@ const authSlice = createSlice({
     });
     builder.addCase(createUser.fulfilled, (state, action) => {
       state.user = action.payload.user;
-      state.sentEmail = true;
+      state.afterRegistration = true;
       state.signedIn = true;
       state.loading = false;
       state.flash.push({
@@ -86,7 +93,7 @@ const authSlice = createSlice({
           message: '認証用メールを送信しました',
         });
       } else if (action.payload === 204) {
-        state.sentEmail = false;
+        state.afterRegistration = false;
         state.flash.push({
           type: 'error',
           message: '既に認証済みです',
@@ -209,7 +216,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { setFlash, deleteSentEmailState, signIn, signOut } =
+export const { setFlash, removeEmailVerificationPage, signIn, signOut } =
   authSlice.actions;
 
 export default authSlice;

@@ -14,14 +14,14 @@ import {
 
 import { APP_NAME } from 'config/app';
 import { isGuest } from 'utils/auth';
-import { useAuth } from 'utils/hooks/useAuth';
+import { useAppSelector } from 'utils/hooks';
 import { Loading, Header, Footer } from 'layouts';
 import {
   UserProfile,
   Password,
   UserStatus,
   DeleteAccountDialog,
-} from 'components/Account';
+} from 'components/account';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,9 +42,9 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Account: React.FC = () => {
   const classes = useStyles();
-  const { currentUser, isAuthReady } = useAuth();
+  const authIsReady = useAppSelector((state) => !!state.auth.user?.id);
 
-  if (!isAuthReady()) return <Loading />;
+  if (!authIsReady) return <Loading />;
 
   return (
     <React.Fragment>
@@ -58,7 +58,7 @@ const Account: React.FC = () => {
             <CardHeader title='Profile' />
             <Divider />
             <CardContent>
-              <UserProfile user={currentUser} />
+              <UserProfile />
             </CardContent>
           </Box>
           <Box component='section' mb={3}>

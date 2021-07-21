@@ -1,4 +1,4 @@
-import { Alert, AlertTitle, Color } from '@material-ui/lab';
+import { Alert, AlertProps, AlertTitle, Color } from '@material-ui/lab';
 
 const makeDefaultTitle = (severity: Color) => {
   switch (severity) {
@@ -15,20 +15,17 @@ const makeDefaultTitle = (severity: Color) => {
 
 type AlertMessageProps = {
   severity: Color;
-  elevetion?: number;
-  action?: React.ReactNode;
   title?: string;
   body?: string;
-};
+} & AlertProps;
 
 const AlertMessage: React.FC<AlertMessageProps> = (props) => {
-  const { children, severity, elevetion, action, title, body } = props;
-  const defaultTitle = makeDefaultTitle(severity);
+  const { title, body, ...alertProps } = props;
 
   return (
-    <Alert severity={severity} elevation={elevetion || 2} action={action}>
-      <AlertTitle>{title || defaultTitle}</AlertTitle>
-      {body || children}
+    <Alert elevation={2} {...alertProps}>
+      <AlertTitle>{props.title || makeDefaultTitle(props.severity)}</AlertTitle>
+      {props.body || props.children}
     </Alert>
   );
 };

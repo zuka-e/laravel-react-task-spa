@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 
 import { UPDATE_PASSWORD_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
-import { RejectWithValue } from './types';
+import { RejectWithValue } from '../types';
 
 export type UpdatePasswordRequest = {
   current_password: string;
