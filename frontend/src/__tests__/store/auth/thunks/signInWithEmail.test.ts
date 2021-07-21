@@ -1,6 +1,6 @@
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import { SignInRequest, signInWithEmail } from 'store/thunks/auth';
-import { initializeStore, store } from 'mocks/utils/store';
+import { initializeStore, store } from 'mocks/store';
 import {
   getFlashState,
   getUserState,

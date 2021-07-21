@@ -6,7 +6,7 @@ import {
   signInWithEmail,
 } from 'store/thunks/auth';
 import { unverifiedUser } from 'mocks/data/users';
-import { initializeStore, store } from 'mocks/utils/store';
+import { initializeStore, store } from 'mocks/store';
 import {
   getFlashState,
   getUserState,

@@ -1,6 +1,11 @@
 import React, { useEffect } from 'react';
 
-import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
+import {
+  Switch,
+  Route as DefaultRoute,
+  Redirect,
+  useHistory,
+} from 'react-router-dom';
 
 import Home from './pages';
 import { Privacy, Terms } from './pages/static';
@@ -15,8 +20,13 @@ import {
 import * as TaskBoard from 'pages/boards';
 import { NotFound } from './pages/error';
 import { setFlash } from './store/slices/authSlice';
-import { useAppDispatch, useQuery } from './utils/hooks';
+import { useAppDispatch, useAppSelector, useQuery } from './utils/hooks';
 import { isAfterRegistration, isSignedIn } from './utils/auth';
+
+const Route = ({ ...rest }) => {
+  const notFound = useAppSelector((state) => state.app.notFound);
+  return notFound ? <NotFound /> : <DefaultRoute {...rest} />;
+};
 
 const GuestRoute = ({ ...rest }) => {
   if (isAfterRegistration()) return <Redirect to='/email-verification' />;

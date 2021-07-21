@@ -6,7 +6,7 @@ import {
   updatePassword,
   UpdatePasswordRequest,
 } from 'store/thunks/auth';
-import { initializeStore, store } from 'mocks/utils/store';
+import { initializeStore, store } from 'mocks/store';
 import {
   getFlashState,
   getUserState,
