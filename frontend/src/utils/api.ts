@@ -2,6 +2,7 @@ import axios, { AxiosError } from 'axios';
 
 import { API_HOST, API_ROUTE } from 'config/api';
 import { DocumentBase } from 'models';
+import { setError404 } from 'store/slices/appSlice';
 
 /**
  * Laravelからデータの配列と共にページネーションに関する情報及びリンクをリクエストする際のレスポンスタイプ
@@ -56,7 +57,10 @@ export const apiClient = (options?: ApiClientOption) => {
   apiClient.interceptors.response.use(
     (response) => response, // response = 2xx の場合は素通り
     async (err) => {
-      const { default: store } = await import('store');
+      const { default: store } =
+        process.env.NODE_ENV === 'test'
+          ? await import('mocks/store')
+          : await import('store');
       const { setFlash, signOut } = await import('store/slices/authSlice');
 
       const error = err as AxiosError;
@@ -74,6 +78,9 @@ export const apiClient = (options?: ApiClientOption) => {
           store.dispatch(
             setFlash({ type: 'error', message: '不正なリクエストです' })
           );
+          return Promise.reject(error);
+        case 404:
+          store.dispatch(setError404());
           return Promise.reject(error);
         case 500:
           store.dispatch(

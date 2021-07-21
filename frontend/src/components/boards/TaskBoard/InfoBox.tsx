@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
       '& > .infoWrapper': {
         position: 'absolute',
         height: '100%',
-        maxWidth: '100%',
+        width: '100%',
         borderLeft: '1px solid ' + theme.palette.divider,
       },
     },

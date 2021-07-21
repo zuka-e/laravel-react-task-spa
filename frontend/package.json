@@ -60,8 +60,10 @@
     ]
   },
   "devDependencies": {
+    "@types/faker": "^5.5.7",
     "babel-plugin-import": "^1.13.3",
     "customize-cra": "^1.0.0",
+    "faker": "^5.5.3",
     "msw": "^0.28.2",
     "react-app-rewired": "^2.1.8"
   },
