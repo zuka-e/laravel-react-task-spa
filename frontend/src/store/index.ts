@@ -4,9 +4,7 @@ import {
   getDefaultMiddleware,
 } from '@reduxjs/toolkit';
 
-import { appSlice } from './slices/appSlice';
-import authSlice from './slices/authSlice';
-import taskBoardSlice from './slices/taskBoardSlice';
+import { appSlice, authSlice, taskBoardSlice } from './slices';
 
 export const rootReducer = combineReducers({
   app: appSlice.reducer,
@@ -14,7 +12,7 @@ export const rootReducer = combineReducers({
   boards: taskBoardSlice.reducer,
 });
 
-const store = configureStore({
+export const store = configureStore({
   reducer: rootReducer,
   middleware: getDefaultMiddleware({
     /**
