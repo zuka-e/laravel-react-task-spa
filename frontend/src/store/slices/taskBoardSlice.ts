@@ -29,7 +29,7 @@ const initialState = {
   meta: {} as TaskBoardState['meta'],
 } as TaskBoardState;
 
-const taskBoardSlice = createSlice({
+export const taskBoardSlice = createSlice({
   name: 'taskBoard',
   initialState,
   reducers: {
@@ -74,5 +74,3 @@ const taskBoardSlice = createSlice({
 
 export const { openInfoBox, closeInfoBox, removeInfoBox } =
   taskBoardSlice.actions;
-
-export default taskBoardSlice;
