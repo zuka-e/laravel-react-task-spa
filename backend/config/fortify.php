@@ -74,7 +74,7 @@ return [
     |
     */
 
-    'prefix' => 'api',
+    'prefix' => env('API_ROUTE_PREFIX', '/api/') . env('API_VERSION', 'v1'),
 
     'domain' => null,
 
