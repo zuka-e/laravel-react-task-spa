@@ -2,9 +2,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { TaskBoard, TaskBoardsCollection, TaskCard, TaskList } from 'models';
 import {
+  FetchTaskBoardsResponse,
   fetchTaskBoards,
   fetchTaskBoard,
-  FetchTaskBoardsResponse,
+  createTaskBoard,
 } from 'store/thunks/boards';
 
 type InfoBoxAction =
@@ -67,6 +68,17 @@ export const taskBoardSlice = createSlice({
       state.loading = false;
     });
     builder.addCase(fetchTaskBoard.rejected, (state, _action) => {
+      state.loading = false;
+    });
+    builder.addCase(createTaskBoard.pending, (state, _action) => {
+      state.loading = true;
+    });
+    builder.addCase(createTaskBoard.fulfilled, (state, action) => {
+      const newDoc = action.payload.data;
+      state.data = [...state.data, { ...newDoc }];
+      state.loading = false;
+    });
+    builder.addCase(createTaskBoard.rejected, (state, _action) => {
       state.loading = false;
     });
   },
