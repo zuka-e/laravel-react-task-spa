@@ -14,6 +14,7 @@ import {
 } from 'utils/hooks';
 import { BaseLayout, StandbyScreen } from 'layouts';
 import { LinkWrapper, ScrolledDiv } from 'templates';
+import { ButtonToAddTask } from 'components/boards';
 import { BoardCardHeader } from 'components/boards/TaskBoardIndex';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -44,6 +45,7 @@ const TaskBoardIndex: React.FC = () => {
   const query = { page: useQuery().get('page') || '' };
   const params = useParams<{ userId: string }>();
   const dispatch = useAppDispatch();
+  const userId = useAppSelector((state) => state.auth.user?.id);
   const boards = useDeepEqualSelector((state) => state.boards.data);
   const count = useAppSelector((state) => state.boards.meta.last_page);
   const currentPage = useAppSelector((state) => state.boards.meta.current_page);
@@ -59,7 +61,7 @@ const TaskBoardIndex: React.FC = () => {
   const handleChange = (_e: React.ChangeEvent<unknown>, page: number) =>
     history.push(`?page=${String(page)}`);
 
-  if (!boards) return <StandbyScreen />;
+  if (!boards || userId !== params.userId) return <StandbyScreen />;
 
   return (
     <BaseLayout subtitle='Boards'>
@@ -78,6 +80,9 @@ const TaskBoardIndex: React.FC = () => {
               </Card>
             </Grid>
           ))}
+          <Grid item lg={3} sm={4} xs={6}>
+            <ButtonToAddTask method='POST' type='board' />
+          </Grid>
         </Grid>
       </Container>
 
