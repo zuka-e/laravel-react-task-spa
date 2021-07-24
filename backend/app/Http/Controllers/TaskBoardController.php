@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TaskBoardRequest;
 use App\Http\Resources\TaskBoardCollection;
 use App\Http\Resources\TaskBoardResource;
 use App\Http\Resources\TaskListResource;
 use App\Http\Resources\TaskCardResource;
 use App\Models\TaskBoard;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class TaskBoardController extends Controller
 {
@@ -31,9 +32,19 @@ class TaskBoardController extends Controller
         );
     }
 
-    public function store(Request $request)
+    /**
+     * @param TaskBoardRequest $request - バリデーション付リクエスト
+     * @see https://laravel.com/docs/8.x/validation#form-request-validation
+     * */
+    public function store(TaskBoardRequest $request, User $user)
     {
-        //
+        $validated = $request->validated();
+
+        /** @see https://laravel.com/docs/8.x/eloquent-relationships#updating-belongs-to-relationships */
+        $newBoard = new TaskBoard($validated);
+        $newBoard->user()->associate($user);
+
+        if ($newBoard->save()) return new TaskBoardResource($newBoard);
     }
 
     public function show(string $user, TaskBoard $taskBoard)
