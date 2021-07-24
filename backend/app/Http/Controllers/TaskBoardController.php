@@ -12,13 +12,20 @@ use Illuminate\Support\Facades\Auth;
 
 class TaskBoardController extends Controller
 {
+    public function __construct(Request $request)
+    {
+        $userId = $request->route('user');
+
+        // `Controller`の各メソッドに`User $user` or `string $user`が必要
+        // パラメータ `{user}` を取得し、`middleware`に渡すため`
+        $this->middleware("authorize:${userId}");
+    }
+
     /**
      * @param string $user パラメータの値 (ユーザーID)
      */
     public function index(string $user)
     {
-        if (Auth::id() !== $user) abort(403);
-
         return new TaskBoardCollection(
             TaskBoard::where('user_id', $user)->orderBy('updated_at', 'desc')->paginate(20)
         );
@@ -31,8 +38,6 @@ class TaskBoardController extends Controller
 
     public function show(string $user, TaskBoard $taskBoard)
     {
-        if (Auth::id() !== $user) abort(403);
-
         // `TaskBoardResource`に`lists`を追加することでこれを含めて返却するようにする
         $taskBoard->lists = TaskListResource::collection(
             $taskBoard->taskLists()->orderBy('updated_at', 'desc')->get()
