@@ -4,11 +4,11 @@ import { apiClient } from 'utils/api';
 import { TaskBoard } from 'models';
 import { AsyncThunkConfig } from '../types';
 
-type CreateTaskBoardResponse = {
+export type CreateTaskBoardResponse = {
   data: TaskBoard;
 };
 
-type CreateTaskBoardRequest = Pick<TaskBoard, 'title'> &
+export type CreateTaskBoardRequest = Pick<TaskBoard, 'title'> &
   Partial<Pick<TaskBoard, 'description'>>;
 
 export const createTaskBoard = createAsyncThunk<
