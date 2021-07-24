@@ -33,14 +33,20 @@ class TaskBoardTest extends TestCase
 
         // index
         $otherUserId = $this->otherUser->id;
-        $url = $this->urlPrefix . "/users/${otherUserId}/task_boards";
+        $url = $this->routePrefix . "/users/${otherUserId}/task_boards";
         $response = $this->getJson($url);
+
+        $response->assertForbidden();
+
+        // create
+        $url = $this->routePrefix . "/users/${otherUserId}/task_boards";
+        $response = $this->postJson($url, ['title' => 'testTitle']);
 
         $response->assertForbidden();
 
         // show
         $boardId = $this->guestUser->taskBoards()->first()->id;
-        $url = $this->urlPrefix . "/users/${otherUserId}/task_boards/${boardId}";
+        $url = $this->routePrefix . "/users/${otherUserId}/task_boards/${boardId}";
         $response = $this->getJson($url);
 
         $response->assertForbidden();
@@ -51,7 +57,7 @@ class TaskBoardTest extends TestCase
         $this->login($this->guestUser);
 
         $userId = $this->guestUser->id;
-        $url = $this->urlPrefix . "/users/${userId}/task_boards";
+        $url = $this->routePrefix . "/users/${userId}/task_boards";
         $response = $this->getJson($url);
 
         $response->assertJson(
@@ -72,7 +78,7 @@ class TaskBoardTest extends TestCase
         ]);
 
         $userId = $this->guestUser->id;
-        $url = $this->urlPrefix . "/users/${userId}/task_boards?page=2";
+        $url = $this->routePrefix . "/users/${userId}/task_boards?page=2";
         $response = $this->getJson($url); // 2ページ目
 
         $response->assertJson(fn (AssertableJson $json) => $json->has(
@@ -82,5 +88,53 @@ class TaskBoardTest extends TestCase
                 ->where('title', $firstBoard->title)
                 ->etc()
         ));
+    }
+
+    public function test_validate_request()
+    {
+        $this->login($this->guestUser);
+
+        $userId = $this->guestUser->id;
+        $url = $this->routePrefix . "/users/${userId}/task_boards";
+
+        // `title`
+        $emptyRequest = [];
+        $response = $this->postJson($url, $emptyRequest);
+        $response->assertStatus(422);
+
+        $emptyRequest = ['title' => ''];
+        $response = $this->postJson($url, $emptyRequest);
+        $response->assertStatus(422);
+
+        $tooShortRequest = ['title' => '!'];
+        $response = $this->postJson($url, $tooShortRequest);
+        $response->assertStatus(422);
+
+        $tooLongRequest = ['title' => str_repeat('!', 21)];
+        $response = $this->postJson($url, $tooLongRequest);
+        $response->assertStatus(422);
+
+        $successfulRequest = ['title' => str_repeat('!', 2)];
+        $response = $this->postJson($url, $successfulRequest);
+        $response->assertSuccessful(); // 201
+
+        $successfulRequest = ['title' => str_repeat('!', 20)];
+        $response = $this->postJson($url, $successfulRequest);
+        $response->assertSuccessful();
+
+        $emptyRequest = $successfulRequest + ['description' => ''];
+        $response = $this->postJson($url, $emptyRequest);
+        $response->assertStatus(422);
+
+        $tooLongRequest = $successfulRequest +
+            ['description' => str_repeat('!', 256)];
+        $response = $this->postJson($url, $tooLongRequest);
+        $response->assertStatus(422);
+
+        $successfulRequest =
+            $successfulRequest +
+            ['description' => str_repeat('!', 255)];
+        $response = $this->postJson($url, $successfulRequest);
+        $response->assertSuccessful();
     }
 }
