@@ -2,37 +2,53 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TaskBoardRequest;
 use App\Http\Resources\TaskBoardCollection;
 use App\Http\Resources\TaskBoardResource;
 use App\Http\Resources\TaskListResource;
 use App\Http\Resources\TaskCardResource;
 use App\Models\TaskBoard;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class TaskBoardController extends Controller
 {
+    public function __construct(Request $request)
+    {
+        $userId = $request->route('user');
+
+        // `Controller`の各メソッドに`User $user` or `string $user`が必要
+        // パラメータ `{user}` を取得し、`middleware`に渡すため`
+        $this->middleware("authorize:${userId}");
+    }
+
     /**
      * @param string $user パラメータの値 (ユーザーID)
      */
     public function index(string $user)
     {
-        if (Auth::id() !== $user) abort(403);
-
         return new TaskBoardCollection(
             TaskBoard::where('user_id', $user)->orderBy('updated_at', 'desc')->paginate(20)
         );
     }
 
-    public function store(Request $request)
+    /**
+     * @param TaskBoardRequest $request - バリデーション付リクエスト
+     * @see https://laravel.com/docs/8.x/validation#form-request-validation
+     * */
+    public function store(TaskBoardRequest $request, User $user)
     {
-        //
+        $validated = $request->validated();
+
+        /** @see https://laravel.com/docs/8.x/eloquent-relationships#updating-belongs-to-relationships */
+        $newBoard = new TaskBoard($validated);
+        $newBoard->user()->associate($user);
+
+        if ($newBoard->save()) return new TaskBoardResource($newBoard);
     }
 
     public function show(string $user, TaskBoard $taskBoard)
     {
-        if (Auth::id() !== $user) abort(403);
-
         // `TaskBoardResource`に`lists`を追加することでこれを含めて返却するようにする
         $taskBoard->lists = TaskListResource::collection(
             $taskBoard->taskLists()->orderBy('updated_at', 'desc')->get()

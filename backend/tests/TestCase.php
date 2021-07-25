@@ -9,7 +9,7 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    protected string $urlPrefix;
+    protected string $routePrefix;
     protected User $guestUser;
     protected User $otherUser;
 
@@ -18,7 +18,9 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->urlPrefix = env('URL_PREFIX', '/api/v1');
+        $this->routePrefix =
+            env('API_ROUTE_PREFIX', '/api/') .
+            env('API_VERSION', 'v1');
 
         $this->guestUser = User::factory()->create([
             'name' => env('GUEST_NAME'),
@@ -30,7 +32,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function login(User $user)
     {
-        $response = $this->postJson('api/login', [
+        $response = $this->postJson($this->routePrefix . '/login', [
             'email' => $user->email,
             'password' => 'password'
         ]);
