@@ -8,6 +8,10 @@ import {
 } from 'mocks/utils/validation';
 import { taskBoardController } from 'mocks/controllers';
 import { makePath } from 'mocks/utils/route';
+import {
+  CreateTaskBoardRequest,
+  CreateTaskBoardResponse,
+} from 'store/thunks/boards';
 
 export const handlers = [
   rest.get(
@@ -27,6 +31,26 @@ export const handlers = [
       const response = taskBoardController.index(req);
 
       return res(ctx.status(200), ctx.json(response));
+    }
+  ),
+
+  rest.post<CreateTaskBoardRequest, CreateTaskBoardResponse>(
+    API_ROUTE + makePath(['users', ':userId'], ['task_boards']),
+    (req, res, ctx) => {
+      const currentUser = getUserFromSession(req.cookies.session_id);
+      const token = req.headers.get(X_XSRF_TOKEN);
+
+      if (!currentUser) return res(ctx.status(401));
+
+      if (!currentUser.emailVerifiedAt) return res(ctx.status(403));
+
+      if (currentUser.id !== req.params.userId) return res(ctx.status(403));
+
+      if (!token || !hasValidToken(token)) return res(ctx.status(419));
+
+      const response = taskBoardController.store(req);
+
+      return res(ctx.status(201), ctx.json({ data: response }));
     }
   ),
 
