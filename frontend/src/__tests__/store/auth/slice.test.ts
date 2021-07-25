@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import authSlice, {
+import {
+  authSlice,
   FlashNotificationProps,
   removeEmailVerificationPage,
   setFlash,

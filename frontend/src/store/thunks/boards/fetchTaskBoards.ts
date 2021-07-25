@@ -15,7 +15,7 @@ export const fetchTaskBoards = createAsyncThunk<
   FetchTaskBoardsResponse,
   FetchTaskBoardsRequest,
   { rejectValue: RejectWithValue }
->('auth/fetchTaskBoards', async (payload, thunkApi) => {
+>('boards/fetchTaskBoards', async (payload, thunkApi) => {
   try {
     const { userId, page } = payload;
     const query = page ? `?page=${page}` : '';

@@ -32,7 +32,7 @@ export const initialAuthState = {
   flash: [] as AuthState['flash'],
 } as AuthState;
 
-const authSlice = createSlice({
+export const authSlice = createSlice({
   name: 'auth',
   initialState: initialAuthState,
   reducers: {
@@ -218,5 +218,3 @@ const authSlice = createSlice({
 
 export const { setFlash, removeEmailVerificationPage, signIn, signOut } =
   authSlice.actions;
-
-export default authSlice;
