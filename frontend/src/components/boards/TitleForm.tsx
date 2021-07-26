@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useRef } from 'react';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { TextField, CardActions } from '@material-ui/core';
+import {
+  TextField,
+  TextFieldProps,
+  ClickAwayListener,
+} from '@material-ui/core';
 
 import { TaskBoard, TaskList, TaskCard } from 'models';
 import { useAppDispatch } from 'utils/hooks';
@@ -14,7 +18,7 @@ type FormData = {
 };
 
 const schema = yup.object().shape({
-  title: yup.string().required().min(2).max(20),
+  title: yup.string().min(2).max(20),
 });
 
 export type FormAction =
@@ -26,13 +30,13 @@ export type FormAction =
   | { method: 'PATCH'; type: 'card'; data: TaskCard };
 
 type FormProps = FormAction & {
-  currentValue?: string;
   handleClose: () => void;
-};
+} & TextFieldProps;
 
 const TitleForm: React.FC<FormProps> = (props) => {
-  const { method, type, currentValue, handleClose } = props;
+  const { method, type, handleClose, ...textFieldProps } = props;
   const dispatch = useAppDispatch();
+  const submitRef = useRef<HTMLInputElement>(null);
   const {
     register,
     handleSubmit,
@@ -43,10 +47,6 @@ const TitleForm: React.FC<FormProps> = (props) => {
   });
 
   const onSubmit = (data: FormData) => {
-    if (currentValue === data.title) {
-      handleClose();
-      return;
-    }
     switch (method) {
       case 'POST':
         switch (type) {
@@ -73,24 +73,38 @@ const TitleForm: React.FC<FormProps> = (props) => {
     handleClose();
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      submitRef.current?.click();
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <CardActions disableSpacing>
+    <ClickAwayListener
+      mouseEvent='onMouseDown'
+      touchEvent='onTouchEnd'
+      onClickAway={handleClose}
+    >
+      <form onSubmit={handleSubmit(onSubmit)} onKeyDown={handleKeyDown}>
         <TextField
           id='title'
+          required
           autoFocus
           fullWidth
           variant='outlined'
           placeholder='Enter a title'
           InputProps={{ margin: 'dense' }}
-          label={currentValue}
           InputLabelProps={{ margin: 'dense' }}
-          {...register('title')}
           helperText={errors?.title?.message || '2-20 characters'}
           error={!!errors?.title}
+          {...textFieldProps}
+          {...register('title')}
         />
-      </CardActions>
-    </form>
+        <input type='submit' ref={submitRef} hidden />
+      </form>
+    </ClickAwayListener>
   );
 };
+
 export default TitleForm;
