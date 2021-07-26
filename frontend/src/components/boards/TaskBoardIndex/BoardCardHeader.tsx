@@ -1,25 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import moment from 'moment';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { CardHeader, Typography, Tooltip, IconButton } from '@material-ui/core';
+import {
+  CardHeader,
+  TextField,
+  Typography,
+  Tooltip,
+  IconButton,
+} from '@material-ui/core';
 import { MoreVert as MoreVertIcon } from '@material-ui/icons';
 
 import { TaskBoard } from 'models';
-import { PopoverControl, LightTooltip } from 'templates';
+import { PopoverControl } from 'templates';
+import { TitleForm } from '..';
 
+const maxRow = 2;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      paddingTop: theme.spacing(1),
+      padding: theme.spacing(1),
+      paddingTop: theme.spacing(0.5),
       justifyContent: 'space-between',
     },
     content: { maxWidth: '93%' },
     action: { alignSelf: 'flex-end' },
     title: {
-      whiteSpace: 'nowrap',
+      display: '-webkit-box',
+      '-webkit-box-orient': 'vertical',
+      '-webkit-line-clamp': maxRow,
       overflow: 'hidden',
-      textOverflow: 'ellipsis',
+    },
+    subheader: {
+      paddingLeft: theme.spacing(0.75),
+    },
+    notchedOutline: { border: 'none' },
+    multilineDense: {
+      padding: theme.spacing(0.75),
+    },
+    helperTextDense: {
+      marginTop: '1px',
+      marginLeft: theme.spacing(1),
     },
   })
 );
@@ -30,16 +51,61 @@ type BoardCardHeaderProps = {
 
 const BoardCardHeader: React.FC<BoardCardHeaderProps> = (props) => {
   const { board } = props;
-  const { root, content, action, title } = useStyles();
+  const classes = useStyles();
+  const [isEditing, setIsEditing] = useState(false);
 
-  const Title = () => (
-    <LightTooltip title={board.title} enterDelay={100}>
-      <Typography className={title}>{board.title}</Typography>
-    </LightTooltip>
-  );
+  const handleOpenForm = () => {
+    setIsEditing(true);
+  };
+
+  const handleCloseForm = () => {
+    setIsEditing(false);
+  };
+
+  const Title = () =>
+    isEditing ? (
+      <TitleForm
+        method='PATCH'
+        type='board'
+        data={board}
+        handleClose={handleCloseForm}
+        defaultValue={board.title}
+        multiline
+        InputProps={{
+          classes: {
+            multiline: classes.multilineDense,
+          },
+        }}
+        FormHelperTextProps={{
+          margin: 'dense',
+          classes: { marginDense: classes.helperTextDense },
+        }}
+      />
+    ) : (
+      <TextField
+        onClick={handleOpenForm}
+        fullWidth
+        defaultValue={board.title}
+        inputProps={{ title: board.title }}
+        multiline
+        rowsMax={maxRow}
+        variant='outlined'
+        InputProps={{
+          classes: {
+            multiline: classes.multilineDense,
+            inputMultiline: classes.title,
+            notchedOutline: classes.notchedOutline,
+          },
+        }}
+      />
+    );
 
   const Subheader = () => (
-    <Typography color='textSecondary' variant='body2'>
+    <Typography
+      color='textSecondary'
+      variant='body2'
+      classes={{ body2: classes.subheader }}
+    >
       {moment(board.updatedAt).calendar()}
     </Typography>
   );
@@ -60,10 +126,14 @@ const BoardCardHeader: React.FC<BoardCardHeaderProps> = (props) => {
 
   return (
     <CardHeader
-      classes={{ root, content, action }}
+      classes={{
+        root: classes.root,
+        content: classes.content,
+        action: classes.action,
+      }}
       disableTypography
       title={<Title />}
-      subheader={<Subheader />}
+      subheader={isEditing ? undefined : <Subheader />}
       action={<Action />}
     />
   );

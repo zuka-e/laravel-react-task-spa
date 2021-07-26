@@ -11,7 +11,7 @@ import {
 
 import { TaskBoard, TaskList, TaskCard } from 'models';
 import { useAppDispatch } from 'utils/hooks';
-import { createTaskBoard } from 'store/thunks/boards';
+import { createTaskBoard, updateTaskBoard } from 'store/thunks/boards';
 
 type FormData = {
   title: string;
@@ -47,9 +47,9 @@ const TitleForm: React.FC<FormProps> = (props) => {
   });
 
   const onSubmit = (data: FormData) => {
-    switch (method) {
+    switch (props.method) {
       case 'POST':
-        switch (type) {
+        switch (props.type) {
           case 'board':
             dispatch(createTaskBoard({ ...data }));
             break;
@@ -60,8 +60,10 @@ const TitleForm: React.FC<FormProps> = (props) => {
         }
         break;
       case 'PATCH':
-        switch (type) {
+        if (!data.title) break;
+        switch (props.type) {
           case 'board':
+            dispatch(updateTaskBoard({ id: props.data.id, ...data }));
             break;
           case 'list':
             break;
