@@ -1,7 +1,10 @@
 import { RestRequest } from 'msw';
 
 import { TaskBoard, TaskList, TaskCard } from 'models';
-import { CreateTaskBoardRequest } from 'store/thunks/boards';
+import {
+  CreateTaskBoardRequest,
+  UpdateTaskBoardRequest,
+} from 'store/thunks/boards';
 import { db, TaskBoardDocument } from 'mocks/models';
 import { paginate } from 'mocks/utils/paginate';
 
@@ -43,4 +46,20 @@ export const show = (req: RestRequest) => {
   });
 
   return board;
+};
+
+export const update = (req: RestRequest<UpdateTaskBoardRequest>) => {
+  const board = db.where(
+    'taskBoards',
+    'id',
+    req.params.boardId
+  )[0] as TaskBoard;
+
+  if (!board) return;
+
+  const newState: TaskBoard = { ...board, ...req.body, updatedAt: new Date() };
+
+  db.update('taskBoards', newState);
+
+  return newState;
 };
