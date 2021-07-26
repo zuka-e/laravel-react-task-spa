@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 
 import { createStyles, makeStyles } from '@material-ui/core/styles';
-import { ClickAwayListener, Card, Button } from '@material-ui/core';
+import {
+  ClickAwayListener,
+  Card,
+  CardActions,
+  Button,
+} from '@material-ui/core';
 import { Add as AddIcon } from '@material-ui/icons';
 
 import { FormAction, TitleForm } from '.';
@@ -37,7 +42,9 @@ const ButtonToAddTask: React.FC<ButtonToAddTaskProps> = (props) => {
     >
       {isEditing ? (
         <Card elevation={7}>
-          <TitleForm {...props} handleClose={toggleForm} />
+          <CardActions style={{ display: 'block' }}>
+            <TitleForm {...props} handleClose={toggleForm} />
+          </CardActions>
         </Card>
       ) : (
         <Button
