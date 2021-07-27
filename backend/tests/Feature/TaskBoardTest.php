@@ -25,8 +25,46 @@ class TaskBoardTest extends TestCase
             ->for($this->guestUser)->create();
     }
 
+    public function test_unauthorized_unless_logged_in()
+    {
+        TaskBoard::factory()->for($this->otherUser)->create();
 
-    public function test_forbidden_from_displaying_others_data()
+        // index
+        $otherUserId = $this->otherUser->id;
+        $url = $this->routePrefix . "/users/${otherUserId}/task_boards";
+        $response = $this->getJson($url);
+
+        $response->assertUnauthorized();
+
+        // create
+        $url = $this->routePrefix . "/users/${otherUserId}/task_boards";
+        $response = $this->postJson($url, ['title' => 'testTitle']);
+
+        $response->assertUnauthorized();
+
+        // show
+        $boardId = $this->guestUser->taskBoards()->first()->id;
+        $url = $this->routePrefix . "/users/${otherUserId}/task_boards/${boardId}";
+        $response = $this->getJson($url);
+
+        $response->assertUnauthorized();
+
+        // update
+        $boardId = $this->guestUser->taskBoards()->first()->id;
+        $url = $this->routePrefix . "/users/${otherUserId}/task_boards/${boardId}";
+        $response = $this->patchJson($url, ['title' => 'testTitle']);
+
+        $response->assertUnauthorized();
+
+        // delete
+        $boardId = $this->guestUser->taskBoards()->first()->id;
+        $url = $this->routePrefix . "/users/${otherUserId}/task_boards/${boardId}";
+        $response = $this->deleteJson($url);
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_forbidden_from_accessing_others_data()
     {
         TaskBoard::factory()->for($this->otherUser)->create();
 
@@ -56,6 +94,13 @@ class TaskBoardTest extends TestCase
         $boardId = $this->guestUser->taskBoards()->first()->id;
         $url = $this->routePrefix . "/users/${otherUserId}/task_boards/${boardId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
+
+        $response->assertForbidden();
+
+        // delete
+        $boardId = $this->guestUser->taskBoards()->first()->id;
+        $url = $this->routePrefix . "/users/${otherUserId}/task_boards/${boardId}";
+        $response = $this->deleteJson($url);
 
         $response->assertForbidden();
     }
@@ -206,5 +251,17 @@ class TaskBoardTest extends TestCase
         $successfulRequest = ['title' => str_repeat('!', 20)];
         $response = $this->patchJson($url, $successfulRequest);
         $response->assertNotFound();
+    }
+
+    public function test_data_is_deleted_successfully()
+    {
+        $this->login($this->guestUser);
+
+        $userId = $this->guestUser->id;
+        $boardId = $this->guestUser->taskBoards()->first()->id;
+        $url = $this->routePrefix . "/users/${userId}/task_boards/${boardId}";
+
+        $response = $this->deleteJson($url);
+        $response->assertOk();
     }
 }

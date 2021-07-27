@@ -49,8 +49,7 @@ Route::group([
     Route::group([
         'middleware' => 'verified'
     ], function () {
-        Route::apiResource('users.task_boards', TaskBoardController::class)
-            ->only('index', 'show', 'store', 'update');
+        Route::apiResource('users.task_boards', TaskBoardController::class);
     });
 });
 

@@ -81,8 +81,8 @@ class TaskBoardController extends Controller
             return new TaskBoardResource($taskBoard);
     }
 
-    public function destroy(TaskBoard $taskBoard)
+    public function destroy(string $user, TaskBoard $taskBoard)
     {
-        //
+        if ($taskBoard->delete()) return new TaskBoardResource($taskBoard);
     }
 }
