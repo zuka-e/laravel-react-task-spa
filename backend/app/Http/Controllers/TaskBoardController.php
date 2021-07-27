@@ -73,9 +73,12 @@ class TaskBoardController extends Controller
         return new TaskBoardResource($taskBoard);
     }
 
-    public function update(Request $request, TaskBoard $taskBoard)
+    public function update(TaskBoardRequest $request, string $user, TaskBoard $taskBoard)
     {
-        //
+        $validated = $request->validated();
+
+        if ($taskBoard->fill($validated)->save())
+            return new TaskBoardResource($taskBoard);
     }
 
     public function destroy(TaskBoard $taskBoard)

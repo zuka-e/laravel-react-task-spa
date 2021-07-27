@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\TaskBoard;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
@@ -50,6 +51,13 @@ class TaskBoardTest extends TestCase
         $response = $this->getJson($url);
 
         $response->assertForbidden();
+
+        // update
+        $boardId = $this->guestUser->taskBoards()->first()->id;
+        $url = $this->routePrefix . "/users/${otherUserId}/task_boards/${boardId}";
+        $response = $this->patchJson($url, ['title' => 'testTitle']);
+
+        $response->assertForbidden();
     }
 
     public function test_limited_items_in_one_page()
@@ -90,7 +98,7 @@ class TaskBoardTest extends TestCase
         ));
     }
 
-    public function test_validate_request()
+    public function test_validate_request_when_created()
     {
         $this->login($this->guestUser);
 
@@ -136,5 +144,67 @@ class TaskBoardTest extends TestCase
             ['description' => str_repeat('!', 255)];
         $response = $this->postJson($url, $successfulRequest);
         $response->assertSuccessful();
+    }
+
+    public function test_validate_request_when_updated()
+    {
+        $this->login($this->guestUser);
+
+        $userId = $this->guestUser->id;
+        $boardId = $this->guestUser->taskBoards()->first()->id;
+        $url = $this->routePrefix . "/users/${userId}/task_boards/${boardId}";
+
+        // `title`
+        $emptyRequest = [];
+        $response = $this->patchJson($url, $emptyRequest);
+        $response->assertStatus(422);
+
+        $emptyRequest = ['title' => ''];
+        $response = $this->patchJson($url, $emptyRequest);
+        $response->assertStatus(422);
+
+        $tooShortRequest = ['title' => '!'];
+        $response = $this->patchJson($url, $tooShortRequest);
+        $response->assertStatus(422);
+
+        $tooLongRequest = ['title' => str_repeat('!', 21)];
+        $response = $this->patchJson($url, $tooLongRequest);
+        $response->assertStatus(422);
+
+        $successfulRequest = ['title' => str_repeat('!', 2)];
+        $response = $this->patchJson($url, $successfulRequest);
+        $response->assertSuccessful(); // 201
+
+        $successfulRequest = ['title' => str_repeat('!', 20)];
+        $response = $this->patchJson($url, $successfulRequest);
+        $response->assertSuccessful();
+
+        $emptyRequest = $successfulRequest + ['description' => ''];
+        $response = $this->patchJson($url, $emptyRequest);
+        $response->assertStatus(422);
+
+        $tooLongRequest = $successfulRequest +
+            ['description' => str_repeat('!', 256)];
+        $response = $this->patchJson($url, $tooLongRequest);
+        $response->assertStatus(422);
+
+        $successfulRequest =
+            $successfulRequest +
+            ['description' => str_repeat('!', 255)];
+        $response = $this->patchJson($url, $successfulRequest);
+        $response->assertSuccessful();
+    }
+
+    public function test_return_404_error_if_data_is_not_found()
+    {
+        $this->login($this->guestUser);
+
+        $userId = $this->guestUser->id;
+        $boardId = (string)Str::uuid();
+        $url = $this->routePrefix . "/users/${userId}/task_boards/${boardId}";
+
+        $successfulRequest = ['title' => str_repeat('!', 20)];
+        $response = $this->patchJson($url, $successfulRequest);
+        $response->assertNotFound();
     }
 }
