@@ -6,6 +6,8 @@ import {
   fetchTaskBoards,
   fetchTaskBoard,
   createTaskBoard,
+  updateTaskBoard,
+  destroyTaskBoard,
 } from 'store/thunks/boards';
 
 type InfoBoxAction =
@@ -79,6 +81,31 @@ export const taskBoardSlice = createSlice({
       state.loading = false;
     });
     builder.addCase(createTaskBoard.rejected, (state, _action) => {
+      state.loading = false;
+    });
+    builder.addCase(updateTaskBoard.pending, (state, _action) => {
+      state.loading = true;
+    });
+    builder.addCase(updateTaskBoard.fulfilled, (state, action) => {
+      const board = state.data.find(
+        (board) => board.id === action.payload.data.id
+      );
+      Object.assign(board, action.payload.data);
+      state.loading = false;
+    });
+    builder.addCase(updateTaskBoard.rejected, (state, _action) => {
+      state.loading = false;
+    });
+    builder.addCase(destroyTaskBoard.pending, (state, _action) => {
+      state.loading = true;
+    });
+    builder.addCase(destroyTaskBoard.fulfilled, (state, action) => {
+      state.data = state.data.filter(
+        (board) => board.id !== action.payload.data.id
+      );
+      state.loading = false;
+    });
+    builder.addCase(destroyTaskBoard.rejected, (state, _action) => {
       state.loading = false;
     });
   },
