@@ -14,6 +14,7 @@ import { MoreVert as MoreVertIcon } from '@material-ui/icons';
 import { TaskBoard } from 'models';
 import { PopoverControl } from 'templates';
 import { TitleForm } from '..';
+import { BoardMenu } from '.';
 
 const maxRow = 2;
 const useStyles = makeStyles((theme: Theme) =>
@@ -120,7 +121,7 @@ const BoardCardHeader: React.FC<BoardCardHeaderProps> = (props) => {
 
   const Action = () => (
     <PopoverControl trigger={<MenuButton />}>
-      {/* <BoardMenuList /> */}
+      <BoardMenu board={board} />
     </PopoverControl>
   );
 
