@@ -14,9 +14,9 @@ import {
   isSignedIn,
 } from 'mocks/utils/store/auth';
 import { isLoading } from 'mocks/utils/store/boards';
+import { uuid } from 'mocks/utils/uuid';
 import { CSRF_TOKEN } from 'mocks/utils/validation';
 import { boardOfGuestUser, guestUser, unverifiedUser } from 'mocks/data';
-import { uuid } from 'mocks/utils/uuid';
 
 describe('Thunk updating a task board', () => {
   const signInRequest: SignInRequest = {
