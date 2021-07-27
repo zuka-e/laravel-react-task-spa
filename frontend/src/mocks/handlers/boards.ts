@@ -11,6 +11,8 @@ import { makePath } from 'mocks/utils/route';
 import {
   CreateTaskBoardRequest,
   CreateTaskBoardResponse,
+  DestroyTaskBoardRequest,
+  DestroyTaskBoardResponse,
   UpdateTaskBoardRequest,
   UpdateTaskBoardResponse,
 } from 'store/thunks/boards';
@@ -96,7 +98,29 @@ export const handlers = [
 
       if (!newState) return res(ctx.status(404));
 
-      return res(ctx.status(200), ctx.json({ data: newState }));
+      return res(ctx.status(201), ctx.json({ data: newState }));
+    }
+  ),
+
+  rest.delete<DestroyTaskBoardRequest, DestroyTaskBoardResponse>(
+    API_ROUTE + makePath(['users', ':userId'], ['task_boards', ':boardId']),
+    (req, res, ctx) => {
+      const currentUser = getUserFromSession(req.cookies.session_id);
+      const token = req.headers.get(X_XSRF_TOKEN);
+
+      if (!currentUser) return res(ctx.status(401));
+
+      if (!currentUser.emailVerifiedAt) return res(ctx.status(403));
+
+      if (currentUser.id !== req.params.userId) return res(ctx.status(403));
+
+      if (!token || !hasValidToken(token)) return res(ctx.status(419));
+
+      const deleted = taskBoardController.destroy(req);
+
+      if (!deleted) return res(ctx.status(404));
+
+      return res(ctx.status(200), ctx.json({ data: deleted }));
     }
   ),
 ];

@@ -1,7 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import { TaskBoard } from 'models';
-import { setFlash } from 'store/slices';
 import { apiClient, makePath } from 'utils/api';
 import { AsyncThunkConfig } from '../types';
 
@@ -17,9 +16,11 @@ export const destroyTaskBoard = createAsyncThunk<
   DestroyTaskBoardRequest,
   AsyncThunkConfig
 >('boards/destroyTaskBoard', async (payload, thunkApi) => {
-  const userId = thunkApi.getState().auth.user?.id;
+  const { setFlash } = await import('store/slices/authSlice');
+  const userId = String(thunkApi.getState().auth.user?.id);
+  const url = makePath(['users', userId], ['task_boards', payload.id]);
+
   try {
-    const url = makePath(['users', userId], ['task_boards', payload.id]);
     const response = await apiClient().delete(url);
     thunkApi.dispatch(
       setFlash({

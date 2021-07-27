@@ -63,3 +63,17 @@ export const update = (req: RestRequest<UpdateTaskBoardRequest>) => {
 
   return newState;
 };
+
+export const destroy = (req: RestRequest<UpdateTaskBoardRequest>) => {
+  const board = db.where(
+    'taskBoards',
+    'id',
+    req.params.boardId
+  )[0] as TaskBoard;
+
+  if (!board) return;
+
+  db.remove('taskBoards', req.params.boardId);
+
+  return board;
+};
