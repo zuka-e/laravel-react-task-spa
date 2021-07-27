@@ -15,13 +15,7 @@ import {
 } from 'mocks/utils/store/auth';
 import { isLoading } from 'mocks/utils/store/boards';
 import { CSRF_TOKEN } from 'mocks/utils/validation';
-import {
-  boardOfGuestUser,
-  boardOfUnverifiedUser,
-  guestUser,
-  otherUser,
-  unverifiedUser,
-} from 'mocks/data';
+import { boardOfGuestUser, guestUser, unverifiedUser } from 'mocks/data';
 import { uuid } from 'mocks/utils/uuid';
 
 describe('Thunk updating a task board', () => {
