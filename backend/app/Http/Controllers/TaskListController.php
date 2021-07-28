@@ -10,6 +10,17 @@ use Illuminate\Http\Request;
 
 class TaskListController extends Controller
 {
+    public function __construct(Request $request)
+    {
+        $taskBoardId = $request->task_board;
+        $taskBoard = TaskBoard::find($taskBoardId);
+
+        if (!$taskBoard) abort(404);
+
+        $userId = $taskBoard->user_id;
+        $this->middleware("authorize:${userId}");
+    }
+
     /**
      * Display a listing of the resource.
      *

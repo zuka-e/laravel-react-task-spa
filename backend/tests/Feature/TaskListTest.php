@@ -36,6 +36,20 @@ class TaskListTest extends TestCase
         $this->login($this->guestUser);
     }
 
+    public function test_forbidden_from_accessing_others_data()
+    {
+        TaskBoard::factory()->for($this->otherUser)->create();
+
+        $this->login($this->guestUser);
+
+        $otherBoardId = $this->otherUser->taskBoards[0]->id;
+
+        // create
+        $url = $this->routePrefix . "/task_boards/${otherBoardId}/task_lists";
+        $response = $this->postJson($url, ['title' => 'testTitle']);
+        $response->assertForbidden();
+    }
+
     public function test_validate_request_when_created()
     {
         $this->login($this->guestUser);
