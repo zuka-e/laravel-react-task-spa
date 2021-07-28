@@ -9,6 +9,7 @@ import {
   updateTaskBoard,
   destroyTaskBoard,
 } from 'store/thunks/boards';
+import { createTaskList } from 'store/thunks/lists';
 
 type InfoBoxAction =
   | { type: 'board'; data: TaskBoard }
@@ -67,6 +68,12 @@ export const taskBoardSlice = createSlice({
     builder.addCase(fetchTaskBoard.fulfilled, (state, action) => {
       const docId = action.payload.data.id;
       state.docs[docId] = action.payload.data;
+      state.docs[docId].lists = state.docs[docId].lists
+        ? state.docs[docId].lists
+        : [];
+      state.docs[docId].lists.forEach(
+        (list) => (list.cards = list.cards ? list.cards : [])
+      );
       state.loading = false;
     });
     builder.addCase(fetchTaskBoard.rejected, (state, _action) => {
@@ -106,6 +113,26 @@ export const taskBoardSlice = createSlice({
       state.loading = false;
     });
     builder.addCase(destroyTaskBoard.rejected, (state, _action) => {
+      state.loading = false;
+    });
+
+    builder.addCase(createTaskList.pending, (state, _action) => {
+      state.loading = true;
+    });
+
+    builder.addCase(createTaskList.fulfilled, (state, action) => {
+      const newList = action.payload.data;
+      newList.cards = newList.cards ? newList.cards : [];
+      const boardId = newList.boardId;
+
+      state.docs[boardId].lists = [
+        ...state.docs[boardId].lists,
+        { ...newList },
+      ];
+      state.loading = false;
+    });
+
+    builder.addCase(createTaskList.rejected, (state, _action) => {
       state.loading = false;
     });
   },
