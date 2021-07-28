@@ -18,6 +18,8 @@ class Authorize
      */
     public function handle(Request $request, Closure $next, $userId)
     {
+        if (!$userId) abort(404);
+
         if ($userId !== Auth::id()) abort(403);
 
         return $next($request);

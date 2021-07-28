@@ -12,12 +12,11 @@ class TaskListController extends Controller
 {
     public function __construct(Request $request)
     {
-        $taskBoardId = $request->task_board;
+        $taskBoardId = $request->route('task_board');
         $taskBoard = TaskBoard::find($taskBoardId);
 
-        if (!$taskBoard) abort(404);
+        $userId = $taskBoard ? $taskBoard->user_id : '';
 
-        $userId = $taskBoard->user_id;
         $this->middleware("authorize:${userId}");
     }
 
