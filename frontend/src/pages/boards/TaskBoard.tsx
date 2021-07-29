@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Container, Grid, Divider } from '@material-ui/core';
 
-import { useAppDispatch, useDeepEqualSelector, useQuery } from 'utils/hooks';
+import { useAppDispatch, useDeepEqualSelector } from 'utils/hooks';
 import { fetchTaskBoard, FetchTaskBoardRequest } from 'store/thunks/boards';
 import { BaseLayout, StandbyScreen } from 'layouts';
 import {
@@ -19,11 +19,19 @@ const boxWidth = '370px';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     main: {
+      flex: '1 1 auto',
+      display: 'flex',
+      flexDirection: 'column',
       paddingTop: theme.spacing(2),
       paddingRight: 0,
     },
     title: { fontSize: '2rem' },
     divider: { marginTop: theme.spacing(1) },
+    content: {
+      flex: '1 1 auto',
+      flexWrap: 'nowrap',
+      justifyContent: 'space-between',
+    },
     listItems: {
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(4),
@@ -37,7 +45,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const TaskBoard: React.FC = () => {
   const classes = useStyles();
-  const query = { page: useQuery().get('page') || '' };
   const params = useParams<{ userId: string; boardId: string }>();
   const dispatch = useAppDispatch();
   const board = useDeepEqualSelector(
@@ -48,10 +55,9 @@ const TaskBoard: React.FC = () => {
     const request: FetchTaskBoardRequest = {
       userId: params.userId,
       boardId: params.boardId,
-      page: query.page,
     };
     dispatch(fetchTaskBoard(request));
-  }, [dispatch, params.userId, params.boardId, query.page]);
+  }, [dispatch, params.userId, params.boardId]);
 
   if (!board) return <StandbyScreen />;
 
@@ -73,7 +79,7 @@ const TaskBoard: React.FC = () => {
           </Grid>
         </ScrolledGridContainer>
         <Divider classes={{ root: classes.divider }} />
-        <Grid container justify='space-between' wrap='nowrap'>
+        <Grid container className={classes.content}>
           <ScrolledGridContainer className={classes.listItems}>
             {board.lists?.map((list, i) => (
               <Grid item key={list.id} id={list.id} className='listItem'>
