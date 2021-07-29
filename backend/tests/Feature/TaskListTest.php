@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\TaskBoard;
+use App\Models\TaskCard;
 use App\Models\TaskList;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
@@ -12,15 +13,26 @@ class TaskListTest extends TestCase
 {
     use RefreshDatabase; // DBリフレッシュ (`id`カラムの連番はリセットされない)
 
+    private TaskBoard $taskBoard;
+    private TaskList $taskList;
+    private TaskCard $taskCard;
+
     public function setUp(): void
     {
         parent::setUp();
 
-        TaskBoard::factory()->for($this->guestUser)->create();
-
-        TaskList::factory()
+        $this->taskBoard = TaskBoard::factory()
             ->for($this->guestUser)
-            ->for($this->guestUser->taskBoards[0])
+            ->create();
+
+        $this->taskList = TaskList::factory()
+            ->for($this->guestUser)
+            ->for($this->taskBoard)
+            ->create();
+
+        $this->taskCard = TaskCard::factory()
+            ->for($this->guestUser)
+            ->for($this->taskList)
             ->create();
     }
 
@@ -33,12 +45,16 @@ class TaskListTest extends TestCase
         // create
         $url = $this->routePrefix . "/task_boards/${boardId}/task_lists";
         $response = $this->postJson($url, ['title' => 'testTitle']);
-
         $response->assertUnauthorized();
 
         // update
         $url = $this->routePrefix . "/task_boards/${boardId}/task_lists/${listId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
+        $response->assertUnauthorized();
+
+        // destroy
+        $url = $this->routePrefix . "/task_boards/${boardId}/task_lists/${listId}";
+        $response = $this->deleteJson($url);
         $response->assertUnauthorized();
     }
 
@@ -68,6 +84,11 @@ class TaskListTest extends TestCase
         $url = $this->routePrefix . "/task_boards/${otherBoardId}/task_lists/${listId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
         $response->assertForbidden();
+
+        // destroy
+        $url = $this->routePrefix . "/task_boards/${otherBoardId}/task_lists/${listId}";
+        $response = $this->deleteJson($url);
+        $response->assertForbidden();
     }
 
     public function test_forbidden_from_accessing_others_list()
@@ -87,9 +108,14 @@ class TaskListTest extends TestCase
         $otherBoard = $this->otherUser->taskBoards[0];
         $otherListId = $otherBoard->taskLists[0]->id;
 
-        // update (otherList)
+        // update
         $url = $this->routePrefix . "/task_boards/${boardId}/task_lists/${otherListId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
+        $response->assertForbidden();
+
+        // destroy
+        $url = $this->routePrefix . "/task_boards/${boardId}/task_lists/${otherListId}";
+        $response = $this->deleteJson($url);
         $response->assertForbidden();
     }
 
@@ -110,6 +136,11 @@ class TaskListTest extends TestCase
         $response = $this->patchJson($url, ['title' => 'testTitle']);
         $response->assertNotFound();
 
+        // destroy
+        $url = $this->routePrefix . "/task_boards/${boardId}/task_lists/${listId}";
+        $response = $this->deleteJson($url);
+        $response->assertNotFound();
+
         /*
         |--------------------------------------------------------------
         | Non-existent `TaskList`
@@ -121,6 +152,11 @@ class TaskListTest extends TestCase
         // update
         $url = $this->routePrefix . "/task_boards/${boardId}/task_lists/${listId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
+        $response->assertNotFound();
+
+        // destroy
+        $url = $this->routePrefix . "/task_boards/${boardId}/task_lists/${listId}";
+        $response = $this->deleteJson($url);
         $response->assertNotFound();
     }
 
@@ -196,5 +232,29 @@ class TaskListTest extends TestCase
             ['description' => str_repeat('亜', floor(65535 / 3))];
         $response = $this->patchJson($url, $successfulRequest);
         $response->assertStatus(200);
+    }
+
+    public function test_data_is_deleted_successfully()
+    {
+        $this->login($this->guestUser);
+
+        $board = $this->guestUser->taskBoards[0];
+        $boardId = $board->id;
+        $list = $board->taskLists[0];
+        $listId = $list->id;
+        $url = $this->routePrefix . "/task_boards/${boardId}/task_lists/${listId}";
+
+        $listBeforeDeleted = TaskList::find($listId);
+        $cardsBeforeDeleted = TaskCard::where('task_list_id', $listId)->get();
+        $this->assertNotNull($listBeforeDeleted);
+        $this->assertNotEmpty($cardsBeforeDeleted);
+
+        $response = $this->deleteJson($url);
+        $response->assertOk();
+
+        $listAfterDeleted = TaskList::find($listId);
+        $cardsAfterDeleted = TaskCard::where('task_list_id', $listId)->get();
+        $this->assertNull($listAfterDeleted);
+        $this->assertEmpty($cardsAfterDeleted);
     }
 }

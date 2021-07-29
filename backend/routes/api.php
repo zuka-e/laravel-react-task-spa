@@ -51,7 +51,7 @@ Route::group([
     ], function () {
         Route::apiResource('users.task_boards', TaskBoardController::class);
         Route::apiResource('task_boards.task_lists', TaskListController::class)
-            ->only('store', 'update');
+            ->only('store', 'update', 'destroy');
     });
 });
 
