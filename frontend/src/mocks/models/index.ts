@@ -148,10 +148,13 @@ const whereIn = <T extends keyof DB>(
  * 指定された`Collection`の`Document`を更新
  */
 const update = <T extends keyof DB>(model: T, doc: Doc<T>) => {
-  const newState = { ...database[model], [doc.id]: doc };
+  const updated = { ...doc, updatedAt: new Date() };
+  const newState = { ...database[model], [doc.id]: updated };
 
   database[model] = newState;
   save(model);
+
+  return updated as Doc<T>;
 };
 
 /**
@@ -225,8 +228,10 @@ interface Model {
   ): Doc<T>[];
   /**
    * 指定された`Collection`の`Document`を更新
+   *
+   * @returns 更新された`Document`
    */
-  update<T extends keyof DB>(model: T, doc: Doc<T>): void;
+  update<T extends keyof DB>(model: T, doc: Doc<T>): Doc<T>;
   /**
    * 指定された`Collection`から`Document`を削除
    *
