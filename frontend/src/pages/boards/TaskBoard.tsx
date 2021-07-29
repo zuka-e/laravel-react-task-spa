@@ -18,11 +18,19 @@ const boxWidth = '370px';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     main: {
+      flex: '1 1 auto',
+      display: 'flex',
+      flexDirection: 'column',
       paddingTop: theme.spacing(2),
       paddingRight: 0,
     },
     title: { fontSize: '2rem' },
     divider: { marginTop: theme.spacing(1) },
+    content: {
+      flex: '1 1 auto',
+      flexWrap: 'nowrap',
+      justifyContent: 'space-between',
+    },
     listItems: {
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(4),
@@ -70,7 +78,7 @@ const TaskBoard: React.FC = () => {
           </Grid>
         </ScrolledGridContainer>
         <Divider classes={{ root: classes.divider }} />
-        <Grid container justify='space-between' wrap='nowrap'>
+        <Grid container className={classes.content}>
           <ScrolledGridContainer className={classes.listItems}>
             {board.lists?.map((list, i) => (
               <Grid item key={list.id} id={list.id} className='listItem'>
