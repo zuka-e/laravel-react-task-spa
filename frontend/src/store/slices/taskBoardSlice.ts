@@ -98,6 +98,9 @@ export const taskBoardSlice = createSlice({
         (board) => board.id === action.payload.data.id
       );
       Object.assign(board, action.payload.data);
+
+      if (board?.id === state.infoBox.data?.id) state.infoBox.data = board;
+
       state.loading = false;
     });
     builder.addCase(updateTaskBoard.rejected, (state, _action) => {
@@ -146,6 +149,8 @@ export const taskBoardSlice = createSlice({
         (list) => list.id === action.payload.data.id
       );
       Object.assign(list, action.payload.data);
+
+      if (list?.id === state.infoBox.data?.id) state.infoBox.data = list;
 
       state.loading = false;
     });

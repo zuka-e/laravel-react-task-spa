@@ -23,6 +23,7 @@ import {
 import { TaskList } from 'models';
 import { closeInfoBox } from 'store/slices/taskBoardSlice';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
+import { EditableTitle } from '..';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -94,11 +95,8 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = (props) => {
       </CardActions>
       <CardHeader
         className={classes.cardHeader}
-        title={
-          <Typography className={classes.text} variant='h5' component='p'>
-            {list.title}
-          </Typography>
-        }
+        disableTypography
+        title={<EditableTitle method='PATCH' type='list' data={list} />}
       />
       <CardContent className={classes.rows}>
         <Grid container>
