@@ -52,40 +52,50 @@ export const taskBoardSlice = createSlice({
     builder.addCase(fetchTaskBoards.pending, (state, _action) => {
       state.loading = true;
     });
+
     builder.addCase(fetchTaskBoards.fulfilled, (state, action) => {
       state.data = action.payload.data || [];
       state.links = action.payload.links || {};
       state.meta = action.payload.meta || {};
       state.loading = false;
     });
+
     builder.addCase(fetchTaskBoards.rejected, (state, _action) => {
       state.loading = false;
     });
+
     builder.addCase(fetchTaskBoard.pending, (state, _action) => {
       state.loading = true;
     });
+
     builder.addCase(fetchTaskBoard.fulfilled, (state, action) => {
       const docId = action.payload.data.id;
       state.docs[docId] = action.payload.data;
       state.loading = false;
     });
+
     builder.addCase(fetchTaskBoard.rejected, (state, _action) => {
       state.loading = false;
     });
+
     builder.addCase(createTaskBoard.pending, (state, _action) => {
       state.loading = true;
     });
+
     builder.addCase(createTaskBoard.fulfilled, (state, action) => {
       const newDoc = action.payload.data;
       state.data = [...state.data, { ...newDoc }];
       state.loading = false;
     });
+
     builder.addCase(createTaskBoard.rejected, (state, _action) => {
       state.loading = false;
     });
+
     builder.addCase(updateTaskBoard.pending, (state, _action) => {
       state.loading = true;
     });
+
     builder.addCase(updateTaskBoard.fulfilled, (state, action) => {
       const board = state.data.find(
         (board) => board.id === action.payload.data.id
@@ -93,18 +103,23 @@ export const taskBoardSlice = createSlice({
       Object.assign(board, action.payload.data);
       state.loading = false;
     });
+
     builder.addCase(updateTaskBoard.rejected, (state, _action) => {
       state.loading = false;
     });
+
     builder.addCase(destroyTaskBoard.pending, (state, _action) => {
       state.loading = true;
     });
+
     builder.addCase(destroyTaskBoard.fulfilled, (state, action) => {
       state.data = state.data.filter(
         (board) => board.id !== action.payload.data.id
       );
+
       state.loading = false;
     });
+
     builder.addCase(destroyTaskBoard.rejected, (state, _action) => {
       state.loading = false;
     });
