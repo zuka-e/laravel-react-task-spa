@@ -18,6 +18,8 @@ class TaskListController extends Controller
         $userId = $taskBoard ? $taskBoard->user_id : '';
 
         $this->middleware("authorize:${userId}");
+
+        $this->authorizeResource(TaskList::class, 'task_list');
     }
 
     /**

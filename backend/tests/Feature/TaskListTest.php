@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\TaskBoard;
 use App\Models\TaskList;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class TaskListTest extends TestCase
@@ -41,7 +42,7 @@ class TaskListTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    public function test_forbidden_from_accessing_others_data()
+    public function test_forbidden_from_accessing_others_board()
     {
         TaskBoard::factory()->for($this->otherUser)->create();
 
@@ -65,6 +66,29 @@ class TaskListTest extends TestCase
 
         // update
         $url = $this->routePrefix . "/task_boards/${otherBoardId}/task_lists/${listId}";
+        $response = $this->patchJson($url, ['title' => 'testTitle']);
+        $response->assertForbidden();
+    }
+
+    public function test_forbidden_from_accessing_others_list()
+    {
+        TaskBoard::factory()->for($this->otherUser)->create();
+
+        TaskList::factory()
+            ->for($this->otherUser)
+            ->for($this->otherUser->taskBoards[0])
+            ->create();
+
+        $this->login($this->guestUser);
+
+        $board = $this->guestUser->taskBoards[0];
+        $boardId = $board->id;
+
+        $otherBoard = $this->otherUser->taskBoards[0];
+        $otherListId = $otherBoard->taskLists[0]->id;
+
+        // update (otherList)
+        $url = $this->routePrefix . "/task_boards/${boardId}/task_lists/${otherListId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
         $response->assertForbidden();
     }
