@@ -47,15 +47,17 @@ const TitleForm: React.FC<FormProps> = (props) => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     switch (props.method) {
       case 'POST':
         switch (props.type) {
           case 'board':
-            dispatch(createTaskBoard({ ...data }));
+            await dispatch(createTaskBoard({ ...data }));
             break;
           case 'list':
-            dispatch(createTaskList({ boardId: props.parent.id, ...data }));
+            await dispatch(
+              createTaskList({ boardId: props.parent.id, ...data })
+            );
             break;
           case 'card':
             break;
@@ -65,12 +67,16 @@ const TitleForm: React.FC<FormProps> = (props) => {
         if (!data.title) break;
         switch (props.type) {
           case 'board':
-            dispatch(updateTaskBoard({ id: props.data.id, ...data }));
+            await dispatch(updateTaskBoard({ id: props.data.id, ...data }));
             break;
           case 'list':
-            const id = props.data.id;
-            const boardId = props.data.boardId;
-            dispatch(updateTaskList({ id, boardId, ...data }));
+            await dispatch(
+              updateTaskList({
+                id: props.data.id,
+                boardId: props.data.boardId,
+                ...data,
+              })
+            );
             break;
           case 'card':
             break;
