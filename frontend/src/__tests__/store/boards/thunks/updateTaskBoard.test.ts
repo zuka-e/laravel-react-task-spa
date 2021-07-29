@@ -112,21 +112,28 @@ describe('Thunk updating a task board', () => {
   });
 
   describe('Fulfilled', () => {
+    const getBoardState = () =>
+      store.getState().boards.data.find((board) => board.id === payload.id);
+
     it('should update a specified board after fetching the board', async () => {
       await store.dispatch(signInWithEmail(signInRequest));
       await store.dispatch(fetchTaskBoards({ userId: guestUser.id }));
-      const response = await store.dispatch(updateTaskBoard(payload));
 
+      const before = getBoardState();
+      expect(before?.title).not.toEqual(payload.title);
+      expect(before?.description).not.toEqual(payload.description);
+
+      const response = await store.dispatch(updateTaskBoard(payload));
       expect(updateTaskBoard.fulfilled.match(response)).toBeTruthy();
       if (updateTaskBoard.rejected.match(response)) return;
       expect(response.payload.data.title).toEqual(payload.title);
       expect(response.payload.data.description).toEqual(payload.description);
-      const board = store
-        .getState()
-        .boards.data.find((board) => board.id === payload.id);
-      expect(board?.id).toEqual(payload.id);
-      expect(board?.title).toEqual(payload.title);
-      expect(board?.description).toEqual(payload.description);
+
+      const after = getBoardState();
+      expect(after?.id).toEqual(payload.id);
+      expect(after?.title).toEqual(payload.title);
+      expect(after?.description).toEqual(payload.description);
+      expect(after?.updatedAt).not.toEqual(before?.updatedAt);
     });
   });
 });

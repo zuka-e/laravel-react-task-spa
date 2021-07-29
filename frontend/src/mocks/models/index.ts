@@ -148,10 +148,13 @@ const whereIn = <T extends keyof DB>(
  * 指定された`Collection`の`Document`を更新
  */
 const update = <T extends keyof DB>(model: T, doc: Doc<T>) => {
-  const newState = { ...database[model], [doc.id]: doc };
+  const updated = { ...doc, updatedAt: new Date() };
+  const newState = { ...database[model], [doc.id]: updated };
 
   database[model] = newState;
   save(model);
+
+  return updated as Doc<T>;
 };
 
 /**
@@ -197,6 +200,7 @@ interface Model {
   collection<T extends keyof DB>(model: T): DB[T];
   /**
    * 指定された`Collection`に引数の`Document`を新たに作成
+   *
    * @param  doc - `Document` | `Document`から`DocumentBase`を除外した型
    */
   create<T extends keyof DB>(
@@ -225,8 +229,10 @@ interface Model {
   ): Doc<T>[];
   /**
    * 指定された`Collection`の`Document`を更新
+   *
+   * @returns 更新された`Document`
    */
-  update<T extends keyof DB>(model: T, doc: Doc<T>): void;
+  update<T extends keyof DB>(model: T, doc: Doc<T>): Doc<T>;
   /**
    * 指定された`Collection`から`Document`を削除
    *
