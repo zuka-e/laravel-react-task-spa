@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Container, Grid, Divider } from '@material-ui/core';
 
-import { useAppDispatch, useDeepEqualSelector, useQuery } from 'utils/hooks';
+import { useAppDispatch, useDeepEqualSelector } from 'utils/hooks';
 import { fetchTaskBoard, FetchTaskBoardRequest } from 'store/thunks/boards';
 import { BaseLayout, StandbyScreen } from 'layouts';
 import {
@@ -36,7 +36,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const TaskBoard: React.FC = () => {
   const classes = useStyles();
-  const query = { page: useQuery().get('page') || '' };
   const params = useParams<{ userId: string; boardId: string }>();
   const dispatch = useAppDispatch();
   const board = useDeepEqualSelector(
@@ -47,10 +46,9 @@ const TaskBoard: React.FC = () => {
     const request: FetchTaskBoardRequest = {
       userId: params.userId,
       boardId: params.boardId,
-      page: query.page,
     };
     dispatch(fetchTaskBoard(request));
-  }, [dispatch, params.userId, params.boardId, query.page]);
+  }, [dispatch, params.userId, params.boardId]);
 
   if (!board) return <StandbyScreen />;
 
