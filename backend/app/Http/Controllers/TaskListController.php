@@ -52,16 +52,12 @@ class TaskListController extends Controller
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\TaskList  $taskList
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, TaskList $taskList)
+    public function update(TaskListRequest $request, string $taskBoard, TaskList $taskList)
     {
-        //
+        $validated = $request->validated();
+
+        if ($taskList->fill($validated)->save())
+            return new TaskListResource($taskList);
     }
 
     /**
