@@ -77,6 +77,31 @@ class TaskCardTest extends TestCase
         $response->assertForbidden();
     }
 
+    public function test_forbidden_from_accessing_others_card()
+    {
+        $otherBoard = TaskBoard::factory()->for($this->otherUser)->create();
+
+        $otherList = TaskList::factory()
+            ->for($this->otherUser)
+            ->for($otherBoard)
+            ->create();
+
+        $otherCard = TaskCard::factory()
+            ->for($this->otherUser)
+            ->for($otherList)
+            ->create();
+
+        $this->login($this->guestUser);
+
+        $listId = $this->taskList->id;
+        $otherCardId = $otherCard->id;
+
+        // update
+        $url = $this->routePrefix . "/task_lists/${listId}/task_cards/${otherCardId}";
+        $response = $this->patchJson($url, ['title' => 'testTitle']);
+        $response->assertForbidden();
+    }
+
     public function test_return_404_error_if_data_is_not_found()
     {
         $this->login($this->guestUser);

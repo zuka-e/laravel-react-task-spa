@@ -23,6 +23,8 @@ class TaskCardController extends Controller
         $userId = $taskBoard ? $taskBoard->user_id : '';
 
         $this->middleware("authorize:${userId}");
+
+        $this->authorizeResource(TaskCard::class, 'task_card');
     }
 
     public function index(User $user)
