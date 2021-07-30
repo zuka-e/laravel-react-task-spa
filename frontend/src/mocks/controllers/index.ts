@@ -7,3 +7,4 @@ export * as deleteAccountController from './auth/deleteAccount';
 
 export * as taskBoardController from './taskBoardController';
 export * as taskListController from './taskListController';
+export * as taskCardController from './taskCardController';
