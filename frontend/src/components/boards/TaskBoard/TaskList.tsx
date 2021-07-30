@@ -7,6 +7,7 @@ import * as Model from 'models';
 import { useAppSelector } from 'utils/hooks';
 import { LabeledSelect, ScrolledDiv } from 'templates';
 import { ListCardHeader, TaskCard } from '.';
+import { ButtonToAddTask } from '..';
 
 const borderWidth = '2px';
 const useStyles = makeStyles((theme: Theme) =>
@@ -95,7 +96,7 @@ const TaskList: React.FC<TaskListProps> = (props) => {
           </ScrolledDiv>
         </CardContent>
 
-        {/* <AddTaskButton card id={list.id} />*/}
+        <ButtonToAddTask method='POST' type='card' parent={list} transparent />
       </div>
     </Card>
   );
