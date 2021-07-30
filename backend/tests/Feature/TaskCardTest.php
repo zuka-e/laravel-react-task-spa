@@ -39,10 +39,16 @@ class TaskCardTest extends TestCase
     public function test_unauthorized_unless_logged_in()
     {
         $listId = $this->taskList->id;
+        $cardId = $this->taskCard->id;
 
         // create
         $url = $this->routePrefix . "/task_lists/${listId}/task_cards";
         $response = $this->postJson($url, ['title' => 'testTitle']);
+        $response->assertUnauthorized();
+
+        // update
+        $url = $this->routePrefix . "/task_lists/${listId}/task_cards/${cardId}";
+        $response = $this->patchJson($url, ['title' => 'testTitle']);
         $response->assertUnauthorized();
     }
 
@@ -58,10 +64,16 @@ class TaskCardTest extends TestCase
         $this->login($this->guestUser);
 
         $otherListId = $otherList->id;
+        $cardId = $this->taskCard->id;
 
         // create
         $url = $this->routePrefix . "/task_lists/${otherListId}/task_cards";
         $response = $this->postJson($url, ['title' => 'testTitle']);
+        $response->assertForbidden();
+
+        // update
+        $url = $this->routePrefix . "/task_lists/${otherListId}/task_cards/${cardId}";
+        $response = $this->patchJson($url, ['title' => 'testTitle']);
         $response->assertForbidden();
     }
 
@@ -79,6 +91,19 @@ class TaskCardTest extends TestCase
         // create
         $url = $this->routePrefix . "/task_lists/${listId}/task_cards";
         $response = $this->postJson($url, ['title' => 'testTitle']);
+        $response->assertNotFound();
+
+        /*
+        |--------------------------------------------------------------
+        | Non-existent `TaskCard`
+        |--------------------------------------------------------------
+        */
+        $listId = $this->taskList->id;
+        $cardId = (string)Str::uuid();
+
+        // update
+        $url = $this->routePrefix . "/task_lists/${listId}/task_cards/${cardId}";
+        $response = $this->patchJson($url, ['title' => 'testTitle']);
         $response->assertNotFound();
     }
 
@@ -136,6 +161,64 @@ class TaskCardTest extends TestCase
 
         $futureDateRequest = $successfulRequest + ['deadline' => $now->add(new DateInterval('PT1S'))];
         $response = $this->postJson($url, $futureDateRequest);
+        $response->assertStatus(422);
+    }
+
+    public function test_validate_request_when_updated()
+    {
+        $this->login($this->guestUser);
+
+        $listId = $this->taskList->id;
+        $cardId = $this->taskCard->id;
+        $url = $this->routePrefix . "/task_lists/${listId}/task_cards/${cardId}";
+
+        // `title`
+        $emptyRequest = [];
+        $response = $this->patchJson($url, $emptyRequest);
+        $response->assertStatus(422);
+
+        $emptyRequest = ['title' => ''];
+        $response = $this->patchJson($url, $emptyRequest);
+        $response->assertStatus(422);
+
+        $tooLongRequest = ['title' => str_repeat('a', floor(191 / 3) + 1)];
+        $response = $this->patchJson($url, $tooLongRequest);
+        $response->assertStatus(422);
+
+        $successfulRequest = ['title' => str_repeat('亜', floor(191 / 3))];
+        $response = $this->patchJson($url, $successfulRequest);
+        $response->assertStatus(200);
+
+        // `content`
+        $tooLongRequest = $successfulRequest + ['content' => str_repeat('a', floor(65535 / 3) + 1)];
+        $response = $this->patchJson($url, $tooLongRequest);
+        $response->assertStatus(422);
+
+        $successfulRequest = $successfulRequest + ['content' => str_repeat('亜', floor(65535 / 3))];
+        $response = $this->patchJson($url, $successfulRequest);
+        $response->assertStatus(200);
+
+        // `deadline`
+        $now = new DateTime();
+
+        $invalidFormatRequest = $successfulRequest + ['deadline' => 1546268400];
+        $response = $this->patchJson($url, $invalidFormatRequest);
+        $response->assertStatus(422);
+
+        $invalidFormatRequest = $successfulRequest + ['deadline' => "1546268400"];
+        $response = $this->patchJson($url, $invalidFormatRequest);
+        $response->assertStatus(422);
+
+        $pastDateRequest = $successfulRequest + ['deadline' => $now->sub(new DateInterval('PT1S'))];
+        $response = $this->patchJson($url, $pastDateRequest);
+        $response->assertStatus(422);
+
+        $currentDateRequest = $successfulRequest + ['deadline' => $now];
+        $response = $this->patchJson($url, $currentDateRequest);
+        $response->assertStatus(422);
+
+        $futureDateRequest = $successfulRequest + ['deadline' => $now->add(new DateInterval('PT1S'))];
+        $response = $this->patchJson($url, $futureDateRequest);
         $response->assertStatus(422);
     }
 }

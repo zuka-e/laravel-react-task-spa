@@ -47,16 +47,12 @@ class TaskCardController extends Controller
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\TaskCard  $taskCard
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, TaskCard $taskCard)
+    public function update(TaskCardRequest $request, string $taskList, TaskCard $taskCard)
     {
-        //
+        $validated = $request->validated();
+
+        if ($taskCard->fill($validated)->save())
+            return new TaskCardResource($taskCard);
     }
 
     /**
