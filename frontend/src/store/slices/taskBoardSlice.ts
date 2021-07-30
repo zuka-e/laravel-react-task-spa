@@ -14,7 +14,7 @@ import {
   updateTaskList,
   destroyTaskList,
 } from 'store/thunks/lists';
-import { createTaskCard } from 'store/thunks/cards';
+import { createTaskCard, updateTaskCard } from 'store/thunks/cards';
 
 type InfoBoxAction =
   | { type: 'board'; data: TaskBoard }
@@ -76,13 +76,25 @@ export const taskBoardSlice = createSlice({
 
     builder.addCase(fetchTaskBoard.fulfilled, (state, action) => {
       const docId = action.payload.data.id;
+
+      /** `TaskBoard` */
       state.docs[docId] = action.payload.data;
+
+      /** `TaskList` (プロパティが存在しない場合は`[]`を設定) */
       state.docs[docId].lists = state.docs[docId].lists
         ? state.docs[docId].lists
         : [];
-      state.docs[docId].lists.forEach(
-        (list) => (list.cards = list.cards ? list.cards : [])
-      );
+
+      /** `TaskCard` (全てのデータに`boardId`プロパティを設定)*/
+      state.docs[docId].lists.forEach((list) => {
+        list.cards = list.cards
+          ? list.cards.map((card) => ({
+              ...card,
+              boardId: state.docs[docId].id,
+            }))
+          : [];
+      });
+
       state.loading = false;
     });
 
@@ -215,6 +227,31 @@ export const taskBoardSlice = createSlice({
     });
 
     builder.addCase(createTaskCard.rejected, (state, _action) => {
+      state.loading = false;
+    });
+
+    builder.addCase(updateTaskCard.pending, (state, _action) => {
+      state.loading = true;
+    });
+
+    builder.addCase(updateTaskCard.fulfilled, (state, action) => {
+      const updatedCard = action.payload.data;
+      const boardId = action.payload.boardId;
+      const board = state.docs[boardId];
+      const list = board.lists.find((list) => list.id === updatedCard.listId);
+      const currentCard = list?.cards.find(
+        (card) => card.id === updatedCard.id
+      );
+
+      Object.assign(currentCard, updatedCard);
+
+      if (updatedCard?.id === state.infoBox.data?.id)
+        state.infoBox.data = updatedCard;
+
+      state.loading = false;
+    });
+
+    builder.addCase(updateTaskCard.rejected, (state, _action) => {
       state.loading = false;
     });
   },

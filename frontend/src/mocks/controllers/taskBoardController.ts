@@ -41,7 +41,11 @@ export const show = (req: RestRequest) => {
   ) as unknown as TaskList[];
 
   board.lists.forEach((list) => {
-    list.cards = db.where('taskCards', 'listId', list.id) as TaskCard[];
+    const cards = db.where('taskCards', 'listId', list.id);
+    list.cards = cards.map((card) => ({
+      ...(card as unknown as TaskCard),
+      boardId: board.id,
+    }));
   });
 
   return board;
