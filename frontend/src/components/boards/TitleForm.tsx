@@ -13,7 +13,7 @@ import { TaskBoard, TaskList, TaskCard } from 'models';
 import { useAppDispatch } from 'utils/hooks';
 import { createTaskBoard, updateTaskBoard } from 'store/thunks/boards';
 import { createTaskList, updateTaskList } from 'store/thunks/lists';
-import { createTaskCard } from 'store/thunks/cards';
+import { createTaskCard, updateTaskCard } from 'store/thunks/cards';
 import theme from 'theme';
 
 type FormData = {
@@ -88,6 +88,14 @@ const TitleForm: React.FC<FormProps> = (props) => {
             );
             break;
           case 'card':
+            await dispatch(
+              updateTaskCard({
+                id: props.data.id,
+                boardId: props.data.boardId,
+                listId: props.data.listId,
+                ...data,
+              })
+            );
             break;
         }
         break;

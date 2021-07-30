@@ -26,6 +26,7 @@ import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { TaskCard } from 'models';
 import { closeInfoBox } from 'store/slices/taskBoardSlice';
 import { useAppDispatch, useDeepEqualSelector } from 'utils/hooks';
+import { EditableTitle } from '..';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -115,12 +116,8 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
         </IconButton>
       </CardActions>
       <CardHeader
-        className={classes.cardHeader}
-        title={
-          <Typography className={classes.text} variant='h5' component='p'>
-            {card.title}
-          </Typography>
-        }
+        classes={{ root: classes.cardHeader }}
+        title={<EditableTitle method='PATCH' type='card' data={card} />}
       />
       <CardContent className={classes.rows}>
         <FormControlLabel
