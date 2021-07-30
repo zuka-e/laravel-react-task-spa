@@ -2,149 +2,140 @@
 
 namespace Tests\Feature;
 
+use App\Models\TaskBoard;
 use App\Models\TaskCard;
-use App\Models\User;
-use Carbon\Carbon;
+use App\Models\TaskList;
+use DateInterval;
+use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Testing\Fluent\AssertableJson;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class TaskCardTest extends TestCase
 {
-    // use RefreshDatabase; // DBリフレッシュ (`id`カラムの連番はリセットされない)
+    use RefreshDatabase;
 
-    // // クラス定数
-    // const TOTAL_NUMBER_OF_TASKS = 21; // テスト環境で作成するデータの総量
-    // const TOTAL_NUMBER_OF_TASKS_IN_ONE_PAGE = 20; // アクション内paginateメソッドの引数
+    private TaskBoard $taskBoard;
+    private TaskList $taskList;
+    private TaskCard $taskCard;
 
-    // // クラス変数
-    // private static string $URL_PREFIX;
-    // private static User $FIRST_USER;
+    public function setUp(): void
+    {
+        parent::setUp();
 
-    // private function login(User $user)
-    // {
-    //     $response = $this->postJson('api/login', [
-    //         'email' => $user->email,
-    //         'password' => 'password'
-    //     ]);
-    //     $response->assertOk(); // 200
-    //     return $response;
-    // }
+        $this->taskBoard = TaskBoard::factory()->for($this->guestUser)->create();
 
-    // public function setUp(): void
-    // {
-    //     parent::setUp();
+        $this->taskList = TaskList::factory()
+            ->for($this->guestUser)
+            ->for($this->taskBoard)
+            ->create();
 
-    //     self::$URL_PREFIX = env('URL_PREFIX', '/api/v1');
-    //     self::$FIRST_USER = User::factory()->create(); // TaskCardが属するUser
+        $this->taskCard = TaskCard::factory()
+            ->for($this->guestUser)
+            ->for($this->taskList)
+            ->create();
+    }
 
-    //     TaskCard::factory()->count(self::TOTAL_NUMBER_OF_TASKS - 1)
-    //         ->for(self::$FIRST_USER)->create();
-    // }
+    public function test_unauthorized_unless_logged_in()
+    {
+        $listId = $this->taskList->id;
 
-    // public function test_20_items_in_one_page()
-    // {
-    //     $user = self::$FIRST_USER;
+        // create
+        $url = $this->routePrefix . "/task_lists/${listId}/task_cards";
+        $response = $this->postJson($url, ['title' => 'testTitle']);
+        $response->assertUnauthorized();
+    }
 
-    //     // ログイン
-    //     $this->login($user);
+    public function test_forbidden_from_accessing_others_list()
+    {
+        $otherBoard = TaskBoard::factory()->for($this->otherUser)->create();
 
-    //     $user_id = $user->id;
-    //     $url = self::$URL_PREFIX . "/users/${user_id}/task_cards";
-    //     $response = $this->getJson($url);
-    //     $response->assertJson(
-    //         fn (AssertableJson $json) =>
-    //         $json->has('meta') // JSONのkey有無をテスト
-    //             ->has('links')
-    //             ->has('data', self::TOTAL_NUMBER_OF_TASKS_IN_ONE_PAGE)
-    //     );
-    // }
+        $otherList = TaskList::factory()
+            ->for($this->otherUser)
+            ->for($otherBoard)
+            ->create();
 
-    // public function test_sort_in_descending_order()
-    // {
-    //     $user = self::$FIRST_USER;
+        $this->login($this->guestUser);
 
-    //     // ログイン
-    //     $this->login($user);
+        $otherListId = $otherList->id;
 
-    //     $first_task = TaskCard::factory()->for($user)->create([
-    //         'title' => 'first task title',
-    //         'created_at' => Carbon::now()->addDay(-1)
-    //     ]);
+        // create
+        $url = $this->routePrefix . "/task_lists/${otherListId}/task_cards";
+        $response = $this->postJson($url, ['title' => 'testTitle']);
+        $response->assertForbidden();
+    }
 
-    //     $user_id = $user->id;
-    //     $url = self::$URL_PREFIX . "/users/${user_id}/task_cards?page=2";
-    //     $response = $this->getJson($url); // 2ページ目
-    //     $response->assertJson(fn (AssertableJson $json) => $json->has(
-    //         'data.0',
-    //         fn ($json) =>
-    //         $json->where('id', $first_task->id)
-    //             ->where('title', $first_task->title)
-    //             ->where('done', false)
-    //             ->etc()
-    //     ));
-    // }
+    public function test_return_404_error_if_data_is_not_found()
+    {
+        $this->login($this->guestUser);
 
-    // public function test_cannot_create_task_without_auth()
-    // {
-    //     $user = self::$FIRST_USER;
-    //     $user_id = self::$FIRST_USER->id;
-    //     $url = self::$URL_PREFIX . "/users/${user_id}/task_cards";
+        /*
+        |--------------------------------------------------------------
+        | Non-existent `TaskList`
+        |--------------------------------------------------------------
+        */
+        $listId = (string)Str::uuid();
 
-    //     // 認証前
-    //     $response = $this->postJson($url, [
-    //         'title' => 'test',
-    //         'user_id' => $user->id
-    //     ]);
-    //     $response->assertUnauthorized(); // 401
+        // create
+        $url = $this->routePrefix . "/task_lists/${listId}/task_cards";
+        $response = $this->postJson($url, ['title' => 'testTitle']);
+        $response->assertNotFound();
+    }
 
-    //     // ログイン
-    //     $this->login($user);
+    public function test_validate_request_when_created()
+    {
+        $this->login($this->guestUser);
 
-    //     // 認証後
-    //     $this->assertDatabaseMissing('task_cards', [
-    //         'title' => 'authenticated',
-    //         'user_id' => $user->id
-    //     ]);
+        $listId = $this->taskList->id;
+        $url = $this->routePrefix . "/task_lists/${listId}/task_cards";
 
-    //     $response = $this->postJson($url, [
-    //         'title' => 'authenticated',
-    //         'user_id' => $user->id
-    //     ]);
-    //     $response->assertCreated(); // 201
+        // `title`
+        $emptyRequest = [];
+        $response = $this->postJson($url, $emptyRequest);
+        $response->assertStatus(422);
 
-    //     $this->assertDatabaseHas('task_cards', [
-    //         'title' => 'authenticated',
-    //         'user_id' => $user->id
-    //     ]);
-    // }
+        $emptyRequest = ['title' => ''];
+        $response = $this->postJson($url, $emptyRequest);
+        $response->assertStatus(422);
 
-    // public function test_cannot_create_task_without_verificarion()
-    // {
-    //     $unverifiedUser = User::factory()->unverified()->create();
-    //     $user = self::$FIRST_USER;
-    //     $user_id = self::$FIRST_USER->id;
-    //     $url = self::$URL_PREFIX . "/users/${user_id}/task_cards";
+        $tooLongRequest = ['title' => str_repeat('a', floor(191 / 3) + 1)];
+        $response = $this->postJson($url, $tooLongRequest);
+        $response->assertStatus(422);
 
-    //     // ログイン
-    //     $this->login($unverifiedUser);
+        $successfulRequest = ['title' => str_repeat('亜', floor(191 / 3))];
+        $response = $this->postJson($url, $successfulRequest);
+        $response->assertStatus(201);
 
-    //     // メール認証なし
-    //     $response = $this->postJson($url, [
-    //         'title' => 'verification required',
-    //         'user_id' => Auth::user()->id
-    //     ]);
-    //     $response->assertForbidden(); // 403
+        // `content`
+        $tooLongRequest = $successfulRequest + ['content' => str_repeat('a', floor(65535 / 3) + 1)];
+        $response = $this->postJson($url, $tooLongRequest);
+        $response->assertStatus(422);
 
-    //     // 認証済みユーザーとしてログイン
-    //     $this->actingAs($user);
+        $successfulRequest = $successfulRequest + ['content' => str_repeat('亜', floor(65535 / 3))];
+        $response = $this->postJson($url, $successfulRequest);
+        $response->assertStatus(201);
 
-    //     // メール認証あり
-    //     $response = $this->postJson($url, [
-    //         'title' => 'verification required',
-    //         'user_id' => Auth::user()->id
-    //     ]);
-    //     $response->assertCreated(); // 201
-    // }
+        // `deadline`
+        $now = new DateTime();
+
+        $invalidFormatRequest = $successfulRequest + ['deadline' => 1546268400];
+        $response = $this->postJson($url, $invalidFormatRequest);
+        $response->assertStatus(422);
+
+        $invalidFormatRequest = $successfulRequest + ['deadline' => "1546268400"];
+        $response = $this->postJson($url, $invalidFormatRequest);
+        $response->assertStatus(422);
+
+        $pastDateRequest = $successfulRequest + ['deadline' => $now->sub(new DateInterval('PT1S'))];
+        $response = $this->postJson($url, $pastDateRequest);
+        $response->assertStatus(422);
+
+        $currentDateRequest = $successfulRequest + ['deadline' => $now];
+        $response = $this->postJson($url, $currentDateRequest);
+        $response->assertStatus(422);
+
+        $futureDateRequest = $successfulRequest + ['deadline' => $now->add(new DateInterval('PT1S'))];
+        $response = $this->postJson($url, $futureDateRequest);
+        $response->assertStatus(422);
+    }
 }
