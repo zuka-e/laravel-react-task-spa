@@ -13,7 +13,7 @@ export type UpdateTaskCardRequest = Pick<TaskCard, 'title'> &
   Partial<Pick<TaskCard, 'deadline'>> &
   Partial<Pick<TaskCard, 'done'>>;
 
-type UpdateTaskCardArg = Pick<TaskCard, 'id'> &
+export type UpdateTaskCardArg = Pick<TaskCard, 'id'> &
   Pick<TaskCard, 'boardId'> &
   Pick<TaskCard, 'listId'> &
   UpdateTaskCardRequest;

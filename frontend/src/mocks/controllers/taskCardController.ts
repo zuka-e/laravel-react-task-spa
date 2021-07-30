@@ -1,7 +1,10 @@
 import { RestRequest } from 'msw';
 
 import { TaskCard } from 'models';
-import { CreateTaskCardRequest } from 'store/thunks/cards';
+import {
+  CreateTaskCardRequest,
+  UpdateTaskCardRequest,
+} from 'store/thunks/cards';
 import { db, TaskCardDocument } from 'mocks/models';
 
 export const index = (req: RestRequest) => {};
@@ -21,6 +24,18 @@ export const store = (req: RestRequest<CreateTaskCardRequest>) => {
 
 export const show = (req: RestRequest) => {};
 
-export const update = (req: RestRequest) => {};
+export const update = (req: RestRequest<UpdateTaskCardRequest>) => {
+  const card = db.where('taskCards', 'id', req.params.cardId)[0];
+
+  if (!card) return;
+
+  const updated = db.update('taskCards', { ...card, ...req.body });
+
+  const parent = db.where('taskLists', 'id', req.params.listId)[0];
+  const boardId = parent.boardId;
+  const response: TaskCard = { ...updated, boardId };
+
+  return response;
+};
 
 export const destroy = (req: RestRequest) => {};
