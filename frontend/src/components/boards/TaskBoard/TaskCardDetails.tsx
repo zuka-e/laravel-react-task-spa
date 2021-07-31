@@ -20,12 +20,12 @@ import {
   ListAlt as ListAltIcon,
   Assignment as AssignmentIcon,
 } from '@material-ui/icons';
-import { KeyboardDateTimePicker } from '@material-ui/pickers';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 import { TaskCard } from 'models';
-import { closeInfoBox } from 'store/slices/taskBoardSlice';
 import { useAppDispatch, useDeepEqualSelector } from 'utils/hooks';
+import { closeInfoBox } from 'store/slices/taskBoardSlice';
+import { updateTaskCard } from 'store/thunks/cards';
+import { DatetimeInput } from 'templates';
 import { EditableTitle } from '..';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -85,12 +85,15 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
     dispatch(closeInfoBox());
   };
 
-  const handleDateChange = (date: MaterialUiPickersDate) => {
-    // State managements
-  };
-
-  const handleDateClose = () => {
-    // API requests
+  const handleDateChange = (date?: Date) => {
+    dispatch(
+      updateTaskCard({
+        id: card.id,
+        boardId: card.boardId,
+        listId: card.listId,
+        deadline: date,
+      })
+    );
   };
 
   return (
@@ -137,16 +140,7 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
             </label>
           </Grid>
           <Grid item>
-            <KeyboardDateTimePicker
-              variant='inline'
-              format='YYYY/MM/DD/ HH:mm'
-              ampm={false}
-              disablePast
-              autoOk
-              value={card.deadline}
-              onChange={handleDateChange}
-              onClose={handleDateClose}
-            />
+            <DatetimeInput onChange={handleDateChange} value={card.deadline} />
           </Grid>
         </Grid>
         <Grid container>
