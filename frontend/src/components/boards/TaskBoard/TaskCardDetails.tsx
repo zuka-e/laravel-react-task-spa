@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import moment from 'moment';
 import { useParams } from 'react-router-dom';
@@ -71,14 +71,20 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
       (list) => list.id === card.listId
     )
   );
-  const baseUrl = `${window.location.origin}${window.location.pathname}`;
+  const [checked, setChecked] = useState(card.done);
 
   const isInTime = (date: Date) => moment(date).isBefore(new Date(), 'minute');
 
-  const handleToggleDone = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    e.preventDefault();
+  const handleCheckbox = () => {
+    setChecked(!checked);
+    dispatch(
+      updateTaskCard({
+        id: card.id,
+        boardId: card.boardId,
+        listId: card.listId,
+        done: !card.done,
+      })
+    );
   };
 
   const handleClose = () => {
@@ -100,7 +106,9 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
     <Card className={classes.root}>
       <CardActions disableSpacing>
         <Breadcrumbs aria-label='breadcrumb' className={classes.breadcrumbs}>
-          <a href={`${baseUrl}#${list?.id}`}>
+          <a
+            href={`${window.location.origin}${window.location.pathname}#${list?.id}`}
+          >
             <ListAltIcon className={classes.icon} />
             {list?.title}
           </a>
@@ -124,14 +132,14 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
       />
       <CardContent className={classes.rows}>
         <FormControlLabel
+          label={checked ? 'Completed' : 'Incompleted'}
           control={
             <Checkbox
               color='primary'
-              checked={card.done}
-              onClick={handleToggleDone}
+              checked={checked}
+              onChange={handleCheckbox}
             />
           }
-          label={card.done ? 'Completed' : 'Incompleted'}
         />
         <Grid container>
           <Grid item className={classes.label}>
