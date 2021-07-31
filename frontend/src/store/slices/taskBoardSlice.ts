@@ -220,6 +220,7 @@ export const taskBoardSlice = createSlice({
       const boardId = action.payload.boardId;
       const listId = newCard.listId;
 
+      newCard.boardId = boardId;
       const list = state.docs[boardId].lists.find((list) => list.id === listId);
       list!.cards = [...list!.cards, { ...newCard }];
 
@@ -243,6 +244,7 @@ export const taskBoardSlice = createSlice({
         (card) => card.id === updatedCard.id
       );
 
+      updatedCard.boardId = boardId;
       Object.assign(currentCard, updatedCard);
 
       if (updatedCard?.id === state.infoBox.data?.id)
