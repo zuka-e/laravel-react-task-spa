@@ -17,10 +17,10 @@ export const updateTaskList = createAsyncThunk<
   AsyncThunkConfig
 >('lists/updateTaskList', async (payload, thunkApi) => {
   const { id, boardId, ...requestBody } = payload;
-  const url = makePath(['task_boards', boardId], ['task_lists', id]);
+  const path = makePath(['task_boards', boardId], ['task_lists', id]);
 
   try {
-    const response = await apiClient().patch(url, requestBody);
+    const response = await apiClient().patch(path, requestBody);
     return response?.data;
   } catch (e) {
     return thunkApi.rejectWithValue({

@@ -19,10 +19,10 @@ export const updateTaskBoard = createAsyncThunk<
 >('boards/updateTaskBoard', async (payload, thunkApi) => {
   const { id, ...mainPayload } = payload;
   const userId = String(thunkApi.getState().auth.user?.id);
-  const url = makePath(['users', userId], ['task_boards', id]);
+  const path = makePath(['users', userId], ['task_boards', id]);
 
   try {
-    const response = await apiClient().patch(url, mainPayload);
+    const response = await apiClient().patch(path, mainPayload);
     return response?.data;
   } catch (e) {
     return thunkApi.rejectWithValue({

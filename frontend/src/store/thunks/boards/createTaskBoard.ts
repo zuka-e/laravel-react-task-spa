@@ -17,10 +17,10 @@ export const createTaskBoard = createAsyncThunk<
   AsyncThunkConfig
 >('boards/createTaskBoard', async (payload, thunkApi) => {
   const userId = String(thunkApi.getState().auth.user?.id);
-  const url = makePath(['users', userId], ['task_boards']);
+  const path = makePath(['users', userId], ['task_boards']);
 
   try {
-    const response = await apiClient().post(url, payload);
+    const response = await apiClient().post(path, payload);
     return response?.data;
   } catch (e) {
     return thunkApi.rejectWithValue({
