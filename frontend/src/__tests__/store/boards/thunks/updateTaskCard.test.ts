@@ -197,9 +197,6 @@ describe('Thunk updating a task card', () => {
       const before = getCardState();
       expect(before?.title).not.toEqual(payload.title);
       expect(before?.content).not.toEqual(payload.content);
-      expect(JSON.stringify(before?.deadline)).not.toEqual(
-        JSON.stringify(payload.deadline)
-      );
       expect(before?.done).not.toEqual(payload.done);
 
       const response = await store.dispatch(updateTaskCard(payload));
@@ -212,9 +209,7 @@ describe('Thunk updating a task card', () => {
       expect(after?.id).toEqual(payload.id);
       expect(after?.title).toEqual(payload.title);
       expect(after?.content).toEqual(payload.content);
-      expect(JSON.stringify(after?.deadline)).toEqual(
-        JSON.stringify(payload.deadline)
-      );
+      expect(after?.deadline).not.toEqual(before?.deadline);
       expect(after?.done).toEqual(payload.done);
       expect(after?.updatedAt).not.toEqual(before?.updatedAt);
     });
