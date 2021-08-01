@@ -200,6 +200,7 @@ interface Model {
   collection<T extends keyof DB>(model: T): DB[T];
   /**
    * 指定された`Collection`に引数の`Document`を新たに作成
+   *
    * @param  doc - `Document` | `Document`から`DocumentBase`を除外した型
    */
   create<T extends keyof DB>(

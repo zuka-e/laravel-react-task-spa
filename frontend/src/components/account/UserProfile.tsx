@@ -18,13 +18,15 @@ type FormData = {
 
 // The schema-based form validation with Yup
 const schema = yup.object().shape({
-  name: yup.string().min(2).max(30),
+  name: yup.string().min(2).max(60),
   email: yup.string().email().max(255),
 });
 
 const UserProfile = () => {
-  // ページが表示されている場合
-  // `signedIn`=== `true` -> `user` !== `null` -> `user!`
+  /**
+   * `Account`ページは認証ルートのため以下が成立
+   * - `signedIn` === `true` && `user`!== `null` -> `user!`
+   */
   const user = {
     name: useAppSelector((state) => state.auth.user!.name),
     email: useAppSelector((state) => state.auth.user!.email),
@@ -76,7 +78,7 @@ const UserProfile = () => {
             autoComplete='name'
             defaultValue={user?.name}
             {...register('name')}
-            helperText={errors?.name?.message || '8-30 characters'}
+            helperText={errors?.name?.message || '2-60 characters'}
             error={!!errors?.name}
           />
         </Grid>

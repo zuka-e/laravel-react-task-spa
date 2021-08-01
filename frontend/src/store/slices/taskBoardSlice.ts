@@ -9,7 +9,11 @@ import {
   updateTaskBoard,
   destroyTaskBoard,
 } from 'store/thunks/boards';
-import { createTaskList, updateTaskList } from 'store/thunks/lists';
+import {
+  createTaskList,
+  updateTaskList,
+  destroyTaskList,
+} from 'store/thunks/lists';
 
 type InfoBoxAction =
   | { type: 'board'; data: TaskBoard }
@@ -53,18 +57,22 @@ export const taskBoardSlice = createSlice({
     builder.addCase(fetchTaskBoards.pending, (state, _action) => {
       state.loading = true;
     });
+
     builder.addCase(fetchTaskBoards.fulfilled, (state, action) => {
       state.data = action.payload.data || [];
       state.links = action.payload.links || {};
       state.meta = action.payload.meta || {};
       state.loading = false;
     });
+
     builder.addCase(fetchTaskBoards.rejected, (state, _action) => {
       state.loading = false;
     });
+
     builder.addCase(fetchTaskBoard.pending, (state, _action) => {
       state.loading = true;
     });
+
     builder.addCase(fetchTaskBoard.fulfilled, (state, action) => {
       const docId = action.payload.data.id;
       state.docs[docId] = action.payload.data;
@@ -76,23 +84,29 @@ export const taskBoardSlice = createSlice({
       );
       state.loading = false;
     });
+
     builder.addCase(fetchTaskBoard.rejected, (state, _action) => {
       state.loading = false;
     });
+
     builder.addCase(createTaskBoard.pending, (state, _action) => {
       state.loading = true;
     });
+
     builder.addCase(createTaskBoard.fulfilled, (state, action) => {
       const newDoc = action.payload.data;
       state.data = [...state.data, { ...newDoc }];
       state.loading = false;
     });
+
     builder.addCase(createTaskBoard.rejected, (state, _action) => {
       state.loading = false;
     });
+
     builder.addCase(updateTaskBoard.pending, (state, _action) => {
       state.loading = true;
     });
+
     builder.addCase(updateTaskBoard.fulfilled, (state, action) => {
       const board = state.data.find(
         (board) => board.id === action.payload.data.id
@@ -103,18 +117,23 @@ export const taskBoardSlice = createSlice({
 
       state.loading = false;
     });
+
     builder.addCase(updateTaskBoard.rejected, (state, _action) => {
       state.loading = false;
     });
+
     builder.addCase(destroyTaskBoard.pending, (state, _action) => {
       state.loading = true;
     });
+
     builder.addCase(destroyTaskBoard.fulfilled, (state, action) => {
       state.data = state.data.filter(
         (board) => board.id !== action.payload.data.id
       );
+
       state.loading = false;
     });
+
     builder.addCase(destroyTaskBoard.rejected, (state, _action) => {
       state.loading = false;
     });
@@ -156,6 +175,26 @@ export const taskBoardSlice = createSlice({
     });
 
     builder.addCase(updateTaskList.rejected, (state, _action) => {
+      state.loading = false;
+    });
+
+    builder.addCase(destroyTaskList.pending, (state, _action) => {
+      state.loading = true;
+    });
+
+    builder.addCase(destroyTaskList.fulfilled, (state, action) => {
+      const boardId = action.payload.data.boardId;
+      state.docs[boardId].lists = state.docs[boardId].lists.filter(
+        (list) => list.id !== action.payload.data.id
+      );
+
+      if (action.payload.data.id === state.infoBox.data?.id)
+        state.infoBox = initialState.infoBox;
+
+      state.loading = false;
+    });
+
+    builder.addCase(destroyTaskList.rejected, (state, _action) => {
       state.loading = false;
     });
   },

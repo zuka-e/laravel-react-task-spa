@@ -35,4 +35,12 @@ export const update = (req: RestRequest<UpdateTaskListRequest>) => {
   return response;
 };
 
-export const destroy = (req: RestRequest) => {};
+export const destroy = (req: RestRequest) => {
+  const deleted = db.remove('taskLists', req.params.listId);
+
+  if (!deleted) return;
+
+  const response: TaskList = { ...deleted, cards: [] };
+
+  return response;
+};

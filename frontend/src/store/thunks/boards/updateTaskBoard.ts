@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { apiClient } from 'utils/api';
 import { TaskBoard } from 'models';
+import { apiClient, makePath } from 'utils/api';
 import { AsyncThunkConfig } from '../types';
 
 export type UpdateTaskBoardResponse = {
@@ -17,10 +17,11 @@ export const updateTaskBoard = createAsyncThunk<
   UpdateTaskBoardRequest,
   AsyncThunkConfig
 >('boards/updateTaskBoard', async (payload, thunkApi) => {
-  const userId = thunkApi.getState().auth.user?.id;
   const { id, ...mainPayload } = payload;
+  const userId = String(thunkApi.getState().auth.user?.id);
+  const url = makePath(['users', userId], ['task_boards', id]);
+
   try {
-    const url = `/users/${userId}/task_boards/${id}`;
     const response = await apiClient().patch(url, mainPayload);
     return response?.data;
   } catch (e) {
