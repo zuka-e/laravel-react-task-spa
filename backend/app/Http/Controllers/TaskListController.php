@@ -62,14 +62,8 @@ class TaskListController extends Controller
             return new TaskListResource($taskList);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\TaskList  $taskList
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(TaskList $taskList)
+    public function destroy(string $taskBoard, TaskList $taskList)
     {
-        //
+        if ($taskList->delete()) return new TaskListResource($taskList);
     }
 }
