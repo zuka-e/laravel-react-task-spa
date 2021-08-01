@@ -72,6 +72,10 @@ const TextForm: React.FC<FormProps> = (props) => {
     handleClose();
   };
 
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.select();
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -90,6 +94,7 @@ const TextForm: React.FC<FormProps> = (props) => {
           id={property}
           multiline
           autoFocus
+          onFocus={handleFocus}
           fullWidth
           variant='outlined'
           placeholder='Enter the text'

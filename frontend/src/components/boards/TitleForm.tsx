@@ -9,12 +9,12 @@ import {
   ClickAwayListener,
 } from '@material-ui/core';
 
+import theme from 'theme';
 import { useAppDispatch } from 'utils/hooks';
 import { FormAction } from 'store/slices/taskBoardSlice';
 import { createTaskBoard, updateTaskBoard } from 'store/thunks/boards';
 import { createTaskList, updateTaskList } from 'store/thunks/lists';
 import { createTaskCard, updateTaskCard } from 'store/thunks/cards';
-import theme from 'theme';
 
 type FormData = {
   title: string;
@@ -95,6 +95,10 @@ const TitleForm: React.FC<FormProps> = (props) => {
     handleClose();
   };
 
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.select();
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -113,6 +117,7 @@ const TitleForm: React.FC<FormProps> = (props) => {
           id='title'
           required
           autoFocus
+          onFocus={handleFocus}
           fullWidth
           variant='outlined'
           placeholder='Enter a title'
