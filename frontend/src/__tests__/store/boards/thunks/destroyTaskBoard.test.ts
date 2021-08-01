@@ -6,7 +6,6 @@ import {
   destroyTaskBoard,
   DestroyTaskBoardRequest,
 } from 'store/thunks/boards';
-import { generateRandomString } from 'utils/generator';
 import { initializeStore, store } from 'mocks/store';
 import {
   getFlashState,

@@ -6,3 +6,4 @@ export * as resetPasswordController from './auth/resetPassword';
 export * as deleteAccountController from './auth/deleteAccount';
 
 export * as taskBoardController from './taskBoardController';
+export * as taskListController from './taskListController';

@@ -9,6 +9,11 @@ import {
   updateTaskBoard,
   destroyTaskBoard,
 } from 'store/thunks/boards';
+import {
+  createTaskList,
+  updateTaskList,
+  destroyTaskList,
+} from 'store/thunks/lists';
 
 type InfoBoxAction =
   | { type: 'board'; data: TaskBoard }
@@ -52,60 +57,144 @@ export const taskBoardSlice = createSlice({
     builder.addCase(fetchTaskBoards.pending, (state, _action) => {
       state.loading = true;
     });
+
     builder.addCase(fetchTaskBoards.fulfilled, (state, action) => {
       state.data = action.payload.data || [];
       state.links = action.payload.links || {};
       state.meta = action.payload.meta || {};
       state.loading = false;
     });
+
     builder.addCase(fetchTaskBoards.rejected, (state, _action) => {
       state.loading = false;
     });
+
     builder.addCase(fetchTaskBoard.pending, (state, _action) => {
       state.loading = true;
     });
+
     builder.addCase(fetchTaskBoard.fulfilled, (state, action) => {
       const docId = action.payload.data.id;
       state.docs[docId] = action.payload.data;
+      state.docs[docId].lists = state.docs[docId].lists
+        ? state.docs[docId].lists
+        : [];
+      state.docs[docId].lists.forEach(
+        (list) => (list.cards = list.cards ? list.cards : [])
+      );
       state.loading = false;
     });
+
     builder.addCase(fetchTaskBoard.rejected, (state, _action) => {
       state.loading = false;
     });
+
     builder.addCase(createTaskBoard.pending, (state, _action) => {
       state.loading = true;
     });
+
     builder.addCase(createTaskBoard.fulfilled, (state, action) => {
       const newDoc = action.payload.data;
       state.data = [...state.data, { ...newDoc }];
       state.loading = false;
     });
+
     builder.addCase(createTaskBoard.rejected, (state, _action) => {
       state.loading = false;
     });
+
     builder.addCase(updateTaskBoard.pending, (state, _action) => {
       state.loading = true;
     });
+
     builder.addCase(updateTaskBoard.fulfilled, (state, action) => {
       const board = state.data.find(
         (board) => board.id === action.payload.data.id
       );
       Object.assign(board, action.payload.data);
+
+      if (board?.id === state.infoBox.data?.id) state.infoBox.data = board;
+
       state.loading = false;
     });
+
     builder.addCase(updateTaskBoard.rejected, (state, _action) => {
       state.loading = false;
     });
+
     builder.addCase(destroyTaskBoard.pending, (state, _action) => {
       state.loading = true;
     });
+
     builder.addCase(destroyTaskBoard.fulfilled, (state, action) => {
       state.data = state.data.filter(
         (board) => board.id !== action.payload.data.id
       );
+
       state.loading = false;
     });
+
     builder.addCase(destroyTaskBoard.rejected, (state, _action) => {
+      state.loading = false;
+    });
+
+    builder.addCase(createTaskList.pending, (state, _action) => {
+      state.loading = true;
+    });
+
+    builder.addCase(createTaskList.fulfilled, (state, action) => {
+      const newList = action.payload.data;
+      newList.cards = newList.cards ? newList.cards : [];
+      const boardId = newList.boardId;
+
+      state.docs[boardId].lists = [
+        ...state.docs[boardId].lists,
+        { ...newList },
+      ];
+      state.loading = false;
+    });
+
+    builder.addCase(createTaskList.rejected, (state, _action) => {
+      state.loading = false;
+    });
+
+    builder.addCase(updateTaskList.pending, (state, _action) => {
+      state.loading = true;
+    });
+
+    builder.addCase(updateTaskList.fulfilled, (state, action) => {
+      const boardId = action.payload.data.boardId;
+      const list = state.docs[boardId].lists.find(
+        (list) => list.id === action.payload.data.id
+      );
+      Object.assign(list, action.payload.data);
+
+      if (list?.id === state.infoBox.data?.id) state.infoBox.data = list;
+
+      state.loading = false;
+    });
+
+    builder.addCase(updateTaskList.rejected, (state, _action) => {
+      state.loading = false;
+    });
+
+    builder.addCase(destroyTaskList.pending, (state, _action) => {
+      state.loading = true;
+    });
+
+    builder.addCase(destroyTaskList.fulfilled, (state, action) => {
+      const boardId = action.payload.data.boardId;
+      state.docs[boardId].lists = state.docs[boardId].lists.filter(
+        (list) => list.id !== action.payload.data.id
+      );
+
+      if (action.payload.data.id === state.infoBox.data?.id)
+        state.infoBox = initialState.infoBox;
+
+      state.loading = false;
+    });
+
+    builder.addCase(destroyTaskList.rejected, (state, _action) => {
       state.loading = false;
     });
   },

@@ -16,10 +16,9 @@ export const index = (req: RestRequest) => {
 };
 
 export const store = (req: RestRequest<CreateTaskBoardRequest>) => {
-  const newBoard = {} as TaskBoardDocument;
   const response = db.create('taskBoards', {
-    newBoard,
-    ...req.params.userId,
+    ...({} as TaskBoardDocument),
+    userId: req.params.userId,
     ...req.body,
   }) as TaskBoard;
 
@@ -57,11 +56,11 @@ export const update = (req: RestRequest<UpdateTaskBoardRequest>) => {
 
   if (!board) return;
 
-  const newState: TaskBoard = { ...board, ...req.body, updatedAt: new Date() };
+  const updated = db.update('taskBoards', { ...board, ...req.body });
 
-  db.update('taskBoards', newState);
+  const response: TaskBoard = { ...updated, lists: [] };
 
-  return newState;
+  return response;
 };
 
 export const destroy = (req: RestRequest<UpdateTaskBoardRequest>) => {
