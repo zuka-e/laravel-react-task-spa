@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 
 import { useParams } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Container, Grid, Divider } from '@material-ui/core';
+import { Container, Grid, Divider, IconButton } from '@material-ui/core';
+import { MoreVert as MoreVertIcon } from '@material-ui/icons';
 
 import { useAppDispatch, useDeepEqualSelector } from 'utils/hooks';
 import { fetchTaskBoard, FetchTaskBoardRequest } from 'store/thunks/boards';
@@ -13,7 +14,7 @@ import {
   ScrolledTypography,
 } from 'templates';
 import { ButtonToAddTask } from 'components/boards';
-import { MenuButton, TaskList, InfoBox } from 'components/boards/TaskBoard';
+import { TaskList, InfoBox } from 'components/boards/TaskBoard';
 
 const boxWidth = '300px';
 const useStyles = makeStyles((theme: Theme) =>
@@ -73,8 +74,13 @@ const TaskBoard: React.FC = () => {
             {board.title}
           </ScrolledTypography>
           <Grid item>
-            <PopoverControl trigger={<MenuButton />}>
-              {/* <BoardMenu boardId={boardId} /> */}
+            <PopoverControl
+              trigger={
+                <IconButton title='Menu'>
+                  <MoreVertIcon />
+                </IconButton>
+              }
+            >
             </PopoverControl>
           </Grid>
         </ScrolledGridContainer>
