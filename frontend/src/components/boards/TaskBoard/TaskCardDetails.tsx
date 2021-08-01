@@ -75,7 +75,7 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
   );
   const [checked, setChecked] = useState(card.done);
 
-  const isInTime = (date: Date) => moment(date).isBefore(new Date(), 'minute');
+  const isInTime = (date: Date) => moment(new Date()).isBefore(date, 'minute');
 
   const handleCheckbox = () => {
     setChecked(!checked);
@@ -145,7 +145,11 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
         />
         <Grid container>
           <Grid item className={classes.label}>
-            <label className={isInTime(card.deadline) ? classes.timeout : ''}>
+            <label
+              className={
+                !isInTime(card.deadline) && !card.done ? classes.timeout : ''
+              }
+            >
               締切日時
             </label>
           </Grid>
