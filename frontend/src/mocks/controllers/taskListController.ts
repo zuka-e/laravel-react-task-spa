@@ -30,9 +30,7 @@ export const update = (req: RestRequest<UpdateTaskListRequest>) => {
 
   const updated = db.update('taskLists', { ...list, ...req.body });
 
-  const response: TaskList = { ...updated, cards: [] };
-
-  return response;
+  return updated;
 };
 
 export const destroy = (req: RestRequest) => {

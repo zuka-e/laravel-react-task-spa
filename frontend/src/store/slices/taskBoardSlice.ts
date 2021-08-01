@@ -138,12 +138,20 @@ export const taskBoardSlice = createSlice({
     });
 
     builder.addCase(updateTaskBoard.fulfilled, (state, action) => {
-      const board = state.data.find(
-        (board) => board.id === action.payload.data.id
+      const updatedBoard = action.payload.data;
+      const currentBoard = state.data.find(
+        (board) => board.id === updatedBoard.id
       );
-      Object.assign(board, action.payload.data);
 
-      if (board?.id === state.infoBox.data?.id) state.infoBox.data = board;
+      if (currentBoard) Object.assign(currentBoard, updatedBoard);
+
+      state.docs[updatedBoard.id] = {
+        ...state.docs[updatedBoard.id],
+        ...updatedBoard,
+      };
+
+      if (updatedBoard.id === state.infoBox.data?.id)
+        state.infoBox.data = updatedBoard;
 
       state.loading = false;
     });

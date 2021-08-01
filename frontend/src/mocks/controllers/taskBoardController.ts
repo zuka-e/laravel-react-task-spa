@@ -62,9 +62,7 @@ export const update = (req: RestRequest<UpdateTaskBoardRequest>) => {
 
   const updated = db.update('taskBoards', { ...board, ...req.body });
 
-  const response: TaskBoard = { ...updated, lists: [] };
-
-  return response;
+  return updated;
 };
 
 export const destroy = (req: RestRequest<UpdateTaskBoardRequest>) => {
