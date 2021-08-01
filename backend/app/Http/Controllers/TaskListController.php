@@ -2,11 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TaskListRequest;
+use App\Http\Resources\TaskListResource;
+use App\Models\TaskBoard;
 use App\Models\TaskList;
 use Illuminate\Http\Request;
 
 class TaskListController extends Controller
 {
+    public function __construct(Request $request)
+    {
+        $taskBoardId = $request->route('task_board');
+        $taskBoard = TaskBoard::find($taskBoardId);
+
+        $userId = $taskBoard ? $taskBoard->user_id : '';
+
+        $this->middleware("authorize:${userId}");
+
+        $this->authorizeResource(TaskList::class, 'task_list');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,15 +32,15 @@ class TaskListController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(TaskListRequest $request, TaskBoard $taskBoard)
     {
-        //
+        $validated = $request->validated();
+        $newList = new TaskList($validated);
+
+        $newList->user()->associate($taskBoard->user);
+        $newList->taskBoard()->associate($taskBoard);
+
+        if ($newList->save()) return new TaskListResource($newList);
     }
 
     /**
@@ -39,26 +54,16 @@ class TaskListController extends Controller
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\TaskList  $taskList
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, TaskList $taskList)
+    public function update(TaskListRequest $request, string $taskBoard, TaskList $taskList)
     {
-        //
+        $validated = $request->validated();
+
+        if ($taskList->fill($validated)->save())
+            return new TaskListResource($taskList);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\TaskList  $taskList
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(TaskList $taskList)
+    public function destroy(string $taskBoard, TaskList $taskList)
     {
-        //
+        if ($taskList->delete()) return new TaskListResource($taskList);
     }
 }
