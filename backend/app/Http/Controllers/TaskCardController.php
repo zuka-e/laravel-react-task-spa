@@ -57,14 +57,8 @@ class TaskCardController extends Controller
             return new TaskCardResource($taskCard);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\TaskCard  $taskCard
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(TaskCard $taskCard)
+    public function destroy(string $taskList, TaskCard $taskCard)
     {
-        //
+        if ($taskCard->delete()) return new TaskCardResource($taskCard);
     }
 }

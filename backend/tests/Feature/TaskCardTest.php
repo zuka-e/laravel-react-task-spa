@@ -50,6 +50,10 @@ class TaskCardTest extends TestCase
         $url = $this->routePrefix . "/task_lists/${listId}/task_cards/${cardId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
         $response->assertUnauthorized();
+
+        // destroy
+        $response = $this->deleteJson($url);
+        $response->assertUnauthorized();
     }
 
     public function test_forbidden_from_accessing_others_list()
@@ -75,6 +79,10 @@ class TaskCardTest extends TestCase
         $url = $this->routePrefix . "/task_lists/${otherListId}/task_cards/${cardId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
         $response->assertForbidden();
+
+        // destroy
+        $response = $this->deleteJson($url);
+        $response->assertForbidden();
     }
 
     public function test_forbidden_from_accessing_others_card()
@@ -95,10 +103,14 @@ class TaskCardTest extends TestCase
 
         $listId = $this->taskList->id;
         $otherCardId = $otherCard->id;
+        $url = $this->routePrefix . "/task_lists/${listId}/task_cards/${otherCardId}";
 
         // update
-        $url = $this->routePrefix . "/task_lists/${listId}/task_cards/${otherCardId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
+        $response->assertForbidden();
+
+        // destroy
+        $response = $this->deleteJson($url);
         $response->assertForbidden();
     }
 
@@ -125,10 +137,14 @@ class TaskCardTest extends TestCase
         */
         $listId = $this->taskList->id;
         $cardId = (string)Str::uuid();
+        $url = $this->routePrefix . "/task_lists/${listId}/task_cards/${cardId}";
 
         // update
-        $url = $this->routePrefix . "/task_lists/${listId}/task_cards/${cardId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
+        $response->assertNotFound();
+
+        // destroy
+        $response = $this->deleteJson($url);
         $response->assertNotFound();
     }
 
@@ -245,5 +261,23 @@ class TaskCardTest extends TestCase
         $futureDateRequest = $successfulRequest + ['deadline' => $now->add(new DateInterval('PT1S'))];
         $response = $this->patchJson($url, $futureDateRequest);
         $response->assertStatus(422);
+    }
+
+    public function test_data_is_deleted_successfully()
+    {
+        $this->login($this->guestUser);
+
+        $listId = $this->taskList->id;
+        $cardId = $this->taskCard->id;
+        $url = $this->routePrefix . "/task_lists/${listId}/task_cards/${cardId}";
+
+        $cardBeforeDeleted = TaskCard::find($cardId);
+        $this->assertNotNull($cardBeforeDeleted);
+
+        $response = $this->deleteJson($url);
+        $response->assertOk();
+
+        $cardAfterDeleted = TaskCard::find($cardId);
+        $this->assertNull($cardAfterDeleted);
     }
 }
