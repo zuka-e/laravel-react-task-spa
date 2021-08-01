@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import * as yup from 'yup';
 import moment from 'moment';
 import { useParams } from 'react-router-dom';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
@@ -26,7 +27,7 @@ import { useAppDispatch, useDeepEqualSelector } from 'utils/hooks';
 import { closeInfoBox } from 'store/slices/taskBoardSlice';
 import { updateTaskCard } from 'store/thunks/cards';
 import { DatetimeInput } from 'templates';
-import { EditableTitle } from '..';
+import { EditableTitle, EditableText } from '..';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,6 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
     close: { marginLeft: 'auto' },
     cardHeader: { paddingBottom: 0 },
     rows: {
+      paddingTop: 0,
       '& > div': {
         marginBottom: theme.spacing(1),
         alignItems: 'center',
@@ -164,7 +166,15 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
           <Grid item>{moment(card.updatedAt).calendar()}</Grid>
         </Grid>
         <div className={classes.contentBlock}>
-          <Typography className={classes.text}>{card.content}</Typography>
+          <EditableText
+            method='PATCH'
+            type='card'
+            data={card}
+            schema={yup.object().shape({
+              content: yup.string().max(Math.floor(65535 / 3)),
+            })}
+            defaultValue={card.content}
+          />
         </div>
       </CardContent>
     </Card>
