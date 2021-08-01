@@ -20,6 +20,11 @@ import {
   destroyTaskCard,
 } from 'store/thunks/cards';
 
+export type DeleteAction =
+  | { type: 'board'; data: TaskBoard }
+  | { type: 'list'; data: TaskList }
+  | { type: 'card'; data: TaskCard };
+
 type InfoBoxAction =
   | { type: 'board'; data: TaskBoard }
   | { type: 'list'; data: TaskList }

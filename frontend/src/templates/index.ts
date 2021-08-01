@@ -11,3 +11,6 @@ export { default as ScrolledDiv } from './ScrolledDiv';
 export { default as ScrolledGridContainer } from './ScrolledGridContainer';
 export { default as ScrolledTypography } from './ScrolledTypography';
 export { default as TypographyWithLimitedRows } from './TypographyWithLimitedRows';
+
+// Task
+export { default as DeleteTaskDialog } from './DeleteTaskDialog';
