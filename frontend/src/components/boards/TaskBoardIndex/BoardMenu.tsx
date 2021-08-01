@@ -4,7 +4,7 @@ import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { Delete as DeleteIcon } from '@material-ui/icons';
 
 import { TaskBoard } from 'models';
-import { DeleteBoardDialog } from '.';
+import { DeleteTaskDialog } from 'templates';
 
 const menuItem = {
   delete: '削除',
@@ -28,7 +28,11 @@ const BoardMenu: React.FC<BoardMenuProps> = (props) => {
   return (
     <List component='nav' aria-label='board-menu' dense>
       {openDeleteDialog && (
-        <DeleteBoardDialog board={props.board} setOpen={setOpenDeleteDialog} />
+        <DeleteTaskDialog
+          type='board'
+          data={props.board}
+          setOpen={setOpenDeleteDialog}
+        />
       )}
       <ListItem button onClick={handleClick('delete')}>
         <ListItemIcon>

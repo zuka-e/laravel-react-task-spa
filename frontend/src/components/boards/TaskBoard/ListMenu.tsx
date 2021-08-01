@@ -8,7 +8,7 @@ import { TaskList } from 'models';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { activateEventAttr as activateInfoBoxEventAttr } from 'utils/infoBox';
 import { openInfoBox } from 'store/slices/taskBoardSlice';
-import { DeleteListDialog } from '.';
+import { DeleteTaskDialog } from 'templates';
 
 const menuItem = {
   info: '詳細を表示',
@@ -54,7 +54,11 @@ const ListMenu: React.FC<ListMenuProps> = (props) => {
         <ListItemText primary={menuItem.info} />
       </ListItem>
       {openDeleteDialog && (
-        <DeleteListDialog list={props.list} setOpen={setOpenDeleteDialog} />
+        <DeleteTaskDialog
+          type='list'
+          data={props.list}
+          setOpen={setOpenDeleteDialog}
+        />
       )}
       <ListItem button onClick={handleClick('delete')} title={menuItem.delete}>
         <ListItemIcon>
