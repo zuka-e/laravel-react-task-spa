@@ -8,12 +8,8 @@ import { MoreVert as MoreVertIcon } from '@material-ui/icons';
 import { useAppDispatch, useDeepEqualSelector } from 'utils/hooks';
 import { fetchTaskBoard, FetchTaskBoardRequest } from 'store/thunks/boards';
 import { BaseLayout, StandbyScreen } from 'layouts';
-import {
-  PopoverControl,
-  ScrolledGridContainer,
-  ScrolledTypography,
-} from 'templates';
-import { ButtonToAddTask } from 'components/boards';
+import { PopoverControl, ScrolledGridContainer } from 'templates';
+import { ButtonToAddTask, EditableTitle } from 'components/boards';
 import { TaskList, InfoBox } from 'components/boards/TaskBoard';
 import { BoardMenu } from 'components/boards/TaskBoardIndex';
 
@@ -27,7 +23,15 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: theme.spacing(2),
       paddingRight: 0,
     },
-    title: { fontSize: '2rem' },
+    titleBox: {
+      flex: '1 1 auto',
+      marginLeft: theme.spacing(1),
+    },
+    title: {
+      fontWeight: 'bold',
+      fontSize: '1.5rem',
+      lineHeight: '1.5rem',
+    },
     divider: { marginTop: theme.spacing(1) },
     content: {
       flex: '1 1 auto',
@@ -67,13 +71,15 @@ const TaskBoard: React.FC = () => {
     <BaseLayout subtitle={board.title}>
       <Container component='main' maxWidth={false} className={classes.main}>
         <ScrolledGridContainer justify='space-between' alignItems='center'>
-          <ScrolledTypography
-            title={board.title}
-            variant='h1'
-            className={classes.title}
-          >
-            {board.title}
-          </ScrolledTypography>
+          <Grid item className={classes.titleBox}>
+            <EditableTitle
+              method='PATCH'
+              type='board'
+              data={board}
+              disableMargin
+              inputStyle={classes.title}
+            />
+          </Grid>
           <Grid item>
             <PopoverControl
               trigger={
