@@ -20,13 +20,14 @@ import {
   Close as CloseIcon,
   ListAlt as ListAltIcon,
   Assignment as AssignmentIcon,
+  Delete as DeleteIcon,
 } from '@material-ui/icons';
 
 import { TaskCard } from 'models';
 import { useAppDispatch, useDeepEqualSelector } from 'utils/hooks';
 import { closeInfoBox } from 'store/slices/taskBoardSlice';
 import { updateTaskCard } from 'store/thunks/cards';
-import { DatetimeInput } from 'templates';
+import { AlertButton, DatetimeInput, DeleteTaskDialog } from 'templates';
 import { EditableTitle, EditableText } from '..';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -43,10 +44,11 @@ const useStyles = makeStyles((theme: Theme) =>
       width: 20,
       height: 20,
     },
-    close: { marginLeft: 'auto' },
-    cardHeader: { paddingBottom: 0 },
+    rightAction: { marginLeft: 'auto' },
+    header: { paddingBottom: 0 },
     rows: {
       paddingTop: 0,
+      paddingBottom: 0,
       '& > div': {
         marginBottom: theme.spacing(1),
         alignItems: 'center',
@@ -54,8 +56,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     label: { flex: '0 0 100px' },
     timeout: { color: theme.palette.error.main },
-    text: { whiteSpace: 'pre-wrap' },
-    contentBlock: { marginTop: theme.spacing(2) },
+    footer: { flex: '1 1 auto' },
   })
 );
 
@@ -74,6 +75,7 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
     )
   );
   const [checked, setChecked] = useState(card.done);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   const isInTime = (date: Date) => moment(new Date()).isBefore(date, 'minute');
 
@@ -104,6 +106,10 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
     );
   };
 
+  const handleDelete = () => {
+    setOpenDeleteDialog(true);
+  };
+
   return (
     <Card className={classes.root}>
       <CardActions disableSpacing>
@@ -123,13 +129,13 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
           aria-label='close'
           onClick={handleClose}
           size='small'
-          className={classes.close}
+          className={classes.rightAction}
         >
           <CloseIcon />
         </IconButton>
       </CardActions>
       <CardHeader
-        classes={{ root: classes.cardHeader }}
+        classes={{ root: classes.header }}
         title={<EditableTitle method='PATCH' type='card' data={card} />}
       />
       <CardContent className={classes.rows}>
@@ -169,18 +175,39 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
           </Grid>
           <Grid item>{moment(card.updatedAt).calendar()}</Grid>
         </Grid>
-        <div className={classes.contentBlock}>
-          <EditableText
-            method='PATCH'
+      </CardContent>
+
+      <CardContent>
+        <EditableText
+          method='PATCH'
+          type='card'
+          data={card}
+          schema={yup.object().shape({
+            content: yup.string().max(Math.floor(65535 / 3)),
+          })}
+          defaultValue={card.content}
+        />
+      </CardContent>
+
+      <CardActions className={classes.footer}>
+        {openDeleteDialog && (
+          <DeleteTaskDialog
             type='card'
             data={card}
-            schema={yup.object().shape({
-              content: yup.string().max(Math.floor(65535 / 3)),
-            })}
-            defaultValue={card.content}
+            setOpen={setOpenDeleteDialog}
           />
-        </div>
-      </CardContent>
+        )}
+        <AlertButton
+          onClick={handleDelete}
+          title='削除'
+          startIcon={<DeleteIcon />}
+          variant='contained'
+          color='danger'
+          className={classes.rightAction}
+        >
+          削除
+        </AlertButton>
+      </CardActions>
     </Card>
   );
 };
