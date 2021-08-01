@@ -16,10 +16,9 @@ export const index = (req: RestRequest) => {
 };
 
 export const store = (req: RestRequest<CreateTaskBoardRequest>) => {
-  const newBoard = {} as TaskBoardDocument;
   const response = db.create('taskBoards', {
-    newBoard,
-    ...req.params.userId,
+    ...({} as TaskBoardDocument),
+    userId: req.params.userId,
     ...req.body,
   }) as TaskBoard;
 

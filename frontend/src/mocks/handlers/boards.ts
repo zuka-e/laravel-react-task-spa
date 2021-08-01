@@ -1,13 +1,13 @@
 import { rest } from 'msw';
 
 import { API_ROUTE } from 'config/api';
+import { makePath } from 'utils/api';
 import {
   X_XSRF_TOKEN,
   hasValidToken,
   getUserFromSession,
 } from 'mocks/utils/validation';
 import { taskBoardController } from 'mocks/controllers';
-import { makePath } from 'mocks/utils/route';
 import {
   CreateTaskBoardRequest,
   CreateTaskBoardResponse,

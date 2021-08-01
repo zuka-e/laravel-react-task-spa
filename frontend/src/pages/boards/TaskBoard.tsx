@@ -12,6 +12,7 @@ import {
   ScrolledGridContainer,
   ScrolledTypography,
 } from 'templates';
+import { ButtonToAddTask } from 'components/boards';
 import { MenuButton, TaskList, InfoBox } from 'components/boards/TaskBoard';
 
 const boxWidth = '370px';
@@ -80,7 +81,7 @@ const TaskBoard: React.FC = () => {
               </Grid>
             ))}
             <Grid item className='listItem'>
-              {/* <AddTaskButton list id={boardId} /> */}
+              <ButtonToAddTask method='POST' type='list' parent={board} />
             </Grid>
           </ScrolledGridContainer>
           <InfoBox />
