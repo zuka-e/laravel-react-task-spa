@@ -10,7 +10,8 @@ import {
 import { Add as AddIcon } from '@material-ui/icons';
 
 import theme from 'theme';
-import { FormAction, TitleForm } from '.';
+import { FormAction } from 'store/slices/taskBoardSlice';
+import { TitleForm } from '.';
 
 const margin = theme.spacing(0.75);
 const useStyles = makeStyles(() =>

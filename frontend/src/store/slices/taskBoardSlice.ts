@@ -20,6 +20,14 @@ import {
   destroyTaskCard,
 } from 'store/thunks/cards';
 
+export type FormAction =
+  | { method: 'POST'; type: 'board' }
+  | { method: 'POST'; type: 'list'; parent: TaskBoard }
+  | { method: 'POST'; type: 'card'; parent: TaskList }
+  | { method: 'PATCH'; type: 'board'; data: TaskBoard }
+  | { method: 'PATCH'; type: 'list'; data: TaskList }
+  | { method: 'PATCH'; type: 'card'; data: TaskCard };
+
 export type DeleteAction =
   | { type: 'board'; data: TaskBoard }
   | { type: 'list'; data: TaskList }

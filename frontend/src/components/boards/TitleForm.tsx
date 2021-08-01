@@ -9,8 +9,8 @@ import {
   ClickAwayListener,
 } from '@material-ui/core';
 
-import { TaskBoard, TaskList, TaskCard } from 'models';
 import { useAppDispatch } from 'utils/hooks';
+import { FormAction } from 'store/slices/taskBoardSlice';
 import { createTaskBoard, updateTaskBoard } from 'store/thunks/boards';
 import { createTaskList, updateTaskList } from 'store/thunks/lists';
 import { createTaskCard, updateTaskCard } from 'store/thunks/cards';
@@ -23,14 +23,6 @@ type FormData = {
 const schema = yup.object().shape({
   title: yup.string().min(2).max(60),
 });
-
-export type FormAction =
-  | { method: 'POST'; type: 'board' }
-  | { method: 'POST'; type: 'list'; parent: TaskBoard }
-  | { method: 'POST'; type: 'card'; parent: TaskList }
-  | { method: 'PATCH'; type: 'board'; data: TaskBoard }
-  | { method: 'PATCH'; type: 'list'; data: TaskList }
-  | { method: 'PATCH'; type: 'card'; data: TaskCard };
 
 type FormProps = FormAction & {
   handleClose: () => void;

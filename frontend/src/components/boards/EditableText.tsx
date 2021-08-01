@@ -5,7 +5,8 @@ import { ObjectShape } from 'yup/lib/object';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { TextField, TextFieldProps } from '@material-ui/core';
 
-import { FormAction, TextForm } from '.';
+import { FormAction } from 'store/slices/taskBoardSlice';
+import { TextForm } from '.';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

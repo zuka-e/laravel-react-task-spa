@@ -12,8 +12,8 @@ import {
 
 import theme from 'theme';
 import { useAppDispatch } from 'utils/hooks';
+import { FormAction } from 'store/slices/taskBoardSlice';
 import { updateTaskCard } from 'store/thunks/cards';
-import { FormAction } from '.';
 
 type FormData = {
   [key: string]: string;

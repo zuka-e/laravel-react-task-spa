@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { TextField } from '@material-ui/core';
 
-import { FormAction, TitleForm } from '.';
+import { FormAction } from 'store/slices/taskBoardSlice';
+import { TitleForm } from '.';
 
 const maxRow = 1;
 const useStyles = makeStyles((theme: Theme) =>
