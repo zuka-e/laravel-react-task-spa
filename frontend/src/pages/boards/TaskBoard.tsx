@@ -15,7 +15,7 @@ import {
 import { ButtonToAddTask } from 'components/boards';
 import { MenuButton, TaskList, InfoBox } from 'components/boards/TaskBoard';
 
-const boxWidth = '370px';
+const boxWidth = '300px';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     main: {

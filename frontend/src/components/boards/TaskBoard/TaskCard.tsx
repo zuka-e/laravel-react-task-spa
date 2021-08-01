@@ -10,7 +10,7 @@ import { activateEventAttr as activateInfoBoxEventAttr } from 'utils/infoBox';
 import { openInfoBox } from 'store/slices/taskBoardSlice';
 import { TypographyWithLimitedRows } from 'templates';
 
-const defaultPadding = theme.spacing(1.5);
+const defaultPadding = theme.spacing(0.75);
 const borderWidth = '2px';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

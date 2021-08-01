@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
       '-webkit-box-orient': 'vertical',
       '-webkit-line-clamp': maxRow,
       overflow: 'hidden',
+      fontWeight: 'bold',
     },
     notchedOutline: { border: 'none' },
     multilineDense: {
@@ -57,7 +58,7 @@ const EditableTitle: React.FC<EditableTitleProps> = (props) => {
       {...formActionType}
       handleClose={handleCloseForm}
       classes={{ root: classes.root }}
-      defaultValue={defaultValue}
+      defaultValue={defaultValue || ''}
       multiline
       InputProps={{
         classes: {
@@ -74,7 +75,7 @@ const EditableTitle: React.FC<EditableTitleProps> = (props) => {
     <TextField
       classes={{ root: classes.root }}
       fullWidth
-      defaultValue={defaultValue}
+      value={defaultValue || ''} // `defaultValue`の場合初レンダリング時の値を固定
       inputProps={{ title: defaultValue }}
       multiline
       rowsMax={props.rowsMax || maxRow}

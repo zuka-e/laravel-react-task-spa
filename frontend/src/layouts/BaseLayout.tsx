@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { APP_NAME } from 'config/app';
 import { useQuery } from 'utils/hooks';
-import { Header, Footer, Progressbar } from 'layouts';
+import { Header, Footer } from 'layouts';
 
 type BaseLayoutProps = { subtitle: string };
 
@@ -23,7 +23,6 @@ const BaseLayout: React.FC<BaseLayoutProps> = (props) => {
         </title>
       </Helmet>
       <Header />
-      <Progressbar />
       {props.children}
       <Footer />
     </React.Fragment>
