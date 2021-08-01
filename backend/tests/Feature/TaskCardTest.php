@@ -200,7 +200,7 @@ class TaskCardTest extends TestCase
         // `title`
         $emptyRequest = [];
         $response = $this->patchJson($url, $emptyRequest);
-        $response->assertStatus(422);
+        $response->assertStatus(200);
 
         $emptyRequest = ['title' => ''];
         $response = $this->patchJson($url, $emptyRequest);

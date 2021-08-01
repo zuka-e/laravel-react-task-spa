@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 
 class TaskCardRequest extends FormRequest
 {
@@ -21,17 +22,26 @@ class TaskCardRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(Request $request)
     {
         $maxTitle = floor(191 / 3);
         $maxContent = floor(65535 / 3);
 
-        return [
-            'title' => "required|string|max:${maxTitle}",
-            'content' => "string|max:${maxContent}",
-            'deadline' => 'date|after:now',
-            'done' => 'boolean'
-        ];
+        if ($request->method() === 'POST') {
+            return [
+                'title' => "required|string|max:${maxTitle}",
+                'content' => "nullable|string|max:${maxContent}",
+                'deadline' => 'date',
+                'done' => 'boolean'
+            ];
+        } else {
+            return [
+                'title' => "string|max:${maxTitle}",
+                'content' => "nullable|string|max:${maxContent}",
+                'deadline' => 'date',
+                'done' => 'boolean'
+            ];
+        }
     }
 
     /**
