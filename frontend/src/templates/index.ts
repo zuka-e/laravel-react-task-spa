@@ -1,4 +1,5 @@
-export { default as AlertMessage } from './AlertMessge';
+export { default as AlertMessage } from './AlertMessage';
+export { default as AlertButton } from './AlertButton';
 export { default as DatetimeInput } from './DatetimeInput';
 export { default as LabeledCheckbox } from './LabeledCheckbox';
 export { default as LabeledSelect } from './LabeledSelect';
