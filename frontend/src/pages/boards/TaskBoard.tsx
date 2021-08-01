@@ -15,6 +15,7 @@ import {
 } from 'templates';
 import { ButtonToAddTask } from 'components/boards';
 import { TaskList, InfoBox } from 'components/boards/TaskBoard';
+import { BoardMenu } from 'components/boards/TaskBoardIndex';
 
 const boxWidth = '300px';
 const useStyles = makeStyles((theme: Theme) =>
@@ -81,6 +82,7 @@ const TaskBoard: React.FC = () => {
                 </IconButton>
               }
             >
+              <BoardMenu board={board} />
             </PopoverControl>
           </Grid>
         </ScrolledGridContainer>
