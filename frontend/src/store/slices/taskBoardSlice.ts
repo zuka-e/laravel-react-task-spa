@@ -9,7 +9,7 @@ import {
   updateTaskBoard,
   destroyTaskBoard,
 } from 'store/thunks/boards';
-import { createTaskList } from 'store/thunks/lists';
+import { createTaskList, updateTaskList } from 'store/thunks/lists';
 
 type InfoBoxAction =
   | { type: 'board'; data: TaskBoard }
@@ -98,6 +98,9 @@ export const taskBoardSlice = createSlice({
         (board) => board.id === action.payload.data.id
       );
       Object.assign(board, action.payload.data);
+
+      if (board?.id === state.infoBox.data?.id) state.infoBox.data = board;
+
       state.loading = false;
     });
     builder.addCase(updateTaskBoard.rejected, (state, _action) => {
@@ -133,6 +136,26 @@ export const taskBoardSlice = createSlice({
     });
 
     builder.addCase(createTaskList.rejected, (state, _action) => {
+      state.loading = false;
+    });
+
+    builder.addCase(updateTaskList.pending, (state, _action) => {
+      state.loading = true;
+    });
+
+    builder.addCase(updateTaskList.fulfilled, (state, action) => {
+      const boardId = action.payload.data.boardId;
+      const list = state.docs[boardId].lists.find(
+        (list) => list.id === action.payload.data.id
+      );
+      Object.assign(list, action.payload.data);
+
+      if (list?.id === state.infoBox.data?.id) state.infoBox.data = list;
+
+      state.loading = false;
+    });
+
+    builder.addCase(updateTaskList.rejected, (state, _action) => {
       state.loading = false;
     });
   },

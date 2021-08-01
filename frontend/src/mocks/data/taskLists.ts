@@ -1,7 +1,31 @@
 import faker from 'faker';
 
-import { Doc, db } from 'mocks/models';
+import { Doc, db, TaskListDocument } from 'mocks/models';
+import { uuid } from 'mocks/utils/uuid';
 import { guestUser, otherUser } from './users';
+import { boardOfGuestUser, boardOfOtherUser } from './taskBoards';
+
+export const listOfGuestUser: TaskListDocument = {
+  id: uuid(),
+  userId: guestUser.id,
+  boardId: boardOfGuestUser.id,
+  title: 'ゲストユーザーのTaskList',
+  description: 'ゲストユーザーが所有するTaskList',
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+export const listOfOtherUser: TaskListDocument = {
+  id: uuid(),
+  userId: otherUser.id,
+  boardId: boardOfOtherUser.id,
+  title: '他のユーザーのTaskList',
+  description: '他のユーザーが所有するTaskList',
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+const initialLists: TaskListDocument[] = [listOfGuestUser, listOfOtherUser];
 
 type SeederProps = {
   count: number;
@@ -14,6 +38,10 @@ type SeederProps = {
 const runSeeder = (props: SeederProps) => {
   const user = db.where('users', 'id', props.belongsTo.user.id)[0];
   if (!user) throw Error('The specified data does not exist');
+
+  initialLists.forEach((list) => {
+    db.create('taskLists', list);
+  });
 
   [...Array(props.count)].forEach(() => {
     db.create('taskLists', {

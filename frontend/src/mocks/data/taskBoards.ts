@@ -13,6 +13,15 @@ export const boardOfGuestUser: TaskBoardDocument = {
   updatedAt: new Date(),
 };
 
+export const boardOfOtherUser: TaskBoardDocument = {
+  id: uuid(),
+  userId: otherUser.id,
+  title: '他のユーザーのBoard',
+  description: '他のユーザーが所有するTaskBoard',
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
 export const boardOfUnverifiedUser: TaskBoardDocument = {
   id: uuid(),
   userId: unverifiedUser.id,
@@ -24,6 +33,7 @@ export const boardOfUnverifiedUser: TaskBoardDocument = {
 
 const initialBoards: TaskBoardDocument[] = [
   boardOfGuestUser,
+  boardOfOtherUser,
   boardOfUnverifiedUser,
 ];
 

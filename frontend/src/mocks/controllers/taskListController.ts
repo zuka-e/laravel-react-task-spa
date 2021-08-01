@@ -1,7 +1,10 @@
 import { RestRequest } from 'msw';
 
 import { TaskList } from 'models';
-import { CreateTaskListRequest } from 'store/thunks/lists';
+import {
+  CreateTaskListRequest,
+  UpdateTaskListRequest,
+} from 'store/thunks/lists';
 import { db, TaskListDocument } from 'mocks/models';
 
 export const index = (req: RestRequest) => {};
@@ -20,6 +23,16 @@ export const store = (req: RestRequest<CreateTaskListRequest>) => {
 
 export const show = (req: RestRequest) => {};
 
-export const update = (req: RestRequest) => {};
+export const update = (req: RestRequest<UpdateTaskListRequest>) => {
+  const list = db.where('taskLists', 'id', req.params.listId)[0];
+
+  if (!list) return;
+
+  const updated = db.update('taskLists', { ...list, ...req.body });
+
+  const response: TaskList = { ...updated, cards: [] };
+
+  return response;
+};
 
 export const destroy = (req: RestRequest) => {};
