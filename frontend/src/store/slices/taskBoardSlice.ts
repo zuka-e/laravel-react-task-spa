@@ -153,6 +153,8 @@ export const taskBoardSlice = createSlice({
         (board) => board.id !== action.payload.data.id
       );
 
+      delete state.docs[action.payload.data.id];
+
       state.loading = false;
     });
 
