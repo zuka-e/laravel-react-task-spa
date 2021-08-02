@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { ObjectShape } from 'yup/lib/object';
 import {
   TextField,
   TextFieldProps,
@@ -12,25 +13,22 @@ import {
 import theme from 'theme';
 import { useAppDispatch } from 'utils/hooks';
 import { FormAction } from 'store/slices/taskBoardSlice';
-import { createTaskBoard, updateTaskBoard } from 'store/thunks/boards';
-import { createTaskList, updateTaskList } from 'store/thunks/lists';
-import { createTaskCard, updateTaskCard } from 'store/thunks/cards';
-import { setFlash } from 'store/slices';
+import { updateTaskBoard } from 'store/thunks/boards';
+import { updateTaskList } from 'store/thunks/lists';
+import { updateTaskCard } from 'store/thunks/cards';
 
 type FormData = {
-  title: string;
+  [key: string]: string;
 };
 
-const schema = yup.object().shape({
-  title: yup.string().min(2).max(60),
-});
-
 type FormProps = FormAction & {
+  schema: yup.ObjectSchema<ObjectShape>;
   handleClose: () => void;
 } & TextFieldProps;
 
-const TitleForm: React.FC<FormProps> = (props) => {
-  const { method, type, handleClose, ...textFieldProps } = props;
+const TextForm: React.FC<FormProps> = (props) => {
+  const { schema, method, type, handleClose, ...textFieldProps } = props;
+  const property = Object.keys(schema.fields)[0];
   const dispatch = useAppDispatch();
   const submitRef = useRef<HTMLInputElement>(null);
   const {
@@ -42,36 +40,19 @@ const TitleForm: React.FC<FormProps> = (props) => {
     resolver: yupResolver(schema),
   });
 
-  useEffect(() => {
-    if (errors?.title?.message)
-      dispatch(setFlash({ type: 'error', message: errors.title.message }));
-  }, [dispatch, errors.title]);
-
   const onSubmit = async (data: FormData) => {
     switch (props.method) {
       case 'POST':
         switch (props.type) {
           case 'board':
-            await dispatch(createTaskBoard({ ...data }));
             break;
           case 'list':
-            await dispatch(
-              createTaskList({ boardId: props.parent.id, ...data })
-            );
             break;
           case 'card':
-            await dispatch(
-              createTaskCard({
-                boardId: props.parent.boardId,
-                listId: props.parent.id,
-                ...data,
-              })
-            );
             break;
         }
         break;
       case 'PATCH':
-        if (!data.title) break;
         switch (props.type) {
           case 'board':
             await dispatch(updateTaskBoard({ id: props.data.id, ...data }));
@@ -89,8 +70,8 @@ const TitleForm: React.FC<FormProps> = (props) => {
             await dispatch(
               updateTaskCard({
                 id: props.data.id,
-                boardId: props.data.boardId,
                 listId: props.data.listId,
+                boardId: props.data.boardId,
                 ...data,
               })
             );
@@ -120,22 +101,22 @@ const TitleForm: React.FC<FormProps> = (props) => {
     >
       <form onSubmit={handleSubmit(onSubmit)} onKeyDown={handleKeyDown}>
         <TextField
-          id='title'
-          required
+          id={property}
+          multiline
           autoFocus
           onFocus={handleFocus}
           fullWidth
           variant='outlined'
-          placeholder='Enter a title'
+          placeholder='Enter the text'
           InputProps={{
             margin: 'dense',
             style: { backgroundColor: theme.palette.background.paper },
           }}
           InputLabelProps={{ margin: 'dense' }}
-          helperText={errors?.title?.message || '2-60 characters'}
-          error={!!errors?.title}
+          helperText={errors?.property?.message}
+          error={!!errors?.property}
           {...textFieldProps}
-          {...register('title')}
+          {...register(property)}
         />
         <input type='submit' ref={submitRef} hidden />
       </form>
@@ -143,4 +124,4 @@ const TitleForm: React.FC<FormProps> = (props) => {
   );
 };
 
-export default TitleForm;
+export default TextForm;

@@ -14,6 +14,24 @@ import {
   updateTaskList,
   destroyTaskList,
 } from 'store/thunks/lists';
+import {
+  createTaskCard,
+  updateTaskCard,
+  destroyTaskCard,
+} from 'store/thunks/cards';
+
+export type FormAction =
+  | { method: 'POST'; type: 'board' }
+  | { method: 'POST'; type: 'list'; parent: TaskBoard }
+  | { method: 'POST'; type: 'card'; parent: TaskList }
+  | { method: 'PATCH'; type: 'board'; data: TaskBoard }
+  | { method: 'PATCH'; type: 'list'; data: TaskList }
+  | { method: 'PATCH'; type: 'card'; data: TaskCard };
+
+export type DeleteAction =
+  | { type: 'board'; data: TaskBoard }
+  | { type: 'list'; data: TaskList }
+  | { type: 'card'; data: TaskCard };
 
 type InfoBoxAction =
   | { type: 'board'; data: TaskBoard }
@@ -75,13 +93,25 @@ export const taskBoardSlice = createSlice({
 
     builder.addCase(fetchTaskBoard.fulfilled, (state, action) => {
       const docId = action.payload.data.id;
+
+      /** `TaskBoard` */
       state.docs[docId] = action.payload.data;
+
+      /** `TaskList` (プロパティが存在しない場合は`[]`を設定) */
       state.docs[docId].lists = state.docs[docId].lists
         ? state.docs[docId].lists
         : [];
-      state.docs[docId].lists.forEach(
-        (list) => (list.cards = list.cards ? list.cards : [])
-      );
+
+      /** `TaskCard` (全てのデータに`boardId`プロパティを設定)*/
+      state.docs[docId].lists.forEach((list) => {
+        list.cards = list.cards
+          ? list.cards.map((card) => ({
+              ...card,
+              boardId: state.docs[docId].id,
+            }))
+          : [];
+      });
+
       state.loading = false;
     });
 
@@ -108,12 +138,20 @@ export const taskBoardSlice = createSlice({
     });
 
     builder.addCase(updateTaskBoard.fulfilled, (state, action) => {
-      const board = state.data.find(
-        (board) => board.id === action.payload.data.id
+      const updatedBoard = action.payload.data;
+      const currentBoard = state.data.find(
+        (board) => board.id === updatedBoard.id
       );
-      Object.assign(board, action.payload.data);
 
-      if (board?.id === state.infoBox.data?.id) state.infoBox.data = board;
+      if (currentBoard) Object.assign(currentBoard, updatedBoard);
+
+      state.docs[updatedBoard.id] = {
+        ...state.docs[updatedBoard.id],
+        ...updatedBoard,
+      };
+
+      if (updatedBoard.id === state.infoBox.data?.id)
+        state.infoBox.data = updatedBoard;
 
       state.loading = false;
     });
@@ -130,6 +168,8 @@ export const taskBoardSlice = createSlice({
       state.data = state.data.filter(
         (board) => board.id !== action.payload.data.id
       );
+
+      delete state.docs[action.payload.data.id];
 
       state.loading = false;
     });
@@ -195,6 +235,74 @@ export const taskBoardSlice = createSlice({
     });
 
     builder.addCase(destroyTaskList.rejected, (state, _action) => {
+      state.loading = false;
+    });
+
+    builder.addCase(createTaskCard.pending, (state, _action) => {
+      state.loading = true;
+    });
+
+    builder.addCase(createTaskCard.fulfilled, (state, action) => {
+      const newCard = action.payload.data;
+      const boardId = action.payload.boardId;
+      const listId = newCard.listId;
+
+      newCard.boardId = boardId;
+      const list = state.docs[boardId].lists.find((list) => list.id === listId);
+      list!.cards = [...list!.cards, { ...newCard }];
+
+      state.loading = false;
+    });
+
+    builder.addCase(createTaskCard.rejected, (state, _action) => {
+      state.loading = false;
+    });
+
+    builder.addCase(updateTaskCard.pending, (state, _action) => {
+      state.loading = true;
+    });
+
+    builder.addCase(updateTaskCard.fulfilled, (state, action) => {
+      const updatedCard = action.payload.data;
+      const boardId = action.payload.boardId;
+      const board = state.docs[boardId];
+      const list = board.lists.find((list) => list.id === updatedCard.listId);
+      const currentCard = list?.cards.find(
+        (card) => card.id === updatedCard.id
+      );
+
+      updatedCard.boardId = boardId;
+      Object.assign(currentCard, updatedCard);
+
+      if (updatedCard?.id === state.infoBox.data?.id)
+        state.infoBox.data = updatedCard;
+
+      state.loading = false;
+    });
+
+    builder.addCase(updateTaskCard.rejected, (state, _action) => {
+      state.loading = false;
+    });
+
+    builder.addCase(destroyTaskCard.pending, (state, _action) => {
+      state.loading = true;
+    });
+
+    builder.addCase(destroyTaskCard.fulfilled, (state, action) => {
+      const deletedCard = action.payload.data;
+      const boardId = action.payload.boardId;
+      const board = state.docs[boardId];
+      const list = board.lists.find((list) => list.id === deletedCard.listId);
+
+      list!.cards = list!.cards.filter((card) => card.id !== deletedCard.id);
+
+      if (deletedCard.id === state.infoBox.data?.id)
+        state.infoBox = initialState.infoBox;
+
+      state.loading = false;
+    });
+
+    builder.addCase(destroyTaskCard.rejected, (state, _action) => {
       state.loading = false;
     });
   },

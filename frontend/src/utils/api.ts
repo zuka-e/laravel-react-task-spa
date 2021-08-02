@@ -97,7 +97,12 @@ export const apiClient = (options?: ApiClientOption) => {
 };
 
 /** パスを構成する要素の内、モデル(テーブル)名として使用される文字列 */
-const tableNames = ['users', 'task_boards', 'task_lists'] as const;
+const tableNames = [
+  'users',
+  'task_boards',
+  'task_lists',
+  'task_cards',
+] as const;
 
 /** `tableName`と`id`(省略可)との組み合わせ */
 type PathSet = [table: typeof tableNames[number], id?: string];

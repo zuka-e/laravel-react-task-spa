@@ -18,10 +18,10 @@ export const fetchTaskBoards = createAsyncThunk<
 >('boards/fetchTaskBoards', async (payload, thunkApi) => {
   const { userId, page } = payload;
   const query = page ? `?page=${page}` : '';
-  const url = makePath(['users', userId], ['task_boards']) + query;
+  const path = makePath(['users', userId], ['task_boards']) + query;
 
   try {
-    const response = await apiClient().get(url);
+    const response = await apiClient().get(path);
     return response?.data;
   } catch (e) {
     return thunkApi.rejectWithValue({

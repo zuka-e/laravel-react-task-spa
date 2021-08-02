@@ -18,7 +18,7 @@ import { GUEST_EMAIL, GUEST_NAME, GUEST_PASSWORD } from 'config/app';
 import { createUser, signInWithEmail } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { makeEmail } from 'utils/generator';
-import { PopoverControl } from 'templates';
+import { AlertButton, PopoverControl } from 'templates';
 import hero from 'images/hero.svg';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -58,13 +58,6 @@ const useStyles = makeStyles((theme: Theme) =>
       '&:hover': {
         color: theme.palette.primary.contrastText,
         textDecoration: 'none',
-      },
-    },
-    infoBtn: {
-      color: theme.palette.primary.contrastText,
-      backgroundColor: theme.palette.info.light,
-      '&:hover': {
-        backgroundColor: theme.palette.info.main,
       },
     },
   })
@@ -133,13 +126,13 @@ const Hero = () => {
               <Grid item>
                 <PopoverControl
                   trigger={
-                    <Button
+                    <AlertButton
                       startIcon={<MenuIcon />}
                       variant='contained'
-                      className={classes.infoBtn}
+                      color='info'
                     >
                       又はゲストユーザーで試す
-                    </Button>
+                    </AlertButton>
                   }
                 >
                   <List component='nav'>

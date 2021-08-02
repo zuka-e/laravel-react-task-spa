@@ -14,7 +14,6 @@ import {
   DestroyTaskBoardRequest,
   DestroyTaskBoardResponse,
   UpdateTaskBoardRequest,
-  UpdateTaskBoardResponse,
 } from 'store/thunks/boards';
 
 export const handlers = [
@@ -80,7 +79,7 @@ export const handlers = [
     }
   ),
 
-  rest.patch<UpdateTaskBoardRequest, UpdateTaskBoardResponse>(
+  rest.patch<UpdateTaskBoardRequest>(
     API_ROUTE + makePath(['users', ':userId'], ['task_boards', ':boardId']),
     (req, res, ctx) => {
       const currentUser = getUserFromSession(req.cookies.session_id);

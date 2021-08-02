@@ -2,20 +2,18 @@ import React, { useEffect } from 'react';
 
 import { useParams } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Container, Grid, Divider } from '@material-ui/core';
+import { Container, Grid, Divider, IconButton } from '@material-ui/core';
+import { MoreVert as MoreVertIcon } from '@material-ui/icons';
 
 import { useAppDispatch, useDeepEqualSelector } from 'utils/hooks';
 import { fetchTaskBoard, FetchTaskBoardRequest } from 'store/thunks/boards';
 import { BaseLayout, StandbyScreen } from 'layouts';
-import {
-  PopoverControl,
-  ScrolledGridContainer,
-  ScrolledTypography,
-} from 'templates';
-import { ButtonToAddTask } from 'components/boards';
-import { MenuButton, TaskList, InfoBox } from 'components/boards/TaskBoard';
+import { PopoverControl, ScrolledGridContainer } from 'templates';
+import { ButtonToAddTask, EditableTitle } from 'components/boards';
+import { TaskList, InfoBox } from 'components/boards/TaskBoard';
+import { BoardMenu } from 'components/boards/TaskBoardIndex';
 
-const boxWidth = '370px';
+const boxWidth = '300px';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     main: {
@@ -25,8 +23,19 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: theme.spacing(2),
       paddingRight: 0,
     },
-    title: { fontSize: '2rem' },
-    divider: { marginTop: theme.spacing(1) },
+    titleBox: {
+      flex: '1 1 auto',
+      marginLeft: theme.spacing(1),
+    },
+    title: {
+      overflow: 'hidden',
+      display: '-webkit-box',
+      '-webkit-box-orient': 'vertical',
+      '-webkit-line-clamp': 1,
+      fontWeight: 'bold',
+      fontSize: '1.5rem',
+      lineHeight: 1.2,
+    },
     content: {
       flex: '1 1 auto',
       flexWrap: 'nowrap',
@@ -64,21 +73,30 @@ const TaskBoard: React.FC = () => {
   return (
     <BaseLayout subtitle={board.title}>
       <Container component='main' maxWidth={false} className={classes.main}>
-        <ScrolledGridContainer justify='space-between' alignItems='center'>
-          <ScrolledTypography
-            title={board.title}
-            variant='h1'
-            className={classes.title}
-          >
-            {board.title}
-          </ScrolledTypography>
+        <ScrolledGridContainer justify='space-between'>
+          <Grid item className={classes.titleBox}>
+            <EditableTitle
+              method='PATCH'
+              type='board'
+              data={board}
+              disableMargin
+              inputStyle={classes.title}
+              helperText=''
+            />
+          </Grid>
           <Grid item>
-            <PopoverControl trigger={<MenuButton />}>
-              {/* <BoardMenu boardId={boardId} /> */}
+            <PopoverControl
+              trigger={
+                <IconButton title='Menu'>
+                  <MoreVertIcon />
+                </IconButton>
+              }
+            >
+              <BoardMenu board={board} />
             </PopoverControl>
           </Grid>
         </ScrolledGridContainer>
-        <Divider classes={{ root: classes.divider }} />
+        <Divider />
         <Grid container className={classes.content}>
           <ScrolledGridContainer className={classes.listItems}>
             {board.lists?.map((list, i) => (

@@ -4,7 +4,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { ClickAwayListener } from '@material-ui/core';
 
 import theme from 'theme';
-import { TaskList, TaskCard } from 'models';
+import { TaskBoard, TaskList, TaskCard } from 'models';
 import { closeInfoBox, removeInfoBox } from 'store/slices/taskBoardSlice';
 import { useAppDispatch, useDeepEqualSelector, usePrevious } from 'utils/hooks';
 import {
@@ -13,7 +13,7 @@ import {
   isItself,
   hasChanged,
 } from 'utils/infoBox';
-import { TaskListDetails, TaskCardDetails } from '.';
+import { TaskBoardDetails, TaskListDetails, TaskCardDetails } from '.';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,6 +29,9 @@ const useStyles = makeStyles((theme: Theme) =>
         height: '100%',
         width: '100%',
         borderLeft: '1px solid ' + theme.palette.divider,
+        '& > div': {
+          overflowY: 'auto',
+        },
       },
     },
     open: { maxWidth: '100%' },
@@ -68,7 +71,7 @@ const InfoBox: React.FC = () => {
   const renderInfoBox = () => {
     switch (currentState.type) {
       case 'board':
-        return <React.Fragment />; // <TaskBoardDetails/>
+        return <TaskBoardDetails board={currentState.data as TaskBoard} />;
       case 'list':
         return <TaskListDetails list={currentState.data as TaskList} />;
       case 'card':

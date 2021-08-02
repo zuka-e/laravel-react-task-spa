@@ -9,20 +9,32 @@ import {
 } from '@material-ui/core';
 import { Add as AddIcon } from '@material-ui/icons';
 
-import { FormAction, TitleForm } from '.';
+import theme from 'theme';
+import { FormAction } from 'store/slices/taskBoardSlice';
+import { TitleForm } from '.';
 
+const margin = theme.spacing(0.75);
 const useStyles = makeStyles(() =>
   createStyles({
-    button: {
-      justifyContent: 'flex-start',
-      backgroundColor: 'rgb(0,0,0,0.1)',
+    root: { justifyContent: 'flex-start' },
+    wrapper: {
+      margin: margin,
+      width: `calc(100% - ${margin * 2}px)`,
     },
+    transparent: {
+      backgroundColor: 'inherit',
+      boxShadow: 'unset',
+    },
+    dim: { backgroundColor: 'rgb(0,0,0,0.1)' },
   })
 );
 
-type ButtonToAddTaskProps = FormAction;
+type ButtonToAddTaskProps = FormAction & {
+  transparent?: boolean;
+};
 
 const ButtonToAddTask: React.FC<ButtonToAddTaskProps> = (props) => {
+  const { transparent, ...formActionType } = props;
   const classes = useStyles();
   const [isEditing, setIsEditing] = useState(false);
 
@@ -41,9 +53,12 @@ const ButtonToAddTask: React.FC<ButtonToAddTaskProps> = (props) => {
       onClickAway={handleClickAway}
     >
       {isEditing ? (
-        <Card elevation={7}>
+        <Card
+          elevation={7}
+          className={props.transparent ? classes.transparent : ''}
+        >
           <CardActions style={{ display: 'block' }}>
-            <TitleForm {...props} handleClose={toggleForm} />
+            <TitleForm {...formActionType} handleClose={toggleForm} />
           </CardActions>
         </Card>
       ) : (
@@ -51,7 +66,10 @@ const ButtonToAddTask: React.FC<ButtonToAddTaskProps> = (props) => {
           fullWidth
           startIcon={<AddIcon />}
           onClick={toggleForm}
-          classes={{ root: classes.button }}
+          classes={{
+            root: `${classes.root} ${props.transparent ? classes.wrapper : ''}`,
+          }}
+          className={props.transparent ? classes.transparent : classes.dim}
         >
           Add new {props.type}
         </Button>

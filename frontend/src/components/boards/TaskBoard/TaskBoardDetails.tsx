@@ -2,7 +2,7 @@ import React from 'react';
 
 import * as yup from 'yup';
 import moment from 'moment';
-import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import {
   Grid,
@@ -13,15 +13,14 @@ import {
   IconButton,
   Typography,
   Breadcrumbs,
-  Tooltip,
 } from '@material-ui/core';
 import {
   Close as CloseIcon,
-  ListAlt as ListAltIcon,
   FolderOpen as FolderOpenIcon,
+  Folder as FolderIcon,
 } from '@material-ui/icons';
 
-import { TaskList } from 'models';
+import { TaskBoard } from 'models';
 import { closeInfoBox } from 'store/slices/taskBoardSlice';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { EditableText, EditableTitle } from '..';
@@ -61,17 +60,28 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-type TaskListDetailsProps = {
-  list: TaskList;
+type TaskBoardDetailsProps = {
+  board: TaskBoard;
 };
 
-const TaskListDetails: React.FC<TaskListDetailsProps> = (props) => {
-  const { list } = props;
+const TaskBoardDetails: React.FC<TaskBoardDetailsProps> = (props) => {
+  const { board } = props;
   const classes = useStyles();
-  const { boardId } = useParams<{ userId: string; boardId: string }>();
-  const boardName = useAppSelector((state) => state.boards.docs[boardId].title);
+  const userId = useAppSelector((state) => state.auth.user?.id);
   const dispatch = useAppDispatch();
-  const baseUrl = `${window.location.origin}${window.location.pathname}`;
+
+  const totalList = board.lists.reduce(
+    (acc, current) => acc + current.cards.length,
+    0
+  );
+
+  const totalCompletedCard = board.lists.reduce((acc, list) => {
+    const totalCompletedCardForEachList = list.cards.reduce(
+      (acc, card) => (card.done ? acc + 1 : acc),
+      0
+    );
+    return acc + totalCompletedCardForEachList;
+  }, 0);
 
   const handleClose = () => {
     dispatch(closeInfoBox());
@@ -81,16 +91,14 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = (props) => {
     <Card className={classes.root}>
       <CardActions disableSpacing>
         <Breadcrumbs aria-label='breadcrumb' className={classes.breadcrumbs}>
-          <Tooltip title={boardName}>
-            <Typography>
-              <FolderOpenIcon className={classes.icon} />
-              {'Board'}
-            </Typography>
-          </Tooltip>
-          <a href={`${baseUrl}#${list?.id}`} title={list.title}>
-            <ListAltIcon className={classes.icon} />
-            {list.title}
-          </a>
+          <Link to={`/users/${userId}/boards`}>
+            <FolderIcon className={classes.icon} />
+            {'Boards'}
+          </Link>
+          <Typography>
+            <FolderOpenIcon className={classes.icon} />
+            {board.title}
+          </Typography>
         </Breadcrumbs>
         <IconButton
           aria-label='close'
@@ -104,51 +112,58 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = (props) => {
       <CardHeader
         className={classes.cardHeader}
         disableTypography
-        title={<EditableTitle method='PATCH' type='list' data={list} />}
+        title={<EditableTitle method='PATCH' type='board' data={board} />}
       />
       <CardContent className={classes.rows}>
         <Grid container>
           <Grid item className={classes.label}>
-            <label>タスク総数</label>
+            <label>合計リスト</label>
           </Grid>
-          <Grid item>{list.cards.length}</Grid>
+          <Grid item>{board.lists.length}</Grid>
         </Grid>
         <Grid container>
           <Grid item className={classes.label}>
-            <label>(完了済)</label>
+            <label>
+              合計カード
+              <br />
+              (完了 / 未完了)
+            </label>
           </Grid>
-          <Grid item>{list.cards.filter((card) => card.done).length}</Grid>
+          <Grid item>
+            {totalList}&nbsp; ({totalCompletedCard}&nbsp;/&nbsp;
+            {totalList - totalCompletedCard})
+          </Grid>
         </Grid>
         <Grid container>
           <Grid item className={classes.label}>
             <label>作成日時</label>
           </Grid>
-          <Grid item>{moment(list.createdAt).calendar()}</Grid>
+          <Grid item>{moment(board.createdAt).calendar()}</Grid>
         </Grid>
         <Grid container>
           <Grid item className={classes.label}>
             <label>変更日時</label>
           </Grid>
-          <Grid item>{moment(list.updatedAt).calendar()}</Grid>
+          <Grid item>{moment(board.updatedAt).calendar()}</Grid>
         </Grid>
         <div className={classes.descriptionBlock}>
-          <Typography className={classes.text}>{list.description}</Typography>
+          <Typography className={classes.text}>{board.description}</Typography>
         </div>
       </CardContent>
 
       <CardContent>
         <EditableText
           method='PATCH'
-          type='list'
-          data={list}
+          type='board'
+          data={board}
           schema={yup.object().shape({
             description: yup.string().max(Math.floor(65535 / 3)),
           })}
-          defaultValue={list.description}
+          defaultValue={board.description}
         />
       </CardContent>
     </Card>
   );
 };
 
-export default TaskListDetails;
+export default TaskBoardDetails;

@@ -3,33 +3,34 @@ import { DefaultRequestBody, rest } from 'msw';
 import { API_ROUTE } from 'config/api';
 import { makePath } from 'utils/api';
 import {
-  CreateTaskListRequest,
-  CreateTaskListResponse,
-  UpdateTaskListRequest,
-  DestroyTaskListResponse,
-} from 'store/thunks/lists';
+  CreateTaskCardRequest,
+  CreateTaskCardResponse,
+  UpdateTaskCardRequest,
+  UpdateTaskCardResponse,
+  DestroyTaskCardResponse,
+} from 'store/thunks/cards';
 import { db } from 'mocks/models';
 import {
   X_XSRF_TOKEN,
   hasValidToken,
   getUserFromSession,
 } from 'mocks/utils/validation';
-import { taskListController } from 'mocks/controllers';
+import { taskCardController } from 'mocks/controllers';
 
-type TaskListParams = {
-  boardId: string;
+type TaskCardParams = {
   listId: string;
+  cardId: string;
 };
 
 export const handlers = [
-  rest.post<CreateTaskListRequest, CreateTaskListResponse, TaskListParams>(
-    API_ROUTE + makePath(['task_boards', ':boardId'], ['task_lists']),
+  rest.post<CreateTaskCardRequest, CreateTaskCardResponse, TaskCardParams>(
+    API_ROUTE + makePath(['task_lists', ':listId'], ['task_cards']),
     (req, res, ctx) => {
       const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);
-      const belongsTo = {
-        board: db.where('taskBoards', 'id', req.params.boardId)[0],
-      };
+      const list = db.where('taskLists', 'id', req.params.listId)[0];
+      const board = db.where('taskBoards', 'id', list.boardId)[0];
+      const belongsTo = { list, board };
 
       if (!currentUser) return res(ctx.status(401));
 
@@ -40,22 +41,21 @@ export const handlers = [
 
       if (!token || !hasValidToken(token)) return res(ctx.status(419));
 
-      const response = taskListController.store(req);
+      const response = taskCardController.store(req);
 
       return res(ctx.status(201), ctx.json({ data: response }));
     }
   ),
 
-  rest.patch<UpdateTaskListRequest, any, TaskListParams>(
-    API_ROUTE +
-      makePath(['task_boards', ':boardId'], ['task_lists', ':listId']),
+  rest.patch<UpdateTaskCardRequest, UpdateTaskCardResponse, TaskCardParams>(
+    API_ROUTE + makePath(['task_lists', ':listId'], ['task_cards', ':cardId']),
     (req, res, ctx) => {
       const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);
-      const belongsTo = {
-        board: db.where('taskBoards', 'id', req.params.boardId)[0],
-      };
-      const target = db.where('taskLists', 'id', req.params.listId)[0];
+      const list = db.where('taskLists', 'id', req.params.listId)[0];
+      const board = db.where('taskBoards', 'id', list?.boardId)[0];
+      const belongsTo = { list, board };
+      const target = db.where('taskCards', 'id', req.params.cardId)[0];
 
       if (!currentUser) return res(ctx.status(401));
 
@@ -63,16 +63,16 @@ export const handlers = [
 
       if (!currentUser.emailVerifiedAt) return res(ctx.status(403));
 
-      if (!belongsTo.board) return res(ctx.status(404));
+      if (!belongsTo.list) return res(ctx.status(404));
 
       if (belongsTo.board.userId !== currentUser.id)
         return res(ctx.status(403));
 
       if (!target) return res(ctx.status(404));
 
-      if (target.boardId !== req.params.boardId) return res(ctx.status(403));
+      if (target.listId !== req.params.listId) return res(ctx.status(403));
 
-      const updated = taskListController.update(req);
+      const updated = taskCardController.update(req);
 
       if (!updated) return res(ctx.status(404));
 
@@ -80,16 +80,15 @@ export const handlers = [
     }
   ),
 
-  rest.delete<DefaultRequestBody, DestroyTaskListResponse, TaskListParams>(
-    API_ROUTE +
-      makePath(['task_boards', ':boardId'], ['task_lists', ':listId']),
+  rest.delete<DefaultRequestBody, DestroyTaskCardResponse, TaskCardParams>(
+    API_ROUTE + makePath(['task_lists', ':listId'], ['task_cards', ':cardId']),
     (req, res, ctx) => {
       const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);
-      const belongsTo = {
-        board: db.where('taskBoards', 'id', req.params.boardId)[0],
-      };
-      const target = db.where('taskLists', 'id', req.params.listId)[0];
+      const list = db.where('taskLists', 'id', req.params.listId)[0];
+      const board = db.where('taskBoards', 'id', list?.boardId)[0];
+      const belongsTo = { list, board };
+      const target = db.where('taskCards', 'id', req.params.cardId)[0];
 
       if (!currentUser) return res(ctx.status(401));
 
@@ -97,16 +96,16 @@ export const handlers = [
 
       if (!currentUser.emailVerifiedAt) return res(ctx.status(403));
 
-      if (!belongsTo.board) return res(ctx.status(404));
+      if (!belongsTo.list) return res(ctx.status(404));
 
       if (belongsTo.board.userId !== currentUser.id)
         return res(ctx.status(403));
 
       if (!target) return res(ctx.status(404));
 
-      if (target.boardId !== req.params.boardId) return res(ctx.status(403));
+      if (target.listId !== req.params.listId) return res(ctx.status(403));
 
-      const deleted = taskListController.destroy(req);
+      const deleted = taskCardController.destroy(req);
 
       if (!deleted) return res(ctx.status(404));
 

@@ -9,7 +9,6 @@ import {
   CardHeader,
   Divider,
   Container,
-  Button,
 } from '@material-ui/core';
 
 import { APP_NAME } from 'config/app';
@@ -22,6 +21,7 @@ import {
   UserStatus,
   DeleteAccountDialog,
 } from 'components/account';
+import { AlertButton } from 'templates';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,13 +29,6 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(8),
       marginBottom: theme.spacing(8),
       padding: theme.spacing(3),
-    },
-    danger: {
-      color: theme.palette.primary.contrastText,
-      backgroundColor: theme.palette.error.main,
-      '&:hover': {
-        backgroundColor: theme.palette.error.dark,
-      },
     },
   })
 );
@@ -81,13 +74,13 @@ const Account: React.FC = () => {
             <CardContent>
               <DeleteAccountDialog
                 trigger={
-                  <Button
+                  <AlertButton
                     disabled={isGuest()}
                     variant='contained'
-                    className={classes.danger}
+                    color='danger'
                   >
                     アカウントを削除
-                  </Button>
+                  </AlertButton>
                 }
               />
             </CardContent>
