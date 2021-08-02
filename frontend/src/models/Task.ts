@@ -20,6 +20,7 @@ export type TaskListsCollection = CollectionBase<TaskList>;
 
 export type TaskCard = {
   listId: string;
+  boardId: string;
   title: string;
   content: string;
   deadline: Date;

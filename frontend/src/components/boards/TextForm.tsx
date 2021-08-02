@@ -3,41 +3,30 @@ import React, { useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { ObjectShape } from 'yup/lib/object';
 import {
   TextField,
   TextFieldProps,
   ClickAwayListener,
 } from '@material-ui/core';
 
-import { TaskBoard, TaskList, TaskCard } from 'models';
-import { useAppDispatch } from 'utils/hooks';
-import { createTaskBoard, updateTaskBoard } from 'store/thunks/boards';
-import { createTaskList, updateTaskList } from 'store/thunks/lists';
-import { createTaskCard, updateTaskCard } from 'store/thunks/cards';
 import theme from 'theme';
+import { useAppDispatch } from 'utils/hooks';
+import { updateTaskCard } from 'store/thunks/cards';
+import { FormAction } from '.';
 
 type FormData = {
-  title: string;
+  [key: string]: string;
 };
 
-const schema = yup.object().shape({
-  title: yup.string().min(2).max(60),
-});
-
-export type FormAction =
-  | { method: 'POST'; type: 'board' }
-  | { method: 'POST'; type: 'list'; parent: TaskBoard }
-  | { method: 'POST'; type: 'card'; parent: TaskList }
-  | { method: 'PATCH'; type: 'board'; data: TaskBoard }
-  | { method: 'PATCH'; type: 'list'; data: TaskList }
-  | { method: 'PATCH'; type: 'card'; data: TaskCard };
-
 type FormProps = FormAction & {
+  schema: yup.ObjectSchema<ObjectShape>;
   handleClose: () => void;
 } & TextFieldProps;
 
-const TitleForm: React.FC<FormProps> = (props) => {
-  const { method, type, handleClose, ...textFieldProps } = props;
+const TextForm: React.FC<FormProps> = (props) => {
+  const { schema, method, type, handleClose, ...textFieldProps } = props;
+  const property = Object.keys(schema.fields)[0];
   const dispatch = useAppDispatch();
   const submitRef = useRef<HTMLInputElement>(null);
   const {
@@ -54,45 +43,25 @@ const TitleForm: React.FC<FormProps> = (props) => {
       case 'POST':
         switch (props.type) {
           case 'board':
-            await dispatch(createTaskBoard({ ...data }));
             break;
           case 'list':
-            await dispatch(
-              createTaskList({ boardId: props.parent.id, ...data })
-            );
             break;
           case 'card':
-            await dispatch(
-              createTaskCard({
-                boardId: props.parent.boardId,
-                listId: props.parent.id,
-                ...data,
-              })
-            );
             break;
         }
         break;
       case 'PATCH':
-        if (!data.title) break;
         switch (props.type) {
           case 'board':
-            await dispatch(updateTaskBoard({ id: props.data.id, ...data }));
             break;
           case 'list':
-            await dispatch(
-              updateTaskList({
-                id: props.data.id,
-                boardId: props.data.boardId,
-                ...data,
-              })
-            );
             break;
           case 'card':
             await dispatch(
               updateTaskCard({
                 id: props.data.id,
-                boardId: props.data.boardId,
                 listId: props.data.listId,
+                boardId: props.data.boardId,
                 ...data,
               })
             );
@@ -118,21 +87,21 @@ const TitleForm: React.FC<FormProps> = (props) => {
     >
       <form onSubmit={handleSubmit(onSubmit)} onKeyDown={handleKeyDown}>
         <TextField
-          id='title'
-          required
+          id={property}
+          multiline
           autoFocus
           fullWidth
           variant='outlined'
-          placeholder='Enter a title'
+          placeholder='Enter the text'
           InputProps={{
             margin: 'dense',
             style: { backgroundColor: theme.palette.background.paper },
           }}
           InputLabelProps={{ margin: 'dense' }}
-          helperText={errors?.title?.message || '2-60 characters'}
-          error={!!errors?.title}
+          helperText={errors?.property?.message}
+          error={!!errors?.property}
           {...textFieldProps}
-          {...register('title')}
+          {...register(property)}
         />
         <input type='submit' ref={submitRef} hidden />
       </form>
@@ -140,4 +109,4 @@ const TitleForm: React.FC<FormProps> = (props) => {
   );
 };
 
-export default TitleForm;
+export default TextForm;

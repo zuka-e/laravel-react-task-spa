@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 
+import * as yup from 'yup';
 import moment from 'moment';
 import { useParams } from 'react-router-dom';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
@@ -20,12 +21,13 @@ import {
   ListAlt as ListAltIcon,
   Assignment as AssignmentIcon,
 } from '@material-ui/icons';
-import { KeyboardDateTimePicker } from '@material-ui/pickers';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 import { TaskCard } from 'models';
-import { closeInfoBox } from 'store/slices/taskBoardSlice';
 import { useAppDispatch, useDeepEqualSelector } from 'utils/hooks';
+import { closeInfoBox } from 'store/slices/taskBoardSlice';
+import { updateTaskCard } from 'store/thunks/cards';
+import { DatetimeInput } from 'templates';
+import { EditableTitle, EditableText } from '..';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,6 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
     close: { marginLeft: 'auto' },
     cardHeader: { paddingBottom: 0 },
     rows: {
+      paddingTop: 0,
       '& > div': {
         marginBottom: theme.spacing(1),
         alignItems: 'center',
@@ -70,33 +73,44 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
       (list) => list.id === card.listId
     )
   );
-  const baseUrl = `${window.location.origin}${window.location.pathname}`;
+  const [checked, setChecked] = useState(card.done);
 
-  const isInTime = (date: Date) => moment(date).isBefore(new Date(), 'minute');
+  const isInTime = (date: Date) => moment(new Date()).isBefore(date, 'minute');
 
-  const handleToggleDone = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    e.preventDefault();
+  const handleCheckbox = () => {
+    setChecked(!checked);
+    dispatch(
+      updateTaskCard({
+        id: card.id,
+        boardId: card.boardId,
+        listId: card.listId,
+        done: !card.done,
+      })
+    );
   };
 
   const handleClose = () => {
     dispatch(closeInfoBox());
   };
 
-  const handleDateChange = (date: MaterialUiPickersDate) => {
-    // State managements
-  };
-
-  const handleDateClose = () => {
-    // API requests
+  const handleDateChange = (date?: Date) => {
+    dispatch(
+      updateTaskCard({
+        id: card.id,
+        boardId: card.boardId,
+        listId: card.listId,
+        deadline: date,
+      })
+    );
   };
 
   return (
     <Card className={classes.root}>
       <CardActions disableSpacing>
         <Breadcrumbs aria-label='breadcrumb' className={classes.breadcrumbs}>
-          <a href={`${baseUrl}#${list?.id}`}>
+          <a
+            href={`${window.location.origin}${window.location.pathname}#${list?.id}`}
+          >
             <ListAltIcon className={classes.icon} />
             {list?.title}
           </a>
@@ -115,41 +129,32 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
         </IconButton>
       </CardActions>
       <CardHeader
-        className={classes.cardHeader}
-        title={
-          <Typography className={classes.text} variant='h5' component='p'>
-            {card.title}
-          </Typography>
-        }
+        classes={{ root: classes.cardHeader }}
+        title={<EditableTitle method='PATCH' type='card' data={card} />}
       />
       <CardContent className={classes.rows}>
         <FormControlLabel
+          label={checked ? 'Completed' : 'Incompleted'}
           control={
             <Checkbox
               color='primary'
-              checked={card.done}
-              onClick={handleToggleDone}
+              checked={checked}
+              onChange={handleCheckbox}
             />
           }
-          label={card.done ? 'Completed' : 'Incompleted'}
         />
         <Grid container>
           <Grid item className={classes.label}>
-            <label className={isInTime(card.deadline) ? classes.timeout : ''}>
+            <label
+              className={
+                !isInTime(card.deadline) && !card.done ? classes.timeout : ''
+              }
+            >
               締切日時
             </label>
           </Grid>
           <Grid item>
-            <KeyboardDateTimePicker
-              variant='inline'
-              format='YYYY/MM/DD/ HH:mm'
-              ampm={false}
-              disablePast
-              autoOk
-              value={card.deadline}
-              onChange={handleDateChange}
-              onClose={handleDateClose}
-            />
+            <DatetimeInput onChange={handleDateChange} value={card.deadline} />
           </Grid>
         </Grid>
         <Grid container>
@@ -165,7 +170,15 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
           <Grid item>{moment(card.updatedAt).calendar()}</Grid>
         </Grid>
         <div className={classes.contentBlock}>
-          <Typography className={classes.text}>{card.content}</Typography>
+          <EditableText
+            method='PATCH'
+            type='card'
+            data={card}
+            schema={yup.object().shape({
+              content: yup.string().max(Math.floor(65535 / 3)),
+            })}
+            defaultValue={card.content}
+          />
         </div>
       </CardContent>
     </Card>

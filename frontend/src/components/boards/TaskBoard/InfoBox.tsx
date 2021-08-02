@@ -29,6 +29,9 @@ const useStyles = makeStyles((theme: Theme) =>
         height: '100%',
         width: '100%',
         borderLeft: '1px solid ' + theme.palette.divider,
+        '& > div': {
+          overflowY: 'auto',
+        },
       },
     },
     open: { maxWidth: '100%' },

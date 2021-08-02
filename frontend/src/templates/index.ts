@@ -1,4 +1,5 @@
 export { default as AlertMessage } from './AlertMessge';
+export { default as DatetimeInput } from './DatetimeInput';
 export { default as LabeledCheckbox } from './LabeledCheckbox';
 export { default as LabeledSelect } from './LabeledSelect';
 export { default as PopoverControl } from './PopoverControl';
