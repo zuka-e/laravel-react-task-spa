@@ -1,7 +1,35 @@
 import faker from 'faker';
 
-import { Doc, db } from 'mocks/models';
+import { Doc, db, TaskCardDocument } from 'mocks/models';
+import { uuid } from 'mocks/utils/uuid';
 import { guestUser, otherUser } from './users';
+import { listOfGuestUser, listOfOtherUser } from './taskLists';
+
+export const cardOfGuestUser: TaskCardDocument = {
+  id: uuid(),
+  userId: guestUser.id,
+  listId: listOfGuestUser.id,
+  title: 'ゲストユーザーのTaskCard',
+  content: 'ゲストユーザーが所有するTaskCard',
+  deadline: new Date(),
+  done: true,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+export const cardOfOtherUser: TaskCardDocument = {
+  id: uuid(),
+  userId: otherUser.id,
+  listId: listOfOtherUser.id,
+  title: '他のユーザーのTaskCard',
+  content: '他のユーザーが所有するTaskCard',
+  deadline: new Date(),
+  done: false,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+const initialCards: TaskCardDocument[] = [cardOfGuestUser, cardOfOtherUser];
 
 type SeederProps = {
   count: number;
@@ -14,6 +42,10 @@ type SeederProps = {
 const runSeeder = (props: SeederProps) => {
   const user = db.where('users', 'id', props.belongsTo.user.id)[0];
   if (!user) throw Error('The specified data does not exist');
+
+  initialCards.forEach((card) => {
+    db.create('taskCards', card);
+  });
 
   [...Array(props.count)].forEach(() => {
     db.create('taskCards', {

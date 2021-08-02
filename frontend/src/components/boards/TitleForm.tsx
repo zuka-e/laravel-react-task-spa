@@ -13,13 +13,15 @@ import { TaskBoard, TaskList, TaskCard } from 'models';
 import { useAppDispatch } from 'utils/hooks';
 import { createTaskBoard, updateTaskBoard } from 'store/thunks/boards';
 import { createTaskList, updateTaskList } from 'store/thunks/lists';
+import { createTaskCard } from 'store/thunks/cards';
+import theme from 'theme';
 
 type FormData = {
   title: string;
 };
 
 const schema = yup.object().shape({
-  title: yup.string().min(2).max(20),
+  title: yup.string().min(2).max(60),
 });
 
 export type FormAction =
@@ -60,6 +62,13 @@ const TitleForm: React.FC<FormProps> = (props) => {
             );
             break;
           case 'card':
+            await dispatch(
+              createTaskCard({
+                boardId: props.parent.boardId,
+                listId: props.parent.id,
+                ...data,
+              })
+            );
             break;
         }
         break;
@@ -107,9 +116,12 @@ const TitleForm: React.FC<FormProps> = (props) => {
           fullWidth
           variant='outlined'
           placeholder='Enter a title'
-          InputProps={{ margin: 'dense' }}
+          InputProps={{
+            margin: 'dense',
+            style: { backgroundColor: theme.palette.background.paper },
+          }}
           InputLabelProps={{ margin: 'dense' }}
-          helperText={errors?.title?.message || '2-20 characters'}
+          helperText={errors?.title?.message || '2-60 characters'}
           error={!!errors?.title}
           {...textFieldProps}
           {...register('title')}

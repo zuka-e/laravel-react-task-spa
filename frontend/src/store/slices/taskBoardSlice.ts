@@ -14,6 +14,7 @@ import {
   updateTaskList,
   destroyTaskList,
 } from 'store/thunks/lists';
+import { createTaskCard } from 'store/thunks/cards';
 
 type InfoBoxAction =
   | { type: 'board'; data: TaskBoard }
@@ -195,6 +196,25 @@ export const taskBoardSlice = createSlice({
     });
 
     builder.addCase(destroyTaskList.rejected, (state, _action) => {
+      state.loading = false;
+    });
+
+    builder.addCase(createTaskCard.pending, (state, _action) => {
+      state.loading = true;
+    });
+
+    builder.addCase(createTaskCard.fulfilled, (state, action) => {
+      const newCard = action.payload.data;
+      const boardId = action.payload.boardId;
+      const listId = newCard.listId;
+
+      const list = state.docs[boardId].lists.find((list) => list.id === listId);
+      list!.cards = [...list!.cards, { ...newCard }];
+
+      state.loading = false;
+    });
+
+    builder.addCase(createTaskCard.rejected, (state, _action) => {
       state.loading = false;
     });
   },
