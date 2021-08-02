@@ -6,7 +6,6 @@ import {
   CreateTaskListRequest,
   CreateTaskListResponse,
   UpdateTaskListRequest,
-  UpdateTaskListResponse,
   DestroyTaskListResponse,
 } from 'store/thunks/lists';
 import { db } from 'mocks/models';
@@ -47,7 +46,7 @@ export const handlers = [
     }
   ),
 
-  rest.patch<UpdateTaskListRequest, UpdateTaskListResponse, TaskListParams>(
+  rest.patch<UpdateTaskListRequest, any, TaskListParams>(
     API_ROUTE +
       makePath(['task_boards', ':boardId'], ['task_lists', ':listId']),
     (req, res, ctx) => {

@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme: Theme) =>
       border: borderWidth + ' solid ' + theme.palette.primary.main,
       '& > .listWrapper': { margin: `-${borderWidth}` },
     },
+    disablePadding: {
+      padding: `0px ${theme.spacing(1)}px`,
+    },
     cardItemBox: {
       maxHeight: '90vh',
       marginRight: theme.spacing(-0.5),
@@ -86,7 +89,7 @@ const TaskList: React.FC<TaskListProps> = (props) => {
           </Grid>
         </CardActions>
 
-        <CardContent>
+        <CardContent className={classes.disablePadding}>
           <ScrolledDiv className={classes.cardItemBox}>
             {filteredCards.map((card, i) => (
               <div key={card.id} className='cardItem'>

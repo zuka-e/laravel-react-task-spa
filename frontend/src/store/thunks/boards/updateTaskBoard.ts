@@ -8,21 +8,22 @@ export type UpdateTaskBoardResponse = {
   data: TaskBoard;
 };
 
-export type UpdateTaskBoardRequest = Pick<TaskBoard, 'id'> &
-  Pick<TaskBoard, 'title'> &
+export type UpdateTaskBoardRequest = Partial<Pick<TaskBoard, 'title'>> &
   Partial<Pick<TaskBoard, 'description'>>;
+
+type UpdateTaskBoardArg = Pick<TaskBoard, 'id'> & UpdateTaskBoardRequest;
 
 export const updateTaskBoard = createAsyncThunk<
   UpdateTaskBoardResponse,
-  UpdateTaskBoardRequest,
+  UpdateTaskBoardArg,
   AsyncThunkConfig
 >('boards/updateTaskBoard', async (payload, thunkApi) => {
   const { id, ...mainPayload } = payload;
   const userId = String(thunkApi.getState().auth.user?.id);
-  const url = makePath(['users', userId], ['task_boards', id]);
+  const path = makePath(['users', userId], ['task_boards', id]);
 
   try {
-    const response = await apiClient().patch(url, mainPayload);
+    const response = await apiClient().patch(path, mainPayload);
     return response?.data;
   } catch (e) {
     return thunkApi.rejectWithValue({

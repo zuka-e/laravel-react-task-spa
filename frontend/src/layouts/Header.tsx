@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 import { Link } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { pink } from '@material-ui/core/colors';
 import {
   AppBar,
   Toolbar,
@@ -26,21 +25,14 @@ import logo from 'images/logo.svg';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      flexGrow: 1,
-    },
-    title: {
-      marginLeft: theme.spacing(2),
-    },
+    root: { flexGrow: 1 },
+    title: { marginLeft: theme.spacing(2) },
+    avatar: { backgroundColor: theme.palette.secondary.dark },
     buttonLink: {
       '&:hover': {
         color: theme.palette.primary.contrastText,
         textDecoration: 'none',
       },
-    },
-    pink: {
-      color: theme.palette.getContrastText(pink[500]),
-      backgroundColor: pink[500],
     },
   })
 );
@@ -77,7 +69,7 @@ const Header: React.FC = () => {
     <PopoverControl
       trigger={
         <IconButton aria-label='account-menu'>
-          <Avatar alt='avatar' src={undefined} className={classes.pink}>
+          <Avatar alt='avatar' src={undefined} className={classes.avatar}>
             {<PersonIcon />}
           </Avatar>
         </IconButton>

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -9,12 +9,13 @@ import {
   ClickAwayListener,
 } from '@material-ui/core';
 
-import { TaskBoard, TaskList, TaskCard } from 'models';
+import theme from 'theme';
 import { useAppDispatch } from 'utils/hooks';
+import { FormAction } from 'store/slices/taskBoardSlice';
 import { createTaskBoard, updateTaskBoard } from 'store/thunks/boards';
 import { createTaskList, updateTaskList } from 'store/thunks/lists';
 import { createTaskCard, updateTaskCard } from 'store/thunks/cards';
-import theme from 'theme';
+import { setFlash } from 'store/slices';
 
 type FormData = {
   title: string;
@@ -23,14 +24,6 @@ type FormData = {
 const schema = yup.object().shape({
   title: yup.string().min(2).max(60),
 });
-
-export type FormAction =
-  | { method: 'POST'; type: 'board' }
-  | { method: 'POST'; type: 'list'; parent: TaskBoard }
-  | { method: 'POST'; type: 'card'; parent: TaskList }
-  | { method: 'PATCH'; type: 'board'; data: TaskBoard }
-  | { method: 'PATCH'; type: 'list'; data: TaskList }
-  | { method: 'PATCH'; type: 'card'; data: TaskCard };
 
 type FormProps = FormAction & {
   handleClose: () => void;
@@ -48,6 +41,11 @@ const TitleForm: React.FC<FormProps> = (props) => {
     mode: 'onBlur',
     resolver: yupResolver(schema),
   });
+
+  useEffect(() => {
+    if (errors?.title?.message)
+      dispatch(setFlash({ type: 'error', message: errors.title.message }));
+  }, [dispatch, errors.title]);
 
   const onSubmit = async (data: FormData) => {
     switch (props.method) {
@@ -103,6 +101,10 @@ const TitleForm: React.FC<FormProps> = (props) => {
     handleClose();
   };
 
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.select();
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -121,6 +123,7 @@ const TitleForm: React.FC<FormProps> = (props) => {
           id='title'
           required
           autoFocus
+          onFocus={handleFocus}
           fullWidth
           variant='outlined'
           placeholder='Enter a title'

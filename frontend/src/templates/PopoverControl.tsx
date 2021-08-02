@@ -9,6 +9,7 @@ const useStyles = makeStyles((theme: Theme) =>
     popover: {
       '& > .MuiPopover-paper': {
         minWidth: '250px',
+        maxWidth: '300px',
         border: `1px solid ${theme.palette.info.light}`,
       },
     },

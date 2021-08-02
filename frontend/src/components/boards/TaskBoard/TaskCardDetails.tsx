@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import * as yup from 'yup';
 import moment from 'moment';
@@ -38,7 +38,12 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
       borderRadius: 0,
     },
-    breadcrumbs: { '& li > *': { display: 'flex', alignItems: 'center' } },
+    breadcrumbs: {
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      '& li > *': { display: 'flex', alignItems: 'center' },
+    },
     icon: {
       marginRight: theme.spacing(0.5),
       width: 20,
@@ -76,6 +81,11 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
   );
   const [checked, setChecked] = useState(card.done);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
+  // 表示するデータが変更された場合に値を初期化する
+  useEffect(() => {
+    setChecked(card.done);
+  }, [card.done]);
 
   const isInTime = (date: Date) => moment(new Date()).isBefore(date, 'minute');
 
@@ -140,11 +150,11 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
       />
       <CardContent className={classes.rows}>
         <FormControlLabel
-          label={checked ? 'Completed' : 'Incompleted'}
+          label={card.done ? 'Completed' : 'Incompleted'}
           control={
             <Checkbox
               color='primary'
-              checked={checked}
+              checked={card.done}
               onChange={handleCheckbox}
             />
           }

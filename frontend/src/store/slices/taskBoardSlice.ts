@@ -20,6 +20,14 @@ import {
   destroyTaskCard,
 } from 'store/thunks/cards';
 
+export type FormAction =
+  | { method: 'POST'; type: 'board' }
+  | { method: 'POST'; type: 'list'; parent: TaskBoard }
+  | { method: 'POST'; type: 'card'; parent: TaskList }
+  | { method: 'PATCH'; type: 'board'; data: TaskBoard }
+  | { method: 'PATCH'; type: 'list'; data: TaskList }
+  | { method: 'PATCH'; type: 'card'; data: TaskCard };
+
 export type DeleteAction =
   | { type: 'board'; data: TaskBoard }
   | { type: 'list'; data: TaskList }
@@ -130,12 +138,20 @@ export const taskBoardSlice = createSlice({
     });
 
     builder.addCase(updateTaskBoard.fulfilled, (state, action) => {
-      const board = state.data.find(
-        (board) => board.id === action.payload.data.id
+      const updatedBoard = action.payload.data;
+      const currentBoard = state.data.find(
+        (board) => board.id === updatedBoard.id
       );
-      Object.assign(board, action.payload.data);
 
-      if (board?.id === state.infoBox.data?.id) state.infoBox.data = board;
+      if (currentBoard) Object.assign(currentBoard, updatedBoard);
+
+      state.docs[updatedBoard.id] = {
+        ...state.docs[updatedBoard.id],
+        ...updatedBoard,
+      };
+
+      if (updatedBoard.id === state.infoBox.data?.id)
+        state.infoBox.data = updatedBoard;
 
       state.loading = false;
     });
@@ -152,6 +168,8 @@ export const taskBoardSlice = createSlice({
       state.data = state.data.filter(
         (board) => board.id !== action.payload.data.id
       );
+
+      delete state.docs[action.payload.data.id];
 
       state.loading = false;
     });

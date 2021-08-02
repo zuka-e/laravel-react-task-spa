@@ -13,17 +13,11 @@ import {
 
 import { deleteAccount } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
+import { AlertButton } from 'templates';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles((_theme: Theme) =>
   createStyles({
     triggerWrapper: { display: 'contents' },
-    danger: {
-      color: theme.palette.primary.contrastText,
-      backgroundColor: theme.palette.error.main,
-      '&:hover': {
-        backgroundColor: theme.palette.error.dark,
-      },
-    },
   })
 );
 
@@ -73,9 +67,9 @@ const DeleteAccountDialog: React.FC<DeleteAccountDialogProps> = (props) => {
           <Button onClick={handleClose} color='primary' autoFocus>
             キャンセル
           </Button>
-          <Button onClick={handleDelete} className={classes.danger}>
+          <AlertButton onClick={handleDelete} color='danger'>
             削除
-          </Button>
+          </AlertButton>
         </DialogActions>
       </Dialog>
     </React.Fragment>

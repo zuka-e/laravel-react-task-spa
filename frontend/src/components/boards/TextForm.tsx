@@ -12,8 +12,10 @@ import {
 
 import theme from 'theme';
 import { useAppDispatch } from 'utils/hooks';
+import { FormAction } from 'store/slices/taskBoardSlice';
+import { updateTaskBoard } from 'store/thunks/boards';
+import { updateTaskList } from 'store/thunks/lists';
 import { updateTaskCard } from 'store/thunks/cards';
-import { FormAction } from '.';
 
 type FormData = {
   [key: string]: string;
@@ -53,8 +55,16 @@ const TextForm: React.FC<FormProps> = (props) => {
       case 'PATCH':
         switch (props.type) {
           case 'board':
+            await dispatch(updateTaskBoard({ id: props.data.id, ...data }));
             break;
           case 'list':
+            await dispatch(
+              updateTaskList({
+                id: props.data.id,
+                boardId: props.data.boardId,
+                ...data,
+              })
+            );
             break;
           case 'card':
             await dispatch(
@@ -70,6 +80,10 @@ const TextForm: React.FC<FormProps> = (props) => {
         break;
     }
     handleClose();
+  };
+
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.select();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
@@ -90,6 +104,7 @@ const TextForm: React.FC<FormProps> = (props) => {
           id={property}
           multiline
           autoFocus
+          onFocus={handleFocus}
           fullWidth
           variant='outlined'
           placeholder='Enter the text'

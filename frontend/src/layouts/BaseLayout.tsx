@@ -3,17 +3,16 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 
 import { APP_NAME } from 'config/app';
-import { useQuery } from 'utils/hooks';
-import { Header, Footer, Progressbar } from 'layouts';
+import { Header, Footer } from 'layouts';
 
 type BaseLayoutProps = { subtitle: string };
 
 const BaseLayout: React.FC<BaseLayoutProps> = (props) => {
-  const query = useQuery();
+  const href = window.location.href;
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [query]);
+  }, [href]);
 
   return (
     <React.Fragment>
@@ -23,7 +22,6 @@ const BaseLayout: React.FC<BaseLayoutProps> = (props) => {
         </title>
       </Helmet>
       <Header />
-      <Progressbar />
       {props.children}
       <Footer />
     </React.Fragment>
