@@ -8,13 +8,14 @@ export type UpdateTaskBoardResponse = {
   data: TaskBoard;
 };
 
-export type UpdateTaskBoardRequest = Pick<TaskBoard, 'id'> &
-  Pick<TaskBoard, 'title'> &
+export type UpdateTaskBoardRequest = Partial<Pick<TaskBoard, 'title'>> &
   Partial<Pick<TaskBoard, 'description'>>;
+
+type UpdateTaskBoardArg = Pick<TaskBoard, 'id'> & UpdateTaskBoardRequest;
 
 export const updateTaskBoard = createAsyncThunk<
   UpdateTaskBoardResponse,
-  UpdateTaskBoardRequest,
+  UpdateTaskBoardArg,
   AsyncThunkConfig
 >('boards/updateTaskBoard', async (payload, thunkApi) => {
   const { id, ...mainPayload } = payload;
