@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 
 import { Provider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
@@ -27,8 +29,10 @@ ReactDOM.render(
       <HelmetProvider>
         <ThemeProvider theme={theme}>
           <MuiPickersUtilsProvider utils={MomentUtils}>
-            <CssBaseline />
-            <App />
+            <DndProvider backend={HTML5Backend}>
+              <CssBaseline />
+              <App />
+            </DndProvider>
           </MuiPickersUtilsProvider>
         </ThemeProvider>
       </HelmetProvider>
