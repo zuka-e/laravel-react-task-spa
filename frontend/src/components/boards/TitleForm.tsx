@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -15,6 +15,7 @@ import { FormAction } from 'store/slices/taskBoardSlice';
 import { createTaskBoard, updateTaskBoard } from 'store/thunks/boards';
 import { createTaskList, updateTaskList } from 'store/thunks/lists';
 import { createTaskCard, updateTaskCard } from 'store/thunks/cards';
+import { setFlash } from 'store/slices';
 
 type FormData = {
   title: string;
@@ -40,6 +41,11 @@ const TitleForm: React.FC<FormProps> = (props) => {
     mode: 'onBlur',
     resolver: yupResolver(schema),
   });
+
+  useEffect(() => {
+    if (errors?.title?.message)
+      dispatch(setFlash({ type: 'error', message: errors.title.message }));
+  }, [dispatch, errors.title]);
 
   const onSubmit = async (data: FormData) => {
     switch (props.method) {
