@@ -2,149 +2,282 @@
 
 namespace Tests\Feature;
 
+use App\Models\TaskBoard;
 use App\Models\TaskCard;
-use App\Models\User;
-use Carbon\Carbon;
+use App\Models\TaskList;
+use DateInterval;
+use DateTime;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Testing\Fluent\AssertableJson;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class TaskCardTest extends TestCase
 {
-    // use RefreshDatabase; // DBリフレッシュ (`id`カラムの連番はリセットされない)
+    use RefreshDatabase;
 
-    // // クラス定数
-    // const TOTAL_NUMBER_OF_TASKS = 21; // テスト環境で作成するデータの総量
-    // const TOTAL_NUMBER_OF_TASKS_IN_ONE_PAGE = 20; // アクション内paginateメソッドの引数
+    private TaskBoard $taskBoard;
+    private TaskList $taskList;
+    private TaskCard $taskCard;
 
-    // // クラス変数
-    // private static string $URL_PREFIX;
-    // private static User $FIRST_USER;
+    public function setUp(): void
+    {
+        parent::setUp();
 
-    // private function login(User $user)
-    // {
-    //     $response = $this->postJson('api/login', [
-    //         'email' => $user->email,
-    //         'password' => 'password'
-    //     ]);
-    //     $response->assertOk(); // 200
-    //     return $response;
-    // }
+        $this->taskBoard = TaskBoard::factory()->for($this->guestUser)->create();
 
-    // public function setUp(): void
-    // {
-    //     parent::setUp();
+        $this->taskList = TaskList::factory()
+            ->for($this->guestUser)
+            ->for($this->taskBoard)
+            ->create();
 
-    //     self::$URL_PREFIX = env('URL_PREFIX', '/api/v1');
-    //     self::$FIRST_USER = User::factory()->create(); // TaskCardが属するUser
+        $this->taskCard = TaskCard::factory()
+            ->for($this->guestUser)
+            ->for($this->taskList)
+            ->create();
+    }
 
-    //     TaskCard::factory()->count(self::TOTAL_NUMBER_OF_TASKS - 1)
-    //         ->for(self::$FIRST_USER)->create();
-    // }
+    public function test_unauthorized_unless_logged_in()
+    {
+        $listId = $this->taskList->id;
+        $cardId = $this->taskCard->id;
 
-    // public function test_20_items_in_one_page()
-    // {
-    //     $user = self::$FIRST_USER;
+        // create
+        $url = $this->routePrefix . "/task_lists/${listId}/task_cards";
+        $response = $this->postJson($url, ['title' => 'testTitle']);
+        $response->assertUnauthorized();
 
-    //     // ログイン
-    //     $this->login($user);
+        // update
+        $url = $this->routePrefix . "/task_lists/${listId}/task_cards/${cardId}";
+        $response = $this->patchJson($url, ['title' => 'testTitle']);
+        $response->assertUnauthorized();
 
-    //     $user_id = $user->id;
-    //     $url = self::$URL_PREFIX . "/users/${user_id}/task_cards";
-    //     $response = $this->getJson($url);
-    //     $response->assertJson(
-    //         fn (AssertableJson $json) =>
-    //         $json->has('meta') // JSONのkey有無をテスト
-    //             ->has('links')
-    //             ->has('data', self::TOTAL_NUMBER_OF_TASKS_IN_ONE_PAGE)
-    //     );
-    // }
+        // destroy
+        $response = $this->deleteJson($url);
+        $response->assertUnauthorized();
+    }
 
-    // public function test_sort_in_descending_order()
-    // {
-    //     $user = self::$FIRST_USER;
+    public function test_forbidden_from_accessing_others_list()
+    {
+        $otherBoard = TaskBoard::factory()->for($this->otherUser)->create();
 
-    //     // ログイン
-    //     $this->login($user);
+        $otherList = TaskList::factory()
+            ->for($this->otherUser)
+            ->for($otherBoard)
+            ->create();
 
-    //     $first_task = TaskCard::factory()->for($user)->create([
-    //         'title' => 'first task title',
-    //         'created_at' => Carbon::now()->addDay(-1)
-    //     ]);
+        $this->login($this->guestUser);
 
-    //     $user_id = $user->id;
-    //     $url = self::$URL_PREFIX . "/users/${user_id}/task_cards?page=2";
-    //     $response = $this->getJson($url); // 2ページ目
-    //     $response->assertJson(fn (AssertableJson $json) => $json->has(
-    //         'data.0',
-    //         fn ($json) =>
-    //         $json->where('id', $first_task->id)
-    //             ->where('title', $first_task->title)
-    //             ->where('done', false)
-    //             ->etc()
-    //     ));
-    // }
+        $otherListId = $otherList->id;
+        $cardId = $this->taskCard->id;
 
-    // public function test_cannot_create_task_without_auth()
-    // {
-    //     $user = self::$FIRST_USER;
-    //     $user_id = self::$FIRST_USER->id;
-    //     $url = self::$URL_PREFIX . "/users/${user_id}/task_cards";
+        // create
+        $url = $this->routePrefix . "/task_lists/${otherListId}/task_cards";
+        $response = $this->postJson($url, ['title' => 'testTitle']);
+        $response->assertForbidden();
 
-    //     // 認証前
-    //     $response = $this->postJson($url, [
-    //         'title' => 'test',
-    //         'user_id' => $user->id
-    //     ]);
-    //     $response->assertUnauthorized(); // 401
+        // update
+        $url = $this->routePrefix . "/task_lists/${otherListId}/task_cards/${cardId}";
+        $response = $this->patchJson($url, ['title' => 'testTitle']);
+        $response->assertForbidden();
 
-    //     // ログイン
-    //     $this->login($user);
+        // destroy
+        $response = $this->deleteJson($url);
+        $response->assertForbidden();
+    }
 
-    //     // 認証後
-    //     $this->assertDatabaseMissing('task_cards', [
-    //         'title' => 'authenticated',
-    //         'user_id' => $user->id
-    //     ]);
+    public function test_forbidden_from_accessing_others_card()
+    {
+        $otherBoard = TaskBoard::factory()->for($this->otherUser)->create();
 
-    //     $response = $this->postJson($url, [
-    //         'title' => 'authenticated',
-    //         'user_id' => $user->id
-    //     ]);
-    //     $response->assertCreated(); // 201
+        $otherList = TaskList::factory()
+            ->for($this->otherUser)
+            ->for($otherBoard)
+            ->create();
 
-    //     $this->assertDatabaseHas('task_cards', [
-    //         'title' => 'authenticated',
-    //         'user_id' => $user->id
-    //     ]);
-    // }
+        $otherCard = TaskCard::factory()
+            ->for($this->otherUser)
+            ->for($otherList)
+            ->create();
 
-    // public function test_cannot_create_task_without_verificarion()
-    // {
-    //     $unverifiedUser = User::factory()->unverified()->create();
-    //     $user = self::$FIRST_USER;
-    //     $user_id = self::$FIRST_USER->id;
-    //     $url = self::$URL_PREFIX . "/users/${user_id}/task_cards";
+        $this->login($this->guestUser);
 
-    //     // ログイン
-    //     $this->login($unverifiedUser);
+        $listId = $this->taskList->id;
+        $otherCardId = $otherCard->id;
+        $url = $this->routePrefix . "/task_lists/${listId}/task_cards/${otherCardId}";
 
-    //     // メール認証なし
-    //     $response = $this->postJson($url, [
-    //         'title' => 'verification required',
-    //         'user_id' => Auth::user()->id
-    //     ]);
-    //     $response->assertForbidden(); // 403
+        // update
+        $response = $this->patchJson($url, ['title' => 'testTitle']);
+        $response->assertForbidden();
 
-    //     // 認証済みユーザーとしてログイン
-    //     $this->actingAs($user);
+        // destroy
+        $response = $this->deleteJson($url);
+        $response->assertForbidden();
+    }
 
-    //     // メール認証あり
-    //     $response = $this->postJson($url, [
-    //         'title' => 'verification required',
-    //         'user_id' => Auth::user()->id
-    //     ]);
-    //     $response->assertCreated(); // 201
-    // }
+    public function test_return_404_error_if_data_is_not_found()
+    {
+        $this->login($this->guestUser);
+
+        /*
+        |--------------------------------------------------------------
+        | Non-existent `TaskList`
+        |--------------------------------------------------------------
+        */
+        $listId = (string)Str::uuid();
+
+        // create
+        $url = $this->routePrefix . "/task_lists/${listId}/task_cards";
+        $response = $this->postJson($url, ['title' => 'testTitle']);
+        $response->assertNotFound();
+
+        /*
+        |--------------------------------------------------------------
+        | Non-existent `TaskCard`
+        |--------------------------------------------------------------
+        */
+        $listId = $this->taskList->id;
+        $cardId = (string)Str::uuid();
+        $url = $this->routePrefix . "/task_lists/${listId}/task_cards/${cardId}";
+
+        // update
+        $response = $this->patchJson($url, ['title' => 'testTitle']);
+        $response->assertNotFound();
+
+        // destroy
+        $response = $this->deleteJson($url);
+        $response->assertNotFound();
+    }
+
+    public function test_validate_request_when_created()
+    {
+        $this->login($this->guestUser);
+
+        $listId = $this->taskList->id;
+        $url = $this->routePrefix . "/task_lists/${listId}/task_cards";
+
+        // `title`
+        $emptyRequest = [];
+        $response = $this->postJson($url, $emptyRequest);
+        $response->assertStatus(422);
+
+        $emptyRequest = ['title' => ''];
+        $response = $this->postJson($url, $emptyRequest);
+        $response->assertStatus(422);
+
+        $tooLongRequest = ['title' => str_repeat('a', floor(191 / 3) + 1)];
+        $response = $this->postJson($url, $tooLongRequest);
+        $response->assertStatus(422);
+
+        $successfulRequest = ['title' => str_repeat('亜', floor(191 / 3))];
+        $response = $this->postJson($url, $successfulRequest);
+        $response->assertStatus(201);
+
+        // `content`
+        $tooLongRequest = $successfulRequest + ['content' => str_repeat('a', floor(65535 / 3) + 1)];
+        $response = $this->postJson($url, $tooLongRequest);
+        $response->assertStatus(422);
+
+        $successfulRequest = $successfulRequest + ['content' => str_repeat('亜', floor(65535 / 3))];
+        $response = $this->postJson($url, $successfulRequest);
+        $response->assertStatus(201);
+
+        // `deadline`
+        $now = new DateTime();
+
+        $invalidFormatRequest = $successfulRequest + ['deadline' => 1546268400];
+        $response = $this->postJson($url, $invalidFormatRequest);
+        $response->assertStatus(422);
+
+        $invalidFormatRequest = $successfulRequest + ['deadline' => "1546268400"];
+        $response = $this->postJson($url, $invalidFormatRequest);
+        $response->assertStatus(422);
+
+        $pastDateRequest = $successfulRequest + ['deadline' => $now->sub(new DateInterval('PT1S'))];
+        $response = $this->postJson($url, $pastDateRequest);
+        $response->assertStatus(422);
+
+        $currentDateRequest = $successfulRequest + ['deadline' => $now];
+        $response = $this->postJson($url, $currentDateRequest);
+        $response->assertStatus(422);
+
+        $futureDateRequest = $successfulRequest + ['deadline' => $now->add(new DateInterval('PT1S'))];
+        $response = $this->postJson($url, $futureDateRequest);
+        $response->assertStatus(422);
+    }
+
+    public function test_validate_request_when_updated()
+    {
+        $this->login($this->guestUser);
+
+        $listId = $this->taskList->id;
+        $cardId = $this->taskCard->id;
+        $url = $this->routePrefix . "/task_lists/${listId}/task_cards/${cardId}";
+
+        // `title`
+        $emptyRequest = [];
+        $response = $this->patchJson($url, $emptyRequest);
+        $response->assertStatus(200);
+
+        $emptyRequest = ['title' => ''];
+        $response = $this->patchJson($url, $emptyRequest);
+        $response->assertStatus(422);
+
+        $tooLongRequest = ['title' => str_repeat('a', floor(191 / 3) + 1)];
+        $response = $this->patchJson($url, $tooLongRequest);
+        $response->assertStatus(422);
+
+        $successfulRequest = ['title' => str_repeat('亜', floor(191 / 3))];
+        $response = $this->patchJson($url, $successfulRequest);
+        $response->assertStatus(200);
+
+        // `content`
+        $tooLongRequest = $successfulRequest + ['content' => str_repeat('a', floor(65535 / 3) + 1)];
+        $response = $this->patchJson($url, $tooLongRequest);
+        $response->assertStatus(422);
+
+        $successfulRequest = $successfulRequest + ['content' => str_repeat('亜', floor(65535 / 3))];
+        $response = $this->patchJson($url, $successfulRequest);
+        $response->assertStatus(200);
+
+        // `deadline`
+        $now = new DateTime();
+
+        $invalidFormatRequest = $successfulRequest + ['deadline' => 1546268400];
+        $response = $this->patchJson($url, $invalidFormatRequest);
+        $response->assertStatus(422);
+
+        $invalidFormatRequest = $successfulRequest + ['deadline' => "1546268400"];
+        $response = $this->patchJson($url, $invalidFormatRequest);
+        $response->assertStatus(422);
+
+        $pastDateRequest = $successfulRequest + ['deadline' => $now->sub(new DateInterval('PT1S'))];
+        $response = $this->patchJson($url, $pastDateRequest);
+        $response->assertStatus(422);
+
+        $currentDateRequest = $successfulRequest + ['deadline' => $now];
+        $response = $this->patchJson($url, $currentDateRequest);
+        $response->assertStatus(422);
+
+        $futureDateRequest = $successfulRequest + ['deadline' => $now->add(new DateInterval('PT1S'))];
+        $response = $this->patchJson($url, $futureDateRequest);
+        $response->assertStatus(422);
+    }
+
+    public function test_data_is_deleted_successfully()
+    {
+        $this->login($this->guestUser);
+
+        $listId = $this->taskList->id;
+        $cardId = $this->taskCard->id;
+        $url = $this->routePrefix . "/task_lists/${listId}/task_cards/${cardId}";
+
+        $cardBeforeDeleted = TaskCard::find($cardId);
+        $this->assertNotNull($cardBeforeDeleted);
+
+        $response = $this->deleteJson($url);
+        $response->assertOk();
+
+        $cardAfterDeleted = TaskCard::find($cardId);
+        $this->assertNull($cardAfterDeleted);
+    }
 }
