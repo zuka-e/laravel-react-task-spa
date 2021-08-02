@@ -28,11 +28,14 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(1),
     },
     title: {
+      overflow: 'hidden',
+      display: '-webkit-box',
+      '-webkit-box-orient': 'vertical',
+      '-webkit-line-clamp': 1,
       fontWeight: 'bold',
       fontSize: '1.5rem',
-      lineHeight: '1.5rem',
+      lineHeight: 1.2,
     },
-    divider: { marginTop: theme.spacing(1) },
     content: {
       flex: '1 1 auto',
       flexWrap: 'nowrap',
@@ -70,7 +73,7 @@ const TaskBoard: React.FC = () => {
   return (
     <BaseLayout subtitle={board.title}>
       <Container component='main' maxWidth={false} className={classes.main}>
-        <ScrolledGridContainer justify='space-between' alignItems='center'>
+        <ScrolledGridContainer justify='space-between'>
           <Grid item className={classes.titleBox}>
             <EditableTitle
               method='PATCH'
@@ -78,6 +81,7 @@ const TaskBoard: React.FC = () => {
               data={board}
               disableMargin
               inputStyle={classes.title}
+              helperText=''
             />
           </Grid>
           <Grid item>
@@ -92,7 +96,7 @@ const TaskBoard: React.FC = () => {
             </PopoverControl>
           </Grid>
         </ScrolledGridContainer>
-        <Divider classes={{ root: classes.divider }} />
+        <Divider />
         <Grid container className={classes.content}>
           <ScrolledGridContainer className={classes.listItems}>
             {board.lists?.map((list, i) => (
