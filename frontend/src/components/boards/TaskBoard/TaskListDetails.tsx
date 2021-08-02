@@ -34,7 +34,12 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
       borderRadius: 0,
     },
-    breadcrumbs: { '& li > *': { display: 'flex', alignItems: 'center' } },
+    breadcrumbs: {
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      '& li > *': { display: 'flex', alignItems: 'center' },
+    },
     icon: {
       marginRight: theme.spacing(0.5),
       width: 20,
