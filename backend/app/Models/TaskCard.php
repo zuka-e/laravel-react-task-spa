@@ -40,7 +40,9 @@ class TaskCard extends Model
 
     protected $hidden = [];
 
+    /** @see [https://laravel.com/docs/8.x/eloquent-mutators#date-casting-and-timezones */
     protected $casts = [
+        'deadline' => 'datetime',
         'done' => 'boolean'
     ];
 
