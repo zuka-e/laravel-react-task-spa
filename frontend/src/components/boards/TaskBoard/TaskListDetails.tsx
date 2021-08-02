@@ -1,5 +1,6 @@
 import React from 'react';
 
+import * as yup from 'yup';
 import moment from 'moment';
 import { useParams } from 'react-router-dom';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
@@ -23,7 +24,7 @@ import {
 import { TaskList } from 'models';
 import { closeInfoBox } from 'store/slices/taskBoardSlice';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
-import { EditableTitle } from '..';
+import { EditableText, EditableTitle } from '..';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,6 +43,8 @@ const useStyles = makeStyles((theme: Theme) =>
     close: { marginLeft: 'auto' },
     cardHeader: { paddingBottom: 0 },
     rows: {
+      paddingTop: 0,
+      paddingBottom: 0,
       '& > div': {
         marginBottom: theme.spacing(1),
         alignItems: 'center',
@@ -126,6 +129,18 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = (props) => {
         <div className={classes.descriptionBlock}>
           <Typography className={classes.text}>{list.description}</Typography>
         </div>
+      </CardContent>
+
+      <CardContent>
+        <EditableText
+          method='PATCH'
+          type='list'
+          data={list}
+          schema={yup.object().shape({
+            description: yup.string().max(Math.floor(65535 / 3)),
+          })}
+          defaultValue={list.description}
+        />
       </CardContent>
     </Card>
   );

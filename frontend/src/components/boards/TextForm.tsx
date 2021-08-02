@@ -14,6 +14,7 @@ import theme from 'theme';
 import { useAppDispatch } from 'utils/hooks';
 import { FormAction } from 'store/slices/taskBoardSlice';
 import { updateTaskCard } from 'store/thunks/cards';
+import { updateTaskList } from 'store/thunks/lists';
 
 type FormData = {
   [key: string]: string;
@@ -55,6 +56,13 @@ const TextForm: React.FC<FormProps> = (props) => {
           case 'board':
             break;
           case 'list':
+            await dispatch(
+              updateTaskList({
+                id: props.data.id,
+                boardId: props.data.boardId,
+                ...data,
+              })
+            );
             break;
           case 'card':
             await dispatch(
