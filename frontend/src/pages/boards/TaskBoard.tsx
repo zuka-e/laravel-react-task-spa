@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { useParams } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -12,7 +12,6 @@ import { PopoverControl, ScrolledGridContainer } from 'templates';
 import { ButtonToAddTask, EditableTitle } from 'components/boards';
 import { TaskList, InfoBox } from 'components/boards/TaskBoard';
 import { BoardMenu } from 'components/boards/TaskBoardIndex';
-import { DragContext, DragStateProvider } from 'components/boards/DragContext';
 
 const boxWidth = '300px';
 const useStyles = makeStyles((theme: Theme) =>
@@ -54,8 +53,12 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const TaskBoard = () => {
+  const classes = useStyles();
   const params = useParams<{ userId: string; boardId: string }>();
   const dispatch = useAppDispatch();
+  const board = useDeepEqualSelector(
+    (state) => state.boards.docs[params.boardId]
+  );
 
   useEffect(() => {
     const request: FetchTaskBoardRequest = {
@@ -65,20 +68,9 @@ const TaskBoard = () => {
     dispatch(fetchTaskBoard(request));
   }, [dispatch, params.userId, params.boardId]);
 
-  return (
-    <DragStateProvider boardId={params.boardId}>
-      <Main />
-    </DragStateProvider>
-  );
-};
-
-const Main = () => {
-  const classes = useStyles();
-  const params = useParams<{ userId: string; boardId: string }>();
-  const board = useDeepEqualSelector(
-    (state) => state.boards.docs[params.boardId]
-  );
-  const { dragState } = useContext(DragContext);
+  const handleDrop = () => {
+    // API request
+  };
 
   if (!board) return <StandbyScreen />;
 
@@ -110,8 +102,11 @@ const Main = () => {
         </ScrolledGridContainer>
         <Divider />
         <Grid container className={classes.content}>
-          <ScrolledGridContainer className={classes.listItems}>
-            {dragState.lists?.map((list, i) => (
+          <ScrolledGridContainer
+            className={classes.listItems}
+            onDrop={handleDrop}
+          >
+            {board.lists?.map((list, i) => (
               <Grid item key={list.id} id={list.id} className='listItem'>
                 <TaskList list={list} listIndex={i} />
               </Grid>

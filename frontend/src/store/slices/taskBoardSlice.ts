@@ -33,6 +33,14 @@ export type DeleteAction =
   | { type: 'list'; data: TaskList }
   | { type: 'card'; data: TaskCard };
 
+type MoveCardAction = {
+  dragListIndex: number;
+  hoverListIndex: number;
+  dragIndex: number;
+  hoverIndex: number;
+  boardId: string;
+};
+
 type InfoBoxAction =
   | { type: 'board'; data: TaskBoard }
   | { type: 'list'; data: TaskList }
@@ -69,6 +77,16 @@ export const taskBoardSlice = createSlice({
     },
     removeInfoBox(state) {
       state.infoBox = initialState.infoBox;
+    },
+    moveCard(state, action: PayloadAction<MoveCardAction>) {
+      const { dragListIndex, hoverListIndex, dragIndex, hoverIndex, boardId } =
+        action.payload;
+
+      const sortedLists = state.docs[boardId].lists;
+      const dragged = sortedLists[dragListIndex].cards[dragIndex];
+
+      sortedLists[dragListIndex].cards.splice(dragIndex, 1);
+      sortedLists[hoverListIndex].cards.splice(hoverIndex, 0, dragged);
     },
   },
   extraReducers: (builder) => {
@@ -308,5 +326,5 @@ export const taskBoardSlice = createSlice({
   },
 });
 
-export const { openInfoBox, closeInfoBox, removeInfoBox } =
+export const { openInfoBox, closeInfoBox, removeInfoBox, moveCard } =
   taskBoardSlice.actions;

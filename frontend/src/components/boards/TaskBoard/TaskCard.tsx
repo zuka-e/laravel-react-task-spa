@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { useRef } from 'react';
 
 import { useDrag, useDrop } from 'react-dnd';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
@@ -6,11 +6,11 @@ import { Card } from '@material-ui/core';
 
 import theme from 'theme';
 import * as Model from 'models';
+import { draggableItem, DragItem } from 'utils/dnd';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { activateEventAttr as activateInfoBoxEventAttr } from 'utils/infoBox';
-import { openInfoBox } from 'store/slices/taskBoardSlice';
+import { moveCard, openInfoBox } from 'store/slices/taskBoardSlice';
 import { TypographyWithLimitedRows } from 'templates';
-import { DragContext, DragItem, draggableItem } from '../DragContext';
 
 const defaultPadding = theme.spacing(0.75);
 const borderWidth = '2px';
@@ -43,7 +43,6 @@ const TaskCard: React.FC<TaskCardProps> = (props) => {
   const classes = useStyles();
   const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);
   const dispatch = useAppDispatch();
-  const { dragDispatch } = useContext(DragContext);
   const ref = useRef<HTMLDivElement>(null);
 
   const [, drag] = useDrag({
@@ -56,9 +55,12 @@ const TaskCard: React.FC<TaskCardProps> = (props) => {
     },
   });
 
+  /** リスト内のカードの移動を司る */
   const [{ isOver }, drop] = useDrop({
     accept: draggableItem.card,
     hover: (item: DragItem) => {
+      if (!ref.current) return;
+
       const dragListIndex = item.listIndex;
       const hoverListIndex = listIndex;
       const dragIndex = item.index;
@@ -68,16 +70,15 @@ const TaskCard: React.FC<TaskCardProps> = (props) => {
       if (dragIndex === hoverIndex && dragListIndex === hoverListIndex) return;
 
       const boardId = card.boardId;
-      dragDispatch({
-        type: 'MOVE_CARD',
-        payload: {
+      dispatch(
+        moveCard({
           dragListIndex,
           hoverListIndex,
           dragIndex,
           hoverIndex,
           boardId,
-        },
-      });
+        })
+      );
 
       item.index = hoverIndex;
       item.listIndex = hoverListIndex;
@@ -86,6 +87,7 @@ const TaskCard: React.FC<TaskCardProps> = (props) => {
       isOver: monitor.isOver(),
     }),
   });
+
   drag(drop(ref));
 
   const isSelected = () => card.id === selectedId;
