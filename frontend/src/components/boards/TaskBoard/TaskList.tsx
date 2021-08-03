@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 
+import { useDrop } from 'react-dnd';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Card, CardActions, CardContent, Grid, Chip } from '@material-ui/core';
 
@@ -8,11 +9,13 @@ import { useAppSelector } from 'utils/hooks';
 import { LabeledSelect, ScrolledDiv } from 'templates';
 import { ListCardHeader, TaskCard } from '.';
 import { ButtonToAddTask } from '..';
+import { DragContext, DragItem, draggableItem } from '../DragContext';
 
 const borderWidth = '2px';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+      boxShadow: theme.shadows[7],
       backgroundColor: theme.palette.secondary.main,
       color: theme.palette.secondary.contrastText,
     },
@@ -44,7 +47,7 @@ const cardFilter = {
 
 type FilterName = typeof cardFilter[keyof typeof cardFilter];
 
-export type TaskListProps = {
+type TaskListProps = {
   list: Model.TaskList;
   listIndex: number;
 };
@@ -54,6 +57,34 @@ const TaskList: React.FC<TaskListProps> = (props) => {
   const classes = useStyles();
   const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);
   const [filterValue, setfilterValue] = useState<FilterName>(cardFilter.ALL);
+  const { dragDispatch } = useContext(DragContext);
+
+  const [, drop] = useDrop({
+    accept: draggableItem.card,
+    hover: (item: DragItem) => {
+      const dragListIndex = item.listIndex;
+      const hoverListIndex = listIndex;
+      const dragIndex = item.index;
+      const hoverIndex = 0;
+
+      if (dragListIndex === hoverListIndex) return;
+
+      const boardId = list.boardId;
+      dragDispatch({
+        type: 'MOVE_CARD',
+        payload: {
+          dragListIndex,
+          hoverListIndex,
+          dragIndex,
+          hoverIndex,
+          boardId,
+        },
+      });
+
+      item.index = hoverIndex;
+      item.listIndex = hoverListIndex;
+    },
+  });
 
   const isSelected = () => list.id === selectedId;
   const rootClass = `${classes.root} ${isSelected() ? classes.selected : ''}`;
@@ -68,8 +99,12 @@ const TaskList: React.FC<TaskListProps> = (props) => {
     setfilterValue(event.target.value as FilterName); // unknown型から変換
   };
 
+  const handleDragEnd = () => {
+    // API request
+  };
+
   return (
-    <Card elevation={7} className={rootClass}>
+    <Card ref={drop} className={rootClass} onDragEnd={handleDragEnd}>
       <div className='listWrapper'>
         <ListCardHeader list={list} />
 

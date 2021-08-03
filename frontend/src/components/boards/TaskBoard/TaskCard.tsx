@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext, useRef } from 'react';
 
+import { useDrag, useDrop } from 'react-dnd';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Card } from '@material-ui/core';
 
@@ -9,6 +10,7 @@ import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { activateEventAttr as activateInfoBoxEventAttr } from 'utils/infoBox';
 import { openInfoBox } from 'store/slices/taskBoardSlice';
 import { TypographyWithLimitedRows } from 'templates';
+import { DragContext, DragItem, draggableItem } from '../DragContext';
 
 const defaultPadding = theme.spacing(0.75);
 const borderWidth = '2px';
@@ -26,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
       border: borderWidth + ' solid ' + theme.palette.primary.main,
       '& > p': { padding: `calc(${defaultPadding}px - ${borderWidth})` },
     },
+    dragAndHover: { opacity: 0 },
   })
 );
 
@@ -36,13 +39,59 @@ type TaskCardProps = {
 };
 
 const TaskCard: React.FC<TaskCardProps> = (props) => {
-  const { card } = props;
-  const { root, selected } = useStyles();
+  const { card, cardIndex, listIndex } = props;
+  const classes = useStyles();
   const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);
   const dispatch = useAppDispatch();
+  const { dragDispatch } = useContext(DragContext);
+  const ref = useRef<HTMLDivElement>(null);
+
+  const [, drag] = useDrag({
+    type: draggableItem.card,
+    item: {
+      type: draggableItem.card,
+      data: card,
+      index: cardIndex,
+      listIndex: listIndex,
+    },
+  });
+
+  const [{ isOver }, drop] = useDrop({
+    accept: draggableItem.card,
+    hover: (item: DragItem) => {
+      const dragListIndex = item.listIndex;
+      const hoverListIndex = listIndex;
+      const dragIndex = item.index;
+      const hoverIndex = cardIndex;
+
+      // 位置不変の場合
+      if (dragIndex === hoverIndex && dragListIndex === hoverListIndex) return;
+
+      const boardId = card.boardId;
+      dragDispatch({
+        type: 'MOVE_CARD',
+        payload: {
+          dragListIndex,
+          hoverListIndex,
+          dragIndex,
+          hoverIndex,
+          boardId,
+        },
+      });
+
+      item.index = hoverIndex;
+      item.listIndex = hoverListIndex;
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+  drag(drop(ref));
 
   const isSelected = () => card.id === selectedId;
-  const className = `${root} ${isSelected() && selected}`;
+  const className = `${classes.root} ${isSelected() ? classes.selected : ''} ${
+    isOver ? classes.dragAndHover : ''
+  }`;
 
   const handleClick = () => {
     isSelected() && activateInfoBoxEventAttr('shown');
@@ -51,7 +100,7 @@ const TaskCard: React.FC<TaskCardProps> = (props) => {
   };
 
   return (
-    <Card onClick={handleClick} className={className}>
+    <Card ref={ref} onClick={handleClick} className={className}>
       <TypographyWithLimitedRows title={card.title}>
         {card.title}
       </TypographyWithLimitedRows>
