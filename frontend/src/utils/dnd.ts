@@ -4,11 +4,10 @@ export const draggableItem = {
   card: 'card',
 };
 
-export type DragItem = {
-  type: string;
+export type DragItem<T extends DocumentBase = any> = {
+  data: T;
   index: number;
   listIndex: number;
-  id: string;
 };
 
 /** `Document`の`id`とその順番(index)の対応関係を示すオブジェクト */

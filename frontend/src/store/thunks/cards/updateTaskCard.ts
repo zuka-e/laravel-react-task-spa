@@ -8,7 +8,8 @@ export type UpdateTaskCardResponse = {
   data: TaskCard;
 };
 
-export type UpdateTaskCardRequest = Partial<Pick<TaskCard, 'title'>> &
+export type UpdateTaskCardRequest = Partial<Pick<TaskCard, 'listId'>> &
+  Partial<Pick<TaskCard, 'title'>> &
   Partial<Pick<TaskCard, 'content'>> &
   Partial<Pick<TaskCard, 'deadline'>> &
   Partial<Pick<TaskCard, 'done'>>;
@@ -16,14 +17,14 @@ export type UpdateTaskCardRequest = Partial<Pick<TaskCard, 'title'>> &
 export type UpdateTaskCardArg = Pick<TaskCard, 'id'> &
   Pick<TaskCard, 'boardId'> &
   Pick<TaskCard, 'listId'> &
-  UpdateTaskCardRequest;
+  UpdateTaskCardRequest & { body?: UpdateTaskCardRequest };
 
 export const updateTaskCard = createAsyncThunk<
   Pick<TaskCard, 'boardId'> & UpdateTaskCardResponse,
   UpdateTaskCardArg,
   AsyncThunkConfig
 >('cards/updateTaskCard', async (payload, thunkApi) => {
-  const { id, boardId, listId, ...requestBody } = payload;
+  const { id, boardId, listId, body, ...requestBody } = payload;
   const path = makePath(['task_lists', listId], ['task_cards', id]);
   /**
    * - `Data`型はタイムゾーンを反映させた値としてAPIリクエストを送る
@@ -36,7 +37,7 @@ export const updateTaskCard = createAsyncThunk<
     : { ...requestBody, deadline: requestBody.deadline.toLocaleString() };
 
   try {
-    const response = await apiClient().patch(path, request);
+    const response = await apiClient().patch(path, body ? body : request);
     return { ...response?.data, boardId: payload.boardId };
   } catch (e) {
     return thunkApi.rejectWithValue({
