@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { TaskBoard, TaskBoardsCollection, TaskCard, TaskList } from 'models';
+import { IndexMap, makeDocsWithIndex } from 'utils/dnd';
 import {
   FetchTaskBoardsResponse,
   fetchTaskBoards,
@@ -120,14 +121,24 @@ export const taskBoardSlice = createSlice({
         ? state.docs[docId].lists
         : [];
 
-      /** `TaskCard` (全てのデータに`boardId`プロパティを設定)*/
+      /** `TaskCard` (`boardId`及び`index`プロパティを設定)*/
+      const cardIndexMap: IndexMap = JSON.parse(
+        localStorage.getItem('cardIndexMap') || '{}'
+      );
       state.docs[docId].lists.forEach((list) => {
-        list.cards = list.cards
-          ? list.cards.map((card) => ({
-              ...card,
-              boardId: state.docs[docId].id,
-            }))
-          : [];
+        if (!list.cards) {
+          list.cards = [];
+          return;
+        }
+
+        const cardsWithIndex = makeDocsWithIndex(list.cards, cardIndexMap);
+        const cards = cardsWithIndex.map((card) => ({
+          ...card,
+          boardId: state.docs[docId].id,
+        }));
+
+        /** `index`プロパティに従って並び替え */
+        list.cards = cards.slice().sort((a, b) => a.index - b.index);
       });
 
       state.loading = false;

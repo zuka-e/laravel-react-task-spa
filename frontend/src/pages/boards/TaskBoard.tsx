@@ -5,6 +5,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Container, Grid, Divider, IconButton } from '@material-ui/core';
 import { MoreVert as MoreVertIcon } from '@material-ui/icons';
 
+import { makeIndexMap } from 'utils/dnd';
 import { useAppDispatch, useDeepEqualSelector } from 'utils/hooks';
 import { fetchTaskBoard, FetchTaskBoardRequest } from 'store/thunks/boards';
 import { BaseLayout, StandbyScreen } from 'layouts';
@@ -69,7 +70,13 @@ const TaskBoard = () => {
   }, [dispatch, params.userId, params.boardId]);
 
   const handleDrop = () => {
-    // API request
+    const cardIndexMap = board.lists.reduce((acc, list) => {
+      return { ...acc, ...makeIndexMap(list.cards) };
+    }, {});
+    localStorage.setItem('cardIndexMap', JSON.stringify(cardIndexMap));
+
+    const listIndexMap = makeIndexMap(board.lists);
+    localStorage.setItem('listIndexMap', JSON.stringify(listIndexMap));
   };
 
   if (!board) return <StandbyScreen />;
