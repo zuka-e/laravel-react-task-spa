@@ -88,12 +88,12 @@ const TaskList: React.FC<TaskListProps> = (props) => {
       item.index = hoverIndex;
       item.listIndex = hoverListIndex;
     },
-    drop: (item: DragItem<Model.TaskCard>) => {
+    drop: (item: DragItem) => {
       /**リスト間移動が行われた場合 */
-      if (item.data.listId !== list.id) {
+      if (item.listId !== list.id) {
         dispatch(
           updateTaskCardRelationships({
-            data: item.data,
+            data: { id: item.id, listId: item.listId },
             body: { listId: list.id },
           })
         );

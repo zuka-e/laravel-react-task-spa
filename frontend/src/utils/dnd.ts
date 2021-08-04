@@ -4,8 +4,10 @@ export const draggableItem = {
   card: 'card',
 };
 
-export type DragItem<T extends DocumentBase = any> = {
-  data: T;
+/** @see https://react-dnd.github.io/react-dnd/docs/api/use-drag#specification-object-members */
+export type DragItem = {
+  id: string;
+  listId: string;
   index: number;
   listIndex: number;
 };

@@ -45,10 +45,11 @@ const TaskCard: React.FC<TaskCardProps> = (props) => {
   const dispatch = useAppDispatch();
   const ref = useRef<HTMLDivElement>(null);
 
-  const [, drag] = useDrag<DragItem<Model.TaskCard>, unknown, unknown>({
+  const [, drag] = useDrag<DragItem, unknown, unknown>({
     type: draggableItem.card,
     item: {
-      data: card,
+      id: card.id,
+      listId: card.listId,
       index: cardIndex,
       listIndex: listIndex,
     },
