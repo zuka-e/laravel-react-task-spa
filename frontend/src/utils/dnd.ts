@@ -32,7 +32,7 @@ export const makeDocsWithIndex = <T extends DocumentBase>(
   return docs.map((doc) => {
     const docWithIndex = {
       ...doc,
-      index: indexMap[doc.id],
+      index: indexMap ? indexMap[doc.id] : 0,
     };
     return docWithIndex;
   });

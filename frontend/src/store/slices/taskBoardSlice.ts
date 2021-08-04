@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { TaskBoard, TaskBoardsCollection, TaskCard, TaskList } from 'models';
-import { IndexMap, makeDocsWithIndex } from 'utils/dnd';
+import { makeDocsWithIndex } from 'utils/dnd';
 import {
   FetchTaskBoardsResponse,
   fetchTaskBoards,
@@ -20,6 +20,7 @@ import {
   updateTaskCard,
   destroyTaskCard,
 } from 'store/thunks/cards';
+import { updateTaskCardRelationships } from 'store/thunks/cards/updateTaskCardRelationships';
 
 export type FormAction =
   | { method: 'POST'; type: 'board' }
@@ -40,6 +41,7 @@ type MoveCardAction = {
   dragIndex: number;
   hoverIndex: number;
   boardId: string;
+  listId?: string;
 };
 
 type InfoBoxAction =
@@ -86,6 +88,8 @@ export const taskBoardSlice = createSlice({
       const sortedLists = state.docs[boardId].lists;
       const dragged = sortedLists[dragListIndex].cards[dragIndex];
 
+      if (action.payload.listId) dragged.listId = action.payload.listId;
+
       sortedLists[dragListIndex].cards.splice(dragIndex, 1);
       sortedLists[hoverListIndex].cards.splice(hoverIndex, 0, dragged);
     },
@@ -122,16 +126,16 @@ export const taskBoardSlice = createSlice({
         : [];
 
       /** `TaskCard` (`boardId`及び`index`プロパティを設定)*/
-      const cardIndexMap: IndexMap = JSON.parse(
-        localStorage.getItem('cardIndexMap') || '{}'
-      );
       state.docs[docId].lists.forEach((list) => {
         if (!list.cards) {
           list.cards = [];
           return;
         }
 
-        const cardsWithIndex = makeDocsWithIndex(list.cards, cardIndexMap);
+        const cardsWithIndex = makeDocsWithIndex(
+          list.cards,
+          state.docs[docId].cardIndexMap
+        );
         const cards = cardsWithIndex.map((card) => ({
           ...card,
           boardId: state.docs[docId].id,
@@ -310,6 +314,18 @@ export const taskBoardSlice = createSlice({
     });
 
     builder.addCase(updateTaskCard.rejected, (state, _action) => {
+      state.loading = false;
+    });
+
+    builder.addCase(updateTaskCardRelationships.pending, (state, _action) => {
+      state.loading = true;
+    });
+
+    builder.addCase(updateTaskCardRelationships.fulfilled, (state, _action) => {
+      state.loading = false;
+    });
+
+    builder.addCase(updateTaskCardRelationships.rejected, (state, _action) => {
       state.loading = false;
     });
 
