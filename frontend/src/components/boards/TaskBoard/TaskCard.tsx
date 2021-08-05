@@ -20,7 +20,10 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: theme.shadows[1],
       cursor: 'pointer',
       '&:hover': { opacity: 0.8 },
-      '& > p': { padding: defaultPadding },
+      '& > p': {
+        padding: defaultPadding,
+        whiteSpace: 'pre-wrap',
+      },
     },
     selected: {
       boxShadow: theme.shadows[3],
