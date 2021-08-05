@@ -56,17 +56,15 @@ type InfoBoxAction =
   | { type: 'list'; data: TaskList }
   | { type: 'card'; data: TaskCard };
 
-type InfoBoxState = { open: boolean } & InfoBoxAction;
-
 type TaskBoardState = {
   loading: boolean;
-  infoBox: InfoBoxState;
+  infoBox: { open: boolean } & InfoBoxAction;
   docs: TaskBoardsCollection;
 } & FetchTaskBoardsResponse;
 
 const initialState = {
   loading: false,
-  infoBox: {} as InfoBoxState,
+  infoBox: {} as TaskBoardState['infoBox'],
   docs: {},
   data: [],
   links: {} as TaskBoardState['links'],
