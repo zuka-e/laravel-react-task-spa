@@ -53,6 +53,7 @@ class TaskCardRequest extends FormRequest
             ];
         } else {
             return [
+                'list_id' => 'uuid',
                 'title' => "string|max:${maxTitle}",
                 'content' => "nullable|string|max:${maxContent}",
                 'deadline' => 'date',
