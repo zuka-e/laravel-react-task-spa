@@ -51,6 +51,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(4),
       '& > .listItem': {
         minWidth: boxWidth,
+        maxWidth: boxWidth,
         padding: theme.spacing(1),
       },
     },
