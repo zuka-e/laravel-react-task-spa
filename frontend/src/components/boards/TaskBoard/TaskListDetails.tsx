@@ -56,8 +56,6 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     label: { flex: '0 0 100px', marginRight: theme.spacing(2) },
-    text: { whiteSpace: 'pre-wrap' },
-    descriptionBlock: { marginTop: theme.spacing(2) },
   })
 );
 
@@ -131,9 +129,6 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = (props) => {
           </Grid>
           <Grid item>{moment(list.updatedAt).calendar()}</Grid>
         </Grid>
-        <div className={classes.descriptionBlock}>
-          <Typography className={classes.text}>{list.description}</Typography>
-        </div>
       </CardContent>
 
       <CardContent>
