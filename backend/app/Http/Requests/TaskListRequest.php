@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class TaskListRequest extends FormRequest
@@ -38,15 +39,22 @@ class TaskListRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(Request $request)
     {
         $maxTitle = floor(191 / 3);
         $maxDescription = floor(65535 / 3);
 
-        return [
-            'title' => "required|string|max:${maxTitle}",
-            'description' => "string|max:${maxDescription}"
-        ];
+        if ($request->method() === 'POST') {
+            return [
+                'title' => "required|string|max:${maxTitle}",
+                'description' => "nullable|string|max:${maxDescription}"
+            ];
+        } else {
+            return [
+                'title' => "string|max:${maxTitle}",
+                'description' => "nullable|string|max:${maxDescription}"
+            ];
+        }
     }
 
     /**
