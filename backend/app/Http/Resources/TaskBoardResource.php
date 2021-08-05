@@ -22,6 +22,8 @@ class TaskBoardResource extends JsonResource
             'lists' => $this->when($this->lists, $this->lists),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
+            'listIndexMap' => $this->list_index_map,
+            'cardIndexMap' => $this->card_index_map,
         ];
     }
 }
