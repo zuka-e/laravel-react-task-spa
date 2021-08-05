@@ -4,9 +4,26 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class TaskCardRequest extends FormRequest
 {
+    /**
+     * Get data to be validated from the request.
+     *
+     * @return array
+     */
+    public function validationData()
+    {
+        $requests = [];
+
+        foreach ($this->all() as $key => $value) {
+            $requests[Str::snake($key)] = $value;
+        }
+
+        return $requests;
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      *
