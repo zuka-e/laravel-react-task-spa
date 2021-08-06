@@ -11,7 +11,8 @@ import { moveCard } from 'store/slices';
 import { updateTaskCardRelationships } from 'store/thunks/cards';
 import { LabeledSelect, ScrolledDiv } from 'templates';
 import { ButtonToAddTask } from '..';
-import { ListCardHeader, TaskCard } from '.';
+import { TaskCard } from '../TaskCard';
+import { ListCardHeader } from '.';
 
 const borderWidth = '2px';
 const useStyles = makeStyles((theme: Theme) =>

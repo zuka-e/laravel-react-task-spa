@@ -15,7 +15,7 @@ import {
 import { BaseLayout, StandbyScreen } from 'layouts';
 import { LinkWrapper, ScrolledDiv } from 'templates';
 import { ButtonToAddTask } from 'components/boards';
-import { BoardCardHeader } from 'components/boards/TaskBoardIndex';
+import { BoardCardHeader } from 'components/boards/TaskBoard';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

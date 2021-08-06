@@ -15,8 +15,9 @@ import {
 import { BaseLayout, StandbyScreen } from 'layouts';
 import { PopoverControl, ScrolledGridContainer } from 'templates';
 import { ButtonToAddTask, EditableTitle } from 'components/boards';
-import { TaskList, InfoBox } from 'components/boards/TaskBoard';
-import { BoardMenu } from 'components/boards/TaskBoardIndex';
+import { BoardMenu } from 'components/boards/TaskBoard';
+import { TaskList } from 'components/boards/TaskList';
+import { InfoBox } from 'components/boards/InfoBox';
 
 const boxWidth = '300px';
 const useStyles = makeStyles((theme: Theme) =>
