@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 
 import { useDrag, useDrop } from 'react-dnd';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Card } from '@material-ui/core';
+import { Card, Typography } from '@material-ui/core';
 
 import theme from 'theme';
 import * as Model from 'models';
@@ -10,7 +10,6 @@ import { draggableItem, DragItem } from 'utils/dnd';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { activateEventAttr as activateInfoBoxEventAttr } from 'utils/infoBox';
 import { moveCard, openInfoBox } from 'store/slices/taskBoardSlice';
-import { TypographyWithLimitedRows } from 'templates';
 
 const defaultPadding = theme.spacing(0.75);
 const borderWidth = '2px';
@@ -21,6 +20,10 @@ const useStyles = makeStyles((theme: Theme) =>
       cursor: 'pointer',
       '&:hover': { opacity: 0.8 },
       '& > p': {
+        overflow: 'hidden',
+        display: '-webkit-box',
+        '-webkit-box-orient': 'vertical',
+        '-webkit-line-clamp': 3,
         padding: defaultPadding,
         whiteSpace: 'pre-wrap',
       },
@@ -99,16 +102,13 @@ const TaskCard: React.FC<TaskCardProps> = (props) => {
   }`;
 
   const handleClick = () => {
-    isSelected() && activateInfoBoxEventAttr('shown');
-    if (isSelected()) return;
+    if (isSelected()) activateInfoBoxEventAttr('shown');
     else dispatch(openInfoBox({ type: 'card', data: card }));
   };
 
   return (
     <Card ref={ref} onClick={handleClick} className={className}>
-      <TypographyWithLimitedRows title={card.title}>
-        {card.title}
-      </TypographyWithLimitedRows>
+      <Typography title={card.title}>{card.title}</Typography>
     </Card>
   );
 };
