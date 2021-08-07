@@ -1,13 +1,6 @@
-import { Link as RouterLink, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import {
-  Container,
-  Grid,
-  Typography,
-  Button,
-  List,
-  ListItem,
-} from '@material-ui/core';
+import { Container, Grid, Typography, List, ListItem } from '@material-ui/core';
 import {
   PersonAdd as PersonAddIcon,
   LockOpen as LockOpenIcon,
@@ -18,7 +11,7 @@ import { GUEST_EMAIL, GUEST_NAME, GUEST_PASSWORD } from 'config/app';
 import { createUser, signInWithEmail } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { makeEmail } from 'utils/generator';
-import { AlertButton, PopoverControl } from 'templates';
+import { AlertButton, LinkButton, PopoverControl } from 'templates';
 import hero from 'images/hero.svg';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -49,17 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
         marginBottom: theme.spacing(6),
       },
     },
-    catchphrase: {
-      fontSize: '3.6rem',
-      marginBottom: theme.spacing(5),
-    },
-    buttonLink: {
-      minWidth: '120px',
-      '&:hover': {
-        color: theme.palette.primary.contrastText,
-        textDecoration: 'none',
-      },
-    },
+    catchphrase: { marginBottom: theme.spacing(6) },
   })
 );
 
@@ -92,45 +75,31 @@ const Hero = () => {
           <Grid item md={6}>
             <div className={classes.description}>
               <Typography variant='h1' className={classes.catchphrase}>
-                タスク管理を。
+                タスク管理で課題を明確化
               </Typography>
               <Typography variant='h4' component='p' color='textSecondary'>
-                つれづれなるまゝに、日暮らし、硯にむかひて、心にうつりゆくよしなし事を、そこはかとなく書きつくれば、あやしうこそものぐるほしけれ。
+                複雑なタスクを視覚的に確認し、現在の状況を把握した上で意思決定に役立てることができます。
               </Typography>
             </div>
             <Grid container spacing={2}>
               <Grid item>
-                <Button
-                  startIcon={<PersonAddIcon />}
-                  variant='contained'
-                  color='primary'
-                  component={RouterLink}
-                  to='/register'
-                  className={classes.buttonLink}
-                >
+                <LinkButton startIcon={<PersonAddIcon />} to='/register'>
                   登録する
-                </Button>
+                </LinkButton>
               </Grid>
               <Grid item>
-                <Button
+                <LinkButton
                   startIcon={<LockOpenIcon />}
-                  variant='contained'
                   color='secondary'
-                  component={RouterLink}
                   to='/login'
-                  className={classes.buttonLink}
                 >
                   ログイン
-                </Button>
+                </LinkButton>
               </Grid>
               <Grid item>
                 <PopoverControl
                   trigger={
-                    <AlertButton
-                      startIcon={<MenuIcon />}
-                      variant='contained'
-                      color='info'
-                    >
+                    <AlertButton startIcon={<MenuIcon />} color='info'>
                       又はゲストユーザーで試す
                     </AlertButton>
                   }
