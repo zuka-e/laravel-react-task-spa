@@ -56,17 +56,15 @@ type InfoBoxAction =
   | { type: 'list'; data: TaskList }
   | { type: 'card'; data: TaskCard };
 
-type InfoBoxState = { open: boolean } & InfoBoxAction;
-
 type TaskBoardState = {
   loading: boolean;
-  infoBox: InfoBoxState;
+  infoBox: { open: boolean } & InfoBoxAction;
   docs: TaskBoardsCollection;
 } & FetchTaskBoardsResponse;
 
 const initialState = {
   loading: false,
-  infoBox: {} as InfoBoxState,
+  infoBox: {} as TaskBoardState['infoBox'],
   docs: {},
   data: [],
   links: {} as TaskBoardState['links'],
@@ -205,7 +203,7 @@ export const taskBoardSlice = createSlice({
       };
 
       if (updatedBoard.id === state.infoBox.data?.id)
-        state.infoBox.data = updatedBoard;
+        state.infoBox.data = { ...state.infoBox.data, ...updatedBoard };
 
       state.loading = false;
     });
@@ -257,13 +255,16 @@ export const taskBoardSlice = createSlice({
     });
 
     builder.addCase(updateTaskList.fulfilled, (state, action) => {
-      const boardId = action.payload.data.boardId;
-      const list = state.docs[boardId].lists.find(
-        (list) => list.id === action.payload.data.id
+      const updatedList = action.payload.data;
+      const boardId = updatedList.boardId;
+      const currentList = state.docs[boardId].lists.find(
+        (list) => list.id === updatedList.id
       );
-      Object.assign(list, action.payload.data);
 
-      if (list?.id === state.infoBox.data?.id) state.infoBox.data = list;
+      Object.assign(currentList, updatedList);
+
+      if (currentList?.id === state.infoBox.data?.id)
+        state.infoBox.data = { ...state.infoBox.data, ...updatedList };
 
       state.loading = false;
     });
@@ -325,11 +326,10 @@ export const taskBoardSlice = createSlice({
         (card) => card.id === updatedCard.id
       );
 
-      updatedCard.boardId = boardId;
       Object.assign(currentCard, updatedCard);
 
-      if (updatedCard?.id === state.infoBox.data?.id)
-        state.infoBox.data = updatedCard;
+      if (currentCard?.id === state.infoBox.data?.id)
+        state.infoBox.data = { ...state.infoBox.data, ...updatedCard };
 
       state.loading = false;
     });

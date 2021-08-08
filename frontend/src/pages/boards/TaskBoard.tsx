@@ -14,9 +14,10 @@ import {
 } from 'store/thunks/boards';
 import { BaseLayout, StandbyScreen } from 'layouts';
 import { PopoverControl, ScrolledGridContainer } from 'templates';
-import { ButtonToAddTask, EditableTitle } from 'components/boards';
-import { TaskList, InfoBox } from 'components/boards/TaskBoard';
-import { BoardMenu } from 'components/boards/TaskBoardIndex';
+import { ButtonToAddTask, EditableTitle, SearchField } from 'components/boards';
+import { BoardMenu } from 'components/boards/TaskBoard';
+import { TaskList } from 'components/boards/TaskList';
+import { InfoBox } from 'components/boards/InfoBox';
 
 const boxWidth = '300px';
 const useStyles = makeStyles((theme: Theme) =>
@@ -51,6 +52,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(4),
       '& > .listItem': {
         minWidth: boxWidth,
+        maxWidth: boxWidth,
         padding: theme.spacing(1),
       },
     },
@@ -87,7 +89,7 @@ const TaskBoard = () => {
   return (
     <BaseLayout subtitle={board.title}>
       <Container component='main' maxWidth={false} className={classes.main}>
-        <ScrolledGridContainer justify='space-between'>
+        <ScrolledGridContainer justify='space-between' alignItems='center'>
           <Grid item className={classes.titleBox}>
             <EditableTitle
               method='PATCH'
@@ -97,6 +99,9 @@ const TaskBoard = () => {
               inputStyle={classes.title}
               helperText=''
             />
+          </Grid>
+          <Grid item>
+            <SearchField />
           </Grid>
           <Grid item>
             <PopoverControl
