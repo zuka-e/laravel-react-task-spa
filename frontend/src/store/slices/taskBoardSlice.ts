@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { TaskBoard, TaskBoardsCollection, TaskCard, TaskList } from 'models';
+import { compare, SortOperation } from 'utils/sort';
 import { makeDocsWithIndex } from 'utils/dnd';
 import {
   FetchTaskBoardsResponse,
@@ -34,6 +35,12 @@ export type DeleteAction =
   | { type: 'board'; data: TaskBoard }
   | { type: 'list'; data: TaskList }
   | { type: 'card'; data: TaskCard };
+
+type SortListAction = Pick<TaskList, 'boardId'> & SortOperation<TaskList>;
+
+type SortCardAction = Pick<TaskCard, 'boardId'> &
+  Pick<TaskCard, 'listId'> &
+  SortOperation<TaskCard>;
 
 type MoveCardAction = {
   dragListIndex: number;
@@ -92,6 +99,20 @@ export const taskBoardSlice = createSlice({
 
       sortedLists[dragListIndex].cards.splice(dragIndex, 1);
       sortedLists[hoverListIndex].cards.splice(hoverIndex, 0, dragged);
+    },
+
+    sortList(state, action: PayloadAction<SortListAction>) {
+      const { boardId, column, direction } = action.payload;
+      const board = state.docs[boardId];
+
+      board.lists.sort((a, b) => compare(a, b, column, direction));
+    },
+
+    sortCard(state, action: PayloadAction<SortCardAction>) {
+      const { boardId, listId, column, direction } = action.payload;
+      const list = state.docs[boardId].lists.find((list) => list.id === listId);
+
+      list?.cards.sort((a, b) => compare(a, b, column, direction));
     },
   },
   extraReducers: (builder) => {
@@ -353,5 +374,11 @@ export const taskBoardSlice = createSlice({
   },
 });
 
-export const { openInfoBox, closeInfoBox, removeInfoBox, moveCard } =
-  taskBoardSlice.actions;
+export const {
+  openInfoBox,
+  closeInfoBox,
+  removeInfoBox,
+  sortList,
+  sortCard,
+  moveCard,
+} = taskBoardSlice.actions;

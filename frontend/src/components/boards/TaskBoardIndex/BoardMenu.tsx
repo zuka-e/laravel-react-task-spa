@@ -2,15 +2,21 @@ import React, { useState } from 'react';
 
 import { useParams } from 'react-router-dom';
 import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import { Info as InfoIcon, Delete as DeleteIcon } from '@material-ui/icons';
+import {
+  Sort as SortIcon,
+  Info as InfoIcon,
+  Delete as DeleteIcon,
+} from '@material-ui/icons';
 
 import { TaskBoard } from 'models';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { activateEventAttr } from 'utils/infoBox';
 import { openInfoBox } from 'store/slices/taskBoardSlice';
-import { DeleteTaskDialog } from 'templates';
+import { PopoverControl, DeleteTaskDialog } from 'templates';
+import { SortSelect } from '..';
 
 const menuItem = {
+  sort: '並び替え',
   info: '詳細を表示',
   delete: '削除',
 } as const;
@@ -42,6 +48,21 @@ const BoardMenu: React.FC<BoardMenuProps> = (props) => {
   return (
     <List component='nav' aria-label='board-menu' dense>
       {boardId && ( // 詳細ページの場合
+        <PopoverControl
+          position='left'
+          trigger={
+            <ListItem button title={menuItem.sort}>
+              <ListItemIcon>
+                <SortIcon />
+              </ListItemIcon>
+              <ListItemText primary={menuItem.sort + '...'} />
+            </ListItem>
+          }
+        >
+          <SortSelect type='list' boardId={board.id} />
+        </PopoverControl>
+      )}
+      {boardId && (
         <ListItem button onClick={handleClick('info')} title={menuItem.info}>
           <ListItemIcon>
             <InfoIcon />
