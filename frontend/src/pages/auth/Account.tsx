@@ -1,6 +1,3 @@
-import React from 'react';
-
-import { Helmet } from 'react-helmet-async';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
   Box,
@@ -11,17 +8,15 @@ import {
   Container,
 } from '@material-ui/core';
 
-import { APP_NAME } from 'config/app';
 import { isGuest } from 'utils/auth';
-import { useAppSelector } from 'utils/hooks';
-import { Loading, Header, Footer } from 'layouts';
+import { BaseLayout } from 'layouts';
+import { AlertButton } from 'templates';
 import {
   UserProfile,
   Password,
   UserStatus,
   DeleteAccountDialog,
 } from 'components/account';
-import { AlertButton } from 'templates';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,18 +28,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Account: React.FC = () => {
+const Account = () => {
   const classes = useStyles();
-  const authIsReady = useAppSelector((state) => !!state.auth.user?.id);
-
-  if (!authIsReady) return <Loading />;
 
   return (
-    <React.Fragment>
-      <Helmet>
-        <title>Account | {APP_NAME}</title>
-      </Helmet>
-      <Header />
+    <BaseLayout subtitle='Account'>
       <Container component='main' maxWidth='md'>
         <Card className={classes.card} elevation={2}>
           <Box component='section' mb={3}>
@@ -83,8 +71,7 @@ const Account: React.FC = () => {
           </Box>
         </Card>
       </Container>
-      <Footer />
-    </React.Fragment>
+    </BaseLayout>
   );
 };
 
