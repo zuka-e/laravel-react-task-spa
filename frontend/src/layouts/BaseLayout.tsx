@@ -1,30 +1,24 @@
-import React, { useEffect } from 'react';
+import { Fragment } from 'react';
 
 import { Helmet } from 'react-helmet-async';
 
 import { APP_NAME } from 'config/app';
 import { Header, Footer } from 'layouts';
 
-type BaseLayoutProps = { subtitle: string };
+type BaseLayoutProps = { subtitle: string; withoutHeaders?: boolean };
 
 const BaseLayout: React.FC<BaseLayoutProps> = (props) => {
-  const href = window.location.href;
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [href]);
-
   return (
-    <React.Fragment>
+    <Fragment>
       <Helmet>
         <title>
           {props.subtitle} | {APP_NAME}
         </title>
       </Helmet>
-      <Header />
+      {!props.withoutHeaders && <Header />}
       {props.children}
-      <Footer />
-    </React.Fragment>
+      {!props.withoutHeaders && <Footer />}
+    </Fragment>
   );
 };
 

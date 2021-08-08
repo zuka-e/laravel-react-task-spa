@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { TaskBoard, TaskBoardsCollection, TaskCard, TaskList } from 'models';
+import { compare, SortOperation } from 'utils/sort';
+import { makeDocsWithIndex } from 'utils/dnd';
 import {
   FetchTaskBoardsResponse,
   fetchTaskBoards,
@@ -19,6 +21,7 @@ import {
   updateTaskCard,
   destroyTaskCard,
 } from 'store/thunks/cards';
+import { updateTaskCardRelationships } from 'store/thunks/cards/updateTaskCardRelationships';
 
 export type FormAction =
   | { method: 'POST'; type: 'board' }
@@ -33,22 +36,35 @@ export type DeleteAction =
   | { type: 'list'; data: TaskList }
   | { type: 'card'; data: TaskCard };
 
+type SortListAction = Pick<TaskList, 'boardId'> & SortOperation<TaskList>;
+
+type SortCardAction = Pick<TaskCard, 'boardId'> &
+  Pick<TaskCard, 'listId'> &
+  SortOperation<TaskCard>;
+
+type MoveCardAction = {
+  dragListIndex: number;
+  hoverListIndex: number;
+  dragIndex: number;
+  hoverIndex: number;
+  boardId: string;
+  listId?: string;
+};
+
 type InfoBoxAction =
   | { type: 'board'; data: TaskBoard }
   | { type: 'list'; data: TaskList }
   | { type: 'card'; data: TaskCard };
 
-type InfoBoxState = { open: boolean } & InfoBoxAction;
-
 type TaskBoardState = {
   loading: boolean;
-  infoBox: InfoBoxState;
+  infoBox: { open: boolean } & InfoBoxAction;
   docs: TaskBoardsCollection;
 } & FetchTaskBoardsResponse;
 
 const initialState = {
   loading: false,
-  infoBox: {} as InfoBoxState,
+  infoBox: {} as TaskBoardState['infoBox'],
   docs: {},
   data: [],
   links: {} as TaskBoardState['links'],
@@ -69,6 +85,32 @@ export const taskBoardSlice = createSlice({
     },
     removeInfoBox(state) {
       state.infoBox = initialState.infoBox;
+    },
+    moveCard(state, action: PayloadAction<MoveCardAction>) {
+      const { dragListIndex, hoverListIndex, dragIndex, hoverIndex, boardId } =
+        action.payload;
+
+      const sortedLists = state.docs[boardId].lists;
+      const dragged = sortedLists[dragListIndex].cards[dragIndex];
+
+      if (action.payload.listId) dragged.listId = action.payload.listId;
+
+      sortedLists[dragListIndex].cards.splice(dragIndex, 1);
+      sortedLists[hoverListIndex].cards.splice(hoverIndex, 0, dragged);
+    },
+
+    sortList(state, action: PayloadAction<SortListAction>) {
+      const { boardId, column, direction } = action.payload;
+      const board = state.docs[boardId];
+
+      board.lists.sort((a, b) => compare(a, b, column, direction));
+    },
+
+    sortCard(state, action: PayloadAction<SortCardAction>) {
+      const { boardId, listId, column, direction } = action.payload;
+      const list = state.docs[boardId].lists.find((list) => list.id === listId);
+
+      list?.cards.sort((a, b) => compare(a, b, column, direction));
     },
   },
   extraReducers: (builder) => {
@@ -102,14 +144,24 @@ export const taskBoardSlice = createSlice({
         ? state.docs[docId].lists
         : [];
 
-      /** `TaskCard` (全てのデータに`boardId`プロパティを設定)*/
+      /** `TaskCard` (`boardId`及び`index`プロパティを設定)*/
       state.docs[docId].lists.forEach((list) => {
-        list.cards = list.cards
-          ? list.cards.map((card) => ({
-              ...card,
-              boardId: state.docs[docId].id,
-            }))
-          : [];
+        if (!list.cards) {
+          list.cards = [];
+          return;
+        }
+
+        const cardsWithIndex = makeDocsWithIndex(
+          list.cards,
+          state.docs[docId].cardIndexMap
+        );
+        const cards = cardsWithIndex.map((card) => ({
+          ...card,
+          boardId: state.docs[docId].id,
+        }));
+
+        /** `index`プロパティに従って並び替え */
+        list.cards = cards.slice().sort((a, b) => a.index - b.index);
       });
 
       state.loading = false;
@@ -151,7 +203,7 @@ export const taskBoardSlice = createSlice({
       };
 
       if (updatedBoard.id === state.infoBox.data?.id)
-        state.infoBox.data = updatedBoard;
+        state.infoBox.data = { ...state.infoBox.data, ...updatedBoard };
 
       state.loading = false;
     });
@@ -203,13 +255,16 @@ export const taskBoardSlice = createSlice({
     });
 
     builder.addCase(updateTaskList.fulfilled, (state, action) => {
-      const boardId = action.payload.data.boardId;
-      const list = state.docs[boardId].lists.find(
-        (list) => list.id === action.payload.data.id
+      const updatedList = action.payload.data;
+      const boardId = updatedList.boardId;
+      const currentList = state.docs[boardId].lists.find(
+        (list) => list.id === updatedList.id
       );
-      Object.assign(list, action.payload.data);
 
-      if (list?.id === state.infoBox.data?.id) state.infoBox.data = list;
+      Object.assign(currentList, updatedList);
+
+      if (currentList?.id === state.infoBox.data?.id)
+        state.infoBox.data = { ...state.infoBox.data, ...updatedList };
 
       state.loading = false;
     });
@@ -271,16 +326,27 @@ export const taskBoardSlice = createSlice({
         (card) => card.id === updatedCard.id
       );
 
-      updatedCard.boardId = boardId;
       Object.assign(currentCard, updatedCard);
 
-      if (updatedCard?.id === state.infoBox.data?.id)
-        state.infoBox.data = updatedCard;
+      if (currentCard?.id === state.infoBox.data?.id)
+        state.infoBox.data = { ...state.infoBox.data, ...updatedCard };
 
       state.loading = false;
     });
 
     builder.addCase(updateTaskCard.rejected, (state, _action) => {
+      state.loading = false;
+    });
+
+    builder.addCase(updateTaskCardRelationships.pending, (state, _action) => {
+      state.loading = true;
+    });
+
+    builder.addCase(updateTaskCardRelationships.fulfilled, (state, _action) => {
+      state.loading = false;
+    });
+
+    builder.addCase(updateTaskCardRelationships.rejected, (state, _action) => {
       state.loading = false;
     });
 
@@ -308,5 +374,11 @@ export const taskBoardSlice = createSlice({
   },
 });
 
-export const { openInfoBox, closeInfoBox, removeInfoBox } =
-  taskBoardSlice.actions;
+export const {
+  openInfoBox,
+  closeInfoBox,
+  removeInfoBox,
+  sortList,
+  sortCard,
+  moveCard,
+} = taskBoardSlice.actions;

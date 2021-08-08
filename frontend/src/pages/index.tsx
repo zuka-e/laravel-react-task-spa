@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 
 import { Helmet } from 'react-helmet-async';
+import { useHistory } from 'react-router-dom';
 
 import { APP_NAME } from 'config/app';
 import { isSignedIn } from 'utils/auth';
+import { useAppSelector } from 'utils/hooks';
 import { Header, Footer } from 'layouts';
 import { Hero, Features } from 'components/home/LandingPage';
 
@@ -23,9 +25,12 @@ const renderHome = () => {
 };
 
 const Home: React.FC = () => {
+  const history = useHistory();
+  const userId = useAppSelector((state) => state.auth.user?.id);
+
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    isSignedIn() && history.push(`users/${userId}/boards`);
+  }, [history, userId]);
 
   return (
     <React.Fragment>

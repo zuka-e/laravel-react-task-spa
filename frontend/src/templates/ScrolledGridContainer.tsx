@@ -1,47 +1,28 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, GridProps } from '@material-ui/core';
 
-type ScrollProps = {
-  hover?: boolean;
-  small?: boolean;
-};
-
 const useStyles = makeStyles({
   root: {
     overflow: 'auto',
-    '&::-webkit-scrollbar': {
-      width: '8px',
-      height: '8px',
-    },
+    '&::-webkit-scrollbar': { width: '8px', height: '8px' },
     '&::-webkit-scrollbar-track': { backgroundColor: '#eee' },
     '&::-webkit-scrollbar-thumb': { backgroundColor: '#ccc' },
   },
-  hover: {
-    overflow: 'hidden',
-    '&:hover': {
-      overflow: 'auto',
-    },
-  },
-  small: {
-    '&::-webkit-scrollbar': {
-      width: '2px',
-      height: '2px',
-    },
-  },
 });
 
-const ScrolledGridContainer = (props: GridProps & ScrollProps) => {
-  const classes = useStyles();
+const ScrolledGridContainer = (props: GridProps) => {
+  const { classes, ...gridProps } = props;
+  const styles = useStyles();
+  const root = classes?.root ? `${styles.root} ${classes.root}` : styles.root;
 
-  const makeClasses = () => {
-    let className = classes.root;
-    if (props.hover) className += ` ${classes.hover}`;
-    if (props.small) className += ` ${classes.small}`;
-
-    return { root: className };
-  };
-
-  return <Grid container wrap='nowrap' classes={makeClasses()} {...props} />;
+  return (
+    <Grid
+      container
+      wrap='nowrap'
+      classes={{ ...classes, root }}
+      {...gridProps}
+    />
+  );
 };
 
 export default ScrolledGridContainer;

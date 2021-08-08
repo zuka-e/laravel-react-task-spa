@@ -209,9 +209,8 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
         )}
         <AlertButton
           onClick={handleDelete}
-          title='削除'
           startIcon={<DeleteIcon />}
-          variant='contained'
+          title='削除'
           color='danger'
           className={classes.rightAction}
         >

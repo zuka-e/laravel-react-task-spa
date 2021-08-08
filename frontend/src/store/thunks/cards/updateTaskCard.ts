@@ -8,7 +8,8 @@ export type UpdateTaskCardResponse = {
   data: TaskCard;
 };
 
-export type UpdateTaskCardRequest = Partial<Pick<TaskCard, 'title'>> &
+export type UpdateTaskCardRequest = Partial<Pick<TaskCard, 'listId'>> &
+  Partial<Pick<TaskCard, 'title'>> &
   Partial<Pick<TaskCard, 'content'>> &
   Partial<Pick<TaskCard, 'deadline'>> &
   Partial<Pick<TaskCard, 'done'>>;

@@ -27,7 +27,9 @@ export const hasChanged = <T extends { id: string }>(prev?: T, current?: T) =>
  * @see https://developer.mozilla.org/ja/docs/Web/CSS/pointer-events
  * */
 export const isIgnoredTarget = (eventTarget: HTMLElement) => {
-  const isButton = () => eventTarget.nodeName === 'BUTTON';
+  const isButton = () =>
+    eventTarget.nodeName === 'BUTTON' ||
+    eventTarget.getAttribute('role') === 'button';
   const isPopoverDisplayed = () => eventTarget.style['zIndex'] === '-1';
   const ignored = isButton() || isPopoverDisplayed();
   return ignored;

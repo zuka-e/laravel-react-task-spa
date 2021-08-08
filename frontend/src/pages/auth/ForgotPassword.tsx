@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -8,10 +7,9 @@ import * as yup from 'yup';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { TextField, Button, Divider, Grid, Box } from '@material-ui/core';
 
-import { APP_NAME } from 'config/app';
 import { forgotPassword } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
-import { FormLayout } from 'layouts';
+import { BaseLayout, FormLayout } from 'layouts';
 import { SubmitButton } from 'templates';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -36,7 +34,7 @@ const schema = yup.object().shape({
   email: yup.string().email().required(),
 });
 
-const ForgotPassword: React.FC = () => {
+const ForgotPassword = () => {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useAppDispatch();
@@ -59,10 +57,7 @@ const ForgotPassword: React.FC = () => {
   };
 
   return (
-    <React.Fragment>
-      <Helmet>
-        <title>Forgot Password | {APP_NAME}</title>
-      </Helmet>
+    <BaseLayout subtitle='Forgot Password' withoutHeaders>
       <FormLayout title={'Forgot Password?'} message={message}>
         <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
           <TextField
@@ -93,7 +88,7 @@ const ForgotPassword: React.FC = () => {
           </Grid>
         </form>
       </FormLayout>
-    </React.Fragment>
+    </BaseLayout>
   );
 };
 
