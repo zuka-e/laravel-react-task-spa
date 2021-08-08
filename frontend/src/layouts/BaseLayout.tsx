@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { Fragment } from 'react';
 
 import { Helmet } from 'react-helmet-async';
 
@@ -8,14 +8,8 @@ import { Header, Footer } from 'layouts';
 type BaseLayoutProps = { subtitle: string };
 
 const BaseLayout: React.FC<BaseLayoutProps> = (props) => {
-  const href = window.location.href;
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [href]);
-
   return (
-    <React.Fragment>
+    <Fragment>
       <Helmet>
         <title>
           {props.subtitle} | {APP_NAME}
@@ -24,7 +18,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = (props) => {
       <Header />
       {props.children}
       <Footer />
-    </React.Fragment>
+    </Fragment>
   );
 };
 

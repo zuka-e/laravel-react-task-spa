@@ -29,10 +29,6 @@ const Home: React.FC = () => {
   const userId = useAppSelector((state) => state.auth.user?.id);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
     isSignedIn() && history.push(`users/${userId}/boards`);
   }, [history, userId]);
 

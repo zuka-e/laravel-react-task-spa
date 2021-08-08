@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import {
   Switch,
@@ -37,10 +37,15 @@ const AuthRoute = ({ ...rest }) => {
   return isSignedIn() ? <Route {...rest} /> : <Redirect to='/' />;
 };
 
-const Routes: React.FC = () => {
+const Routes = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const verified = useQuery().get('verified');
+  const href = window.location.href;
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [href]);
 
   // 認証メールリンクからのリダイレクトの場合
   useEffect(() => {
