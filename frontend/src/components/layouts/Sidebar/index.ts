@@ -1,1 +1,1 @@
-export { default as MenuAfterAuth } from './MenuAfterAuth';
+export { default as SideMenu } from './SideMenu';
