@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
 
+import { useDrop } from 'react-dnd';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Card, CardActions, CardContent, Grid, Chip } from '@material-ui/core';
 
 import * as Model from 'models';
-import { useAppSelector } from 'utils/hooks';
+import { draggableItem, DragItem } from 'utils/dnd';
+import { useAppDispatch, useAppSelector } from 'utils/hooks';
+import { moveCard } from 'store/slices';
+import { updateTaskCardRelationships } from 'store/thunks/cards';
 import { LabeledSelect, ScrolledDiv } from 'templates';
-import { ListCardHeader, TaskCard } from '.';
 import { ButtonToAddTask } from '..';
+import { ListCardHeader, TaskCard } from '.';
 
 const borderWidth = '2px';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+      boxShadow: theme.shadows[7],
       backgroundColor: theme.palette.secondary.main,
       color: theme.palette.secondary.contrastText,
     },
@@ -44,7 +49,7 @@ const cardFilter = {
 
 type FilterName = typeof cardFilter[keyof typeof cardFilter];
 
-export type TaskListProps = {
+type TaskListProps = {
   list: Model.TaskList;
   listIndex: number;
 };
@@ -53,7 +58,48 @@ const TaskList: React.FC<TaskListProps> = (props) => {
   const { list, listIndex } = props;
   const classes = useStyles();
   const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);
+  const dispatch = useAppDispatch();
   const [filterValue, setfilterValue] = useState<FilterName>(cardFilter.ALL);
+
+  /** リスト間のカードの移動を司る */
+  const [, drop] = useDrop({
+    accept: draggableItem.card,
+    hover: (item: DragItem) => {
+      const dragListIndex = item.listIndex;
+      const hoverListIndex = listIndex;
+      const dragIndex = item.index;
+      const hoverIndex = 0;
+
+      // 位置不変の場合
+      if (dragListIndex === hoverListIndex) return;
+
+      const boardId = list.boardId;
+      dispatch(
+        moveCard({
+          dragListIndex,
+          hoverListIndex,
+          dragIndex,
+          hoverIndex,
+          boardId,
+          listId: list.id,
+        })
+      );
+
+      item.index = hoverIndex;
+      item.listIndex = hoverListIndex;
+    },
+    drop: (item: DragItem) => {
+      /**リスト間移動が行われた場合 */
+      if (item.listId !== list.id) {
+        dispatch(
+          updateTaskCardRelationships({
+            data: { id: item.id, listId: item.listId },
+            body: { listId: list.id },
+          })
+        );
+      }
+    },
+  });
 
   const isSelected = () => list.id === selectedId;
   const rootClass = `${classes.root} ${isSelected() ? classes.selected : ''}`;
@@ -69,7 +115,7 @@ const TaskList: React.FC<TaskListProps> = (props) => {
   };
 
   return (
-    <Card elevation={7} className={rootClass}>
+    <Card ref={drop} className={rootClass}>
       <div className='listWrapper'>
         <ListCardHeader list={list} />
 

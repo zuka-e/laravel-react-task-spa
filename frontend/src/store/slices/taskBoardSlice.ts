@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { TaskBoard, TaskBoardsCollection, TaskCard, TaskList } from 'models';
+import { makeDocsWithIndex } from 'utils/dnd';
 import {
   FetchTaskBoardsResponse,
   fetchTaskBoards,
@@ -19,6 +20,7 @@ import {
   updateTaskCard,
   destroyTaskCard,
 } from 'store/thunks/cards';
+import { updateTaskCardRelationships } from 'store/thunks/cards/updateTaskCardRelationships';
 
 export type FormAction =
   | { method: 'POST'; type: 'board' }
@@ -32,6 +34,15 @@ export type DeleteAction =
   | { type: 'board'; data: TaskBoard }
   | { type: 'list'; data: TaskList }
   | { type: 'card'; data: TaskCard };
+
+type MoveCardAction = {
+  dragListIndex: number;
+  hoverListIndex: number;
+  dragIndex: number;
+  hoverIndex: number;
+  boardId: string;
+  listId?: string;
+};
 
 type InfoBoxAction =
   | { type: 'board'; data: TaskBoard }
@@ -70,6 +81,18 @@ export const taskBoardSlice = createSlice({
     removeInfoBox(state) {
       state.infoBox = initialState.infoBox;
     },
+    moveCard(state, action: PayloadAction<MoveCardAction>) {
+      const { dragListIndex, hoverListIndex, dragIndex, hoverIndex, boardId } =
+        action.payload;
+
+      const sortedLists = state.docs[boardId].lists;
+      const dragged = sortedLists[dragListIndex].cards[dragIndex];
+
+      if (action.payload.listId) dragged.listId = action.payload.listId;
+
+      sortedLists[dragListIndex].cards.splice(dragIndex, 1);
+      sortedLists[hoverListIndex].cards.splice(hoverIndex, 0, dragged);
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchTaskBoards.pending, (state, _action) => {
@@ -102,14 +125,24 @@ export const taskBoardSlice = createSlice({
         ? state.docs[docId].lists
         : [];
 
-      /** `TaskCard` (全てのデータに`boardId`プロパティを設定)*/
+      /** `TaskCard` (`boardId`及び`index`プロパティを設定)*/
       state.docs[docId].lists.forEach((list) => {
-        list.cards = list.cards
-          ? list.cards.map((card) => ({
-              ...card,
-              boardId: state.docs[docId].id,
-            }))
-          : [];
+        if (!list.cards) {
+          list.cards = [];
+          return;
+        }
+
+        const cardsWithIndex = makeDocsWithIndex(
+          list.cards,
+          state.docs[docId].cardIndexMap
+        );
+        const cards = cardsWithIndex.map((card) => ({
+          ...card,
+          boardId: state.docs[docId].id,
+        }));
+
+        /** `index`プロパティに従って並び替え */
+        list.cards = cards.slice().sort((a, b) => a.index - b.index);
       });
 
       state.loading = false;
@@ -284,6 +317,18 @@ export const taskBoardSlice = createSlice({
       state.loading = false;
     });
 
+    builder.addCase(updateTaskCardRelationships.pending, (state, _action) => {
+      state.loading = true;
+    });
+
+    builder.addCase(updateTaskCardRelationships.fulfilled, (state, _action) => {
+      state.loading = false;
+    });
+
+    builder.addCase(updateTaskCardRelationships.rejected, (state, _action) => {
+      state.loading = false;
+    });
+
     builder.addCase(destroyTaskCard.pending, (state, _action) => {
       state.loading = true;
     });
@@ -308,5 +353,5 @@ export const taskBoardSlice = createSlice({
   },
 });
 
-export const { openInfoBox, closeInfoBox, removeInfoBox } =
+export const { openInfoBox, closeInfoBox, removeInfoBox, moveCard } =
   taskBoardSlice.actions;

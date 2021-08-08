@@ -5,6 +5,8 @@ export type TaskBoard = {
   title: string;
   description: string;
   lists: TaskList[];
+  listIndexMap: {};
+  cardIndexMap: {};
 } & DocumentBase;
 
 export type TaskBoardsCollection = CollectionBase<TaskBoard>;

@@ -1,12 +1,17 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { useParams } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Container, Grid, Divider, IconButton } from '@material-ui/core';
 import { MoreVert as MoreVertIcon } from '@material-ui/icons';
 
+import { makeIndexMap } from 'utils/dnd';
 import { useAppDispatch, useDeepEqualSelector } from 'utils/hooks';
-import { fetchTaskBoard, FetchTaskBoardRequest } from 'store/thunks/boards';
+import {
+  FetchTaskBoardRequest,
+  fetchTaskBoard,
+  updateTaskBoard,
+} from 'store/thunks/boards';
 import { BaseLayout, StandbyScreen } from 'layouts';
 import { PopoverControl, ScrolledGridContainer } from 'templates';
 import { ButtonToAddTask, EditableTitle } from 'components/boards';
@@ -52,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const TaskBoard: React.FC = () => {
+const TaskBoard = () => {
   const classes = useStyles();
   const params = useParams<{ userId: string; boardId: string }>();
   const dispatch = useAppDispatch();
@@ -67,6 +72,15 @@ const TaskBoard: React.FC = () => {
     };
     dispatch(fetchTaskBoard(request));
   }, [dispatch, params.userId, params.boardId]);
+
+  const handleDrop = () => {
+    const listIndexMap = makeIndexMap(board.lists);
+    const cardIndexMap = board.lists.reduce((acc, list) => {
+      return { ...acc, ...makeIndexMap(list.cards) };
+    }, {});
+
+    dispatch(updateTaskBoard({ id: board.id, listIndexMap, cardIndexMap }));
+  };
 
   if (!board) return <StandbyScreen />;
 
@@ -98,7 +112,10 @@ const TaskBoard: React.FC = () => {
         </ScrolledGridContainer>
         <Divider />
         <Grid container className={classes.content}>
-          <ScrolledGridContainer className={classes.listItems}>
+          <ScrolledGridContainer
+            className={classes.listItems}
+            onDrop={handleDrop}
+          >
             {board.lists?.map((list, i) => (
               <Grid item key={list.id} id={list.id} className='listItem'>
                 <TaskList list={list} listIndex={i} />
