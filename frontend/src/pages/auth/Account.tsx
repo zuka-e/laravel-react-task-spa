@@ -74,11 +74,7 @@ const Account: React.FC = () => {
             <CardContent>
               <DeleteAccountDialog
                 trigger={
-                  <AlertButton
-                    disabled={isGuest()}
-                    variant='contained'
-                    color='danger'
-                  >
+                  <AlertButton disabled={isGuest()} color='danger'>
                     アカウントを削除
                   </AlertButton>
                 }

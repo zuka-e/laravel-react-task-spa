@@ -37,31 +37,18 @@ const useStyles = makeStyles((theme: Theme) =>
 type Color = 'success' | 'info' | 'warning' | 'danger';
 
 type AlertButtonProps = {
-  color?: ButtonProps['color'] | Color;
-} & Omit<ButtonProps, 'color'>;
+  color: Color;
+} & Omit<ButtonProps, 'color' | 'variant'>;
 
 const AlertButton: React.FC<AlertButtonProps> = (props) => {
-  const { color, ...buttonProps } = props;
-  const { className, ...alertButtonProps } = buttonProps;
+  const { color, className, ...buttonProps } = props;
   const classes = useStyles();
-
-  if (
-    !color ||
-    color === 'inherit' ||
-    color === 'default' ||
-    color === 'primary' ||
-    color === 'secondary'
-  )
-    return <Button {...buttonProps} />;
 
   return (
     <Button
-      className={
-        props.className
-          ? `${props.className} ${classes[color]}`
-          : classes[color]
-      }
-      {...alertButtonProps}
+      className={className ? `${className} ${classes[color]}` : classes[color]}
+      variant='contained'
+      {...buttonProps}
     />
   );
 };
