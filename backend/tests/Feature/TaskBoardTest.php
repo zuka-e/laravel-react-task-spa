@@ -150,45 +150,35 @@ class TaskBoardTest extends TestCase
         $userId = $this->guestUser->id;
         $url = $this->routePrefix . "/users/${userId}/task_boards";
 
-        // `title`
         $emptyRequest = [];
         $response = $this->postJson($url, $emptyRequest);
         $response->assertStatus(422);
 
+        // `title`
         $emptyRequest = ['title' => ''];
         $response = $this->postJson($url, $emptyRequest);
         $response->assertStatus(422);
 
-        $tooShortRequest = ['title' => '!'];
-        $response = $this->postJson($url, $tooShortRequest);
-        $response->assertStatus(422);
-
-        $tooLongRequest = ['title' => str_repeat('!', 21)];
+        $tooLongRequest = ['title' => str_repeat('a', floor(191 / 3) + 1)];
         $response = $this->postJson($url, $tooLongRequest);
         $response->assertStatus(422);
 
-        $successfulRequest = ['title' => str_repeat('!', 2)];
+        $successfulRequest = ['title' => str_repeat('亜', floor(191 / 3))];
         $response = $this->postJson($url, $successfulRequest);
-        $response->assertSuccessful(); // 201
+        $response->assertStatus(201);
 
-        $successfulRequest = ['title' => str_repeat('!', 20)];
-        $response = $this->postJson($url, $successfulRequest);
-        $response->assertSuccessful();
-
+        // description
         $emptyRequest = $successfulRequest + ['description' => ''];
         $response = $this->postJson($url, $emptyRequest);
-        $response->assertStatus(422);
+        $response->assertStatus(201);
 
-        $tooLongRequest = $successfulRequest +
-            ['description' => str_repeat('!', 256)];
+        $tooLongRequest = $successfulRequest + ['description' => str_repeat('a', floor(65535 / 3) + 1)];
         $response = $this->postJson($url, $tooLongRequest);
         $response->assertStatus(422);
 
-        $successfulRequest =
-            $successfulRequest +
-            ['description' => str_repeat('!', 255)];
+        $successfulRequest = $successfulRequest + ['description' => str_repeat('亜', floor(65535 / 3))];
         $response = $this->postJson($url, $successfulRequest);
-        $response->assertSuccessful();
+        $response->assertStatus(201);
     }
 
     public function test_validate_request_when_updated()
@@ -199,45 +189,73 @@ class TaskBoardTest extends TestCase
         $boardId = $this->guestUser->taskBoards()->first()->id;
         $url = $this->routePrefix . "/users/${userId}/task_boards/${boardId}";
 
-        // `title`
         $emptyRequest = [];
         $response = $this->patchJson($url, $emptyRequest);
-        $response->assertStatus(422);
+        $response->assertStatus(200);
 
+        // `title`
         $emptyRequest = ['title' => ''];
         $response = $this->patchJson($url, $emptyRequest);
         $response->assertStatus(422);
 
-        $tooShortRequest = ['title' => '!'];
-        $response = $this->patchJson($url, $tooShortRequest);
-        $response->assertStatus(422);
-
-        $tooLongRequest = ['title' => str_repeat('!', 21)];
+        $tooLongRequest = ['title' => str_repeat('a', floor(191 / 3) + 1)];
         $response = $this->patchJson($url, $tooLongRequest);
         $response->assertStatus(422);
 
-        $successfulRequest = ['title' => str_repeat('!', 2)];
+        $successfulRequest = ['title' => str_repeat('亜', floor(191 / 3))];
         $response = $this->patchJson($url, $successfulRequest);
-        $response->assertSuccessful(); // 201
+        $response->assertStatus(200);
 
-        $successfulRequest = ['title' => str_repeat('!', 20)];
-        $response = $this->patchJson($url, $successfulRequest);
-        $response->assertSuccessful();
-
-        $emptyRequest = $successfulRequest + ['description' => ''];
+        // description
+        $emptyRequest = ['description' => ''];
         $response = $this->patchJson($url, $emptyRequest);
-        $response->assertStatus(422);
+        $response->assertStatus(200);
 
-        $tooLongRequest = $successfulRequest +
-            ['description' => str_repeat('!', 256)];
+        $tooLongRequest = ['description' => str_repeat('a', floor(65535 / 3) + 1)];
         $response = $this->patchJson($url, $tooLongRequest);
         $response->assertStatus(422);
 
-        $successfulRequest =
-            $successfulRequest +
-            ['description' => str_repeat('!', 255)];
+        $successfulRequest = ['description' => str_repeat('亜', floor(65535 / 3))];
         $response = $this->patchJson($url, $successfulRequest);
-        $response->assertSuccessful();
+        $response->assertStatus(200);
+
+        // 'list_index_map' => 'array'
+        $emptyRequest = ['list_index_map' => []];
+        $response = $this->patchJson($url, $emptyRequest);
+        $response->assertStatus(200);
+
+        $camelcaseRequest = ['listIndexMap' => []];
+        $response = $this->patchJson($url, $camelcaseRequest);
+        $response->assertStatus(200);
+
+        $successfulRequest = ['list_index_map' => ['uuid' => 1]];
+        $response = $this->patchJson($url, $successfulRequest);
+        $response->assertStatus(200);
+
+        $successfulRequest = ['list_index_map' => ['uuid' => '1']];
+        $response = $this->patchJson($url, $successfulRequest);
+        $response->assertStatus(200);
+
+        $successfulRequest = ['list_index_map' => ['uuid' => 1, 'UUID' => 1]];
+        $response = $this->patchJson($url, $successfulRequest);
+        $response->assertStatus(200);
+
+        // 'card_index_map' => 'array'
+        $emptyRequest = ['card_index_map' => []];
+        $response = $this->patchJson($url, $emptyRequest);
+        $response->assertStatus(200);
+
+        $successfulRequest = ['card_index_map' => ['uuid' => 1]];
+        $response = $this->patchJson($url, $successfulRequest);
+        $response->assertStatus(200);
+
+        $successfulRequest = ['card_index_map' => ['uuid' => '1']];
+        $response = $this->patchJson($url, $successfulRequest);
+        $response->assertStatus(200);
+
+        $successfulRequest = ['card_index_map' => ['uuid' => 1, 'UUID' => 1]];
+        $response = $this->patchJson($url, $successfulRequest);
+        $response->assertStatus(200);
     }
 
     public function test_return_404_error_if_data_is_not_found()
