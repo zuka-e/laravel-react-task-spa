@@ -1,14 +1,12 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
-import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Container, Typography, Button } from '@material-ui/core';
 
-import { APP_NAME } from 'config/app';
 import { useAppDispatch } from 'utils/hooks';
 import { releaseError404 } from 'store/slices/appSlice';
-import { Header, Footer } from 'layouts';
+import { BaseLayout } from 'layouts';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,16 +29,12 @@ const NotFound = () => {
   }, [dispatch, history.location]);
 
   return (
-    <React.Fragment>
-      <Helmet>
-        <title>404 Not Found | {APP_NAME}</title>
-      </Helmet>
-      <Header />
+    <BaseLayout subtitle='404 Not Found'>
       <Container component='main' maxWidth='md' className={classes.container}>
-        <Typography component='h1' variant='h1' paragraph>
+        <Typography variant='h1' gutterBottom>
           404 Page Not Found
         </Typography>
-        <Typography component='h2' variant='h2' color='textSecondary' paragraph>
+        <Typography variant='h2' gutterBottom color='textSecondary'>
           ページが見つかりませんでした。
         </Typography>
         <Typography color='textSecondary' paragraph>
@@ -54,8 +48,7 @@ const NotFound = () => {
           トップページへ戻る
         </Button>
       </Container>
-      <Footer />
-    </React.Fragment>
+    </BaseLayout>
   );
 };
 

@@ -10,8 +10,7 @@ import {
 } from '@material-ui/core';
 import { Menu as MenuIcon } from '@material-ui/icons';
 
-import { isSignedIn } from 'utils/auth';
-import { MenuAfterAuth } from 'components/layouts/Sidebar';
+import { SideMenu } from 'components/layouts/Sidebar';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -59,7 +58,7 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
       >
         <Divider />
         <div onClick={toggleDrawer(false)}>
-          {isSignedIn() ? <MenuAfterAuth /> : <React.Fragment />}
+          <SideMenu />
         </div>
       </List>
     </div>

@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -19,7 +18,7 @@ import {
 import { APP_NAME } from 'config/app';
 import { signInWithEmail } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
-import { FormLayout } from 'layouts';
+import { BaseLayout, FormLayout } from 'layouts';
 import { LabeledCheckbox, SubmitButton } from 'templates';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -47,7 +46,7 @@ const schema = yup.object().shape({
   password: yup.string().required().min(8).max(20),
 });
 
-const SignIn: React.FC = () => {
+const SignIn = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const [visiblePassword, setVisiblePassword] = useState(false);
@@ -71,10 +70,7 @@ const SignIn: React.FC = () => {
   };
 
   return (
-    <React.Fragment>
-      <Helmet>
-        <title>Sign in | {APP_NAME}</title>
-      </Helmet>
+    <BaseLayout subtitle='Sign In' withoutHeaders>
       <FormLayout title={`Sign in to ${APP_NAME}`} message={message}>
         <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
           <TextField
@@ -134,7 +130,7 @@ const SignIn: React.FC = () => {
           </Grid>
         </form>
       </FormLayout>
-    </React.Fragment>
+    </BaseLayout>
   );
 };
 

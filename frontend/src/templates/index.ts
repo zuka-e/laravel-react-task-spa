@@ -6,6 +6,7 @@ export { default as LabeledSelect } from './LabeledSelect';
 export { default as PopoverControl } from './PopoverControl';
 export { default as SubmitButton } from './SubmitButton';
 export { default as LinkWrapper } from './LinkWrapper';
+export { default as LinkButton } from './LinkButton';
 export { default as ScrolledDiv } from './ScrolledDiv';
 export { default as ScrolledGridContainer } from './ScrolledGridContainer';
 

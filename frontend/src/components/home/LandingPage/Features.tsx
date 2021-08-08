@@ -1,9 +1,13 @@
-import React from 'react';
-
-import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Container, Grid, Typography, Button, Box } from '@material-ui/core';
+import {
+  Container,
+  Grid,
+  CardContent,
+  Typography,
+  Box,
+} from '@material-ui/core';
 
+import { LinkButton } from 'templates';
 import filingSystem from 'images/filing_system.svg';
 import drag from 'images/drag.svg';
 import search from 'images/search.svg';
@@ -21,88 +25,69 @@ const useStyles = makeStyles((theme: Theme) =>
         minHeight: '90vh',
       },
     },
-    features: {
-      marginBottom: theme.spacing(4),
-    },
-    feature: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      height: '100%',
-      padding: theme.spacing(4, 5),
-    },
-    title: {
-      marginTop: theme.spacing(4),
-      marginBottom: theme.spacing(2),
-    },
-    buttonLink: {
-      minWidth: '300px',
-      '&:hover': {
-        color: theme.palette.primary.contrastText,
-        textDecoration: 'none',
-      },
-    },
   })
 );
 
-const Features: React.FC = () => {
-  const classes = useStyles();
+/** パスを含むファイル名からパス及び拡張子を取り除く */
+const basename = (filename: string) => {
+  const startIndex =
+    filename.lastIndexOf('/') !== -1 ? filename.lastIndexOf('/') + 1 : 0;
+  const endIndex =
+    filename.indexOf('.') !== -1 ? filename.indexOf('.') : filename.length;
 
-  const basename = (filename: string) => {
-    const startIndex =
-      filename.lastIndexOf('/') !== -1 ? filename.lastIndexOf('/') + 1 : 0;
-    const endIndex =
-      filename.indexOf('.') !== -1 ? filename.indexOf('.') : filename.length;
+  return filename.slice(startIndex, endIndex);
+};
 
-    return filename.slice(startIndex, endIndex);
-  };
-
-  const FeaturesLayout: React.FC<{
-    children: React.ReactNode;
-    image: string;
-    title: string;
-  }> = ({ children, image, title }) => (
-    <Grid item md={4} sm={9} xs={11}>
-      <Box className={classes.feature}>
-        <img src={image} alt={basename(image)} width='100%' height='100%' />
-        <Typography variant='h3' component='h2' className={classes.title}>
-          {title}
-        </Typography>
-        <Typography variant='h5' component='p'>
-          {children}
-        </Typography>
-      </Box>
-    </Grid>
-  );
+const FeatureLayout: React.FC<{ image: string; header: string }> = (props) => {
+  const { children, image, header } = props;
 
   return (
-    <Box component='section' className={classes.root}>
+    <Grid item md={4} sm={9} xs={11}>
+      <Grid container direction='column' alignItems='center'>
+        <img src={image} alt={basename(image)} width='100%' height='300px' />
+        <CardContent>
+          <Typography variant='h3' gutterBottom>
+            {header}
+          </Typography>
+        </CardContent>
+        <Typography component='p' paragraph>
+          {children}
+        </Typography>
+      </Grid>
+    </Grid>
+  );
+};
+
+const Features = () => {
+  const classes = useStyles();
+
+  return (
+    <section className={classes.root}>
       <Container className={classes.container}>
-        <Grid container justify='space-around' className={classes.features}>
-          <FeaturesLayout image={filingSystem} title='サブタスク管理'>
-            つれづれなるまゝに、日暮らし、硯にむかひて、心にうつりゆくよしなし事を、そこはかとなく書きつくれば、あやしうこそものぐるほしけれ。
-          </FeaturesLayout>
-          <FeaturesLayout image={drag} title='ドラッグ&amp;ドロップ'>
-            つれづれなるまゝに、日暮らし、硯にむかひて、心にうつりゆくよしなし事を、そこはかとなく書きつくれば、あやしうこそものぐるほしけれ。
-          </FeaturesLayout>
-          <FeaturesLayout image={search} title='タスク検索'>
-            つれづれなるまゝに、日暮らし、硯にむかひて、心にうつりゆくよしなし事を、そこはかとなく書きつくれば、あやしうこそものぐるほしけれ。
-          </FeaturesLayout>
+        <Typography variant='h2' title='Features' hidden>
+          {'Features'}
+        </Typography>
+        <Grid container justify='space-around' spacing={9}>
+          <FeatureLayout image={filingSystem} header='サブタスク管理'>
+            各タスクはカードと呼ばれる単位で扱われ、リストの下に配置されます。
+            リストは複数のカードを持ち、またボード上で複数のリストを管理することができます。
+          </FeatureLayout>
+          <FeatureLayout image={drag} header='ドラッグ&amp;ドロップ'>
+            カードはドラッグによりその配置を自由に入れ替えることが可能です。
+            期限や重要度の変化に応じて常にボードの状態を更新することができます。
+          </FeatureLayout>
+          <FeatureLayout image={search} header='タスク検索'>
+            キーワードによってタスクを検索することが可能です。
+            多くの情報の中から目的のタスクを探し出す手間を省きます。
+          </FeatureLayout>
         </Grid>
-        <Box textAlign='center' mt={12} mb={8}>
-          <Button
-            variant='contained'
-            size='large'
-            color='primary'
-            component={RouterLink}
-            to='/register'
-            className={classes.buttonLink}
-          >
+        <Box mt={12} mb={8} mx='auto' width={300}>
+          <LinkButton to='/register' size='large' fullWidth>
             始める
-          </Button>
+          </LinkButton>
         </Box>
       </Container>
-    </Box>
+    </section>
   );
 };
 

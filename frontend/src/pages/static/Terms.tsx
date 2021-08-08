@@ -1,26 +1,11 @@
-import React, { useEffect } from 'react';
-
-import { Helmet } from 'react-helmet-async';
-
 import { APP_NAME } from 'config/app';
-import { Header, Footer, MarkdownWithToc } from 'layouts';
+import { BaseLayout, MarkdownWithToc } from 'layouts';
 
-const Terms: React.FC = () => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  return (
-    <React.Fragment>
-      <Helmet>
-        <title>Terms | {APP_NAME}</title>
-      </Helmet>
-      <Header />
-      <MarkdownWithToc articles={articles}>{terms}</MarkdownWithToc>
-      <Footer />
-    </React.Fragment>
-  );
-};
+const Terms = () => (
+  <BaseLayout subtitle='Terms'>
+    <MarkdownWithToc articles={articles}>{terms}</MarkdownWithToc>
+  </BaseLayout>
+);
 
 export default Terms;
 

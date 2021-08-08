@@ -1,26 +1,11 @@
-import React, { useEffect } from 'react';
-
-import { Helmet } from 'react-helmet-async';
-
 import { APP_NAME } from 'config/app';
-import { Header, Footer, MarkdownWithToc } from 'layouts';
+import { BaseLayout, MarkdownWithToc } from 'layouts';
 
-const Privacy: React.FC = () => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  return (
-    <React.Fragment>
-      <Helmet>
-        <title>Privacy Policy | {APP_NAME} </title>
-      </Helmet>
-      <Header />
-      <MarkdownWithToc articles={articles}>{privacyPolicy}</MarkdownWithToc>
-      <Footer />
-    </React.Fragment>
-  );
-};
+const Privacy = () => (
+  <BaseLayout subtitle='Privacy Policy'>
+    <MarkdownWithToc articles={articles}>{privacyPolicy}</MarkdownWithToc>
+  </BaseLayout>
+);
 
 export default Privacy;
 

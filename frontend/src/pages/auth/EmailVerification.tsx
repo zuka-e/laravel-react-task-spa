@@ -1,16 +1,14 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { useHistory } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Container, Card, Box, Typography, Button } from '@material-ui/core';
 
-import { APP_NAME } from 'config/app';
 import { removeEmailVerificationPage } from 'store/slices/authSlice';
 import { sendEmailVerificationLink } from 'store/thunks/auth';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { isAfterRegistration, isVerified } from 'utils/auth';
-import { Header, Footer } from 'layouts';
+import { BaseLayout } from 'layouts';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const EmailVerification: React.FC = () => {
+const EmailVerification = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const afterRegistration = useAppSelector(
@@ -51,11 +49,7 @@ const EmailVerification: React.FC = () => {
   };
 
   return (
-    <React.Fragment>
-      <Helmet>
-        <title>Email Verification | {APP_NAME}</title>
-      </Helmet>
-      <Header />
+    <BaseLayout subtitle='Email Verification'>
       <Container component='main' maxWidth='sm'>
         <Card className={classes.paper} elevation={2}>
           <Box mb={4}>
@@ -74,8 +68,7 @@ const EmailVerification: React.FC = () => {
           </Button>
         </Card>
       </Container>
-      <Footer />
-    </React.Fragment>
+    </BaseLayout>
   );
 };
 

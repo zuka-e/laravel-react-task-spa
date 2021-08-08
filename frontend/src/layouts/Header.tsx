@@ -1,15 +1,7 @@
 import React, { useState } from 'react';
 
-import { Link } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import {
-  AppBar,
-  Toolbar,
-  Drawer,
-  Avatar,
-  Button,
-  IconButton,
-} from '@material-ui/core';
+import { AppBar, Toolbar, Drawer, Avatar, IconButton } from '@material-ui/core';
 import {
   AccountCircle as AccountCircleIcon,
   Person as PersonIcon,
@@ -18,7 +10,7 @@ import {
 
 import { APP_NAME } from 'config/app';
 import { isSignedIn } from 'utils/auth';
-import { PopoverControl } from 'templates';
+import { LinkButton, LinkWrapper, PopoverControl } from 'templates';
 import { AccountMenuList } from 'components/layouts/Header';
 import Sidebar from './Sidebar';
 import logo from 'images/logo.svg';
@@ -28,12 +20,6 @@ const useStyles = makeStyles((theme: Theme) =>
     root: { flexGrow: 1 },
     title: { marginLeft: theme.spacing(2) },
     avatar: { backgroundColor: theme.palette.secondary.dark },
-    buttonLink: {
-      '&:hover': {
-        color: theme.palette.primary.contrastText,
-        textDecoration: 'none',
-      },
-    },
   })
 );
 
@@ -53,16 +39,9 @@ const Header: React.FC = () => {
     };
 
   const SignInLinkButton = () => (
-    <Button
-      component={Link}
-      to='/login'
-      variant='contained'
-      color='secondary'
-      startIcon={<AccountCircleIcon />}
-      className={classes.buttonLink}
-    >
+    <LinkButton to='/login' color='secondary' startIcon={<AccountCircleIcon />}>
       {'ログイン'}
-    </Button>
+    </LinkButton>
   );
 
   const AccountMenuButton = () => (
@@ -70,7 +49,7 @@ const Header: React.FC = () => {
       trigger={
         <IconButton aria-label='account-menu'>
           <Avatar alt='avatar' src={undefined} className={classes.avatar}>
-            {<PersonIcon />}
+            <PersonIcon />
           </Avatar>
         </IconButton>
       }
@@ -95,12 +74,12 @@ const Header: React.FC = () => {
           <MenuIcon />
         </IconButton>
         <Drawer anchor='left' open={open} onClose={toggleDrawer(false)}>
-          {<Sidebar toggleDrawer={toggleDrawer} />}
+          <Sidebar toggleDrawer={toggleDrawer} />
         </Drawer>
         <div className={`${classes.root} ${classes.title}`}>
-          <Link to={'/'} className={classes.buttonLink}>
+          <LinkWrapper to={'/'}>
             <img src={logo} alt={APP_NAME} width='120' height='30' />
-          </Link>
+          </LinkWrapper>
         </div>
         {isSignedIn() ? <AccountMenuButton /> : <SignInLinkButton />}
       </Toolbar>
