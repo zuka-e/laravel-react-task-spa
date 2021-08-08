@@ -167,11 +167,11 @@ class TaskListTest extends TestCase
         $boardId = $this->guestUser->taskBoards[0]->id;
         $url = $this->routePrefix . "/task_boards/${boardId}/task_lists";
 
-        // `title`
         $emptyRequest = [];
         $response = $this->postJson($url, $emptyRequest);
         $response->assertStatus(422);
 
+        // `title`
         $emptyRequest = ['title' => ''];
         $response = $this->postJson($url, $emptyRequest);
         $response->assertStatus(422);
@@ -185,13 +185,15 @@ class TaskListTest extends TestCase
         $response->assertStatus(201);
 
         // `description`
-        $tooLongRequest = $successfulRequest +
-            ['description' => str_repeat('a', floor(65535 / 3) + 1)];
+        $emptyRequest = $successfulRequest + ['description' => ''];
+        $response = $this->postJson($url, $emptyRequest);
+        $response->assertStatus(201);
+
+        $tooLongRequest = $successfulRequest + ['description' => str_repeat('a', floor(65535 / 3) + 1)];
         $response = $this->postJson($url, $tooLongRequest);
         $response->assertStatus(422);
 
-        $successfulRequest = $successfulRequest +
-            ['description' => str_repeat('亜', floor(65535 / 3))];
+        $successfulRequest = $successfulRequest + ['description' => str_repeat('亜', floor(65535 / 3))];
         $response = $this->postJson($url, $successfulRequest);
         $response->assertStatus(201);
     }
@@ -205,11 +207,11 @@ class TaskListTest extends TestCase
         $listId = $board->taskLists[0]->id;
         $url = $this->routePrefix . "/task_boards/${boardId}/task_lists/${listId}";
 
-        // `title`
         $emptyRequest = [];
         $response = $this->patchJson($url, $emptyRequest);
-        $response->assertStatus(422);
+        $response->assertStatus(200);
 
+        // `title`
         $emptyRequest = ['title' => ''];
         $response = $this->patchJson($url, $emptyRequest);
         $response->assertStatus(422);
@@ -223,13 +225,15 @@ class TaskListTest extends TestCase
         $response->assertStatus(200);
 
         // `description`
-        $tooLongRequest = $successfulRequest +
-            ['description' => str_repeat('a', floor(65535 / 3) + 1)];
+        $emptyRequest = ['description' => ''];
+        $response = $this->patchJson($url, $emptyRequest);
+        $response->assertStatus(200);
+
+        $tooLongRequest = ['description' => str_repeat('a', floor(65535 / 3) + 1)];
         $response = $this->patchJson($url, $tooLongRequest);
         $response->assertStatus(422);
 
-        $successfulRequest = $successfulRequest +
-            ['description' => str_repeat('亜', floor(65535 / 3))];
+        $successfulRequest = ['description' => str_repeat('亜', floor(65535 / 3))];
         $response = $this->patchJson($url, $successfulRequest);
         $response->assertStatus(200);
     }

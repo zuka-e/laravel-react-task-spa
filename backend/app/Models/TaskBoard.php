@@ -14,6 +14,8 @@ class TaskBoard extends Model
     {
         static::creating(function ($task_board) {
             $task_board->id = (string)Str::uuid();
+            $task_board->list_index_map = json_encode([], JSON_FORCE_OBJECT);
+            $task_board->card_index_map = json_encode([], JSON_FORCE_OBJECT);
         });
     }
 
@@ -34,11 +36,17 @@ class TaskBoard extends Model
     protected $fillable = [
         'title',
         'description',
+        'list_index_map',
+        'card_index_map',
     ];
 
     protected $hidden = [];
 
-    protected $casts = [];
+    /** @see https://laravel.com/docs/8.x/eloquent-mutators#array-and-json-casting */
+    protected $casts = [
+        'list_index_map' => 'array',
+        'card_index_map' => 'array',
+    ];
 
     public function user()
     {
