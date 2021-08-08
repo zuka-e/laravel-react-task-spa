@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -8,10 +7,9 @@ import * as yup from 'yup';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { TextField, Button, Divider, Grid, Box } from '@material-ui/core';
 
-import { APP_NAME } from 'config/app';
 import { signInWithEmail, resetPassword } from 'store/thunks/auth';
 import { useAppDispatch, useQuery } from 'utils/hooks';
-import { FormLayout } from 'layouts';
+import { BaseLayout, FormLayout } from 'layouts';
 import { LabeledCheckbox, SubmitButton } from 'templates';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -42,7 +40,7 @@ const schema = yup.object().shape({
     .oneOf([yup.ref('password'), null], 'Passwords do not match'),
 });
 
-const ResetPassword: React.FC = () => {
+const ResetPassword = () => {
   const classes = useStyles();
   const query = useQuery();
   const history = useHistory();
@@ -74,10 +72,7 @@ const ResetPassword: React.FC = () => {
   };
 
   return (
-    <React.Fragment>
-      <Helmet>
-        <title>Reset Password | {APP_NAME}</title>
-      </Helmet>
+    <BaseLayout subtitle='Reset Password' withoutHeaders>
       <FormLayout title={'Reset Password'} message={message}>
         <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
           <TextField
@@ -130,7 +125,7 @@ const ResetPassword: React.FC = () => {
           </Grid>
         </form>
       </FormLayout>
-    </React.Fragment>
+    </BaseLayout>
   );
 };
 

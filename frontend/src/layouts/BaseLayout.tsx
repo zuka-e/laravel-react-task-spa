@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet-async';
 import { APP_NAME } from 'config/app';
 import { Header, Footer } from 'layouts';
 
-type BaseLayoutProps = { subtitle: string };
+type BaseLayoutProps = { subtitle: string; withoutHeaders?: boolean };
 
 const BaseLayout: React.FC<BaseLayoutProps> = (props) => {
   return (
@@ -15,9 +15,9 @@ const BaseLayout: React.FC<BaseLayoutProps> = (props) => {
           {props.subtitle} | {APP_NAME}
         </title>
       </Helmet>
-      <Header />
+      {!props.withoutHeaders && <Header />}
       {props.children}
-      <Footer />
+      {!props.withoutHeaders && <Footer />}
     </Fragment>
   );
 };

@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -8,10 +7,9 @@ import * as yup from 'yup';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { TextField, Button, Divider, Grid, Box } from '@material-ui/core';
 
-import { APP_NAME } from 'config/app';
 import { createUser } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
-import { FormLayout } from 'layouts';
+import { BaseLayout, FormLayout } from 'layouts';
 import { LabeledCheckbox, SubmitButton } from 'templates';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -43,7 +41,7 @@ const schema = yup.object().shape({
     .oneOf([yup.ref('password'), null], 'Passwords do not match'),
 });
 
-const SignUp: React.FC = () => {
+const SignUp = () => {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useAppDispatch();
@@ -67,10 +65,7 @@ const SignUp: React.FC = () => {
   };
 
   return (
-    <React.Fragment>
-      <Helmet>
-        <title>Registration | {APP_NAME}</title>
-      </Helmet>
+    <BaseLayout subtitle='Registration' withoutHeaders>
       <FormLayout title={'Create an account'} message={message}>
         <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
           <TextField
@@ -136,7 +131,7 @@ const SignUp: React.FC = () => {
           </Grid>
         </form>
       </FormLayout>
-    </React.Fragment>
+    </BaseLayout>
   );
 };
 
