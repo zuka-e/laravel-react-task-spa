@@ -1,6 +1,14 @@
 service: laravel
 
+# https://www.serverless.com/framework/docs/deprecations#automatic-loading-environment-variables-from-env-and-envstage-files
+useDotenv: true
+
+# https://www.serverless.com/framework/docs/deprecations#configvalidationmode-error-will-be-new-default
+configValidationMode: error
+
 provider:
+  # https://www.serverless.com/framework/docs/deprecations#default-providerlambdahashingversion
+  lambdaHashingVersion: 20201221
   name: aws
   # The AWS region in which to deploy (us-east-1 is the default)
   region: us-east-1
@@ -9,13 +17,13 @@ provider:
   runtime: provided.al2
 
 package:
-  # Directories to exclude from deployment
-  exclude:
-    - node_modules/**
-    - public/storage
-    - resources/assets/**
-    - storage/**
-    - tests/**
+  # https://www.serverless.com/framework/docs/deprecations/NEW_PACKAGE_PATTERNS
+  patterns:
+    - "!node_modules/**"
+    - "!public/storage"
+    - "!resources/assets/**"
+    - "!storage/**"
+    - "!tests/**"
 
 functions:
   # This function runs the Laravel website/API
