@@ -36,8 +36,8 @@ const MarkdownWithToc: React.FC<MarkdownWithTocProps> = (props) => {
 
   return (
     <Container component='main' className={classes.container}>
-      <Grid container spacing={5} justify='space-between'>
-        <Grid item sm={4}>
+      <Grid container spacing={4} justify='space-between'>
+        <Grid item sm={4} xs={12}>
           <ul className={classes.toc}>
             {articles.map((article, id) => (
               <li key={id}>
@@ -46,7 +46,7 @@ const MarkdownWithToc: React.FC<MarkdownWithTocProps> = (props) => {
             ))}
           </ul>
         </Grid>
-        <Grid item sm={8}>
+        <Grid item sm={8} xs={12}>
           <Markdown>{children}</Markdown>
         </Grid>
       </Grid>

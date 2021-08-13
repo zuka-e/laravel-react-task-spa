@@ -9,6 +9,7 @@ export { default as LinkWrapper } from './LinkWrapper';
 export { default as LinkButton } from './LinkButton';
 export { default as ScrolledDiv } from './ScrolledDiv';
 export { default as ScrolledGridContainer } from './ScrolledGridContainer';
+export { default as ScrolledTypography } from './ScrolledTypography';
 
 // Task
 export { default as DeleteTaskDialog } from './DeleteTaskDialog';
