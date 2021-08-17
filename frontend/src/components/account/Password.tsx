@@ -6,24 +6,42 @@ import * as yup from 'yup';
 import { Theme } from '@material-ui/core/styles';
 import { useMediaQuery, Box, Grid, TextField } from '@material-ui/core';
 
-import { updatePassword } from 'store/thunks/auth';
+import { UpdatePasswordRequest, updatePassword } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { isGuest } from 'utils/auth';
 import { LabeledCheckbox, AlertMessage, SubmitButton } from 'templates';
 
-// Input items
-type FormData = {
-  current_password: string;
-  password: string;
-  password_confirmation: string;
+type FormData = UpdatePasswordRequest;
+
+const formdata: Record<keyof FormData, { id: string; label: string }> = {
+  current_password: {
+    id: 'current-password',
+    label: 'Current Password',
+  },
+  password: {
+    id: 'new-password',
+    label: 'New Password',
+  },
+  password_confirmation: {
+    id: 'password-confirmation',
+    label: 'Password Confirmation',
+  },
 };
 
-// The schema-based form validation with Yup
 const schema = yup.object().shape({
-  current_password: yup.string().required(),
-  password: yup.string().required().min(8).max(20),
+  current_password: yup
+    .string()
+    .label(formdata.current_password.label)
+    .required(),
+  password: yup
+    .string()
+    .label(formdata.password.label)
+    .required()
+    .min(8)
+    .max(20),
   password_confirmation: yup
     .string()
+    .label(formdata.password_confirmation.label)
     .oneOf([yup.ref('password'), null], 'Passwords do not match'),
 });
 
@@ -33,14 +51,11 @@ const Password = () => {
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const {
-    register, // 入力項目の登録
-    handleSubmit, // 用意された`handleSubmit`
+    register,
+    handleSubmit,
     reset,
-    formState: { errors }, // エラー情報 (メッセージなど)
-  } = useForm<FormData>({
-    mode: 'onBlur', // バリデーション判定タイミング
-    resolver: yupResolver(schema),
-  });
+    formState: { errors },
+  } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
 
   // エラー発生時はメッセージを表示する
   const onSubmit = async (data: FormData) => {
@@ -65,10 +80,10 @@ const Password = () => {
             variant='outlined'
             margin='normal'
             fullWidth
-            id='current_password'
-            label='Current Password'
+            id={formdata.current_password.id}
+            label={formdata.current_password.label}
             type={visiblePassword ? 'text' : 'password'}
-            autoComplete='current_password'
+            autoComplete={formdata.current_password.id}
             {...register('current_password')}
             helperText={errors?.current_password?.message || ' '}
             error={!!errors?.current_password}
@@ -82,10 +97,10 @@ const Password = () => {
             variant='outlined'
             margin='normal'
             fullWidth
-            id='password'
-            label='New Password'
+            id={formdata.password.id}
+            label={formdata.password.label}
             type={visiblePassword ? 'text' : 'password'}
-            autoComplete='password'
+            autoComplete={formdata.password.id}
             {...register('password')}
             helperText={errors?.password?.message || '8-20 characters'}
             error={!!errors?.password}
@@ -97,10 +112,10 @@ const Password = () => {
             variant='outlined'
             margin='normal'
             fullWidth
-            label='Password Confirmation'
+            id={formdata.password_confirmation.id}
+            label={formdata.password_confirmation.label}
             type={visiblePassword ? 'text' : 'password'}
-            id='password-confirmation'
-            autoComplete='password-confirmation'
+            autoComplete={formdata.password_confirmation.id}
             {...register('password_confirmation')}
             helperText={
               errors?.password_confirmation?.message || 'Retype password'
@@ -116,11 +131,9 @@ const Password = () => {
           setChecked={setVisiblePassword}
         />
       </Box>
-      <Box mb={1}>
-        {!isGuest() && (
-          <SubmitButton color='secondary'>パスワードを変更する</SubmitButton>
-        )}
-      </Box>
+      {!isGuest() && (
+        <SubmitButton color='secondary'>パスワードを変更する</SubmitButton>
+      )}
     </form>
   );
 };

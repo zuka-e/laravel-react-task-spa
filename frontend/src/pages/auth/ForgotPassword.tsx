@@ -7,7 +7,7 @@ import * as yup from 'yup';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { TextField, Button, Divider, Grid, Box } from '@material-ui/core';
 
-import { forgotPassword } from 'store/thunks/auth';
+import { ForgotPasswordRequest, forgotPassword } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { BaseLayout, FormLayout } from 'layouts';
 import { SubmitButton } from 'templates';
@@ -24,14 +24,17 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-// Input items
-type FormData = {
-  email: string;
+type FormData = ForgotPasswordRequest;
+
+const formdata: Record<keyof FormData, { id: string; label: string }> = {
+  email: {
+    id: 'email',
+    label: 'Email Address',
+  },
 };
 
-// The schema-based form validation with Yup
 const schema = yup.object().shape({
-  email: yup.string().email().required(),
+  email: yup.string().label(formdata.email.label).email().required(),
 });
 
 const ForgotPassword = () => {
@@ -40,13 +43,10 @@ const ForgotPassword = () => {
   const dispatch = useAppDispatch();
   const [message, setMessage] = useState<string | undefined>('');
   const {
-    register, // 入力項目の登録
-    handleSubmit, // 用意された`handleSubmit`
-    formState: { errors }, // エラー情報 (メッセージなど)
-  } = useForm<FormData>({
-    mode: 'onChange', // バリデーション判定タイミング
-    resolver: yupResolver(schema),
-  });
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
 
   // エラー発生時はメッセージを表示する
   const onSubmit = async (data: FormData) => {
@@ -65,9 +65,9 @@ const ForgotPassword = () => {
             margin='normal'
             required
             fullWidth
-            id='email'
-            label='Email Address'
-            autoComplete='email'
+            id={formdata.email.id}
+            label={formdata.email.label}
+            autoComplete={formdata.email.id}
             {...register('email')}
             helperText={errors?.email?.message}
             error={!!errors?.email}

@@ -7,7 +7,7 @@ import * as yup from 'yup';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { TextField, Button, Divider, Grid, Box } from '@material-ui/core';
 
-import { createUser } from 'store/thunks/auth';
+import { SignUpRequest, createUser } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { BaseLayout, FormLayout } from 'layouts';
 import { LabeledCheckbox, SubmitButton } from 'templates';
@@ -25,19 +25,35 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 // Input items
-type FormData = {
-  name: string;
-  email: string;
-  password: string;
-  password_confirmation: string;
+type FormData = SignUpRequest;
+
+const formdata: Record<keyof FormData, { id: string; label: string }> = {
+  email: {
+    id: 'email',
+    label: 'Email Address',
+  },
+  password: {
+    id: 'password',
+    label: 'Password',
+  },
+  password_confirmation: {
+    id: 'password-confirmation',
+    label: 'Password Confirmation',
+  },
 };
 
 // The schema-based form validation with Yup
 const schema = yup.object().shape({
-  email: yup.string().email().required(),
-  password: yup.string().required().min(8).max(20),
+  email: yup.string().label(formdata.email.label).email().required(),
+  password: yup
+    .string()
+    .label(formdata.password.label)
+    .required()
+    .min(8)
+    .max(20),
   password_confirmation: yup
     .string()
+    .label(formdata.password_confirmation.label)
     .oneOf([yup.ref('password'), null], 'Passwords do not match'),
 });
 
@@ -52,7 +68,7 @@ const SignUp = () => {
     handleSubmit, // 用意された`handleSubmit`
     formState: { errors }, // エラー情報 (メッセージなど)
   } = useForm<FormData>({
-    mode: 'onChange', // バリデーション判定タイミング
+    mode: 'onBlur', // バリデーション判定タイミング
     resolver: yupResolver(schema),
   });
 
@@ -73,9 +89,9 @@ const SignUp = () => {
             margin='normal'
             required
             fullWidth
-            id='email'
-            label='Email Address'
-            autoComplete='email'
+            id={formdata.email.id}
+            label={formdata.email.label}
+            autoComplete={formdata.email.id}
             {...register('email')}
             helperText={errors?.email?.message}
             error={!!errors?.email}
@@ -85,10 +101,10 @@ const SignUp = () => {
             margin='normal'
             required
             fullWidth
-            label='Password'
+            id={formdata.password.id}
+            label={formdata.password.label}
             type={visiblePassword ? 'text' : 'password'}
-            id='password'
-            autoComplete='current-password'
+            autoComplete={formdata.password.id}
             {...register('password')}
             helperText={errors?.password?.message || '8-20 characters'}
             error={!!errors?.password}
@@ -98,10 +114,10 @@ const SignUp = () => {
             // margin='normal'
             required
             fullWidth
-            label='Password Confirmation'
+            id={formdata.password_confirmation.id}
+            label={formdata.password_confirmation.label}
             type={visiblePassword ? 'text' : 'password'}
-            id='password-confirmation'
-            autoComplete='password-confirmation'
+            autoComplete={formdata.password_confirmation.id}
             {...register('password_confirmation')}
             helperText={
               errors?.password_confirmation?.message || 'Retype password'

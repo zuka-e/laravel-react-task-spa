@@ -6,21 +6,27 @@ import * as yup from 'yup';
 import { Theme } from '@material-ui/core/styles';
 import { useMediaQuery, Box, Grid, TextField } from '@material-ui/core';
 
-import { updateProfile } from 'store/thunks/auth';
+import { UpdateProfileRequest, updateProfile } from 'store/thunks/auth';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { isGuest } from 'utils/auth';
 import { AlertMessage, SubmitButton } from 'templates';
 
-// Input items
-type FormData = {
-  name: string;
-  email: string;
+type FormData = UpdateProfileRequest;
+
+const formdata: Record<keyof FormData, { id: string; label: string }> = {
+  name: {
+    id: 'name',
+    label: 'Username',
+  },
+  email: {
+    id: 'email',
+    label: 'Email Address',
+  },
 };
 
-// The schema-based form validation with Yup
 const schema = yup.object().shape({
-  name: yup.string().min(2).max(60),
-  email: yup.string().email().max(255),
+  name: yup.string().label(formdata.name.label).min(2).max(60),
+  email: yup.string().label(formdata.email.label).email().max(255),
 });
 
 const UserProfile = () => {
@@ -36,13 +42,10 @@ const UserProfile = () => {
   const dispatch = useAppDispatch();
   const [message, setMessage] = useState<string | undefined>('');
   const {
-    register, // 入力項目の登録
-    handleSubmit, // 用意された`handleSubmit`
-    formState: { errors }, // エラー情報 (メッセージなど)
-  } = useForm<FormData>({
-    mode: 'onBlur', // バリデーション判定タイミング
-    resolver: yupResolver(schema),
-  });
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
 
   // エラー発生時はメッセージを表示する
   const onSubmit = async (data: FormData) => {
@@ -58,9 +61,9 @@ const UserProfile = () => {
     }
 
     const response = await dispatch(updateProfile(data));
-    if (updateProfile.rejected.match(response)) {
+    if (updateProfile.rejected.match(response))
       setMessage(response.payload?.error?.message);
-    } else setMessage('');
+    else setMessage('');
   };
 
   return (
@@ -75,9 +78,9 @@ const UserProfile = () => {
             variant='outlined'
             margin='normal'
             fullWidth
-            id='name'
-            label='Username'
-            autoComplete='name'
+            id={formdata.name.id}
+            label={formdata.name.label}
+            autoComplete={formdata.name.id}
             defaultValue={user?.name}
             {...register('name')}
             helperText={errors?.name?.message || '2-60 characters'}
@@ -90,9 +93,9 @@ const UserProfile = () => {
             variant='outlined'
             margin='normal'
             fullWidth
-            id='email'
-            label='Email Address'
-            autoComplete='email'
+            id={formdata.email.id}
+            label={formdata.email.label}
+            autoComplete={formdata.email.id}
             defaultValue={user?.email}
             {...register('email')}
             helperText={errors?.email?.message}

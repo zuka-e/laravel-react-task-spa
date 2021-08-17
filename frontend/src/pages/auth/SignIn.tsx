@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core';
 
 import { APP_NAME } from 'config/app';
-import { signInWithEmail } from 'store/thunks/auth';
+import { SignInRequest, signInWithEmail } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { BaseLayout, FormLayout } from 'layouts';
 import { LabeledCheckbox, SubmitButton } from 'templates';
@@ -33,17 +33,31 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-// Input items
-type FormData = {
-  email: string;
-  password: string;
-  remember?: string;
+type FormData = SignInRequest;
+
+const formdata: Record<keyof FormData, { id: string; label: string }> = {
+  email: {
+    id: 'email',
+    label: 'Email Address',
+  },
+  password: {
+    id: 'password',
+    label: 'Password',
+  },
+  remember: {
+    id: 'remember',
+    label: 'Remember me',
+  },
 };
 
-// The schema-based form validation with Yup
 const schema = yup.object().shape({
-  email: yup.string().email().required(),
-  password: yup.string().required().min(8).max(20),
+  email: yup.string().label(formdata.email.label).email().required(),
+  password: yup
+    .string()
+    .label(formdata.password.label)
+    .required()
+    .min(8)
+    .max(20),
 });
 
 const SignIn = () => {
@@ -53,13 +67,10 @@ const SignIn = () => {
   const [message, setMessage] = useState<string | undefined>('');
   const history = useHistory();
   const {
-    register, // 入力項目の登録
-    handleSubmit, // 用意された`handleSubmit`
-    formState: { errors }, // エラー情報 (メッセージなど)
-  } = useForm<FormData>({
-    mode: 'onChange', // バリデーション判定タイミング
-    resolver: yupResolver(schema),
-  });
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
 
   // エラー発生時はメッセージを表示する
   const onSubmit = async (data: FormData) => {
@@ -78,9 +89,9 @@ const SignIn = () => {
             margin='normal'
             required
             fullWidth
-            id='email'
-            label='Email Address'
-            autoComplete='email'
+            id={formdata.email.id}
+            label={formdata.email.label}
+            autoComplete={formdata.email.id}
             {...register('email')}
             helperText={errors?.email?.message}
             error={!!errors?.email}
@@ -90,10 +101,10 @@ const SignIn = () => {
             margin='normal'
             required
             fullWidth
-            label='Password'
+            id={formdata.password.id}
+            label={formdata.password.label}
             type={visiblePassword ? 'text' : 'password'}
-            id='password'
-            autoComplete='current-password'
+            autoComplete={formdata.password.id}
             {...register('password')}
             helperText={errors?.password?.message || '8-20 characters'}
             error={!!errors?.password}
@@ -106,10 +117,11 @@ const SignIn = () => {
             />
           </Box>
           <FormControlLabel
+            id={formdata.remember.id}
+            label={formdata.remember.label}
             control={
               <Checkbox {...register('remember')} value='on' color='primary' />
             }
-            label='Remember me'
           />
           <Box mt={4} mb={3}>
             <SubmitButton fullWidth> Sign In</SubmitButton>
