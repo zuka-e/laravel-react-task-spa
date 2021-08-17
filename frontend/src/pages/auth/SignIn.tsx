@@ -23,10 +23,6 @@ import { LabeledCheckbox, SubmitButton } from 'templates';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    form: {
-      width: '100%', // Fix IE 11 issue.
-      marginTop: theme.spacing(3),
-    },
     link: {
       color: theme.palette.info.dark,
     },
@@ -83,7 +79,7 @@ const SignIn = () => {
   return (
     <BaseLayout subtitle='Sign In' withoutHeaders>
       <FormLayout title={`Sign in to ${APP_NAME}`} message={message}>
-        <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
             variant='outlined'
             margin='normal'

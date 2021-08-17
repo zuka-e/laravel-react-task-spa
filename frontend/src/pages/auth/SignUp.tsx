@@ -14,10 +14,6 @@ import { LabeledCheckbox, SubmitButton } from 'templates';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    form: {
-      width: '100%', // Fix IE 11 issue.
-      marginTop: theme.spacing(3),
-    },
     link: {
       color: theme.palette.info.dark,
     },
@@ -83,7 +79,7 @@ const SignUp = () => {
   return (
     <BaseLayout subtitle='Registration' withoutHeaders>
       <FormLayout title={'Create an account'} message={message}>
-        <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
             variant='outlined'
             margin='normal'
@@ -131,10 +127,10 @@ const SignUp = () => {
               setChecked={setVisiblePassword}
             />
           </Box>
-          <Box mt={4} mb={3}>
+          <Box my={4}>
             <SubmitButton fullWidth> Create an account</SubmitButton>
           </Box>
-          <Box mt={1} mb={2}>
+          <Box mb={2}>
             <Divider />
           </Box>
           <Grid container justify='flex-end'>

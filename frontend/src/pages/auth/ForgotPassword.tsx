@@ -14,10 +14,6 @@ import { SubmitButton } from 'templates';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    form: {
-      width: '100%', // Fix IE 11 issue.
-      marginTop: theme.spacing(3),
-    },
     link: {
       color: theme.palette.info.dark,
     },
@@ -59,7 +55,7 @@ const ForgotPassword = () => {
   return (
     <BaseLayout subtitle='Forgot Password' withoutHeaders>
       <FormLayout title={'Forgot Password?'} message={message}>
-        <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
             variant='outlined'
             margin='normal'
@@ -72,10 +68,10 @@ const ForgotPassword = () => {
             helperText={errors?.email?.message}
             error={!!errors?.email}
           />
-          <Box mt={4} mb={3}>
+          <Box my={4}>
             <SubmitButton fullWidth>Send password reset email</SubmitButton>
           </Box>
-          <Box mt={1} mb={2}>
+          <Box mb={2}>
             <Divider />
           </Box>
           <Grid container justify='flex-end'>
