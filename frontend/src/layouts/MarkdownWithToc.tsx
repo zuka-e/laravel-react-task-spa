@@ -1,9 +1,7 @@
-import React from 'react';
-
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Container, Grid, Link } from '@material-ui/core';
 
-import Markdown from 'templates/Markdown';
+import { Markdown } from 'templates';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
