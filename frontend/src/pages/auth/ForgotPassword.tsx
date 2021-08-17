@@ -37,9 +37,9 @@ const ForgotPassword = () => {
   // エラー発生時はメッセージを表示する
   const onSubmit = async (data: FormData) => {
     const response = await dispatch(forgotPassword(data));
-    if (forgotPassword.rejected.match(response)) {
+    if (forgotPassword.rejected.match(response))
       setMessage(response.payload?.error?.message);
-    }
+    else setMessage('');
   };
 
   return (
