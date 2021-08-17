@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Box, Grid, TextField } from '@material-ui/core';
+import { Theme } from '@material-ui/core/styles';
+import { useMediaQuery, Box, Grid, TextField } from '@material-ui/core';
 
 import { updateProfile } from 'store/thunks/auth';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
@@ -23,6 +24,7 @@ const schema = yup.object().shape({
 });
 
 const UserProfile = () => {
+  const aboveXs = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
   /**
    * `Account`ページは認証ルートのため以下が成立
    * - `signedIn` === `true` && `user`!== `null` -> `user!`
@@ -63,7 +65,7 @@ const UserProfile = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Grid container spacing={2}>
+      <Grid container spacing={aboveXs ? 2 : 0}>
         <Grid item xs={12}>
           {message && <AlertMessage severity='error' body={message} />}
         </Grid>

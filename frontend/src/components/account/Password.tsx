@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Box, Grid, TextField } from '@material-ui/core';
+import { Theme } from '@material-ui/core/styles';
+import { useMediaQuery, Box, Grid, TextField } from '@material-ui/core';
 
 import { updatePassword } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
@@ -26,7 +27,8 @@ const schema = yup.object().shape({
     .oneOf([yup.ref('password'), null], 'Passwords do not match'),
 });
 
-const Password: React.FC = () => {
+const Password = () => {
+  const aboveXs = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
   const dispatch = useAppDispatch();
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
@@ -53,7 +55,7 @@ const Password: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Grid container spacing={2}>
+      <Grid container spacing={aboveXs ? 2 : 0}>
         <Grid item xs={12}>
           {message && <AlertMessage severity='error' body={message} />}
         </Grid>
@@ -68,12 +70,12 @@ const Password: React.FC = () => {
             type={visiblePassword ? 'text' : 'password'}
             autoComplete='current_password'
             {...register('current_password')}
-            helperText={errors?.current_password?.message}
+            helperText={errors?.current_password?.message || ' '}
             error={!!errors?.current_password}
           />
         </Grid>
       </Grid>
-      <Grid container spacing={2}>
+      <Grid container spacing={aboveXs ? 2 : 0}>
         <Grid item md={6} xs={12}>
           <TextField
             disabled={isGuest()}
