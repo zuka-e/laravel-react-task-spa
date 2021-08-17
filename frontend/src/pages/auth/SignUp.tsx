@@ -4,21 +4,12 @@ import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { TextField, Button, Divider, Grid, Box } from '@material-ui/core';
+import { TextField, Divider, Grid, Box } from '@material-ui/core';
 
 import { SignUpRequest, createUser } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { BaseLayout, FormLayout } from 'layouts';
-import { LabeledCheckbox, SubmitButton } from 'templates';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    link: {
-      color: theme.palette.info.dark,
-    },
-  })
-);
+import { AlertButton, LabeledCheckbox, SubmitButton } from 'templates';
 
 // Input items
 type FormData = SignUpRequest;
@@ -54,7 +45,6 @@ const schema = yup.object().shape({
 });
 
 const SignUp = () => {
-  const classes = useStyles();
   const history = useHistory();
   const dispatch = useAppDispatch();
   const [visiblePassword, setVisiblePassword] = useState(false);
@@ -128,17 +118,22 @@ const SignUp = () => {
             />
           </Box>
           <Box my={4}>
-            <SubmitButton fullWidth> Create an account</SubmitButton>
+            <SubmitButton fullWidth>{'Create an account'}</SubmitButton>
           </Box>
           <Box mb={2}>
             <Divider />
           </Box>
           <Grid container justify='flex-end'>
             <Grid item>
-              Already have an account?&nbsp;
-              <Button size='small' onClick={() => history.push('/login')}>
-                <span className={classes.link}>Sign in</span>
-              </Button>
+              {'Already have an account? '}
+              <AlertButton
+                color='info'
+                variant='text'
+                size='small'
+                onClick={() => history.push('/login')}
+              >
+                {'Sign in'}
+              </AlertButton>
             </Grid>
           </Grid>
         </form>

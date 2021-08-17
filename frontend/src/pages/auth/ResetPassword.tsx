@@ -4,8 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { TextField, Button, Divider, Grid, Box } from '@material-ui/core';
+import { TextField, Divider, Grid, Box } from '@material-ui/core';
 
 import {
   ResetPasswordRequest,
@@ -14,15 +13,7 @@ import {
 } from 'store/thunks/auth';
 import { useAppDispatch, useQuery } from 'utils/hooks';
 import { BaseLayout, FormLayout } from 'layouts';
-import { LabeledCheckbox, SubmitButton } from 'templates';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    link: {
-      color: theme.palette.info.dark,
-    },
-  })
-);
+import { AlertButton, LabeledCheckbox, SubmitButton } from 'templates';
 
 type FormData = ResetPasswordRequest;
 
@@ -51,7 +42,6 @@ const schema = yup.object().shape({
 });
 
 const ResetPassword = () => {
-  const classes = useStyles();
   const query = useQuery();
   const history = useHistory();
   const dispatch = useAppDispatch();
@@ -121,16 +111,21 @@ const ResetPassword = () => {
             />
           </Box>
           <Box my={4}>
-            <SubmitButton fullWidth>Reset Password</SubmitButton>
+            <SubmitButton fullWidth>{'Reset Password'}</SubmitButton>
           </Box>
           <Box mb={2}>
             <Divider />
           </Box>
           <Grid container justify='flex-end'>
             <Grid item>
-              <Button size='small' onClick={() => history.push('/')}>
-                <span className={classes.link}>Cancel</span>
-              </Button>
+              <AlertButton
+                color='info'
+                variant='text'
+                size='small'
+                onClick={() => history.push('/')}
+              >
+                {'Cancel'}
+              </AlertButton>
             </Grid>
           </Grid>
         </form>

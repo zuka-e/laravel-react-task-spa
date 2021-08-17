@@ -4,21 +4,12 @@ import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { TextField, Button, Divider, Grid, Box } from '@material-ui/core';
+import { TextField, Divider, Grid, Box } from '@material-ui/core';
 
 import { ForgotPasswordRequest, forgotPassword } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { BaseLayout, FormLayout } from 'layouts';
-import { SubmitButton } from 'templates';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    link: {
-      color: theme.palette.info.dark,
-    },
-  })
-);
+import { AlertButton, SubmitButton } from 'templates';
 
 type FormData = ForgotPasswordRequest;
 
@@ -34,7 +25,6 @@ const schema = yup.object().shape({
 });
 
 const ForgotPassword = () => {
-  const classes = useStyles();
   const history = useHistory();
   const dispatch = useAppDispatch();
   const [message, setMessage] = useState<string | undefined>('');
@@ -69,17 +59,22 @@ const ForgotPassword = () => {
             error={!!errors?.email}
           />
           <Box my={4}>
-            <SubmitButton fullWidth>Send password reset email</SubmitButton>
+            <SubmitButton fullWidth>{'Send password reset email'}</SubmitButton>
           </Box>
           <Box mb={2}>
             <Divider />
           </Box>
           <Grid container justify='flex-end'>
             <Grid item>
-              Back to
-              <Button size='small' onClick={() => history.push('/login')}>
-                <span className={classes.link}>Sign in</span>
-              </Button>
+              {'Back to'}
+              <AlertButton
+                color='info'
+                variant='text'
+                size='small'
+                onClick={() => history.push('/login')}
+              >
+                {'Sign in'}
+              </AlertButton>
             </Grid>
           </Grid>
         </form>
