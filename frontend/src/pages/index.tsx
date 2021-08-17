@@ -29,7 +29,7 @@ const Home: React.FC = () => {
   const userId = useAppSelector((state) => state.auth.user?.id);
 
   useEffect(() => {
-    isSignedIn() && history.push(`users/${userId}/boards`);
+    isSignedIn() && history.replace(`users/${userId}/boards`);
   }, [history, userId]);
 
   return (
