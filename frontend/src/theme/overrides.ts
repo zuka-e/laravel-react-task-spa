@@ -29,7 +29,11 @@ const overrides: Overrides = {
       textOverflow: 'ellipsis',
     },
   },
-  MuiTypography: { gutterBottom: { marginBottom: '1rem' } },
+  MuiTypography: {
+    gutterBottom: {
+      '&:not(div)': { marginBottom: '1.2rem' },
+    },
+  },
 };
 
 export default overrides;
