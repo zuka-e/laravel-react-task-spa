@@ -1,3 +1,5 @@
+import { Fragment } from 'react';
+
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Backdrop, CircularProgress } from '@material-ui/core';
 
@@ -15,6 +17,8 @@ const useStyles = makeStyles((theme: Theme) =>
 const Loading = () => {
   const classes = useStyles();
   const loading = useAppSelector((state) => state.auth.loading);
+
+  if (!loading) return <Fragment />;
 
   return (
     <Backdrop className={classes.backdrop} open={!!loading}>

@@ -4,62 +4,58 @@ import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
   TextField,
   Checkbox,
   FormControlLabel,
-  Button,
   Divider,
   Grid,
   Box,
 } from '@material-ui/core';
 
 import { APP_NAME } from 'config/app';
-import { signInWithEmail } from 'store/thunks/auth';
+import { SignInRequest, signInWithEmail } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { BaseLayout, FormLayout } from 'layouts';
-import { LabeledCheckbox, SubmitButton } from 'templates';
+import { AlertButton, LabeledCheckbox, SubmitButton } from 'templates';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    form: {
-      width: '100%', // Fix IE 11 issue.
-      marginTop: theme.spacing(3),
-    },
-    link: {
-      color: theme.palette.info.dark,
-    },
-  })
-);
+type FormData = SignInRequest;
 
-// Input items
-type FormData = {
-  email: string;
-  password: string;
-  remember?: string;
+const formdata: Record<keyof FormData, { id: string; label: string }> = {
+  email: {
+    id: 'email',
+    label: 'Email Address',
+  },
+  password: {
+    id: 'password',
+    label: 'Password',
+  },
+  remember: {
+    id: 'remember',
+    label: 'Remember me',
+  },
 };
 
-// The schema-based form validation with Yup
 const schema = yup.object().shape({
-  email: yup.string().email().required(),
-  password: yup.string().required().min(8).max(20),
+  email: yup.string().label(formdata.email.label).email().required(),
+  password: yup
+    .string()
+    .label(formdata.password.label)
+    .required()
+    .min(8)
+    .max(20),
 });
 
 const SignIn = () => {
-  const classes = useStyles();
   const dispatch = useAppDispatch();
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const history = useHistory();
   const {
-    register, // 入力項目の登録
-    handleSubmit, // 用意された`handleSubmit`
-    formState: { errors }, // エラー情報 (メッセージなど)
-  } = useForm<FormData>({
-    mode: 'onChange', // バリデーション判定タイミング
-    resolver: yupResolver(schema),
-  });
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({ mode: 'onBlur', resolver: yupResolver(schema) });
 
   // エラー発生時はメッセージを表示する
   const onSubmit = async (data: FormData) => {
@@ -72,15 +68,15 @@ const SignIn = () => {
   return (
     <BaseLayout subtitle='Sign In' withoutHeaders>
       <FormLayout title={`Sign in to ${APP_NAME}`} message={message}>
-        <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
             variant='outlined'
             margin='normal'
             required
             fullWidth
-            id='email'
-            label='Email Address'
-            autoComplete='email'
+            id={formdata.email.id}
+            label={formdata.email.label}
+            autoComplete={formdata.email.id}
             {...register('email')}
             helperText={errors?.email?.message}
             error={!!errors?.email}
@@ -90,10 +86,10 @@ const SignIn = () => {
             margin='normal'
             required
             fullWidth
-            label='Password'
+            id={formdata.password.id}
+            label={formdata.password.label}
             type={visiblePassword ? 'text' : 'password'}
-            id='password'
-            autoComplete='current-password'
+            autoComplete={formdata.password.id}
             {...register('password')}
             helperText={errors?.password?.message || '8-20 characters'}
             error={!!errors?.password}
@@ -106,26 +102,37 @@ const SignIn = () => {
             />
           </Box>
           <FormControlLabel
+            id={formdata.remember.id}
+            label={formdata.remember.label}
             control={
               <Checkbox {...register('remember')} value='on' color='primary' />
             }
-            label='Remember me'
           />
-          <Box mt={4} mb={3}>
-            <SubmitButton fullWidth> Sign In</SubmitButton>
+          <Box my={4}>
+            <SubmitButton fullWidth>{'Sign In'}</SubmitButton>
           </Box>
-          <Button size='small' onClick={() => history.push('/forgot-password')}>
-            <span className={classes.link}>Forgot password?</span>
-          </Button>
-          <Box mt={1} mb={2}>
+          <AlertButton
+            color='info'
+            variant='text'
+            size='small'
+            onClick={() => history.push('/forgot-password')}
+          >
+            {'Forgot password?'}
+          </AlertButton>
+          <Box my={2}>
             <Divider />
           </Box>
           <Grid container justify='flex-end'>
             <Grid item>
-              New to {APP_NAME}?&nbsp;
-              <Button size='small' onClick={() => history.push('/register')}>
-                <span className={classes.link}>Create an account</span>
-              </Button>
+              {`New to ${APP_NAME}? `}
+              <AlertButton
+                color='info'
+                variant='text'
+                size='small'
+                onClick={() => history.push('/register')}
+              >
+                {'Create an account'}
+              </AlertButton>
             </Grid>
           </Grid>
         </form>

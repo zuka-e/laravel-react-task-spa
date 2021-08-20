@@ -3,34 +3,38 @@ import { Button, ButtonProps } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    success: {
+    contained_success: {
       color: theme.palette.primary.contrastText,
       backgroundColor: theme.palette.success.main,
       '&:hover': {
         backgroundColor: theme.palette.success.dark,
       },
     },
-    info: {
+    contained_info: {
       color: theme.palette.primary.contrastText,
       backgroundColor: theme.palette.info.light,
       '&:hover': {
         backgroundColor: theme.palette.info.main,
       },
     },
-    warning: {
+    contained_warning: {
       color: theme.palette.primary.contrastText,
       backgroundColor: theme.palette.warning.main,
       '&:hover': {
         backgroundColor: theme.palette.warning.dark,
       },
     },
-    danger: {
+    contained_danger: {
       color: theme.palette.primary.contrastText,
       backgroundColor: theme.palette.error.main,
       '&:hover': {
         backgroundColor: theme.palette.error.dark,
       },
     },
+    text_success: { color: theme.palette.success.main },
+    text_info: { color: theme.palette.info.main },
+    text_warning: { color: theme.palette.warning.main },
+    text_danger: { color: theme.palette.error.main },
   })
 );
 
@@ -38,16 +42,20 @@ type Color = 'success' | 'info' | 'warning' | 'danger';
 
 type AlertButtonProps = {
   color: Color;
-} & Omit<ButtonProps, 'color' | 'variant'>;
+  variant?: 'contained' | 'text';
+} & Omit<ButtonProps, 'color'>;
 
 const AlertButton: React.FC<AlertButtonProps> = (props) => {
-  const { color, className, ...buttonProps } = props;
+  const { color, variant, className, ...buttonProps } = props;
   const classes = useStyles();
+  const classKey = `${variant || 'contained'}_${color}` as const;
 
   return (
     <Button
-      className={className ? `${className} ${classes[color]}` : classes[color]}
-      variant='contained'
+      className={
+        className ? `${className} ${classes[classKey]}` : classes[classKey]
+      }
+      variant={variant || 'contained'}
       {...buttonProps}
     />
   );
