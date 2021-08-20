@@ -1,0 +1,104 @@
+service: laravel
+
+# https://www.serverless.com/framework/docs/deprecations#automatic-loading-environment-variables-from-env-and-envstage-files
+useDotenv: true
+
+# https://www.serverless.com/framework/docs/deprecations#configvalidationmode-error-will-be-new-default
+configValidationMode: error
+
+# https://www.serverless.com/framework/docs/providers/aws/guide/variables#reference-variables-using-the-ssm-parameter-store
+variablesResolutionMode: 20210326
+
+provider:
+  # https://www.serverless.com/framework/docs/deprecations#default-providerlambdahashingversion
+  lambdaHashingVersion: 20201221
+  name: aws
+  region: ${env:AWS_DEFAULT_REGION}
+  stage: ${opt:stage, "production"}
+  runtime: provided.al2
+  # https://www.serverless.com/framework/docs/providers/aws/guide/variables
+  environment:
+    APP_NAME: ${env:APP_NAME}
+    APP_KEY: ${env:APP_KEY}
+    APP_URL: ${env:APP_URL}
+    API_ROUTE_PREFIX: ${env:API_ROUTE_PREFIX}
+    API_VERSION: ${env:API_VERSION}
+    LOG_CHANNEL: ${env:LOG_CHANNEL, "stderr"}
+    MIX_ASSET_URL: ${ssm:/${env:APP_NAME}/${sls:stage}/MIX_ASSET_URL}
+    DB_CONNECTION: ${env:DB_CONNECTION}
+    DB_PORT: ${env:DB_PORT}
+    DB_HOST: ${ssm:/${env:APP_NAME}/${sls:stage}/DB_HOST}
+    DB_DATABASE: ${ssm:/${env:APP_NAME}/${sls:stage}/DB_DATABASE}
+    DB_USERNAME: ${ssm:/${env:APP_NAME}/${sls:stage}/DB_USERNAME}
+    DB_PASSWORD: ${ssm:/${env:APP_NAME}/${sls:stage}/DB_PASSWORD}
+    CACHE_DRIVER: ${env:CACHE_DRIVER}
+    QUEUE_CONNECTION: ${env:QUEUE_CONNECTION}
+    SESSION_DRIVER: ${env:SESSION_DRIVER}
+    SESSION_DOMAIN: ${env:SESSION_DOMAIN}
+    SESSION_LIFETIME: ${env:SESSION_LIFETIME}
+    SESSION_SECURE_COOKIE: ${env:SESSION_SECURE_COOKIE, "true"}
+    SANCTUM_STATEFUL_DOMAINS: ${env:SANCTUM_STATEFUL_DOMAINS}
+    SPA_URL: ${env:SPA_URL}
+    MAIL_MAILER: ${env:MAIL_MAILER}
+    MAIL_PORT: ${env:MAIL_PORT}
+    MAIL_HOST: ${env:MAIL_HOST}
+    MAIL_USERNAME: ${ssm:/${env:APP_NAME}/${sls:stage}/MAIL_USERNAME}
+    MAIL_PASSWORD: ${ssm:/${env:APP_NAME}/${sls:stage}/MAIL_PASSWORD}
+    MAIL_ENCRYPTION: ${env:MAIL_ENCRYPTION}
+    MAIL_FROM_ADDRESS: ${env:MAIL_FROM_ADDRESS}
+    MAIL_FROM_NAME: ${env:MAIL_FROM_NAME}
+    ADMIN_EMAIL: ${ssm:/${env:APP_NAME}/${sls:stage}/ADMIN_EMAIL}
+    GUEST_NAME: ${env:GUEST_NAME}
+    GUEST_EMAIL: ${env:GUEST_EMAIL}
+    GUEST_PASSWORD: ${env:GUEST_PASSWORD}
+  # https://www.serverless.com/framework/docs/providers/aws/guide/functions#vpc-configuration
+  vpc:
+    securityGroupIds:
+      - ${env:SECURITY_GROUP_ID_A}
+    subnetIds:
+      - ${env:SUBNET_ID_A}
+      - ${env:SUBNET_ID_B}
+      - ${env:SUBNET_ID_C}
+      - ${env:SUBNET_ID_D}
+      - ${env:SUBNET_ID_E}
+      - ${env:SUBNET_ID_F}
+
+package:
+  # https://www.serverless.com/framework/docs/deprecations/NEW_PACKAGE_PATTERNS
+  patterns:
+    - "!node_modules/**"
+    - "!public/storage"
+    - "!resources/assets/**"
+    - "!storage/**"
+    - "!tests/**"
+
+functions:
+  # This function runs the Laravel website/API
+  web:
+    handler: public/index.php
+    timeout: 28 # in seconds (API Gateway has a timeout of 29 seconds)
+    layers:
+      - ${bref:layer.php-80-fpm}
+    events:
+      - httpApi: "*"
+  # This function lets us run artisan commands in Lambda
+  artisan:
+    handler: artisan
+    timeout: 120 # in seconds
+    layers:
+      - ${bref:layer.php-80} # PHP
+      - ${bref:layer.console} # The "console" layer
+  # https://www.serverless.com/framework/docs/providers/aws/events/schedule/
+  # https://bref.sh/docs/function/cron.html
+  deleteUnverifiedUser:
+    handler: functions/DeleteUnverifiedUser.php
+    timeout: 120
+    layers:
+      - ${bref:layer.php-80}
+    description: "Delete unverified users every day at 3AM(UTC+9)"
+    events:
+      - schedule: cron(0 18 * * ? *)
+
+plugins:
+  # We need to include the Bref plugin
+  - ./vendor/bref/bref

@@ -37,7 +37,7 @@ Route::group([
     Route::get('/users/auth', fn () => new UserResource(Auth::user()));
 
     Route::delete('/users/auth', function (Request $request) {
-        $request->usefr()->delete();
+        $request->user()->delete();
         return response()->json([], 204);
     });
 
@@ -46,15 +46,11 @@ Route::group([
     | Task
     |--------------------------------------------------------------
     */
-    Route::group([
-        'middleware' => 'verified'
-    ], function () {
-        Route::apiResource('users.task_boards', TaskBoardController::class);
-        Route::apiResource('task_boards.task_lists', TaskListController::class)
-            ->only('store', 'update', 'destroy');
-        Route::apiResource('task_lists.task_cards', TaskCardController::class)
-            ->only('store', 'update', 'destroy');
-    });
+    Route::apiResource('users.task_boards', TaskBoardController::class);
+    Route::apiResource('task_boards.task_lists', TaskListController::class)
+        ->only('store', 'update', 'destroy');
+    Route::apiResource('task_lists.task_cards', TaskCardController::class)
+        ->only('store', 'update', 'destroy');
 });
 
 /*
