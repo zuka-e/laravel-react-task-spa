@@ -3,8 +3,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Theme } from '@material-ui/core/styles';
-import { useMediaQuery, Box, Grid, TextField } from '@material-ui/core';
+import { Box, Grid, TextField } from '@material-ui/core';
 
 import { UpdatePasswordRequest, updatePassword } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
@@ -46,7 +45,6 @@ const schema = yup.object().shape({
 });
 
 const Password = () => {
-  const aboveXs = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
   const dispatch = useAppDispatch();
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
@@ -70,7 +68,7 @@ const Password = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Grid container spacing={aboveXs ? 2 : 0}>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
           {message && <AlertMessage severity='error' body={message} />}
         </Grid>
@@ -78,7 +76,6 @@ const Password = () => {
           <TextField
             disabled={isGuest()}
             variant='outlined'
-            margin='normal'
             fullWidth
             id={formdata.current_password.id}
             label={formdata.current_password.label}
@@ -90,12 +87,11 @@ const Password = () => {
           />
         </Grid>
       </Grid>
-      <Grid container spacing={aboveXs ? 2 : 0}>
+      <Grid container spacing={2}>
         <Grid item md={6} xs={12}>
           <TextField
             disabled={isGuest()}
             variant='outlined'
-            margin='normal'
             fullWidth
             id={formdata.password.id}
             label={formdata.password.label}
@@ -110,7 +106,6 @@ const Password = () => {
           <TextField
             disabled={isGuest()}
             variant='outlined'
-            margin='normal'
             fullWidth
             id={formdata.password_confirmation.id}
             label={formdata.password_confirmation.label}
@@ -131,9 +126,7 @@ const Password = () => {
           setChecked={setVisiblePassword}
         />
       </Box>
-      {!isGuest() && (
-        <SubmitButton color='secondary'>パスワードを変更する</SubmitButton>
-      )}
+      {!isGuest() && <SubmitButton>パスワードを変更する</SubmitButton>}
     </form>
   );
 };

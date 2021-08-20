@@ -3,8 +3,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Theme } from '@material-ui/core/styles';
-import { useMediaQuery, Box, Grid, TextField } from '@material-ui/core';
+import { Box, Grid, TextField } from '@material-ui/core';
 
 import { UpdateProfileRequest, updateProfile } from 'store/thunks/auth';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
@@ -30,7 +29,6 @@ const schema = yup.object().shape({
 });
 
 const UserProfile = () => {
-  const aboveXs = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
   /**
    * `Account`ページは認証ルートのため以下が成立
    * - `signedIn` === `true` && `user`!== `null` -> `user!`
@@ -68,7 +66,7 @@ const UserProfile = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Grid container spacing={aboveXs ? 2 : 0}>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
           {message && <AlertMessage severity='error' body={message} />}
         </Grid>
@@ -76,7 +74,6 @@ const UserProfile = () => {
           <TextField
             disabled={isGuest()}
             variant='outlined'
-            margin='normal'
             fullWidth
             id={formdata.name.id}
             label={formdata.name.label}
@@ -91,7 +88,6 @@ const UserProfile = () => {
           <TextField
             disabled={isGuest()}
             variant='outlined'
-            margin='normal'
             fullWidth
             id={formdata.email.id}
             label={formdata.email.label}
