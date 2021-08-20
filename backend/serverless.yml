@@ -13,10 +13,8 @@ provider:
   # https://www.serverless.com/framework/docs/deprecations#default-providerlambdahashingversion
   lambdaHashingVersion: 20201221
   name: aws
-  # The AWS region in which to deploy (us-east-1 is the default)
-  region: us-east-1
-  # The stage of the application, e.g. dev, production, staging… ('dev' is the default)
-  stage: dev
+  region: ${env:AWS_DEFAULT_REGION}
+  stage: ${opt:stage, ${env:APP_ENV}}
   runtime: provided.al2
   # https://www.serverless.com/framework/docs/providers/aws/guide/variables
   environment:
