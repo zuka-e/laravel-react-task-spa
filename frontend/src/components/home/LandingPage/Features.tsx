@@ -1,13 +1,7 @@
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import {
-  Container,
-  Grid,
-  CardContent,
-  Typography,
-  Box,
-} from '@material-ui/core';
+import { Container, Grid, Typography, Box } from '@material-ui/core';
 
-import { LinkButton } from 'templates';
+import { LinkButton, ScrolledTypography } from 'templates';
 import filingSystem from 'images/filing_system.svg';
 import drag from 'images/drag.svg';
 import search from 'images/search.svg';
@@ -24,6 +18,9 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up('sm')]: {
         minHeight: '90vh',
       },
+    },
+    features: {
+      '& > .feature': { padding: theme.spacing(4) },
     },
   })
 );
@@ -42,17 +39,15 @@ const FeatureLayout: React.FC<{ image: string; header: string }> = (props) => {
   const { children, image, header } = props;
 
   return (
-    <Grid item md={4} sm={9} xs={11}>
+    <Grid item md={4} sm={9} xs={11} className='feature'>
       <Grid container direction='column' alignItems='center'>
         <img src={image} alt={basename(image)} width='100%' height='300px' />
-        <CardContent>
-          <Typography variant='h3' gutterBottom>
+        <Box width='100%' mt={2}>
+          <ScrolledTypography variant='h3' align='center' gutterBottom>
             {header}
-          </Typography>
-        </CardContent>
-        <Typography component='p' paragraph>
-          {children}
-        </Typography>
+          </ScrolledTypography>
+        </Box>
+        <Typography paragraph>{children}</Typography>
       </Grid>
     </Grid>
   );
@@ -67,7 +62,7 @@ const Features = () => {
         <Typography variant='h2' title='Features' hidden>
           {'Features'}
         </Typography>
-        <Grid container justify='space-around' spacing={9}>
+        <Grid container justify='space-around' className={classes.features}>
           <FeatureLayout image={filingSystem} header='サブタスク管理'>
             各タスクはカードと呼ばれる単位で扱われ、リストの下に配置されます。
             リストは複数のカードを持ち、またボード上で複数のリストを管理することができます。

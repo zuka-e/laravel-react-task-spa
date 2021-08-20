@@ -4,86 +4,86 @@ import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { TextField, Button, Divider, Grid, Box } from '@material-ui/core';
+import { TextField, Divider, Grid, Box } from '@material-ui/core';
 
-import { signInWithEmail, resetPassword } from 'store/thunks/auth';
+import {
+  ResetPasswordRequest,
+  resetPassword,
+  signInWithEmail,
+} from 'store/thunks/auth';
 import { useAppDispatch, useQuery } from 'utils/hooks';
 import { BaseLayout, FormLayout } from 'layouts';
-import { LabeledCheckbox, SubmitButton } from 'templates';
+import { AlertButton, LabeledCheckbox, SubmitButton } from 'templates';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    form: {
-      width: '100%', // Fix IE 11 issue.
-      marginTop: theme.spacing(3),
-    },
-    link: {
-      color: theme.palette.info.dark,
-    },
-  })
-);
+type FormData = ResetPasswordRequest;
 
-// Input items
-type FormData = {
-  email: string;
-  password: string;
-  password_confirmation: string;
-  token: string;
+const formdata = {
+  password: {
+    id: 'new-password',
+    label: 'New Password',
+  },
+  password_confirmation: {
+    id: 'password-confirmation',
+    label: 'Password Confirmation',
+  },
 };
 
-// The schema-based form validation with Yup
 const schema = yup.object().shape({
-  password: yup.string().required().min(8).max(20),
+  password: yup
+    .string()
+    .label(formdata.password.label)
+    .required()
+    .min(8)
+    .max(20),
   password_confirmation: yup
     .string()
+    .label(formdata.password_confirmation.label)
     .oneOf([yup.ref('password'), null], 'Passwords do not match'),
 });
 
 const ResetPassword = () => {
-  const classes = useStyles();
   const query = useQuery();
   const history = useHistory();
-  const token = query.get('token') || '';
-  const email = query.get('email') || '';
   const dispatch = useAppDispatch();
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const {
-    register, // 入力項目の登録
-    handleSubmit, // 用意された`handleSubmit`
-    formState: { errors }, // エラー情報 (メッセージなど)
+    register,
+    handleSubmit,
+    formState: { errors },
   } = useForm<FormData>({
-    mode: 'onChange', // バリデーション判定タイミング
+    mode: 'onBlur',
     resolver: yupResolver(schema),
-    defaultValues: { email: email, token: token },
+    defaultValues: {
+      email: query.get('email') || '',
+      token: query.get('token') || '',
+    },
     // `defaultValues`はフォーム入力では変更不可
   });
 
   // エラー発生時はメッセージを表示する
   const onSubmit = async (data: FormData) => {
     const response = await dispatch(resetPassword(data));
-    if (resetPassword.rejected.match(response)) {
+    if (resetPassword.rejected.match(response))
       setMessage(response.payload?.error?.message);
-    } else {
-      // 認証成功時は自動ログイン
-      dispatch(signInWithEmail({ email, password: data.password }));
-    }
+    // 認証成功時は自動ログイン
+    else
+      dispatch(signInWithEmail({ email: data.email, password: data.password }));
   };
 
   return (
     <BaseLayout subtitle='Reset Password' withoutHeaders>
       <FormLayout title={'Reset Password'} message={message}>
-        <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
             variant='outlined'
             margin='normal'
             required
             fullWidth
-            label='Password'
+            id={formdata.password.id}
+            label={formdata.password.label}
             type={visiblePassword ? 'text' : 'password'}
-            id='password'
-            autoComplete='current-password'
+            autoComplete={formdata.password.id}
             {...register('password')}
             helperText={errors?.password?.message || '8-20 characters'}
             error={!!errors?.password}
@@ -93,10 +93,10 @@ const ResetPassword = () => {
             // margin='normal'
             required
             fullWidth
-            label='Password Confirmation'
+            id={formdata.password_confirmation.id}
+            label={formdata.password_confirmation.label}
             type={visiblePassword ? 'text' : 'password'}
-            id='password-confirmation'
-            autoComplete='password-confirmation'
+            autoComplete={formdata.password_confirmation.id}
             {...register('password_confirmation')}
             helperText={
               errors?.password_confirmation?.message || 'Retype password'
@@ -110,17 +110,22 @@ const ResetPassword = () => {
               setChecked={setVisiblePassword}
             />
           </Box>
-          <Box mt={4} mb={3}>
-            <SubmitButton fullWidth>Reset Password</SubmitButton>
+          <Box my={4}>
+            <SubmitButton fullWidth>{'Reset Password'}</SubmitButton>
           </Box>
-          <Box mt={1} mb={2}>
+          <Box mb={2}>
             <Divider />
           </Box>
           <Grid container justify='flex-end'>
             <Grid item>
-              <Button size='small' onClick={() => history.push('/')}>
-                <span className={classes.link}>Cancel</span>
-              </Button>
+              <AlertButton
+                color='info'
+                variant='text'
+                size='small'
+                onClick={() => history.push('/')}
+              >
+                {'Cancel'}
+              </AlertButton>
             </Grid>
           </Grid>
         </form>

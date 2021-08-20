@@ -2,14 +2,7 @@ import React from 'react';
 
 import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import {
-  Container,
-  Card,
-  Avatar,
-  Typography,
-  Box,
-  Grid,
-} from '@material-ui/core';
+import { Container, Card, Grid, Avatar, Typography } from '@material-ui/core';
 
 import { APP_NAME } from 'config/app';
 import { AlertMessage } from 'templates';
@@ -17,22 +10,26 @@ import logo from 'images/logo_short.svg';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    paper: {
+    main: {
       marginTop: theme.spacing(8),
-      padding: theme.spacing(3),
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
+      marginBottom: theme.spacing(8),
     },
+    paper: { padding: theme.spacing(3) },
     logo: {
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
       width: theme.spacing(10),
       height: theme.spacing(10),
     },
-    errorBox: {
+    content: {
       width: '100%',
-      marginBottom: theme.spacing(3),
+      '& > form': { width: '100%' },
+    },
+    separator: {
+      display: 'inline',
+      borderLeft: '1px solid',
+      marginLeft: theme.spacing(1),
+      paddingLeft: theme.spacing(1),
     },
   })
 );
@@ -54,38 +51,41 @@ const FormLayout: React.FC<FormLayoutProps> = (props) => {
 
   return (
     <React.Fragment>
-      <Container component='main' maxWidth='xs'>
-        <Card className={classes.paper} elevation={2}>
-          {message && <AlertMessage severity='error' body={message} />}
-          <Avatar
-            className={classes.logo}
-            src={logo}
-            alt={APP_NAME}
-            component={RouterLink}
-            to='/'
-          />
-          <Typography component='h1' variant='h5'>
-            {title}
-          </Typography>
-          {children}
+      <Container className={classes.main} component='main' maxWidth='xs'>
+        <Card classes={{ root: classes.paper }} elevation={2}>
+          <Grid container direction='column' alignItems='center'>
+            {message && <AlertMessage severity='error' body={message} />}
+            <Avatar
+              className={classes.logo}
+              component={RouterLink}
+              to='/'
+              src={logo}
+              alt={APP_NAME}
+              title={APP_NAME}
+            />
+            <Typography component='h1' variant='h5' gutterBottom>
+              {title}
+            </Typography>
+            <div className={classes.content}>{children}</div>
+          </Grid>
         </Card>
       </Container>
-      <Box component='footer' mt={8}>
+      <footer>
         <Grid container direction='column' alignItems='center'>
           <Grid item>
             <a href='/terms' target='_blank'>
-              Terms
+              {'Terms'}
             </a>
-            <Box display='inline' borderLeft='1px solid' ml={1} pl={1} />
+            <div className={classes.separator} />
             <a href='/privacy' target='_blank'>
-              Privacy
+              {'Privacy'}
             </a>
           </Grid>
           <Grid item>
             <Copyright />
           </Grid>
         </Grid>
-      </Box>
+      </footer>
     </React.Fragment>
   );
 };

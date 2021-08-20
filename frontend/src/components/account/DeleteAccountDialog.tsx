@@ -31,17 +31,12 @@ const DeleteAccountDialog: React.FC<DeleteAccountDialogProps> = (props) => {
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  const handleClickOpen = () => setOpen(true);
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleClose = () => setOpen(false);
 
-  const handleDelete = async () => {
-    await dispatch(deleteAccount());
-    setOpen(false);
+  const handleDelete = () => {
+    dispatch(deleteAccount());
   };
 
   return (
@@ -75,4 +70,5 @@ const DeleteAccountDialog: React.FC<DeleteAccountDialogProps> = (props) => {
     </React.Fragment>
   );
 };
+
 export default DeleteAccountDialog;

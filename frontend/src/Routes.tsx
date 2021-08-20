@@ -1,11 +1,6 @@
 import { useEffect } from 'react';
 
-import {
-  Switch,
-  Route as DefaultRoute,
-  Redirect,
-  useHistory,
-} from 'react-router-dom';
+import { Switch, Route as DefaultRoute, Redirect } from 'react-router-dom';
 
 import Home from './pages';
 import { Privacy, Terms } from './pages/static';
@@ -39,7 +34,6 @@ const AuthRoute = ({ ...rest }) => {
 
 const Routes = () => {
   const dispatch = useAppDispatch();
-  const history = useHistory();
   const verified = useQuery().get('verified');
   const href = window.location.href;
 
@@ -49,11 +43,9 @@ const Routes = () => {
 
   // 認証メールリンクからのリダイレクトの場合
   useEffect(() => {
-    if (verified) {
+    verified &&
       dispatch(setFlash({ type: 'success', message: '認証に成功しました。' }));
-      history.push('/');
-    }
-  }, [dispatch, history, verified]);
+  }, [dispatch, verified]);
 
   return (
     <Switch>

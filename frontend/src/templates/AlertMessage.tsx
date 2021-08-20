@@ -1,30 +1,25 @@
 import { Alert, AlertProps, AlertTitle, Color } from '@material-ui/lab';
 
-const makeDefaultTitle = (severity: Color) => {
-  switch (severity) {
-    case 'success':
-      return 'Success';
-    case 'info':
-      return 'Info';
-    case 'warning':
-      return 'Warning';
-    case 'error':
-      return 'Error';
-  }
+const headerMap: Record<Color, string> = {
+  success: 'Success',
+  info: 'Info',
+  warning: 'Warning',
+  error: 'Error',
 };
 
 type AlertMessageProps = {
   severity: Color;
-  title?: string;
+  header?: string;
   body?: string;
 } & AlertProps;
 
 const AlertMessage: React.FC<AlertMessageProps> = (props) => {
-  const { title, body, ...alertProps } = props;
+  const { header, body, ...alertProps } = props;
+  const title = props.header || headerMap[props.severity];
 
   return (
     <Alert elevation={2} {...alertProps}>
-      <AlertTitle>{props.title || makeDefaultTitle(props.severity)}</AlertTitle>
+      <AlertTitle title={title}>{title}</AlertTitle>
       {props.body || props.children}
     </Alert>
   );
