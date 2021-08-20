@@ -88,6 +88,16 @@ functions:
     layers:
       - ${bref:layer.php-80} # PHP
       - ${bref:layer.console} # The "console" layer
+  # https://www.serverless.com/framework/docs/providers/aws/events/schedule/
+  # https://bref.sh/docs/function/cron.html
+  deleteUnverifiedUser:
+    handler: functions/DeleteUnverifiedUser.php
+    timeout: 120
+    layers:
+      - ${bref:layer.php-80}
+    description: "Delete unverified users every day at 3AM(UTC+9)"
+    events:
+      - schedule: cron(0 18 * * ? *)
 
 plugins:
   # We need to include the Bref plugin
