@@ -37,7 +37,7 @@ Route::group([
     Route::get('/users/auth', fn () => new UserResource(Auth::user()));
 
     Route::delete('/users/auth', function (Request $request) {
-        $request->usefr()->delete();
+        $request->user()->delete();
         return response()->json([], 204);
     });
 
