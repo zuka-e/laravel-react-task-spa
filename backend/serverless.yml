@@ -50,6 +50,17 @@ provider:
     GUEST_NAME: ${env:GUEST_NAME}
     GUEST_EMAIL: ${env:GUEST_EMAIL}
     GUEST_PASSWORD: ${env:GUEST_PASSWORD}
+  # https://www.serverless.com/framework/docs/providers/aws/guide/functions#vpc-configuration
+  vpc:
+    securityGroupIds:
+      - ${env:SECURITY_GROUP_ID_A}
+    subnetIds:
+      - ${env:SUBNET_ID_A}
+      - ${env:SUBNET_ID_B}
+      - ${env:SUBNET_ID_C}
+      - ${env:SUBNET_ID_D}
+      - ${env:SUBNET_ID_E}
+      - ${env:SUBNET_ID_F}
 
 package:
   # https://www.serverless.com/framework/docs/deprecations/NEW_PACKAGE_PATTERNS
