@@ -14,7 +14,7 @@ provider:
   lambdaHashingVersion: 20201221
   name: aws
   region: ${env:AWS_DEFAULT_REGION}
-  stage: ${opt:stage, ${env:APP_ENV}}
+  stage: ${opt:stage, "production"}
   runtime: provided.al2
   # https://www.serverless.com/framework/docs/providers/aws/guide/variables
   environment:
