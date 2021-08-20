@@ -86,7 +86,8 @@ describe('Sign Up', () => {
     const newEmail = 'test' + GUEST_EMAIL;
     const password = 'password';
     const errorData = { '422': { message: new RegExp('既に使用されて', 'i') } };
-    const successMessage = new RegExp('ユーザー登録が完了しました', 'i');
+    const successMessage = /ユーザー登録が完了しました/;
+    const warning = /登録が抹消されます/;
 
     it('should not be registered with the wrong email input', async () => {
       const invalidEmail = GUEST_EMAIL + '@example';
@@ -162,8 +163,9 @@ describe('Sign Up', () => {
       userEvent.click(submit);
 
       // `FlashNotification`
-      expect(await screen.findByRole('alert')).toBeVisible();
+      expect(await screen.findAllByRole('alert')).toHaveLength(2);
       expect(screen.getByText(successMessage)).toBeVisible();
+      expect(screen.getByText(warning)).toBeVisible();
 
       // `EmailVerification`
       expect(isAfterRegistration()).toBeTruthy();
