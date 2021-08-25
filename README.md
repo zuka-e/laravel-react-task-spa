@@ -20,7 +20,6 @@ SPA開発におけるGitHubのリポジトリについて、フロントエン�
 ## 目次
 
 - [機能](#機能)
-- [画面](#画面)
 - [開発環境 (フロントエンド)](#開発環境-フロントエンド)
 - [開発環境 (バックエンド)](#開発環境-バックエンド)
 - [本番環境](#本番環境)
@@ -30,6 +29,24 @@ SPA開発におけるGitHubのリポジトリについて、フロントエン�
 - [使用技術 (フロントエンド)](#使用技術-フロントエンド)
 - [使用技術 (バックエンド)](#使用技術-バックエンド)
 - [使用技術 (その他)](#使用技術-その他)
+- [画面](#画面)
+  - [ホーム](#ホーム)
+  - [ログイン](#ログイン)
+  - [ユーザー登録](#ユーザー登録)
+  - [マイページ](#マイページ)
+  - [メールアドレス認証](#メールアドレス認証)
+    - [認証確認通知](#認証確認通知)
+    - [認証用メール](#認証用メール)
+    - [未認証警告+再送信ボタン (マイページ)](#未認証警告再送信ボタン-マイページ)
+  - [パスワードリセット](#パスワードリセット)
+    - [再設定リクエスト](#再設定リクエスト)
+    - [再設定用メール](#再設定用メール)
+  - [ボードCRUD](#ボードcrud)
+  - [リストCRUD](#リストcrud)
+  - [カードCRUD](#カードcrud)
+  - [絞り込み](#絞り込み)
+  - [並び替え](#並び替え)
+  - [検索](#検索)
 - [各種リンク](#各種リンク)
 
 ## 機能
@@ -55,108 +72,6 @@ SPA開発におけるGitHubのリポジトリについて、フロントエン�
     - 状態保持
   - 検索
   - ページネーション
-
-## 画面
-
-### ホーム
-
-![home_page](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/home_page.jpg)
-
----
-
-### ログイン
-
-| 入力時バリデーション | 送信時バリデーション |
-| -- | -- |
-| ![login_input_validation](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/login_input_validation.jpg) | ![login_submit_validation](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/login_submit_validation.jpg) |
-
----
-
-### ユーザー登録
-
-| 入力時バリデーション | 送信時バリデーション |
-| -- | -- |
-| ![register_input_validation](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/register_input_validation.jpg) | ![register_submit_validation](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/register_submit_validation.jpg) |
-
----
-
-### マイページ
-
-![mypage](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/mypage.jpg)
-
----
-
-### メールアドレス認証
-
-#### 認証確認通知
-
-![verification_notification](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/verification_notification.jpg)
-
----
-
-#### 認証用メール
-
-![verification_email](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/verification_email.jpg)
-
----
-
-#### 未認証警告+再送信ボタン (マイページ)
-
-![verification_warning](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/verification_warning.jpg)
-
----
-
-### パスワードリセット
-
-#### 再設定リクエスト
-
-| 入力時バリデーション | 送信時バリデーション |
-| -- | -- |
-| ![password_reset_input_validation](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/password_reset_input_validation.jpg) | ![password_reset_submit_validation](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/password_reset_submit_validation.jpg) |
-
----
-
-#### 再設定用メール
-
-![password_reset_email](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/password_reset_email.jpg)
-
----
-
-### ボードCRUD
-
-![password_reset_email](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/board_crud.gif)
-
----
-
-### リストCRUD
-
-![password_reset_email](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/list_crud.gif)
-
----
-
-### カードCRUD
-
-![password_reset_email](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/card_crud.gif)
-
----
-
-### 絞り込み
-
-![password_reset_email](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/filter.gif)
-
----
-
-### 並び替え
-
-![password_reset_email](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/sort.gif)
-
----
-
-### 検索
-
-![password_reset_email](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/search.gif)
-
----
 
 ## 開発環境 (フロントエンド)
 
@@ -295,3 +210,111 @@ ER図を作成するにあたって問題に思ったのは、データベース
 
 - [Docker](https://docs.docker.com/desktop/mac/release-notes/) - コンテナ管理
 - [GitHub Actions](https://docs.github.com/actions) - CI/CD
+
+## 画面
+
+### ホーム
+
+![home_page](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/home_page.jpg)
+
+---
+
+### ログイン
+
+| 入力時バリデーション | 送信時バリデーション |
+| -- | -- |
+| ![login_input_validation](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/login_input_validation.jpg) | ![login_submit_validation](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/login_submit_validation.jpg) |
+
+---
+
+### ユーザー登録
+
+| 入力時バリデーション | 送信時バリデーション |
+| -- | -- |
+| ![register_input_validation](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/register_input_validation.jpg) | ![register_submit_validation](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/register_submit_validation.jpg) |
+
+---
+
+### マイページ
+
+![mypage](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/mypage.jpg)
+
+---
+
+### メールアドレス認証
+
+#### 認証確認通知
+
+![verification_notification](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/verification_notification.jpg)
+
+---
+
+#### 認証用メール
+
+![verification_email](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/verification_email.jpg)
+
+---
+
+#### 未認証警告+再送信ボタン (マイページ)
+
+![verification_warning](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/verification_warning.jpg)
+
+---
+
+### パスワードリセット
+
+#### 再設定リクエスト
+
+| 入力時バリデーション | 送信時バリデーション |
+| -- | -- |
+| ![password_reset_input_validation](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/password_reset_input_validation.jpg) | ![password_reset_submit_validation](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/password_reset_submit_validation.jpg) |
+
+---
+
+#### 再設定用メール
+
+![password_reset_email](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/password_reset_email.jpg)
+
+---
+
+### ボードCRUD
+
+![password_reset_email](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/board_crud.gif)
+
+---
+
+### リストCRUD
+
+![password_reset_email](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/list_crud.gif)
+
+---
+
+### カードCRUD
+
+![password_reset_email](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/card_crud.gif)
+
+---
+
+### 絞り込み
+
+![password_reset_email](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/filter.gif)
+
+---
+
+### 並び替え
+
+![password_reset_email](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/sort.gif)
+
+---
+
+### 検索
+
+![password_reset_email](https://raw.githubusercontent.com/zuka-e/images/miwataru/Miwataru/search.gif)
+
+---
+
+## 各種リンク
+
+- アプリケーション: [https://www.miwataru.com/](https://www.miwataru.com/)
+- フロントエンド実装過程: [https://github.com/zuka-e/laravel-react-task-spa/blob/development/frontend/README.md](https://github.com/zuka-e/laravel-react-task-spa/blob/development/frontend/README.md)
+- バックエンド実装過程: [https://github.com/zuka-e/laravel-react-task-spa/blob/development/backend/README.md](https://github.com/zuka-e/laravel-react-task-spa/blob/development/backend/README.md)
