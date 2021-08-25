@@ -1,36 +1,95 @@
-# フロントエンドの環境構築及び初期設定に関する実装
+# 【TypeScript / React / CRA / Redux】 タスク管理アプリ (ポートフォリオ) の実装過程 (フロントエンド編)
 
-## 概要
+主にスキル向上を目的に、ポートフォリオとしてタスク管理アプリを作成しました。このページでは、主にフロントエンドを構成するために必要な実装とそのために利用したパッケージ及びそれらの初期設定などについて触れていきます。  
 
-アプリケーション構成する要素の内、フロントエンド部分を作成していきます。ここで行うこととしては、JavaScriptによってUIの構築を行い、主にユーザーの操作によって都度APIに対しリクエストを発行、そのレスポンスとして受け取ったデータに応じてUIの再レンダリングを行います。  
+アプリケーションや作成したコード、バックエンドの実装過程の説明については、以下のリンクからアクセスできます。  
 
-ここでは主に、フロントエンドを構成するために必要な要素とそのために利用したパッケージ及びそれらの初期設定について触れていきます。  
+- アプリケーション: [https://www.miwataru.com/](https://www.miwataru.com/)
+- GitHub: [https://github.com/zuka-e/laravel-react-task-spa](https://github.com/zuka-e/laravel-react-task-spa)
+- 全体像: [https://github.com/zuka-e/laravel-react-task-spa/blob/development/README.md](https://github.com/zuka-e/laravel-react-task-spa/blob/development/README.md)
+- バックエンド実装過程: [https://github.com/zuka-e/laravel-react-task-spa/blob/development/backend/README.md](https://github.com/zuka-e/laravel-react-task-spa/blob/development/backend/README.md)
 
-**※ 補足**  
-Single Page application (SPA) を作成する際のGitHubのリポジトリについて、バックエンドのものと同一にする方法と別に作成する方法が考えられますが、今回は同じリポジトリ内で開発を行っています。  
-ただ後で気になったことですが、これだとGitログやBranchが混同するので、例えばフロントエンド側での記録のみを確認したいといった場合に邪魔になります。  
-バックエンドのサーバーが動作していればAPIリクエストの確認も行うことができ、バックエンド側のコードに依存せずに進めることが可能なので、このような場合リポジトリは分割する方が良さそうだと思いました。  
+## 目次
 
-## 主要使用パッケージ
+- [開発環境](#開発環境)
+- [主要使用技術](#主要使用技術)
+- [ディレクトリ構成](#ディレクトリ構成)
+- [React](#react)
+- [Create React App](#create-react-app)
+  - [テンプレート](#テンプレート)
+  - [`tsconfig.json`](#tsconfigjson)
+- [静的型付け](#静的型付け)
+  - [TypeScript](#typescript)
+- [ルーティング](#ルーティング)
+  - [React Router Dom](#react-router-dom)
+    - [ルーティング設定](#ルーティング設定)
+    - [リンク作成](#リンク作成)
+    - [クエリパラメータ取得](#クエリパラメータ取得)
+- [HTMLタグ更新](#htmlタグ更新)
+  - [React Helmet Async](#react-helmet-async)
+- [状態管理](#状態管理)
+  - [Redux](#redux)
+  - [Redux Toolkit](#redux-toolkit)
+    - [Storeの構成](#storeの構成)
+    - [Storeの構成 (TypeScript)](#storeの構成-typescript)
+- [UIデザイン](#uiデザイン)
+  - [Material-UI](#material-ui)
+    - [テーマのカスタマイズ](#テーマのカスタマイズ)
+    - [バンドルサイズ削減](#バンドルサイズ削減)
+- [HTTPクライアント](#httpクライアント)
+  - [Axios](#axios)
+    - [Axios Instance](#axios-instance)
+- [フォーム](#フォーム)
+  - [React Hook Form](#react-hook-form)
+    - [Yup](#yup)
+    - [Matarial-UIの併用](#matarial-uiの併用)
+- [テスト](#テスト)
+  - [Jest](#jest)
+    - [Jest Config](#jest-config)
+    - [Jest CLI](#jest-cli)
+  - [カバレッジ](#カバレッジ)
+  - [React Testing Library](#react-testing-library)
+  - [テスト状態初期化](#テスト状態初期化)
+  - [Mock Server Worker (MSW)](#mock-server-worker-msw)
+    - [MSWの構成](#mswの構成)
+      - [ブラウザ環境](#ブラウザ環境)
+      - [Node環境](#node環境)
+  - [GitHub Actions](#github-actions)
+- [Markdown](#markdown)
+  - [markdown-to-jsx](#markdown-to-jsx)
+- [まとめ](#まとめ)
 
-SPA構築の基本ライブラリとして**React**を使用し、開発環境の構築には**Create React App** (**CRA**)を用いました。その他以下のようなパッケージを使用しています。(括弧内の数字はバージョン)  
+## 開発環境
 
-- [React](https://reactjs.org) (17.0.2)
+フロントエンドの開発言語として**TypeScript**を使用し、ライブラリとして使用したのは**React**です。またこれらを基本とした開発環境の構築には**Create React App** (**CRA**)を用いており、これによってReactを実行し結果を確認できるサーバーなどのReactの利用に必要な環境が容易に整います。その他実行環境は以下のようになっています。(括弧内の数字はバージョン)  
+
 - [Create React App](https://create-react-app.dev) (4.0.3)
-- [TypeScript](https://www.typescriptlang.org/) (4.2.4) - [静的型付け](#静的型付け)
+  - [Yarn](https://yarnpkg.com/) (1.22.10)
+  - [Node.js](https://nodejs.org/) (16.6.1)
+  - [React](https://reactjs.org) (17.0.2)
+
+動作確認の際のブラウザには、Chrome (Mac、Android) を使用しています。  
+
+## 主要使用技術
+
+主に使用した技術、パッケージを以下に列挙します。(括弧内の数字はバージョン)  
+
+- [TypeScript](https://www.typescriptlang.org/) (4.2.4) - 開発言語、 [静的型付け](#静的型付け)
+- [React](https://reactjs.org) (17.0.2)
 - [React Router Dom](https://reactrouter.com/web/guides/quick-start) (5.2.0) - [ルーティング](#ルーティング)
 - [React Helmet Async](https://github.com/staylor/react-helmet-async) (1.0.9) - [HTMLタグ更新](#htmlタグ更新)
-- [Redux](https://redux.js.org) (4.1.0) - [状態管理](#状態管理)
-- [React Redux](https://react-redux.js.org) (7.2.4) - 状態管理 (Reactバインディング)
+- [Redux](https://redux.js.org) (4.0.5) - [状態管理](#状態管理)
+- [React Redux](https://react-redux.js.org) (7.2.3) - 状態管理 (Reactバインディング)
 - [Redux Toolkit](https://redux-toolkit.js.org) (1.5.1) - 状態管理 (Redux簡便化ツール)
-- [Marerial-UI](https://material-ui.com) (4.11.4) - [UIデザイン](#uiデザイン)
+- [Marerial-UI](https://material-ui.com) (4.11.3) - [UIデザイン](#uiデザイン)
 - [Axios](https://github.com/axios/axios) (0.21.1) - [HTTPクライアント](#httpクライアント)
-- [React Hook Form](https://react-hook-form.com/) (7.6.5) - [フォーム](#フォーム)生成
+- [React Hook Form](https://react-hook-form.com/) (7.1.1) - [フォーム](#フォーム)生成
 - [Yup](https://github.com/jquense/yup) (0.32.9) - [スキーマ構築](#yup)
-- [Jest](https://jestjs.io/ja) (27.0.4) - [テスト](#テスト)
-- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro) (27.0.4)  - [UIテスト](#react-testing-library)
+- [React DnD](https://react-dnd.github.io/react-dnd/about) (14.0.2) - ドラッグ&ドロップ
+- [Jest](https://jestjs.io/ja) (26.6.0) - [テスト](#テスト)
+- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro) (11.2.5)  - [UIテスト](#react-testing-library)
 - [Mock Service Worker](https://mswjs.io) (0.28.2) - [APIモック](#mock-server-worker-msw)
-- [markdown-to-jsx](https://github.com/probablyup/markdown-to-jsx) (7.1.3) - [Markdown](#markdown)
+- [markdown-to-jsx](https://github.com/probablyup/markdown-to-jsx) (7.1.2) - [Markdown](#markdown)
 
 ## ディレクトリ構成
 
@@ -53,7 +112,7 @@ src/
 │   ├── thunks/ # Async Thunk (APIリクエスト)
 ├── templates/ # 複数ページで再利用可能なコンポーネント
 ├── theme/ # CSS (Material-UI テーマ)
-├── utils/ # 関数や定数
+├── utils/ # 複数ファイルで共用する関数や定数
 │   ├── hooks/ # カスタムフック
 ├── App.tsx # アプリ全体に適用する処理など
 ├── Routes.tsx # ルーティング
@@ -63,24 +122,23 @@ src/
 └── setupTests.ts
 ```
 
-その他、新規ディレクトリ名の決定を行うにあたり参考になったのが、VSCode拡張の[Material Icon Theme](https://github.com/PKief/vscode-material-icon-theme)です。これはファイルやディレクトリにその名前に応じてアイコンを表示してくれるツールで、エディターのファイルエクスプローラーの見通しが良くする効果があります。  
+その他、新規ディレクトリ名の決定を行うにあたり参考になったのがVSCode拡張の[Material Icon Theme](https://github.com/PKief/vscode-material-icon-theme)です。これはファイルやディレクトリにその名前に応じてアイコンを表示してくれるツールで、エディターのファイルエクスプローラーの見通しが良くする効果があります。  
 
-これを利用することで、もし命名したディレクトリ名によってアイコンが表示されるなら、それは一般的に利用されている名前であると判断することができます。  
+これを利用することで、もし命名したディレクトリ名によってアイコンが表示された場合は一般的に利用されている名前であると判断することができます。  
 
-今回の場合も基本的にはアイコンが表示されるような命名になっています。ただし、Redux Storeの関連ディレクトリだけは、アイコンが付与されるような命名ができていません。即ち、`store`、`slices`、`thunks`がこれに当てはまります。色々試行しましたが、適切なディレクトリ名は未だ定まっていません。  
+今回の場合も基本的にはアイコンが表示されるような命名になっています。ただし、Redux関連やモデル (DBテーブルに相当) 関連のディレクトリなど一部はアイコンが付与されるような命名ができていません。`thunks`や`boards`などがこれに該当します。  
 
 ## React
 
-[React](https://reactjs.org)ではコンポーネントとして分割されたJavaScriptのコードを組み合わせることでUIを構築していきます。種別として、クラスを利用したコンポーネントと関数を使ったものが存在しますが、関数型の方が[Hooks (フック)](https://reactjs.org/docs/hooks-intro.html) によって簡単に扱うことができるなどの理由から今では専ら関数型が使用されておりここでもそれに従います。ただ公式サイトではクラス型で説明されている項目も多く、参考にするにはやや困惑することがありました。  
-開発環境は[後述のCRA](#create-react-app)を用いることで比較的簡単に整えることができます。  
+[React](https://reactjs.org)ではコンポーネントとして分割されたJavaScriptのコードを組み合わせることでUIを構築していきます。種別としてクラスを利用した方法と関数を使った方法が存在しますが、関数型の方が[Hooks (フック)](https://reactjs.org/docs/hooks-intro.html) によって簡単に扱うことができるなどの理由から、今では専ら関数型が使用されておりここでもそれに従います。ただ公式サイトではクラス型で説明されている項目も多く、参考にするにはやや困惑することがありました。  
 
-尚、[Vue](https://v3.ja.vuejs.org)と比較されることが多いですが、Reactの方がJaveScriptの記法に近い使い方ができる他、**TypeScript** [(後述)](#typescript)を扱いやすいということなどからこちらを使用しています。  
+[Vue](https://v3.ja.vuejs.org)と比較されることが多いReactですが、こちらの方が使い慣れたJaveScriptの記法に近い使い方ができる他、**TypeScript** [(後述)](#typescript)を扱いやすいという理由からこちらを使用しています。  
 
 ## Create React App
 
 [Create React App](https://create-react-app.dev)を利用することで、依存パッケージの導入から設定まで面倒な操作も行うことなくReactを使用したプロジェクトを始めることができます。これには**webpack**や**Babel**、**ESLint**なども含まれています。  
 
-尚、CRAの代わりとして、[Next.js](https://nextjs.org)を使用するという選択肢も考慮しています。しかし、SPAの作成には[こちらが推奨されているような記述がある](https://reactjs.org/docs/create-a-new-react-app.html#recommended-toolchains)ことや、CRAの方は経験があり手早く開発できそうだったこと、また後にNext.jsを使用することになってもCRAの経験やコードが活用できそうだったことなどを勘案の上CRAを採用しました。  
+CRAの代わりとして、[Next.js](https://nextjs.org)を使用するという選択肢も考慮しています。しかし、公式サイトでSPAの作成には[こちらが推奨している記述がある](https://reactjs.org/docs/create-a-new-react-app.html#recommended-toolchains)ことや、CRAの方は経験があり手早く開発できそうだったこと、また後にNext.jsを使用することになってもCRAの経験やコードが活用できそうだったことなどを勘案の上でCRAを採用しました。  
 
 ### テンプレート
 
@@ -91,7 +149,7 @@ CRAを導入するにあたって、同時に[テンプレートを選択](https
 npx create-react-app frontend --template typescript
 ```
 
-尚、この際[後述](#redux)の**Redux**も同時にインストールするテンプレートも存在していましたが、一部のパッケージのバージョンが最新でなかったことから別途インストールする方法を採っています。  
+この際、[後述](#redux)の**Redux**も同時にインストールするテンプレートも存在していましたが、一部のパッケージのバージョンがやや古めであったことから別途インストールする方法を採っています。  
 
 > 参考： [Getting Started | Create React App](https://create-react-app.dev/docs/getting-started/#creating-a-typescript-app)  
 
@@ -127,6 +185,7 @@ import Header from 'layouts/Header';
 ## 静的型付け
 
 静的型付けを導入することで、変数や関数にコメントなど注釈を付け加えることなくその振る舞いを示すことができ、コードの可読性を向上させることが期待できます。またそこで定義した使用法から外れた予期しないコードの利用に対しては、IDEやエディター (ここでは[VSCode](https://code.visualstudio.com)) がエラーを表示させ、ここから発生するバグを未然に防ぐことが可能です。  
+
 例えば動的型付けの場合、引数が必要にもかかわらず指定せずに関数を利用したとしても、また誤った引数に指定したとしても、実行するまでエラーは表示されません。一方、静的型付けの場合はその時点でエラーの内容が示されます。  
 
 また関数使用時に利用できるプロパティやメソッドの候補を表示する補完機能を利用することも可能で、入力ミスをなくし効率の良いコーディングに繋がります。特に各種ライブラリの使用時にその効力を実感することになります。  
@@ -135,8 +194,11 @@ JaveScriptは動的型付け言語なので、静的型付けを行えるよう�
 
 ### TypeScript
 
-JaveScriptで静的型付けを導入する他の方法も存在するようですが、[TypeScript](https://www.typescriptlang.org/)がデファクトスタンダードと言える選択肢となっています。利点として、導入や利用が容易であることが挙げられます。例えば今回利用しているCRAでは、コンパイラなどの設定不要で使用を開始することが可能で、型として`any`を指定することでJavaScriptと同じように利用できるので少しずつTypeScriptの色に染めて行くことができます。また、VSCodeにおいては拡張機能を追加することなく補完機能が利用でき、変数や関数にマウスオーバーすることで型情報を表示させることができます。  
-このような事情から特段の理由がない限りJavaScriptではなく、TypeScriptを利用することが望ましいと考えています。  
+JaveScriptで静的型付けを導入する他の方法も存在するようですが、[TypeScript](https://www.typescriptlang.org/)が主な選択肢となっています。  
+
+利点として、導入や利用が容易であることが挙げられます。例えば今回利用しているCRAでは、コンパイラなどの設定不要で使用を開始することが可能で、型として`any`を指定することでJavaScriptと同じように利用できるので少しずつTypeScriptを取り入れていくことができます。また、VSCodeにおいては拡張機能を追加することなく補完機能が利用でき、変数や関数にマウスオーバーすることで型情報を表示させることができます。  
+
+このような事情から、特段の理由がない限りJavaScriptではなくTypeScriptを利用することが望ましいと考えています。  
 
 注意点としては、ライブラリ使用時、型定義ファイルが提供されていない場合は利用することができないことです。しかしTypeScriptの利用はだいぶ一般的になっており、基本的に型定義ファイルを利用することができるようになっています。各パッケージのドキュメントにもTypeScriptでの利用を想定した項目が存在するものが多くを占めます。  
 
@@ -149,6 +211,7 @@ SPAにおいてはリンクによるページ遷移は行いません。SPAで�
 初めに[React Router](https://reactrouter.com/web/guides/quick-start)のインストールから行います。`react-router`というパッケージも存在しますが、Webアプリケーションの場合以下の注釈があるように、必要なものは`react-router-dom`です。  
 
 > Note: This package provides the core routing functionality for React Router, but you might not want to install it directly. If you are writing an application that will run in the browser, you should instead install react-router-dom.  
+>
 > [ReactTraining/react-router - GitHub](https://github.com/ReactTraining/react-router/tree/master/packages/react-router#installation)
 
 同時に型定義ファイルも忘れずインストールします。  
@@ -162,13 +225,12 @@ yarn add react-router-dom @types/react-router-dom
 最も基本的な用法は`BrowserRouter`の中に`Route`を内包した`Swich`コンポーネントを配置することです。ここでは`App.tsx`に`BrowserRouter`を作成し、実際のルーティングは`Route.tsx`というファイルを作成してそこで設定を行っています。  
 
 ```tsx :src/Route.tsx
-import React from 'react';
 import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 // 以下のコンポーネントは作成済みと仮定
 import Home from './pages';
 import NotFound from './pages/NotFound';
 
-const Routes: React.FC = () => {
+const Routes = () => {
   return (
     <Switch>
      {/* `exact`を付与しないと`/`以外のパスも含まれる */}
@@ -185,11 +247,10 @@ const Routes: React.FC = () => {
 次にこのルーティングファイル`Route.ts`を`App.tsx`側で読み込みます。尚、ドキュメントに従って`import`の際に`Router`という別名を付けています。  
 
 ```tsx :src/App.tsx
-import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Routes from './Routes';
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <Router>
       <Routes />
@@ -206,7 +267,7 @@ React Routerで定義したルートへアクセスするためののリンク�
 <Link to='/'>Home</Link>
 ```
 
-[後述の](#material-ui)Material-UIと組み合わせて利用する場合には、コンポーネントのプロパティにReact Routerの`Link`を指定します。これによってスタイリングを行いつつルーティングも実現できます。尚、これはリンクだけでなくボタンにも適用可能です。  
+[後述の](#material-ui)Material-UIと組み合わせて利用する場合には、コンポーネントのプロパティにReact Routerの`Link`を指定します。これによってスタイリングを行いつつルーティングも実現できます。  
 
 ```tsx
 import { Link as RouterLink } from 'react-router-dom';
@@ -221,11 +282,13 @@ import { Button, Link } from '@material-ui/core';
 <Link>
 ```
 
-> 参考： [Routing libraries](https://material-ui.com/guides/composition/#routing-libraries) | Composition - Material-UI  
+> 参考： [Composition - Material-UI # Routing libraries](https://material-ui.com/guides/composition/#routing-libraries)  
 
 #### クエリパラメータ取得
 
-クエリパラメータの取得にはやや準備が必要です。すぐに利用できるように、[公式ドキュメント](https://reactrouter.com/web/example/query-parameters)に従って独自Hooks (カスタムフック) を作成します。まず`utils`ディレクトリ及びその配下に`hooks`ディレクトリを作成し、そこに以下のような`useQuery.ts`ファイルを作成します。  
+クエリパラメータの取得には、[公式ドキュメント](https://reactrouter.com/web/example/query-parameters)に従って独自Hooks (カスタムフック) を作成します。  
+
+まず`utils`ディレクトリ及びその配下に`hooks`ディレクトリを作成し、そこに以下のような`useQuery.ts`ファイルを作成します。  
 
 ```ts :src/utils/hooks/useQuery.ts
 import { useLocation } from 'react-router-dom';
@@ -236,7 +299,7 @@ export const useQuery = () => new URLSearchParams(useLocation().search);
 export default useQuery;
 ```
 
-クエリパラメータを取得するには`get`メソッドを利用し、もし取得できなかった場合には`null`が返却されます。`string`型として扱うなら`null`のときは空文字として扱う方法もあります。  
+クエリパラメータを取得するには`get`メソッドを利用し、もし取得できなかった場合には`null`が返却されます。`string`型として扱うなら`null`のときは空文字として扱う方法も可能です。  
 
 ```tsx
 import useQuery from 'utils/hooks/useQuery';
@@ -250,7 +313,7 @@ const token = query.get('token') || '';
 
 ## HTMLタグ更新
 
-さて、Routerによってページ遷移を実現しましたが、ここでHTMLの`title`タグなど、`head`タグ内の情報も同時に変化させたいところです。そのような場合に利用できるのが[React Helmet](https://github.com/nfl/react-helmet)です。  
+さて、Routerによってページ遷移を実現しましたが、ここでHTMLの`title`タグなど、`head`タグ内の情報も同時に変化しないと不都合が生じます。そのような場合に利用できるのが[React Helmet](https://github.com/nfl/react-helmet)です。  
 しかしこれは場合によって[警告が出てしまう](https://github.com/nfl/react-helmet/issues/548)ので、代わりに[React Helmet Async](https://github.com/staylor/react-helmet-async)を使用することにします。これはReact Helmetのフォークリポジトリで、基本的な用法は同じです。  
 
 ### React Helmet Async
@@ -278,7 +341,7 @@ import { HelmetProvider } from 'react-helmet-async';
 ```tsx :src/pages/index.tsx
 import { Helmet } from 'react-helmet-async';
 
-const Home: React.FC = () => {
+const Home = () => {
   return (
     <React.Fragment>
       <Helmet>
@@ -300,17 +363,17 @@ const Home: React.FC = () => {
 
 **※ 補足**  
 ここでReduxを使わないという選択肢も考えられます。特にReactで提供される [useContext](https://reactjs.org/docs/hooks-reference.html#usecontext)や[useReducer](https://reactjs.org/docs/hooks-reference.html#usereducer)を代替手段としても目的を達成することができ、この場合追加パッケージをインストールする必要がなくなるという利点があります。しかし、これはReduxの完全な代替になるものではありません。特にReduxを利用する目的の一つとしてブラウザ拡張機能の[Redux DevTools](https://github.com/zalmoxisus/redux-devtools-extension)の存在があります。  
-これは現在の状態の表示や状態を変化させるアクション、その時変化した状態の差分などの情報を提供してくれるツールで、状態を把握しデバッグを行う際に重宝します。これが利用できることが重要なので、基本的にはReduxを利用するスタイルを採用しています。  
+これは現在の状態の表示や状態を変化させるアクションや、その時変化した状態の差分などの情報を提供してくれるツールで、状態を把握しデバッグを行う際に重宝します。よって、基本的にReduxを利用するスタイルを採用しています。  
 
 ### Redux
 
-[Redux](https://redux.js.org)は、前述のようにSPAとして不可欠な機能を提供し事実上Reactとセットで利用することも多いですが、コード量が多く複雑化しやすいという問題を抱えていました。しかし公式に提供されている[Redux Toolkit](https://redux-toolkit.js.org) (RTK) を併用することで簡潔な記述が可能で容易に状態管理を利用できるようになります。  
+[Redux](https://redux.js.org)は、前述のようにSPAとして不可欠な機能を提供し事実上Reactとセットで利用することも多いですが、コード量が多く複雑化しやすいという問題を抱えていました。しかし公式に提供されている**Redux Toolkit**を併用することで簡潔な記述が可能で容易に状態管理を利用できるようになります。  
 
 > 参考： [Getting Started with Redux | Redux](https://redux.js.org/introduction/getting-started#redux-toolkit)  
 
 ### Redux Toolkit
 
-は冗長かつ複雑になりがちであったReduxを簡単に扱えるようにするためにRedux公式として提供されているツールです。これ自体にReduxを内包しているため別途`redux`はインストールする必要はありませんが、別途追加のパッケージ ([React Redux](https://react-redux.js.org)) が必要になります。これは、Reduxが作成及び管理している状態 (**Redux Store**) をReactで利用できるようにするために利用されます。  
+[Redux Toolkit](https://redux-toolkit.js.org) とは、冗長かつ複雑になりがちであったReduxを簡単に扱えるようにするためにRedux公式として提供されているツールです。これ自体にReduxを内包しているため別途`redux`はインストールする必要はありませんが、別途追加のパッケージ ([React Redux](https://react-redux.js.org)) が必要になります。これは、Reduxが作成及び管理している状態 (**Redux Store**) をReactで利用できるようにするために利用されます。  
 
 RTKはTypeScriptで構成されており、型定義コードが組み込まれています。この場合には型定義ファイルをインストールすることなくTypeScriptで利用することができます。一方、React Reduxには型定義ファイルが用意されているのでこれを同時にインストールします。  
 
@@ -320,17 +383,14 @@ yarn add @reduxjs/toolkit react-redux @types/react-redux
 
 **※ 補足**  
 その他のライブラリとして、非同期処理を扱う場合に、[Redux Thunk](https://github.com/reduxjs/redux-thunk)や[Redux-Saga](https://redux-saga.js.org)などを利用することになると思いますが、**Redux Thunk**が既に内包されているので追加でインストールする必要はありません。  
-他にもいくつかのライブラリが含まれており、下のリンクから確認ができます。  
 
-> 参考： [What's Included](https://redux-toolkit.js.org/introduction/getting-started#whats-included)  
+Redux Toolkitには他にもいくつかのライブラリが含まれており、[こちらのページ](https://redux-toolkit.js.org/introduction/getting-started#whats-included)から確認ができます。  
 
 #### Storeの構成
 
 グローバルな状態としての**Redux Store**を作成し、利用できるようにするため設定を行っていきます。  
 
-まず初めに、Storeに関するファイルを配置するためのディレクトリとして`src/store`を作成しておきます。ディレクトリ構成については[先述のとおり](#ディレクトリ構成)です。  
-
-次に`index.ts`を作成して、ここで`store`の作成を行います。`configureStore`を利用し、プロパティに`reducer`を指定することで`store`を作成することができます。これは単なる状態としての値を持つものではなく、状態を参照するための`getState`メソッドやその状態を更新するための`dispatch`メソッドが含まれているものになります。  
+まず初めに、Redux Storeに関するファイルを配置するためのディレクトリとして`src/store`を作成し、次に`index.ts`を作成します。次に`configureStore`を利用し、プロパティに`reducer`を指定することで`store`を作成します。この`store`は単なる状態としての値を持つだけでなく、状態を参照するための`getState`メソッドやその状態を更新するための`dispatch`メソッドなどが含まれています。  
 
 ```ts :src/store/index.ts
 import { configureStore } from '@reduxjs/toolkit';
@@ -342,7 +402,7 @@ export default store;
 
 `reducer`の指定は個別に行う方法と、作成した各`reducer`の集合である`rootReducer`というものを定義してからこれを渡す方法がありますが、コードの重複を避けるため後者を採用します。この場合、上記の`store`作成コードは以下のようになります。  
 
-```ts : src/store/index.ts
+```ts :src/store/index.ts
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 
 export const rootReducer = combineReducers({
@@ -375,10 +435,9 @@ ReactDOM.render(
 
 `rootReducer`にはまだ何も登録されていないので何らかの状態を参照や更新することはできませんが、状態管理のための準備としてはこれで完了です。  
 
-> 参考：  
-> [Quick Start | Redux Toolkit](https://redux-toolkit.js.org/tutorials/quick-start)  
+> 参考： [Quick Start | Redux Toolkit](https://redux-toolkit.js.org/tutorials/quick-start)  
 
-#### Storeの構成 (TypeScriptの場合)
+#### Storeの構成 (TypeScript)
 
 TypeScriptでも上記と設定自体は同じです。`configureStore`などメソッドは返り値の型が決まっているので、変数としての`store`は型推論によって型が決定され、明示的な型を指定する必要はありません。  
 
@@ -460,17 +519,17 @@ export * from './useAppSelector';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
 ```
 
-ファイルごとに役割を分離しつつ`import`文が冗長になることを防ぐことができるので、できる限り採用して行きたい手法です。  
+ファイルごとに役割を分離しつつ`import`文が冗長になることを防ぐことができるので、可能な限り採用して行きたい手法です。  
 
 ## UIデザイン
 
-CSSスタイリングはデザイン用のフレームワークを利用することで比較的容易に行うことができます。この選択肢についても、有名なBootstrapや最近採用例が増えてきているように感じるTailwind CSSなど様々考えられますが、今回は[Marerial-UI](https://material-ui.com) (MUI)を採用しています。  
+CSSスタイリングはデザイン用のフレームワークを利用することで比較的容易に行うことができます。この選択肢についても、有名なBootstrapや近頃様々な場所で採用例が増えてきているTailwind CSSなど様々考えられますが、今回は[Marerial-UI](https://material-ui.com) (MUI)を採用しています。  
 
 ### Material-UI
 
 MUIは`Class`名を与えてスタイリングするのではなく、役割に応じたコンポーネントが用意されておりそれらを`import`しつつUIを作り上げていく方式になります。都度CSSをカスタマイズして利用することも、組み合わせたものを新たなコンポーネントとしてモジュール化することも可能です。どちらにしても、このコンポーネントベースのスタイリングはコードの再利用が行いやすいという利点があります。  
 
-MUIをUIフレームワークとして利用することを決定した主な理由としては、Reactとの組み合わせで用いられること実装例が多く参考としての情報収集が行いやすいことや、公式の実装例も豊富ですぐにコードを取り入れて実装できること、またそのカスタマイズも簡単に行えることなどがあります。またある程度経験済みだったため導入までの障壁が低く抑えられると考え採用に至りました。  
+UIフレームワークとしてMUIを利用することを決定した主な理由としては、Reactとの組み合わせで用いられること実装例が多く参考としての情報収集が行いやすいことや、公式の実装例も豊富ですぐにコードを取り入れて実装できること、またそのカスタマイズも簡単に行えることなどがあります。またある程度経験済みだったため導入までの障壁が低く抑えられると考えました。  
 
 MUIにはパッケージが複数に分割して存在しており必要に応じてインストールが必要です。以下では主要機能用、アイコン用、追加機能用のパッケージをそれぞれインストールしています。  
 
@@ -480,7 +539,7 @@ yarn add @material-ui/core @material-ui/icons @material-ui/lab
 
 #### テーマのカスタマイズ
 
-MUIのスタイリングは利用する際にそのモジュール毎に変更を加えることが可能です。しかし、毎回同一のスタイルを割り当てる場合もあるでしょう。そのような時にはテーマをカスタマイズします。このテーマにはメイン及びサブの配色やフォントサイズなどが含まれます。詳細は[公式ドキュメント](https://material-ui.com/customization/theming)を参照します。  
+MUIのスタイリングは利用する際にそのモジュール毎に変更を加えることが可能です。しかし、毎回同一のスタイルを割り当てる場合も考えられます。そのような時にはテーマ (メイン及びサブの配色やフォントサイズなどの設定) をカスタマイズすることで対応を行います。詳細は[公式ドキュメント](https://material-ui.com/customization/theming)を参照します。  
 
 ここでは主に配色を司る[Palette](https://material-ui.com/customization/palette)のデフォルト設定を変更します。そのためにまずテーマ管理用のディレクトリとして、`src/theme`を新たに作成し、配下に`index.ts`ファイルを加え、`createMuiTheme`によってテーマを作成します。  
 
@@ -727,7 +786,7 @@ type FormData = {
 };
 ```
 
-上記では、メールアドレスとパスワードでログインする場合の入力項目です。`remember`はログイン状態を維持するか決定するオプションで、フォームのチェックボックスにチェックを入れると`"on"`が送信され、外すと何も送信されません。よって、`string | undefined`ですが、それを`?`を使用して表しています。  
+上記では、メールアドレスとパスワードでログインする場合の入力項目です。`remember`はログイン状態を維持するか決定するオプションで、フォームのチェックボックスにチェックを入れると`"on"`が送信され、外すと何も送信されません。よって、`string | undefined`となりますが、ここでは`?`を付与することでそれを表しています。  
 
 次に、Yupによるスキーマを構築します。ここでバリデーションに利用できるAPIは[こちらのGitHubのページ](https://github.com/jquense/yup)から確認できます。  
 
@@ -751,12 +810,11 @@ let rEmail = /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\u
 これらを基にフォームの機能を作成します。(本稿の要点以外は省略)  
 
 ```tsx :src/pages/auth/SignIn.tsx
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { TextField, Checkbox, FormControlLabel } from '@material-ui/core';
 
-const SignIn: React.FC = () => {
+const SignIn = () => {
   const {
     register, // 入力項目の登録
     handleSubmit, // Submit時の挙動
@@ -821,17 +879,17 @@ CRAにおいては、テストを導入するための環境が既に整って�
 
 CRAを利用している場合、`yarn test`を実行するだけでJestによるテストが走ります。サンプル用のテストファイル`App.test.tsx`も付属しているので、自身でテストを書いていない状態から試行することができます。  
 
-尚、このファイルがテスト実行用であることはそのファイル名から判断されています。即ち、末尾に`.test.ts (tsx)`又は`.spec.ts (tsx)`が付いているものがその対象となります。若しくは、`__test__`ディレクトリのファイルであれば、通常の`ts`又は`tsx`ファイルがテストファイルであると認められます。  
+尚、このファイルがテスト実行用であることはそのファイル名から判断されています。即ち、末尾に`.test.ts (tsx)`又は`.spec.ts (tsx)`が付いているものがその対象となります。若しくは、`__test__`ディレクトリのファイルであれば、通常の`ts`又は`tsx`ファイルがテスト対象のファイルであると認識されます。  
 
 > 参考：  
-> [Filename Conventions](https://create-react-app.dev/docs/running-tests#filename-conventions) - Running Tests | Create React App  
-> [testRegex](https://jestjs.io/docs/configuration#testregex-string--arraystring) - Configuring Jest · Jest  
+> [Running Tests | Create React App # Filename Conventions](https://create-react-app.dev/docs/running-tests#filename-conventions)  
+> [Configuring Jest · Jest # testRegex](https://jestjs.io/docs/configuration#testregex-string--arraystring)  
 
 #### Jest Config
 
 通常Jestではテストの際に適用させる設定を`jest.config.ts`の中での中で行いますが、CRAではデフォルトのコンフィグが内蔵させており`jest.config.ts`によって設定を変更することができません。代わりに、`package.json`に`jest`の項目を設け、ここに設定を記述することで対応します。(ただしサポートされているコンフィグに制限あり)  
 
-> 参考： [Configuration](https://create-react-app.dev/docs/running-tests/#configuration) - Running Tests | Create React App  
+> 参考： [Running Tests | Create React App # Configuration](https://create-react-app.dev/docs/running-tests/#configuration)  
 
 #### Jest CLI
 
@@ -881,14 +939,12 @@ PASS  src/__tests__/store/auth/thunks/resetPassword.test.ts
 
 カバレッジとは、テストによってどの程度コードが実行されたか表す割合です。Jestではテスト実行コマンドにオプションを付与することでカバレッジを表示することができ、さらにこの時、テストされていないファイルとその対象コードの行まで把握することが可能です。これによって、テスト実行状況を確認し方針の決定に役立てることに繋がります。  
 
-> 参考： [Coverage Reporting](https://create-react-app.dev/docs/running-tests#coverage-reporting) - Running Tests | Create React App  
+> 参考： [Running Tests | Create React App # Coverage Reporting](https://create-react-app.dev/docs/running-tests#coverage-reporting)  
 
 ### React Testing Library
 
 UIテストでは、実際のユースケースに従って、ユーザーの操作 (クリックやフォーム入力など) を再現し、その結果期待した画面表示がされているかを確認します。[React Testing Library](https://testing-library.com/docs/react-testing-library/intro)はそのために有用な機能を提供するパ
 ッケージです。  
-
-> 参考： [React Testing Libraryの使い方 - Qiita](https://qiita.com/ossan-engineer/items/,4757d7457fafd44d2d2f)  
 
 ### テスト状態初期化
 
@@ -914,7 +970,7 @@ render(
 
 テスト毎にこれらを初期状態に戻すには、`beforeEach`などを用いて各状態の初期化を行いますが、ここで行うべき処理はそれぞれ異なります。  
 
-例えば**Redux Store**をリセットするには、テスト毎に`configureStore`から再度生成することが一つの解決策となります。  
+例えば**Redux Store**をリセットするには、テスト毎に`configureStore`から再度生成することが一つの解決策です。  
 
 ```ts :src/mocks/utils/store/index.ts
 import { configureStore } from '@reduxjs/toolkit';
@@ -940,7 +996,7 @@ describe('Thunk for a forgot password', () => {
   ...
 ```
 
-次に**React Router**を初期状態に戻す場合を考えます。ドキュメントに従って、これには`BrowserRouter`ではなく、`MemoryRouter`を利用する方法に変更します。これによって状態を残さずに次のテストに移ることができるようになりました。  
+次に**React Router**を初期状態に戻す場合を考えます。ドキュメントに従って、これには`BrowserRouter`ではなく、`MemoryRouter`を利用する方法に変更します。これによって状態を残さずに次のテストに移ることが可能です。  
 
 ```tsx
 import { render } from '@testing-library/react';
@@ -1004,7 +1060,7 @@ export const handlers = [
 
 上記のコードは、`http://backend/login`に対する`POST`リクエストを捕捉する [Request handler](https://mswjs.io/docs/getting-started/mocks/rest-api#request-handler)を`handlers`に格納しています。第二引数で何も返していないのでこれはまだ動作しません。  
 
-第二引数として渡されるのは、[Response resolver](https://mswjs.io/docs/getting-started/mocks/rest-api#response-resolver)で、リクエストで送られてきたデータに対するレスポンスを作り上げます。これは以下の引数を持つ関数で、下のコードのようにリクエストのヘッダーやCookieを簡単に取得することができます。  
+第二引数として渡されるのは、[Response resolver](https://mswjs.io/docs/getting-started/mocks/rest-api#response-resolver)で、リクエストで送られてきたデータに対するレスポンスを作り上げます。これは以下の引数を持つ関数で、下のコードのようにリクエストのヘッダーやCookieを取得することができます。  
 
 > - req, an information about a matching request;
 > - res, a functional utility to create the mocked response;
@@ -1040,7 +1096,7 @@ export const handlers = [
 
 作成した`handler`を利用するには、ブラウザ環境とNode (テスト) 環境で異なるプロセスが必要です。  
 
-##### ブラウザ環境の場合
+##### ブラウザ環境
 
 ブラウザ環境で実行する場合は**Service Worker**を起動します。そのために必要なコードは以下のコマンドを実行することで生成することができます。  
 
@@ -1081,7 +1137,7 @@ ReactDOM.render(
 > [Browser - Getting Started - Mock Service Worker Docs](https://mswjs.io/docs/getting-started/integrate/browser)  
 > [Debugging uncaught requests - Recipes - Mock Service Worker Docs](https://mswjs.io/docs/recipes/debugging-uncaught-requests)  
 
-##### Node環境の場合
+##### Node環境
 
 Node環境 (Jest実行時の環境) の場合はモックサーバーを起動します。`src/mocks/server.ts`を作成し、`handler`から`server`を構成します。  
 
@@ -1121,11 +1177,13 @@ afterAll(() => {
 
 ### GitHub Actions
 
-**GitHub Actions** は、事前に規定したイベントが発生した際に、自動的に任意のコマンドを実行することができるサービスです。イベントに指定可能なものとして、リポジトリへのPushやPull Request があり、特定のBranchの場合に限定するといった条件を指定することも可能です。  
+**GitHub Actions**とは、事前に規定したイベントが発生した際に、自動的に任意のコマンドを実行することができるサービスです。イベントに指定可能なものとして、リポジトリへのPushやPull Request があり、特定のBranchの場合に限定するといった条件を指定することも可能です。  
 
 > 参考： [ワークフローをトリガーするイベント - GitHub Docs](https://docs.github.com/ja/actions/reference/events-that-trigger-workflows)  
 
-GitHub Actions の導入や基本的な使用方法などについては別の記事で説明するとして、以降では今回作成したテストを実行する手順を確認していきます。方針としては、まず依存関係のインストールを行います。このときキャッシュが存在すれば手順をスキップします。次に`.env`ファイルを用意し、ビルド、テストを順に行います。  
+導入や基本的な使用方法などについては、[こちら](https://github.com/zuka-e/laravel-react-task-spa/blob/development/backend/README.md#github-actions)で説明しています。  
+
+以降では今回作成したテストを実行する手順を確認していきます。方針としては、まず依存関係のインストールを行い、このときキャッシュが存在すれば手順をスキップします。次に`.env`ファイルを用意し、ビルド、テストを順に行います。  
 
 キャッシュを利用した依存関係インストールを行うコードは以下のようになります。  
 
@@ -1251,7 +1309,7 @@ ReactでMarkdownを扱うには、Markdown記法で記述された文章をJSX�
 
 > 参考： [material-ui/Terms.js at master · mui-org/material-ui](https://github.com/mui-org/material-ui/blob/master/docs/src/pages/premium-themes/onepirate/Terms.js) - GitHub  
 
-## markdown-to-jsx
+### markdown-to-jsx
 
 markdown-to-jsxを利用することで、Markdownの各要素 (`h1`や`p`など) を任意のコンポーネントに変換することが可能で、これによってMaterial-UIとの併用も容易に実現できます。  
 
@@ -1273,7 +1331,7 @@ import MarkdownToJsx, { MarkdownToJSX } from 'markdown-to-jsx';
 
 const options: MarkdownToJSX.Options = {};
 
-const Markdown: React.FC = ({ children }) => {
+const Markdown = ({ children }) => {
   return (
     <MarkdownToJsx options={options}>
       {children as string & ReactNode}
@@ -1326,6 +1384,13 @@ const options: MarkdownToJSX.Options = {
 
 ## まとめ
 
-以上、SPAのフロントエンドを構成する上で必要となる要素 (状態管理やルーティングなど) 及びそれらを実現するための技術 (ReduxやReact Routerなど) について、その意義を確認しつつ初めに行うべき実装を記述してきました。  
+以上、SPAのフロントエンドを構成する上で必要となる要素 (状態管理やルーティングなど) 及びそれらを実現するための技術 (ReduxやReact Routerなど) について、その意義を確認しつつ初めに行うべき実装を説明してきました。  
 
-今回利用したパッケージ群はその選定理由に導入容易性を含んでおり、比較的簡単に実装まで行うことができたと思います。しかし一方で、無意味なコードや重複を避け、無駄がなく可読性や再利用性が高いコードを構成するためには、それぞれの公式ドキュメントやコードを読み理解した上で実装することが必要だと思いました。ここで今まで初期設定という形で実装してきたコードもそれを志向しています。  
+しかし、序盤のほんの一部しか触れられていないのでまだ言及すべきことが残っています。今回はこれで締めることにしますが、また機会があれば追記していきたいと思います。  
+
+## 各種リンク
+
+- アプリケーション: [https://www.miwataru.com/](https://www.miwataru.com/)
+- GitHub: [https://github.com/zuka-e/laravel-react-task-spa](https://github.com/zuka-e/laravel-react-task-spa)
+- 全体像: [https://github.com/zuka-e/laravel-react-task-spa/blob/development/README.md](https://github.com/zuka-e/laravel-react-task-spa/blob/development/README.md)
+- バックエンド実装過程: [https://github.com/zuka-e/laravel-react-task-spa/blob/development/backend/README.md](https://github.com/zuka-e/laravel-react-task-spa/blob/development/backend/README.md)
