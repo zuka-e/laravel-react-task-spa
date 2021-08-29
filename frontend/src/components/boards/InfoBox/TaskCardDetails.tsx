@@ -27,8 +27,13 @@ import { TaskCard } from 'models';
 import { useAppDispatch, useDeepEqualSelector } from 'utils/hooks';
 import { closeInfoBox } from 'store/slices/taskBoardSlice';
 import { updateTaskCard } from 'store/thunks/cards';
-import { AlertButton, DatetimeInput, DeleteTaskDialog } from 'templates';
-import { EditableTitle, EditableText } from '..';
+import {
+  AlertButton,
+  DatetimeInput,
+  DeleteTaskDialog,
+  MarkdownEditor,
+} from 'templates';
+import { EditableTitle } from '..';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -87,6 +92,12 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
     setChecked(card.done);
   }, [card.done]);
 
+  const targetCard = {
+    id: card.id,
+    boardId: card.boardId,
+    listId: card.listId,
+  };
+
   const isInTime = (date: Date) => moment(new Date()).isBefore(date, 'minute');
 
   const handleCheckbox = () => {
@@ -118,6 +129,10 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
 
   const handleDelete = () => {
     setOpenDeleteDialog(true);
+  };
+
+  const handleSubmitText = (text: string) => {
+    dispatch(updateTaskCard({ ...targetCard, content: text }));
   };
 
   return (
@@ -188,12 +203,13 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
       </CardContent>
 
       <CardContent>
-        <EditableText
-          method='PATCH'
-          type='card'
-          data={card}
+        <MarkdownEditor
+          onSubmit={handleSubmitText}
           schema={yup.object().shape({
-            content: yup.string().max(Math.floor(65535 / 3)),
+            content: yup
+              .string()
+              .label('Content')
+              .max(Math.floor(65535 / 3)),
           })}
           defaultValue={card.content}
         />
