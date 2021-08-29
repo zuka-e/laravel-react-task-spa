@@ -2333,27 +2333,27 @@
     "@typescript-eslint/types" "4.15.2"
     eslint-visitor-keys "^2.0.0"
 
-"@uiw/react-markdown-preview@3.2.2":
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/@uiw/react-markdown-preview/-/react-markdown-preview-3.2.2.tgz#3edf2fb3b1ca42f6d9d77ff2e30b86c54b2fe3ca"
-  integrity sha512-J7GMy36voDqsok646ZWcTbVUXg6RpsyKl+UwdIitfl4r1hvoUxD51tWuyXbn9BN7eCEHo+HB2eJItUKg5RcLNg==
+"@uiw/react-markdown-preview@3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@uiw/react-markdown-preview/-/react-markdown-preview-3.3.0.tgz#564faa0b0ba355e617aeefdcefa43dbc7f4d4db3"
+  integrity sha512-bKtgkHIUMLHAMGVJWXhYqxrJqwKq5yNAgeMkmTY7Zb0TTBB5xZZRGeYJrGK+Z/YI9bi4DDvY/+FaI4FimhYTIg==
   dependencies:
     "@babel/runtime" "7.15.3"
     "@mapbox/rehype-prism" "0.7.0"
-    react-markdown "7.0.0"
-    rehype-autolink-headings "6.0.0"
-    rehype-raw "6.0.0"
+    react-markdown "7.0.1"
+    rehype-autolink-headings "6.1.0"
+    rehype-raw "6.1.0"
     rehype-rewrite "1.0.2"
     rehype-slug "5.0.0"
     remark-gfm "2.0.0"
 
 "@uiw/react-md-editor@^3.5.0":
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/@uiw/react-md-editor/-/react-md-editor-3.5.0.tgz#89b32e04138312285dd500959e49612a09d21a1d"
-  integrity sha512-asZiZmwuNi1QP5jXhmoPy/cEJLuTxXtMLVgvb4+dELKOPCNsI2JgzaXYtKcc59IMNts2+KlQG7FDLwaDL5ULAw==
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/@uiw/react-md-editor/-/react-md-editor-3.6.0.tgz#87b567cd589349fa1337833c5173d481b55a04b6"
+  integrity sha512-YJHieqecT5GJu9RF6ATKzdyP0pOD1bR8EQvfim+ZM5v8rFPYwTrw85ZCUnOaSLkmYbX7VHNmEZNGu7tiY0lnXg==
   dependencies:
     "@babel/runtime" "^7.14.6"
-    "@uiw/react-markdown-preview" "3.2.2"
+    "@uiw/react-markdown-preview" "3.3.0"
     rehype "12.0.0"
 
 "@webassemblyjs/ast@1.9.0":
@@ -6040,7 +6040,7 @@ hast-util-parse-selector@^3.0.0:
   dependencies:
     "@types/hast" "^2.0.0"
 
-hast-util-raw@^7.0.0:
+hast-util-raw@^7.2.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/hast-util-raw/-/hast-util-raw-7.2.0.tgz#279fe5bc154f1c0b956f656781fa9ae1fdac7c70"
   integrity sha512-K2ofsY59XqrtBNUAkvT2vPdyNPUchjj1Z0FxUOwBadS6R5h9O3LaRZqpukQ+YfgQ/IMy9GGMB/Nlpzpu+cuuMA==
@@ -10491,10 +10491,10 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.1.tgz#5b3531bd76a645a4c9fb6e693ed36419e3301339"
   integrity sha512-NAnt2iGDXohE5LI7uBnLnqvLQMtzhkiAOLXTmv+qnF9Ky7xAPcX8Up/xWIhxvLVGJvuLiNc4xQLtuqDRzb4fSA==
 
-react-markdown@7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/react-markdown/-/react-markdown-7.0.0.tgz#66565968e8513af070eeef65abc77e80fc1a9b87"
-  integrity sha512-qdWfKxMgdKF3kHAV5pmcB12fAvytPoTpYwKTO6O/I3HujrK7sKIv6j4RnXVNLrNUh+TaBk+KtqpGzIKslX2rDg==
+react-markdown@7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/react-markdown/-/react-markdown-7.0.1.tgz#c7365fcd7d1813b3ae68f2200e8f92d47d865627"
+  integrity sha512-pthNPaoiwg0q7hukoE04F2ENwSzijIlWHJ4UMs/96LUe/G/P3FnbP4qHzx3FoNqae+2SqDG8vzniTLnJDeWneg==
   dependencies:
     "@types/hast" "^2.0.0"
     "@types/unist" "^2.0.0"
@@ -10785,7 +10785,12 @@ regenerator-runtime@^0.11.0:
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
   integrity sha512-MguG95oij0fC3QV3URf4V2SDYGJhJnJGqvIIgdECeODCT98wSWDAJ94SSuVpYQUoTcGUIL6L4yNB7j1DFFHSBg==
 
-regenerator-runtime@^0.13.4, regenerator-runtime@^0.13.7:
+regenerator-runtime@^0.13.4:
+  version "0.13.9"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.9.tgz#8925742a98ffd90814988d7566ad30ca3b263b52"
+  integrity sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==
+
+regenerator-runtime@^0.13.7:
   version "0.13.7"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.7.tgz#cac2dacc8a1ea675feaabaeb8ae833898ae46f55"
   integrity sha512-a54FxoJDIr27pgf7IgeQGxmqUNYrcV338lf/6gH456HZ/PhX+5BcwHXG9ajESmwe6WRO0tAzRUrRmNONWgkrew==
@@ -10847,15 +10852,16 @@ regjsparser@^0.6.4:
   dependencies:
     jsesc "~0.5.0"
 
-rehype-autolink-headings@6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/rehype-autolink-headings/-/rehype-autolink-headings-6.0.0.tgz#cde42e5531df2c0844213b2635cc6f6bd3fe0289"
-  integrity sha512-fY5HbOTg/S7VD+CQV1cI8t+vZTUNaQuMiswKBqKTPeCiUU/SS+jHPhp9emJ9zEx4J3MjrfymASNgr/UjhPkkig==
+rehype-autolink-headings@6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/rehype-autolink-headings/-/rehype-autolink-headings-6.1.0.tgz#9a06ae5446bfbe8148e0ed98329a566c4d7472e9"
+  integrity sha512-v8xnvhDtxc2jTgnhVlR2sG168TyNTK93Myx+uTzQNpNxzkRnQKz3hZQKoh7fxuOzJhCGa/z6qqZSPB2BOi/HRw==
   dependencies:
     "@types/hast" "^2.0.0"
     extend "^3.0.0"
     hast-util-has-property "^2.0.0"
     hast-util-heading-rank "^2.0.0"
+    hast-util-is-element "^2.0.0"
     unified "^10.0.0"
     unist-util-visit "^4.0.0"
 
@@ -10869,13 +10875,13 @@ rehype-parse@^8.0.0:
     parse5 "^6.0.0"
     unified "^10.0.0"
 
-rehype-raw@6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/rehype-raw/-/rehype-raw-6.0.0.tgz#7a176e73f7c452db7e8608b637355d566f61245e"
-  integrity sha512-vzbvI7d3WUJHh+7aaHs0PHlgc+NevOh+buLkEB7I/FD3xskTmhUntnjS57uTW3uQt67xcF3COm9OwLpVsk6jvg==
+rehype-raw@6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/rehype-raw/-/rehype-raw-6.1.0.tgz#78ba31d8725fe98467ca1acbbd65e2d0040b46e1"
+  integrity sha512-12j2UiiYJgZFdjnHDny77NY5BF3eW4Jsl0vtgL1DWdTzcHjPpbhumU+GtPUdivEWwQc8x9OdEuO0oxaGz7Tvyg==
   dependencies:
     "@types/hast" "^2.0.0"
-    hast-util-raw "^7.0.0"
+    hast-util-raw "^7.2.0"
     unified "^10.0.0"
 
 rehype-rewrite@1.0.2:
