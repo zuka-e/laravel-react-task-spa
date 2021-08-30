@@ -14,6 +14,10 @@ import { SubmitButton } from 'templates';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     error: { boxShadow: `0 0 0 1px ${theme.palette.error.main}` },
+    helperText: {
+      flexGrow: 1,
+      '&.error': { color: theme.palette.error.main },
+    },
   })
 );
 
@@ -73,7 +77,11 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
         className={!!errors[prop] ? classes.error : undefined}
       />
       <CardActions>
-        <span style={{ flexGrow: 1 }}>{errors[prop]?.message}</span>
+        <span
+          className={`${classes.helperText}${!!errors[prop] ? ' error' : ''}`}
+        >
+          {errors[prop]?.message}
+        </span>
         <SubmitButton onClick={handleSubmit(onSubmit)} size='small'>
           {'Save'}
         </SubmitButton>
