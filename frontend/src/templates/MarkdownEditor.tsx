@@ -13,6 +13,12 @@ import { SubmitButton } from 'templates';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    previewBox: {
+      '&:hover': {
+        boxShadow: `0 0 0 1px ${theme.palette.divider}`,
+        borderRadius: theme.shape.borderRadius,
+      },
+    },
     error: { boxShadow: `0 0 0 1px ${theme.palette.error.main}` },
     helperText: {
       flexGrow: 1,
@@ -50,6 +56,8 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
     setValue(defaultValue);
   }, [defaultValue]);
 
+  const handleClick = () => setMode('edit');
+
   const onSubmit = (data: Record<typeof prop, string>) => {
     data[prop] && setMode('preview');
 
@@ -59,7 +67,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
 
   if (mode === 'preview' && defaultValue)
     return (
-      <CardActions onClick={() => setMode('edit')}>
+      <CardActions onClick={handleClick} className={classes.previewBox}>
         <MDEditor.Markdown source={value} />
       </CardActions>
     );
