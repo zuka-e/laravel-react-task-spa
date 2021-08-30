@@ -31,7 +31,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
   const { schema, defaultValue } = props;
   const prop = Object.keys(schema.fields)[0];
   const classes = useStyles();
-  const [mode, setMode] = useState<PreviewType>('preview');
+  const [mode, setMode] = useState<PreviewType>(
+    defaultValue ? 'preview' : 'edit'
+  );
   const [value, setValue] = useState(defaultValue);
   const {
     register,
@@ -44,18 +46,18 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
 
   // 表示するデータが変更された場合に値を初期化する
   useEffect(() => {
-    setMode('preview');
+    setMode(defaultValue ? 'preview' : 'edit');
     setValue(defaultValue);
   }, [defaultValue]);
 
   const onSubmit = (data: Record<typeof prop, string>) => {
-    setMode('preview');
+    data[prop] && setMode('preview');
 
     if (defaultValue === data[prop]) return;
     else props.onSubmit(data[prop]);
   };
 
-  if (mode === 'preview')
+  if (mode === 'preview' && defaultValue)
     return (
       <CardActions onClick={() => setMode('edit')}>
         <MDEditor.Markdown source={value} />
