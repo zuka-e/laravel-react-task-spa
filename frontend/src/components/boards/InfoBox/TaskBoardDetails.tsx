@@ -22,8 +22,10 @@ import {
 
 import { TaskBoard } from 'models';
 import { closeInfoBox } from 'store/slices/taskBoardSlice';
+import { updateTaskBoard } from 'store/thunks/boards';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
-import { EditableText, EditableTitle } from '..';
+import { MarkdownEditor } from 'templates';
+import { EditableTitle } from '..';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -83,6 +85,10 @@ const TaskBoardDetails: React.FC<TaskBoardDetailsProps> = (props) => {
 
   const handleClose = () => {
     dispatch(closeInfoBox());
+  };
+
+  const handleSubmitText = (text: string) => {
+    dispatch(updateTaskBoard({ id: board.id, description: text }));
   };
 
   return (
@@ -147,12 +153,13 @@ const TaskBoardDetails: React.FC<TaskBoardDetailsProps> = (props) => {
       </CardContent>
 
       <CardContent>
-        <EditableText
-          method='PATCH'
-          type='board'
-          data={board}
+        <MarkdownEditor
+          onSubmit={handleSubmitText}
           schema={yup.object().shape({
-            description: yup.string().max(Math.floor(65535 / 3)),
+            description: yup
+              .string()
+              .label('Description')
+              .max(Math.floor(65535 / 3)),
           })}
           defaultValue={board.description}
         />

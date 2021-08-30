@@ -4,6 +4,7 @@ export { default as DatetimeInput } from './DatetimeInput';
 export { default as LabeledCheckbox } from './LabeledCheckbox';
 export { default as LabeledSelect } from './LabeledSelect';
 export { default as Markdown } from './Markdown';
+export { default as MarkdownEditor } from './MarkdownEditor';
 export { default as PopoverControl } from './PopoverControl';
 export { default as SubmitButton } from './SubmitButton';
 export { default as LinkWrapper } from './LinkWrapper';
