@@ -75,6 +75,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
   return (
     <Fragment>
       <MDEditor
+        autoFocus
         preview={mode}
         previewOptions={{ style: { padding: '10px' } }}
         commands={mdCommands}
