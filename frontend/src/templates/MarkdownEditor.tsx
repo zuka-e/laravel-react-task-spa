@@ -72,7 +72,8 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
         onChange={setValue}
         textareaProps={{
           placeholder: 'Enter the text',
-          ...register(prop),
+          name: register(prop)['name'],
+          onBlur: register(prop)['onBlur'],
         }}
         className={!!errors[prop] ? classes.error : undefined}
       />
