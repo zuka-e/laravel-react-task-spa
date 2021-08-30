@@ -13,6 +13,12 @@ import { SubmitButton } from 'templates';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    previewBox: {
+      '&:hover': {
+        boxShadow: `0 0 0 1px ${theme.palette.divider}`,
+        borderRadius: theme.shape.borderRadius,
+      },
+    },
     error: { boxShadow: `0 0 0 1px ${theme.palette.error.main}` },
     helperText: {
       flexGrow: 1,
@@ -31,7 +37,9 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
   const { schema, defaultValue } = props;
   const prop = Object.keys(schema.fields)[0];
   const classes = useStyles();
-  const [mode, setMode] = useState<PreviewType>('preview');
+  const [mode, setMode] = useState<PreviewType>(
+    defaultValue ? 'preview' : 'edit'
+  );
   const [value, setValue] = useState(defaultValue);
   const {
     register,
@@ -44,20 +52,22 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
 
   // 表示するデータが変更された場合に値を初期化する
   useEffect(() => {
-    setMode('preview');
+    setMode(defaultValue ? 'preview' : 'edit');
     setValue(defaultValue);
   }, [defaultValue]);
 
+  const handleClick = () => setMode('edit');
+
   const onSubmit = (data: Record<typeof prop, string>) => {
-    setMode('preview');
+    data[prop] && setMode('preview');
 
     if (defaultValue === data[prop]) return;
     else props.onSubmit(data[prop]);
   };
 
-  if (mode === 'preview')
+  if (mode === 'preview' && defaultValue)
     return (
-      <CardActions onClick={() => setMode('edit')}>
+      <CardActions onClick={handleClick} className={classes.previewBox}>
         <MDEditor.Markdown source={value} />
       </CardActions>
     );
@@ -65,6 +75,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
   return (
     <Fragment>
       <MDEditor
+        autoFocus
         preview={mode}
         previewOptions={{ style: { padding: '10px' } }}
         commands={mdCommands}
