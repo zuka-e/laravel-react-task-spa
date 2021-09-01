@@ -2,7 +2,13 @@ import { useEffect } from 'react';
 
 import { useParams } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Container, Grid, Divider, IconButton } from '@material-ui/core';
+import {
+  Container,
+  Grid,
+  Divider,
+  IconButton,
+  useMediaQuery,
+} from '@material-ui/core';
 import { MoreVert as MoreVertIcon } from '@material-ui/icons';
 
 import { makeIndexMap } from 'utils/dnd';
@@ -60,6 +66,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const TaskBoard = () => {
+  const belowSm = useMediaQuery((theme: Theme) => theme.breakpoints.down('xs'));
   const classes = useStyles();
   const params = useParams<{ userId: string; boardId: string }>();
   const dispatch = useAppDispatch();
@@ -130,7 +137,7 @@ const TaskBoard = () => {
               <ButtonToAddTask method='POST' type='list' parent={board} />
             </Grid>
           </ScrolledGridContainer>
-          <InfoBox />
+          <InfoBox style={belowSm ? { flexShrink: 0 } : undefined} />
         </Grid>
       </Container>
     </BaseLayout>
