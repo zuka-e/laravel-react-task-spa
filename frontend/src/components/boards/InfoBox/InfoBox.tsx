@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { ClickAwayListener } from '@material-ui/core';
@@ -38,13 +38,17 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const InfoBox: React.FC = () => {
+const InfoBox: React.FC<JSX.IntrinsicElements['div']> = (props) => {
+  const { className, ...divProps } = props;
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const currentState = useDeepEqualSelector((state) => state.boards.infoBox);
   const previousState = usePrevious(
     currentState.type ? currentState : undefined
   );
+  const classNameProp = `${classes.root} ${
+    currentState.open ? classes.open : ''
+  } ${className || ''}`;
 
   useEffect(() => {
     if (!previousState) return; // `open`を実行していない(`prev`が存在していない)場合
@@ -80,7 +84,7 @@ const InfoBox: React.FC = () => {
   };
 
   return (
-    <div className={`${classes.root} ${currentState.open && classes.open}`}>
+    <div className={classNameProp} {...divProps}>
       {currentState.type ? (
         <Wrapper>{renderInfoBox()}</Wrapper>
       ) : (
