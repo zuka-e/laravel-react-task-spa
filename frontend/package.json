@@ -21,6 +21,7 @@
     "@types/react-helmet": "^6.1.0",
     "@types/react-redux": "^7.1.16",
     "@types/react-router-dom": "^5.1.7",
+    "@uiw/react-md-editor": "^3.5.0",
     "axios": "^0.21.1",
     "markdown-to-jsx": "^7.1.2",
     "moment": "^2.29.1",
@@ -71,5 +72,10 @@
   },
   "msw": {
     "workerDirectory": "public"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!react-markdown)/"
+    ]
   }
 }
