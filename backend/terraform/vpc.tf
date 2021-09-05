@@ -1,12 +1,6 @@
-# https://github.com/terraform-aws-modules/terraform-aws-vpc/blob/master/examples/simple-vpc/main.tf
-
-provider "aws" {
-  profile = "default"
-  region  = local.region
-}
-
 locals {
-  region = "us-east-1"
+  cidr            = var.vpc_cidr_block
+  private_subnets = var.vpc_private_subnets
 }
 
 ################################################################################
@@ -17,7 +11,7 @@ module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
   name = "main-vpc"
-  cidr = "10.0.0.0/16"
+  cidr = local.cidr
 
   azs = [
     "${local.region}a",
@@ -27,14 +21,8 @@ module "vpc" {
     "${local.region}e",
     "${local.region}f"
   ]
-  private_subnets = [
-    "10.0.1.0/24",
-    "10.0.2.0/24",
-    "10.0.3.0/24",
-    "10.0.4.0/24",
-    "10.0.5.0/24",
-    "10.0.6.0/24"
-  ]
+
+  private_subnets = local.private_subnets
 
   enable_dns_hostnames = true
   enable_dns_support   = true
