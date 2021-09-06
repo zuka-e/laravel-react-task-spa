@@ -3,6 +3,18 @@
 ################################################################################
 # Main
 ################################################################################
+variable "project" {
+  description = "project name"
+  type        = string
+  default     = "tf-project"
+}
+
+variable "stage" {
+  description = "Deployment environment"
+  type        = string
+  default     = "production"
+}
+
 variable "aws_region" {
   description = "AWS region"
   type        = string
