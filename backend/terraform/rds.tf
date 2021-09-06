@@ -40,6 +40,7 @@ module "db" {
 
   # Enhanced monitoring
   create_monitoring_role = true
+  monitoring_role_name   = "${local.identifier}-rds-monitoring-role"
   monitoring_interval    = 60
 
   # Log
