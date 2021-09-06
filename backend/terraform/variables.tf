@@ -42,3 +42,12 @@ variable "vpc_private_subnets" {
     "10.0.6.0/24"
   ]
 }
+
+################################################################################
+# RDS
+################################################################################
+variable "db_username" {
+  description = "The master username for the database"
+  type        = string
+  sensitive   = true
+}

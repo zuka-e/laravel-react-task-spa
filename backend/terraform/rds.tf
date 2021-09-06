@@ -3,6 +3,7 @@ locals {
   engine               = "mariadb"
   major_engine_version = "10.4"
   name                 = "${lower(var.project)}_${var.stage}"
+  username             = var.db_username
 }
 
 # https://github.com/terraform-aws-modules/terraform-aws-rds
@@ -20,7 +21,7 @@ module "db" {
   max_allocated_storage = 0     # Disable autoscaling
 
   name                   = local.name
-  username               = "" # TODO: secret variable
+  username               = local.username
   create_random_password = true
   port                   = "3306"
 
