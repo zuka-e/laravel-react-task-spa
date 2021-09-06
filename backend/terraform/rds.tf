@@ -46,8 +46,10 @@ module "db" {
   # Log
   enabled_cloudwatch_logs_exports = ["audit", "error", "general", "slowquery"]
 
-  performance_insights_enabled          = true
-  performance_insights_retention_period = 7
+  # Performance Insights not supported for this configuration (db.t2.micro).
+  # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.Overview.Engines.html
+  # performance_insights_enabled          = true
+  # performance_insights_retention_period = 7
 
   # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.MariaDB.Parameters.html
   parameters = [
