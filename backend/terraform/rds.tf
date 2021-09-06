@@ -36,6 +36,7 @@ module "db" {
   maintenance_window      = "Sat:15:00-Sat:18:00"
   backup_window           = "18:00-21:00" # Don't overlap with maintenance_window
   backup_retention_period = 7             # Enable backup and retain for X days
+  skip_final_snapshot     = true          # Not create a snapshot when DB is deleted
 
   # Enhanced monitoring
   create_monitoring_role = true
