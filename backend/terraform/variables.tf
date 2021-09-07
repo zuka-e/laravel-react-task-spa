@@ -22,6 +22,20 @@ variable "aws_region" {
 }
 
 ################################################################################
+# Route53
+################################################################################
+variable "root_domain" {
+  description = "Hosted zone and records for the root domain"
+  type = object({
+    name = string
+    records = object({
+      a     = list(string)
+      cname = list(string)
+    })
+  })
+}
+
+################################################################################
 # VPC
 ################################################################################
 variable "vpc_cidr_block" {
