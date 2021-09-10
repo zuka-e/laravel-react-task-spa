@@ -1,6 +1,37 @@
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_parameter
 
 ################################################################################
+# Route53
+################################################################################
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone
+
+resource "aws_ssm_parameter" "hosted_zone_id" {
+  name        = "/${var.project}/${var.stage}/HOSTED_ZONE_ID"
+  type        = "SecureString"
+  value       = data.aws_route53_zone.root.zone_id
+  description = "The hosted zone ID for the root domain"
+}
+
+resource "aws_ssm_parameter" "domain_name" {
+  name        = "/${var.project}/${var.stage}/DOMAIN_NAME"
+  type        = "SecureString"
+  value       = data.aws_route53_zone.root.name
+  description = "The domain name for the root domain"
+}
+
+################################################################################
+# ACM
+################################################################################
+# https://github.com/terraform-aws-modules/terraform-aws-acm/blob/master/outputs.tf
+
+resource "aws_ssm_parameter" "certificate_name" {
+  name        = "/${var.project}/${var.stage}/CERTIFICATE_ARN"
+  type        = "SecureString"
+  value       = module.acm.acm_certificate_arn
+  description = "The certificate name for all the subdomains"
+}
+
+################################################################################
 # SES SMTP credentials
 ################################################################################
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_access_key
