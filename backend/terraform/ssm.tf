@@ -1,6 +1,25 @@
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_parameter
 
 ################################################################################
+# SES SMTP credentials
+################################################################################
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_access_key
+
+resource "aws_ssm_parameter" "smtp_username" {
+  name        = "/${var.project}/${var.stage}/MAIL_USERNAME"
+  type        = "SecureString"
+  value       = aws_iam_access_key.smtp.id
+  description = "Access key ID used as the STMP username"
+}
+
+resource "aws_ssm_parameter" "smtp_password" {
+  name        = "/${var.project}/${var.stage}/MAIL_PASSWORD"
+  type        = "SecureString"
+  value       = aws_iam_access_key.smtp.ses_smtp_password_v4
+  description = "Secret access key converted into an SES SMTP password"
+}
+
+################################################################################
 # RDS
 ################################################################################
 # https://github.com/terraform-aws-modules/terraform-aws-rds/blob/master/outputs.tf
