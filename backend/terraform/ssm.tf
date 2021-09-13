@@ -55,11 +55,11 @@ resource "aws_ssm_parameter" "smtp_password" {
 ################################################################################
 # https://github.com/terraform-aws-modules/terraform-aws-rds/blob/master/outputs.tf
 
-resource "aws_ssm_parameter" "db_endpoint" {
+resource "aws_ssm_parameter" "db_address" {
   name        = "/${var.project}/${var.stage}/DB_HOST"
   type        = "SecureString"
-  value       = module.db.db_instance_endpoint
-  description = "The connection endpoint"
+  value       = module.db.db_instance_address
+  description = "The hostname of the RDS instance"
 }
 
 resource "aws_ssm_parameter" "db_name" {
