@@ -54,11 +54,11 @@ provider:
   environment:
     APP_NAME: ${env:APP_NAME}
     APP_KEY: ${env:APP_KEY}
-    APP_URL: ${env:APP_URL}
+    APP_URL: https://api.${ssm:/${env:APP_NAME}/${sls:stage}/DOMAIN_NAME}
     API_ROUTE_PREFIX: ${env:API_ROUTE_PREFIX}
     API_VERSION: ${env:API_VERSION}
     LOG_CHANNEL: ${env:LOG_CHANNEL, "stderr"}
-    MIX_ASSET_URL: ${ssm:/${env:APP_NAME}/${sls:stage}/MIX_ASSET_URL}
+    MIX_ASSET_URL: https://${ssm:/${env:APP_NAME}/${sls:stage}/S3_BUCKET}.s3.amazonaws.com/public
     DB_CONNECTION: ${env:DB_CONNECTION}
     DB_PORT: ${env:DB_PORT}
     DB_HOST: ${ssm:/${env:APP_NAME}/${sls:stage}/DB_HOST}
@@ -68,18 +68,18 @@ provider:
     CACHE_DRIVER: ${env:CACHE_DRIVER}
     QUEUE_CONNECTION: ${env:QUEUE_CONNECTION}
     SESSION_DRIVER: ${env:SESSION_DRIVER}
-    SESSION_DOMAIN: ${env:SESSION_DOMAIN}
+    SESSION_DOMAIN: .${ssm:/${env:APP_NAME}/${sls:stage}/DOMAIN_NAME}
     SESSION_LIFETIME: ${env:SESSION_LIFETIME}
     SESSION_SECURE_COOKIE: ${env:SESSION_SECURE_COOKIE, "true"}
-    SANCTUM_STATEFUL_DOMAINS: ${env:SANCTUM_STATEFUL_DOMAINS}
-    SPA_URL: ${env:SPA_URL}
+    SANCTUM_STATEFUL_DOMAINS: www.${ssm:/${env:APP_NAME}/${sls:stage}/DOMAIN_NAME}
+    SPA_URL: https://www.${ssm:/${env:APP_NAME}/${sls:stage}/DOMAIN_NAME}
     MAIL_MAILER: ${env:MAIL_MAILER}
     MAIL_PORT: ${env:MAIL_PORT}
     MAIL_HOST: ${env:MAIL_HOST}
     MAIL_USERNAME: ${ssm:/${env:APP_NAME}/${sls:stage}/MAIL_USERNAME}
     MAIL_PASSWORD: ${ssm:/${env:APP_NAME}/${sls:stage}/MAIL_PASSWORD}
     MAIL_ENCRYPTION: ${env:MAIL_ENCRYPTION}
-    MAIL_FROM_ADDRESS: ${env:MAIL_FROM_ADDRESS}
+    MAIL_FROM_ADDRESS: no-reply@${ssm:/${env:APP_NAME}/${sls:stage}/DOMAIN_NAME}
     MAIL_FROM_NAME: ${env:MAIL_FROM_NAME}
     ADMIN_EMAIL: ${ssm:/${env:APP_NAME}/${sls:stage}/ADMIN_EMAIL}
     GUEST_NAME: ${env:GUEST_NAME}
