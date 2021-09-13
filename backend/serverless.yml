@@ -130,3 +130,26 @@ functions:
 plugins:
   - serverless-domain-manager
   - ./vendor/bref/bref
+
+# Why are the following resources not built by Terraform?
+# see: https://www.serverless.com/blog/definitive-guide-terraform-serverless
+# That is, while Serverless builds an app-specific infrastructure, Terraform builds a shared infrastructure.
+# About the syntax,  refer to the following links.
+# https://www.serverless.com/framework/docs/providers/aws/guide/resources
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html
+resources:
+  Resources:
+    cacheTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${env:DYNAMODB_CACHE_TABLE, "cache"}
+        AttributeDefinitions:
+          - AttributeName: key
+            AttributeType: S
+        KeySchema:
+          - AttributeName: key
+            KeyType: HASH
+        BillingMode: PROVISIONED
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
