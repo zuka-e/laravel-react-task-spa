@@ -100,3 +100,15 @@ resource "aws_ssm_parameter" "db_password" {
   value       = module.db.db_master_password
   description = "The master password to connect to the database"
 }
+
+################################################################################
+# S3
+################################################################################
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket
+
+resource "aws_ssm_parameter" "s3_bucket" {
+  name        = "/${var.project}/${var.stage}/S3_BUCKET"
+  type        = "SecureString"
+  value       = aws_s3_bucket.main.id
+  description = "The name of the bucket"
+}
