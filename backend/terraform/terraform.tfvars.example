@@ -1,0 +1,40 @@
+# Rename this file `terraform.tfvar`. See the following links to know more info
+# https://www.terraform.io/docs/language/values/variables.html#assigning-values-to-root-module-variables
+# https://learn.hashicorp.com/tutorials/terraform/sensitive-variables?in=terraform/configuration-language
+
+################################################################################
+# Main
+################################################################################
+project    = "App"
+stage      = "dev"
+aws_profile = "default"
+aws_region = "ap-northeast-1"
+
+################################################################################
+# Route53
+################################################################################
+root_domain = {
+  name = "example.com"
+  records = {
+    a     = ["76.76.21.21"]
+    cname = ["cname.vercel-dns.com"]
+  }
+}
+
+################################################################################
+# VPC
+################################################################################
+vpc_cidr_block = "10.0.0.0/16"
+vpc_private_subnets = [
+  "10.0.1.0/24",
+  "10.0.2.0/24",
+  "10.0.3.0/24",
+  "10.0.4.0/24",
+  "10.0.5.0/24",
+  "10.0.6.0/24"
+]
+
+################################################################################
+# RDS
+################################################################################
+db_username = "admin"
