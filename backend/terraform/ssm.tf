@@ -51,6 +51,24 @@ resource "aws_ssm_parameter" "smtp_password" {
 }
 
 ################################################################################
+# VPC
+################################################################################
+
+resource "aws_ssm_parameter" "security_group_id" {
+  name        = "/${var.project}/${var.stage}/SECURITY_GROUP_ID"
+  type        = "SecureString"
+  value       = module.vote_service_sg.security_group_id
+  description = "ID of security group"
+}
+
+resource "aws_ssm_parameter" "private_subnets" {
+  name        = "/${var.project}/${var.stage}/PRIVATE_SUBNET_IDS"
+  type        = "StringList"
+  value       = join(",", module.vpc.private_subnets)
+  description = "List of IDs of private subnets"
+}
+
+################################################################################
 # RDS
 ################################################################################
 # https://github.com/terraform-aws-modules/terraform-aws-rds/blob/master/outputs.tf
