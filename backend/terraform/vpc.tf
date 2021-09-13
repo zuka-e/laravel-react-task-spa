@@ -76,7 +76,7 @@ module "vote_service_sg" {
 
 resource "aws_vpc_endpoint" "ses" {
   vpc_id            = module.vpc.vpc_id
-  service_name      = "com.amazonaws.us-east-1.email-smtp"
+  service_name      = "com.amazonaws.${local.region}.email-smtp"
   vpc_endpoint_type = "Interface"
 
   security_group_ids  = [module.vote_service_sg.security_group_id]
@@ -86,6 +86,6 @@ resource "aws_vpc_endpoint" "ses" {
 
 resource "aws_vpc_endpoint" "dynamodb" {
   vpc_id          = module.vpc.vpc_id
-  service_name    = "com.amazonaws.us-east-1.dynamodb"
-  route_table_ids = [module.vpc.vpc_main_route_table_id]
+  service_name    = "com.amazonaws.${local.region}.dynamodb"
+  route_table_ids = module.vpc.private_route_table_ids
 }
