@@ -31,6 +31,25 @@ provider:
   stage: ${opt:stage}
   profile: ${opt:aws-profile}
   runtime: provided.al2
+  httpApi:
+    # https://www.serverless.com/framework/docs/providers/aws/events/http-api#disable-default-endpoint
+    disableDefaultEndpoint: true
+    # https://www.serverless.com/framework/docs/providers/aws/events/http-api#cors-setup
+    cors:
+      allowedOrigins:
+        - https://www.${ssm:/${env:APP_NAME}/${sls:stage}/DOMAIN_NAME}
+      allowedHeaders:
+        - Content-Type
+        - X-XSRF-TOKEN
+      allowedMethods:
+        - OPTIONS
+        - POST
+        - GET
+        - PATCH
+        - PUT
+        - DELETE
+      allowCredentials: true
+
   # https://www.serverless.com/framework/docs/providers/aws/guide/variables
   environment:
     APP_NAME: ${env:APP_NAME}
