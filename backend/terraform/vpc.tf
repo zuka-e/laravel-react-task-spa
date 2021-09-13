@@ -87,5 +87,5 @@ resource "aws_vpc_endpoint" "ses" {
 resource "aws_vpc_endpoint" "dynamodb" {
   vpc_id          = module.vpc.vpc_id
   service_name    = "com.amazonaws.${local.region}.dynamodb"
-  route_table_ids = [module.vpc.vpc_main_route_table_id]
+  route_table_ids = module.vpc.private_route_table_ids
 }
