@@ -99,8 +99,9 @@ provider:
     subnetIds: ${ssm:/${env:APP_NAME}/${sls:stage}/PRIVATE_SUBNET_IDS}
 
 package:
-  # https://www.serverless.com/framework/docs/deprecations/NEW_PACKAGE_PATTERNS
+  # https://www.serverless.com/framework/docs/deprecations#new-way-to-define-packaging-patterns
   patterns:
+    - "!terraform/**"
     - "!node_modules/**"
     - "!public/storage"
     - "!resources/assets/**"
