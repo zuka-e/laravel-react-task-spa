@@ -77,3 +77,59 @@ jobs:
       - name: Terraform Apply
         if: github.ref == 'refs/heads/$default-branch' && github.event_name == 'push'
         run: terraform apply -auto-approve
+
+  # see: https://github.com/serverless/github-action
+  build-app-specific-infrastructure:
+    needs: build-shared-infrastructure
+    if: github.ref == 'refs/heads/$default-branch' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache Node.js modules
+        id: node-cache
+        uses: actions/cache@v2
+        with:
+          path: ./backend/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Node.js dependencies
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: ./backend/vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      # see: https://bref.sh/docs/deploy.html#automating-deployments
+      - name: Install Composer dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        run: composer install --prefer-dist --optimize-autoloader --no-dev
+
+      - name: Serverless Deploy
+        uses: serverless/github-action@master
+        with:
+          args: deploy --stage dev --aws-profile default --verbose
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
