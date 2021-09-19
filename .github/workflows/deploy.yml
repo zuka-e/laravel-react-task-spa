@@ -6,6 +6,9 @@ on:
       - $default-branch
   pull_request:
 
+env:
+  AWS_REGION: us-east-1
+
 jobs:
   # see: https://github.com/hashicorp/learn-terraform-github-actions
   build-shared-infrastructure:
@@ -134,3 +137,19 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      # see: https://github.com/aws-actions/configure-aws-credentials
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Compile Assets
+        run: npm run prod
+
+      - name: Synchronize Assets with S3 Buckets
+        run: |
+          S3_BUCKET=$(aws ssm get-parameter --name "/Miwataru/dev/S3_BUCKET" --with-decryption --query Parameter.Value --output text)
+          aws s3 sync public/ s3://${S3_BUCKET}/public --delete --exclude index.php
