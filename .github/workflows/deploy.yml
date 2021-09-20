@@ -12,6 +12,7 @@ env:
 jobs:
   # see: https://github.com/hashicorp/learn-terraform-github-actions
   build-shared-infrastructure:
+    name: Build Shared Infrastructure
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -47,7 +48,7 @@ jobs:
       - uses: actions/github-script@0.9.0
         if: github.event_name == 'pull_request'
         env:
-          PLAN: '${{ steps.plan.outputs.stdout }}'
+          PLAN: ${{ steps.plan.outputs.stdout }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -83,6 +84,7 @@ jobs:
 
   # see: https://github.com/serverless/github-action
   build-app-specific-infrastructure:
+    name: Build App-Specific Infrastructure
     needs: build-shared-infrastructure
     if: github.ref == 'refs/heads/development' && github.event_name == 'push'
     runs-on: ubuntu-latest
