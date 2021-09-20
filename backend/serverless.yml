@@ -22,6 +22,7 @@ custom:
     endpointType: "regional"
     securityPolicy: tls_1_2
     apiType: http
+    autoDomain: true
 
 provider:
   # https://www.serverless.com/framework/docs/deprecations#default-providerlambdahashingversion
