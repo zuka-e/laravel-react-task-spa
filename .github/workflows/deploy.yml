@@ -129,13 +129,18 @@ jobs:
         if: steps.composer-cache.outputs.cache-hit != 'true'
         run: composer install --prefer-dist --optimize-autoloader --no-dev
 
+      - name: Serverless Config Credentials
+        run: |
+          ./node_modules/serverless/bin/serverless.js config credentials \
+            --provider aws \
+            --key ${{ secrets.AWS_ACCESS_KEY_ID }} \
+            --secret ${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+            --profile dev
+
       - name: Serverless Deploy
-        uses: serverless/github-action@master
-        with:
-          args: deploy --stage dev --aws-profile default --verbose
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          ./node_modules/serverless/bin/serverless.js deploy \
+            --stage dev --aws-profile dev --verbose
 
       # see: https://github.com/aws-actions/configure-aws-credentials
       - name: Configure AWS Credentials
