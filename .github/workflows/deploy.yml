@@ -3,7 +3,7 @@ name: Continuous Deployment
 on:
   push:
     branches:
-      - $default-branch
+      - development
   pull_request:
 
 env:
@@ -78,13 +78,13 @@ jobs:
         run: exit 1
 
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/$default-branch' && github.event_name == 'push'
+        if: github.ref == 'refs/heads/development' && github.event_name == 'push'
         run: terraform apply -auto-approve
 
   # see: https://github.com/serverless/github-action
   build-app-specific-infrastructure:
     needs: build-shared-infrastructure
-    if: github.ref == 'refs/heads/$default-branch' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/development' && github.event_name == 'push'
     runs-on: ubuntu-latest
     defaults:
       run:
