@@ -129,6 +129,9 @@ jobs:
         if: steps.composer-cache.outputs.cache-hit != 'true'
         run: composer install --prefer-dist --optimize-autoloader --no-dev
 
+      - name: Generate APP_KEY
+        run: php artisan key:generate --env dev
+
       - name: Serverless Config Credentials
         run: |
           ./node_modules/serverless/bin/serverless.js config credentials \
@@ -141,6 +144,8 @@ jobs:
         run: |
           ./node_modules/serverless/bin/serverless.js deploy \
             --stage dev --aws-profile dev --verbose
+        env:
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
 
       # see: https://github.com/aws-actions/configure-aws-credentials
       - name: Configure AWS Credentials
