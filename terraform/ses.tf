@@ -28,7 +28,7 @@ resource "aws_route53_record" "root_amazonses_dkim_record" {
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_access_key
 
 resource "aws_iam_user" "smtp" {
-  name = "ses-smtp-user.${formatdate("YYYYMMDD-hhmmss", timestamp())}"
+  name = "ses-smtp-user.20210920-091305"
 }
 
 resource "aws_iam_access_key" "smtp" {
