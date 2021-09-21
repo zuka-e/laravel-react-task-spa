@@ -1,6 +1,17 @@
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_parameter
 
 ################################################################################
+# Main
+################################################################################
+
+resource "aws_ssm_parameter" "aws_region" {
+  name        = "/${var.project}/${var.stage}/AWS_REGION"
+  type        = "SecureString"
+  value       = var.aws_region
+  description = "AWS region"
+}
+
+################################################################################
 # Route53
 ################################################################################
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone
