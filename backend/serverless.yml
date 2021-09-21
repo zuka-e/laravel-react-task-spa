@@ -65,7 +65,6 @@ provider:
     APP_URL: https://api.${ssm:/${env:APP_NAME}/${sls:stage}/DOMAIN_NAME}
     API_ROUTE_PREFIX: ${env:API_ROUTE_PREFIX}
     API_VERSION: ${env:API_VERSION}
-    AWS_DEFAULT_REGION: ${ssm:/${env:APP_NAME}/${sls:stage}/AWS_REGION}
     LOG_CHANNEL: ${env:LOG_CHANNEL, "stderr"}
     MIX_ASSET_URL: https://${ssm:/${env:APP_NAME}/${sls:stage}/S3_BUCKET}.s3.amazonaws.com/public
     DB_CONNECTION: ${env:DB_CONNECTION}
