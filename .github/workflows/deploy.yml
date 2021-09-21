@@ -139,18 +139,19 @@ jobs:
         if: steps.composer-cache.outputs.cache-hit != 'true'
         run: composer install --prefer-dist --optimize-autoloader --no-dev
 
+      - name: Install Serverless globally
+        run: npm install -g serverless
+
       - name: Serverless Config Credentials
         run: |
-          ./node_modules/serverless/bin/serverless.js config credentials \
+          serverless config credentials \
             --provider aws \
             --key ${{ secrets.AWS_ACCESS_KEY_ID }} \
             --secret ${{ secrets.AWS_SECRET_ACCESS_KEY }} \
             --profile dev
 
       - name: Serverless Deploy
-        run: |
-          ./node_modules/serverless/bin/serverless.js deploy \
-            --stage dev --aws-profile dev --verbose
+        run: serverless deploy --stage dev --aws-profile dev --verbose
         env:
           APP_KEY: ${{ secrets.APP_KEY }}
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
