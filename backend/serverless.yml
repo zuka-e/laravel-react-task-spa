@@ -28,7 +28,7 @@ provider:
   # https://www.serverless.com/framework/docs/deprecations#default-providerlambdahashingversion
   lambdaHashingVersion: 20201221
   name: aws
-  region: ${env:AWS_DEFAULT_REGION, ssm:/${env:APP_NAME}/${sls:stage}/AWS_REGION}
+  region: ${opt:region, env:AWS_DEFAULT_REGION}
   stage: ${opt:stage}
   profile: ${opt:aws-profile}
   runtime: provided.al2
