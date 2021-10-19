@@ -102,7 +102,6 @@ provider:
 package:
   # https://www.serverless.com/framework/docs/deprecations#new-way-to-define-packaging-patterns
   patterns:
-    - "!terraform/**"
     - "!node_modules/**"
     - "!public/storage"
     - "!resources/assets/**"
