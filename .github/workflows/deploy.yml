@@ -133,6 +133,9 @@ jobs:
         if: steps.composer-cache.outputs.cache-hit != 'true'
         run: composer install --prefer-dist --optimize-autoloader --no-dev
 
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+
       - name: Install Serverless globally
         run: npm install -g serverless
 
@@ -172,4 +175,4 @@ jobs:
               --profile dev \
           )
           aws s3 sync public/ s3://${S3_BUCKET}/public \
-            --delete --exclude index.php --profile dev
+            --delete --exclude index.php --profile dev --acl public-read
