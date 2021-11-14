@@ -1,9 +1,10 @@
-name: CI
+name: Continuous Integration
 
 on: [push]
 
 jobs:
   phpunit:
+    name: Backend Test
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -22,7 +23,6 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
-
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
@@ -48,6 +48,7 @@ jobs:
         run: ./vendor/bin/phpunit
 
   build:
+    name: Fronend Test
     runs-on: ubuntu-latest
     defaults:
       run:

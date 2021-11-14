@@ -26,7 +26,7 @@ module "db" {
   port                   = "3306"
 
   subnet_ids             = module.vpc.private_subnets
-  vpc_security_group_ids = [module.vote_service_sg.security_group_id]
+  vpc_security_group_ids = [module.security_group.security_group_id]
 
   # Parameter group
   family = "${local.engine}${local.major_engine_version}"

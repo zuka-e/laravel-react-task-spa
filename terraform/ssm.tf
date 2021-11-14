@@ -68,7 +68,7 @@ resource "aws_ssm_parameter" "smtp_password" {
 resource "aws_ssm_parameter" "security_group_id" {
   name        = "/${var.project}/${var.stage}/SECURITY_GROUP_ID"
   type        = "SecureString"
-  value       = module.vote_service_sg.security_group_id
+  value       = module.security_group.security_group_id
   description = "ID of security group"
 }
 

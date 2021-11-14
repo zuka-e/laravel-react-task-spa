@@ -28,9 +28,9 @@ provider:
   # https://www.serverless.com/framework/docs/deprecations#default-providerlambdahashingversion
   lambdaHashingVersion: 20201221
   name: aws
-  region: ${env:AWS_DEFAULT_REGION, ssm:/${env:APP_NAME}/${sls:stage}/AWS_REGION}
+  region: ${opt:region, env:AWS_DEFAULT_REGION}
   stage: ${opt:stage}
-  profile: ${opt:aws-profile}
+  profile: ${opt:aws-profile, opt:stage}
   runtime: provided.al2
   # https://www.serverless.com/framework/docs/providers/aws/guide/iam#the-default-iam-role
   iam:
@@ -102,7 +102,6 @@ provider:
 package:
   # https://www.serverless.com/framework/docs/deprecations#new-way-to-define-packaging-patterns
   patterns:
-    - "!terraform/**"
     - "!node_modules/**"
     - "!public/storage"
     - "!resources/assets/**"
