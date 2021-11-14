@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   phpunit:
-    name: Test Backend
+    name: Backend Test
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -48,6 +48,7 @@ jobs:
         run: ./vendor/bin/phpunit
 
   build:
+    name: Fronend Test
     runs-on: ubuntu-latest
     defaults:
       run:
