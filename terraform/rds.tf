@@ -13,7 +13,7 @@ module "db" {
   identifier = local.identifier
 
   engine         = local.engine
-  engine_version = "${local.major_engine_version}.13"
+  engine_version = local.major_engine_version
   instance_class = "db.t2.micro"
 
   storage_type          = "gp2" # General purpose SSD
