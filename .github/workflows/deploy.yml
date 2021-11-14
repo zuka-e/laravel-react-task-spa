@@ -118,7 +118,6 @@ jobs:
         run: npm ci
 
       - name: Cache Composer packages
-        id: composer-cache
         uses: actions/cache@v2
         with:
           path: ./backend/vendor
@@ -128,7 +127,6 @@ jobs:
 
       # see: https://bref.sh/docs/deploy.html#automating-deployments
       - name: Install Composer dependencies
-        if: steps.composer-cache.outputs.cache-hit != 'true'
         run: composer install --prefer-dist --optimize-autoloader --no-dev
 
       - name: Directory Permissions
