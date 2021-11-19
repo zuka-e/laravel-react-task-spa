@@ -4,7 +4,7 @@
 
 アプリケーションや作成したコード、バックエンドの実装過程の説明については、以下のリンクからアクセスできます。  
 
-- アプリケーション: [https://www.miwataru.com/](https://www.miwataru.com/)
+- アプリケーション: ~~[https://www.miwataru.com/](https://www.miwataru.com/)~~
 - GitHub: [https://github.com/zuka-e/laravel-react-task-spa](https://github.com/zuka-e/laravel-react-task-spa)
 - 全体像: [https://github.com/zuka-e/laravel-react-task-spa/blob/development/README.md](https://github.com/zuka-e/laravel-react-task-spa/blob/development/README.md)
 - バックエンド実装過程: [https://github.com/zuka-e/laravel-react-task-spa/blob/development/backend/README.md](https://github.com/zuka-e/laravel-react-task-spa/blob/development/backend/README.md)
@@ -1391,7 +1391,7 @@ const options: MarkdownToJSX.Options = {
 
 ## 各種リンク
 
-- アプリケーション: [https://www.miwataru.com/](https://www.miwataru.com/)
+- アプリケーション: ~~[https://www.miwataru.com/](https://www.miwataru.com/)~~
 - GitHub: [https://github.com/zuka-e/laravel-react-task-spa](https://github.com/zuka-e/laravel-react-task-spa)
 - 全体像: [https://github.com/zuka-e/laravel-react-task-spa/blob/development/README.md](https://github.com/zuka-e/laravel-react-task-spa/blob/development/README.md)
 - バックエンド実装過程: [https://github.com/zuka-e/laravel-react-task-spa/blob/development/backend/README.md](https://github.com/zuka-e/laravel-react-task-spa/blob/development/backend/README.md)

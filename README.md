@@ -6,7 +6,7 @@
 
 アプリケーションや実装過程の説明については、以下のリンクからアクセスできます。  
 
-- アプリケーション: [https://www.miwataru.com/](https://www.miwataru.com/)
+- アプリケーション: ~~[https://www.miwataru.com/](https://www.miwataru.com/)~~
 - フロントエンド実装過程: [https://github.com/zuka-e/laravel-react-task-spa/blob/development/frontend/README.md](https://github.com/zuka-e/laravel-react-task-spa/blob/development/frontend/README.md)
 - バックエンド実装過程: [https://github.com/zuka-e/laravel-react-task-spa/blob/development/backend/README.md](https://github.com/zuka-e/laravel-react-task-spa/blob/development/backend/README.md)
 
@@ -315,6 +315,6 @@ ER図を作成するにあたって問題に思ったのは、データベース
 
 ## 各種リンク
 
-- アプリケーション: [https://www.miwataru.com/](https://www.miwataru.com/)
+- アプリケーション: ~~[https://www.miwataru.com/](https://www.miwataru.com/)~~
 - フロントエンド実装過程: [https://github.com/zuka-e/laravel-react-task-spa/blob/development/frontend/README.md](https://github.com/zuka-e/laravel-react-task-spa/blob/development/frontend/README.md)
 - バックエンド実装過程: [https://github.com/zuka-e/laravel-react-task-spa/blob/development/backend/README.md](https://github.com/zuka-e/laravel-react-task-spa/blob/development/backend/README.md)
