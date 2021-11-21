@@ -121,7 +121,7 @@ const TaskList: React.FC<TaskListProps> = (props) => {
         <ListCardHeader list={list} />
 
         <CardActions>
-          <Grid container alignItems='center' justify='space-between'>
+          <Grid container alignItems='center' justifyContent='space-between'>
             <Grid item>
               <LabeledSelect
                 label='Filter'

@@ -62,7 +62,11 @@ const Features = () => {
         <Typography variant='h2' title='Features' hidden>
           {'Features'}
         </Typography>
-        <Grid container justify='space-around' className={classes.features}>
+        <Grid
+          container
+          justifyContent='space-around'
+          className={classes.features}
+        >
           <FeatureLayout image={filingSystem} header='サブタスク管理'>
             各タスクはカードと呼ばれる単位で扱われ、リストの下に配置されます。
             リストは複数のカードを持ち、またボード上で複数のリストを管理することができます。
