@@ -12,7 +12,7 @@ class TaskCard extends Model
 
     protected static function booted()
     {
-        static::creating(function ($task_card) {
+        static::creating(function (TaskCard $task_card) {
             $task_card->id = (string)Str::uuid();
         });
     }

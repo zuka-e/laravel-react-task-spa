@@ -12,7 +12,7 @@ class TaskBoard extends Model
 
     protected static function booted()
     {
-        static::creating(function ($task_board) {
+        static::creating(function (TaskBoard $task_board) {
             $task_board->id = (string)Str::uuid();
             $task_board->list_index_map = json_encode([], JSON_FORCE_OBJECT);
             $task_board->card_index_map = json_encode([], JSON_FORCE_OBJECT);

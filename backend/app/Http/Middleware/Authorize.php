@@ -13,10 +13,10 @@ class Authorize
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     * @param string $userId - path parameter `{user}`
+     * @param string $userId path parameter (`{user}`)
      * @return mixed
      */
-    public function handle(Request $request, Closure $next, $userId)
+    public function handle(Request $request, Closure $next, string $userId)
     {
         if (!$userId) abort(404);
 
