@@ -122,7 +122,7 @@ const SignIn = () => {
           <Box my={2}>
             <Divider />
           </Box>
-          <Grid container justify='flex-end'>
+          <Grid container justifyContent='flex-end'>
             <Grid item>
               {`New to ${APP_NAME}? `}
               <AlertButton

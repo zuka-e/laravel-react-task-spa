@@ -116,7 +116,7 @@ const ResetPassword = () => {
           <Box mb={2}>
             <Divider />
           </Box>
-          <Grid container justify='flex-end'>
+          <Grid container justifyContent='flex-end'>
             <Grid item>
               <AlertButton
                 color='info'
