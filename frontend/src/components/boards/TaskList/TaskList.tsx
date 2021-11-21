@@ -146,7 +146,7 @@ const TaskList: React.FC<TaskListProps> = (props) => {
           </ScrolledDiv>
         </CardContent>
 
-        <ButtonToAddTask method='POST' type='card' parent={list} transparent />
+        <ButtonToAddTask method='POST' model='card' parent={list} transparent />
       </div>
     </Card>
   );

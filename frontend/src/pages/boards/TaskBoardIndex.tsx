@@ -81,7 +81,7 @@ const TaskBoardIndex: React.FC = () => {
             </Grid>
           ))}
           <Grid item lg={3} sm={4} xs={6}>
-            <ButtonToAddTask method='POST' type='board' />
+            <ButtonToAddTask method='POST' model='board' />
           </Grid>
         </Grid>
       </Container>

@@ -30,7 +30,7 @@ type FormProps = FormAction & {
 } & TextFieldProps;
 
 const TitleForm: React.FC<FormProps> = (props) => {
-  const { method, type, handleClose, ...textFieldProps } = props;
+  const { method, model, handleClose, ...textFieldProps } = props;
   const dispatch = useAppDispatch();
   const submitRef = useRef<HTMLInputElement>(null);
   const {
@@ -48,9 +48,9 @@ const TitleForm: React.FC<FormProps> = (props) => {
   }, [dispatch, errors.title]);
 
   const onSubmit = async (data: FormData) => {
-    switch (props.method) {
+    switch (method) {
       case 'POST':
-        switch (props.type) {
+        switch (model) {
           case 'board':
             await dispatch(createTaskBoard({ ...data }));
             break;
@@ -72,7 +72,7 @@ const TitleForm: React.FC<FormProps> = (props) => {
         break;
       case 'PATCH':
         if (!data.title) break;
-        switch (props.type) {
+        switch (model) {
           case 'board':
             await dispatch(updateTaskBoard({ id: props.data.id, ...data }));
             break;

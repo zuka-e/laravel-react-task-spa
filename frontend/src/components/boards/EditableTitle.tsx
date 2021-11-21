@@ -41,7 +41,7 @@ type EditableTitleProps = FormAction & {
 
 const EditableTitle: React.FC<EditableTitleProps> = (props) => {
   const { inputStyle, disableMargin, rowsMax, ...formProps } = props;
-  const { method, type, variant, ...textFieldProps } = formProps;
+  const { method, model, variant, ...textFieldProps } = formProps;
   const defaultValue = props.method === 'PATCH' ? props.data.title : '';
   const classes = useStyles();
   const [editing, setEditing] = useState(false);
