@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosError } from 'axios';
+import axios from 'axios';
 
 import { AUTH_USER_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
@@ -14,8 +14,12 @@ export const deleteAccount = createAsyncThunk<
 >('auth/deleteAccount', async (_, thunkApi) => {
   try {
     await apiClient().delete(AUTH_USER_PATH);
-  } catch (e) {
-    const error: AxiosError = e;
-    return thunkApi.rejectWithValue(error.response?.data);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return thunkApi.rejectWithValue(error.response?.data);
+    }
+    return thunkApi.rejectWithValue({
+      error: { message: String(error) },
+    });
   }
 });

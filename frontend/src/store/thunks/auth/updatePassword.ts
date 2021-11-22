@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosError } from 'axios';
+import axios from 'axios';
 
 import { UPDATE_PASSWORD_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
@@ -23,13 +23,13 @@ export const updatePassword = createAsyncThunk<
       password,
       password_confirmation,
     });
-  } catch (e) {
-    const error: AxiosError = e;
-    if (error.response?.status === 422) {
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 422)
       return thunkApi.rejectWithValue({
         error: { message: 'パスワードが間違っています' },
       });
-    }
-    return thunkApi.rejectWithValue(error.response?.data);
+    return thunkApi.rejectWithValue({
+      error: { message: String(error) },
+    });
   }
 });

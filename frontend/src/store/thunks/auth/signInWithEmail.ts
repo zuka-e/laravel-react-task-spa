@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosError } from 'axios';
+import axios from 'axios';
 
 import { GET_CSRF_TOKEN_PATH, SIGNIN_PATH } from 'config/api';
 import { User } from 'models/User';
@@ -32,8 +32,11 @@ export const signInWithEmail = createAsyncThunk<
       remember,
     });
     return response?.data;
-  } catch (e) {
-    const error: AxiosError = e;
+  } catch (error) {
+    if (!axios.isAxiosError(error))
+      return thunkApi.rejectWithValue({
+        error: { message: String(error) },
+      });
 
     switch (error.response?.status) {
       case 403: // 認証用メールから遷移して、認証リンクが無効だった場合

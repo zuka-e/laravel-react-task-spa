@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosError } from 'axios';
+import axios from 'axios';
 
 import { GET_CSRF_TOKEN_PATH, RESET_PASSWORD_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
@@ -29,13 +29,13 @@ export const resetPassword = createAsyncThunk<
       password_confirmation,
       token,
     });
-  } catch (e) {
-    const error: AxiosError = e;
-    if (error.response?.status === 422) {
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 422)
       return thunkApi.rejectWithValue({
         error: { message: '認証に失敗しました\n再度お試しください' },
       });
-    }
-    return thunkApi.rejectWithValue(error.response?.data);
+    return thunkApi.rejectWithValue({
+      error: { message: String(error) },
+    });
   }
 });

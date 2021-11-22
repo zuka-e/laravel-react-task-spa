@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 import { VERIFICATION_NOTIFICATION_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
@@ -14,8 +14,12 @@ export const sendEmailVerificationLink = createAsyncThunk<
     // 正常時は`202`(認証済みの場合`204`)
     const response = await apiClient().post(VERIFICATION_NOTIFICATION_PATH);
     return response.status;
-  } catch (e) {
-    const error: AxiosError = e;
-    return thunkApi.rejectWithValue(error.response?.data);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return thunkApi.rejectWithValue(error.response?.data);
+    }
+    return thunkApi.rejectWithValue({
+      error: { message: String(error) },
+    });
   }
 });
