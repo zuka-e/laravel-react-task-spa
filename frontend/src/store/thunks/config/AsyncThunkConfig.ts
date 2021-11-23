@@ -1,6 +1,6 @@
 import { AppDispatch, RootState } from 'store';
 
-type RejectValue = { error: { message: string } };
+export type RejectValue = { error: { message: string } };
 
 /**
  * @see https://redux-toolkit.js.org/usage/usage-with-typescript#createasyncthunk

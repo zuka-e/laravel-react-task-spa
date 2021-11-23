@@ -2,12 +2,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import { UPDATE_USER_INFO_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
-import {
-  isHttpException,
-  isInvalidRequest,
-  makeErrorMessageFrom,
-} from 'utils/api/errors';
-import { AsyncThunkConfig } from '../config';
+import { AsyncThunkConfig } from 'store/thunks/config';
+import { makeRejectValue } from 'store/thunks/utils';
 
 export type UpdateProfileResponse = {
   name: string;
@@ -29,18 +25,6 @@ export const updateProfile = createAsyncThunk<
     await apiClient().put(UPDATE_USER_INFO_PATH, { name, email });
     return { name, email }; // fulfill時は、requestの値をそのまま`return`
   } catch (error) {
-    if (isInvalidRequest(error))
-      return thunkApi.rejectWithValue({
-        error: { message: makeErrorMessageFrom(error) },
-      });
-    if (isHttpException(error))
-      return thunkApi.rejectWithValue({
-        error: {
-          message: `${error.response.status}: ${error.response.data.message}`,
-        },
-      });
-    return thunkApi.rejectWithValue({
-      error: { message: String(error) },
-    });
+    return thunkApi.rejectWithValue(makeRejectValue(error));
   }
 });

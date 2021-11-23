@@ -2,12 +2,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import { GET_CSRF_TOKEN_PATH, RESET_PASSWORD_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
-import {
-  isHttpException,
-  isInvalidRequest,
-  makeErrorMessageFrom,
-} from 'utils/api/errors';
-import { AsyncThunkConfig } from '../config';
+import { AsyncThunkConfig } from 'store/thunks/config';
+import { makeRejectValue } from 'store/thunks/utils';
 
 export type ResetPasswordResponse = {};
 
@@ -34,18 +30,6 @@ export const resetPassword = createAsyncThunk<
       token,
     });
   } catch (error) {
-    if (isInvalidRequest(error))
-      return thunkApi.rejectWithValue({
-        error: { message: makeErrorMessageFrom(error) },
-      });
-    if (isHttpException(error))
-      return thunkApi.rejectWithValue({
-        error: {
-          message: `${error.response.status}: ${error.response.data.message}`,
-        },
-      });
-    return thunkApi.rejectWithValue({
-      error: { message: String(error) },
-    });
+    return thunkApi.rejectWithValue(makeRejectValue(error));
   }
 });

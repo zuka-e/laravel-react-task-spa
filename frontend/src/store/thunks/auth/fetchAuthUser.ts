@@ -3,8 +3,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AUTH_USER_PATH } from 'config/api';
 import { User } from 'models/User';
 import { apiClient } from 'utils/api';
-import { isHttpException } from 'utils/api/errors';
-import { AsyncThunkConfig } from '../config';
+import { AsyncThunkConfig } from 'store/thunks/config';
+import { makeRejectValue } from 'store/thunks/utils';
 
 export type FetchAuthUserResponse = {
   user: User;
@@ -21,14 +21,6 @@ export const fetchAuthUser = createAsyncThunk<
     );
     return response?.data;
   } catch (error) {
-    if (isHttpException(error))
-      return thunkApi.rejectWithValue({
-        error: {
-          message: `${error.response.status}: ${error.response.data.message}`,
-        },
-      });
-    return thunkApi.rejectWithValue({
-      error: { message: String(error) },
-    });
+    return thunkApi.rejectWithValue(makeRejectValue(error));
   }
 });

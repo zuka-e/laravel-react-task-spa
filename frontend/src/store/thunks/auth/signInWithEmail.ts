@@ -3,13 +3,10 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { GET_CSRF_TOKEN_PATH, SIGNIN_PATH } from 'config/api';
 import { User } from 'models/User';
 import { apiClient } from 'utils/api';
-import {
-  isHttpException,
-  isInvalidRequest,
-  makeErrorMessageFrom,
-} from 'utils/api/errors';
+import { isHttpException } from 'utils/api/errors';
+import { AsyncThunkConfig } from 'store/thunks/config';
+import { makeRejectValue } from 'store/thunks/utils';
 import { fetchAuthUser } from './fetchAuthUser';
-import { AsyncThunkConfig } from '../config';
 
 export type SignInResponse = {
   user: User;
@@ -45,18 +42,6 @@ export const signInWithEmail = createAsyncThunk<
         setFlash({ type: 'warning', message: '認証に失敗しました' })
       );
     }
-    if (isInvalidRequest(error))
-      return thunkApi.rejectWithValue({
-        error: { message: makeErrorMessageFrom(error) },
-      });
-    if (isHttpException(error))
-      return thunkApi.rejectWithValue({
-        error: {
-          message: `${error.response.status}:  ${error.response.data.message}`,
-        },
-      });
-    return thunkApi.rejectWithValue({
-      error: { message: String(error) },
-    });
+    return thunkApi.rejectWithValue(makeRejectValue(error));
   }
 });

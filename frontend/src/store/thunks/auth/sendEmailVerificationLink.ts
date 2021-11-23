@@ -3,12 +3,8 @@ import { AxiosResponse } from 'axios';
 
 import { VERIFICATION_NOTIFICATION_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
-import {
-  isHttpException,
-  isInvalidRequest,
-  makeErrorMessageFrom,
-} from 'utils/api/errors';
-import { AsyncThunkConfig } from '../config';
+import { AsyncThunkConfig } from 'store/thunks/config';
+import { makeRejectValue } from 'store/thunks/utils';
 
 export const sendEmailVerificationLink = createAsyncThunk<
   AxiosResponse['status'],
@@ -20,18 +16,6 @@ export const sendEmailVerificationLink = createAsyncThunk<
     const response = await apiClient().post(VERIFICATION_NOTIFICATION_PATH);
     return response.status;
   } catch (error) {
-    if (isInvalidRequest(error))
-      return thunkApi.rejectWithValue({
-        error: { message: makeErrorMessageFrom(error) },
-      });
-    if (isHttpException(error))
-      return thunkApi.rejectWithValue({
-        error: {
-          message: `${error.response.status}: ${error.response.data.message}`,
-        },
-      });
-    return thunkApi.rejectWithValue({
-      error: { message: String(error) },
-    });
+    return thunkApi.rejectWithValue(makeRejectValue(error));
   }
 });
