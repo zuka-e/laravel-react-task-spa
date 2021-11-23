@@ -7,12 +7,11 @@ import { setError404 } from 'store/slices/appSlice';
 /**
  * Laravelからデータの配列と共にページネーションに関する情報及びリンクをリクエストする際のレスポンスタイプ
  *
- * @param data 受け取るデータ本体の配列
- * @param links 隣り合うページ及び端のページのリンク
- * @param meta 現在のページやデータ総数などの情報
- * @link https://laravel.com/docs/8.x/eloquent-resources#pagination
+ * @property {Object[]} data 受け取るデータ本体の配列
+ * @param {Object} links 隣り合うページ及び端のページのリンク
+ * @param {Object} meta 現在のページやデータ総数などの情報
+ * @see https://laravel.com/docs/8.x/eloquent-resources#pagination
  */
-
 export type ResponseWithPagination<T extends DocumentBase> = {
   data: T[];
   links: {
@@ -94,26 +93,4 @@ export const apiClient = (options?: ApiClientOption) => {
   );
 
   return apiClient;
-};
-
-/** パスを構成する要素の内、モデル(テーブル)名として使用される文字列 */
-const tableNames = [
-  'users',
-  'task_boards',
-  'task_lists',
-  'task_cards',
-] as const;
-
-/** `tableName`と`id`(省略可)との組み合わせ */
-type PathSet = [table: typeof tableNames[number], id?: string];
-
-/** `PathSet`の配列(可変長)を連結してパスを作成 */
-export const makePath = (...props: PathSet[]) => {
-  const reducer = (acc: string, current: typeof props[0]) => {
-    const table = current[0];
-    const id = current[1];
-    return acc + `/${table}` + (id ? `/${id}` : '');
-  };
-  const path = props.reduce(reducer, '');
-  return path;
 };
