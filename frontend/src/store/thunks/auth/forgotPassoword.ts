@@ -1,8 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 
 import { GET_CSRF_TOKEN_PATH, FORGOT_PASSWORD_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
+import {
+  isHttpException,
+  isInvalidRequest,
+  makeErrorMessageFrom,
+} from 'utils/api/errors';
 import { RejectWithValue } from '../types';
 
 export type ForgotPasswordResponse = {};
@@ -18,13 +22,18 @@ export const forgotPassword = createAsyncThunk<
 >('auth/forgotPassword', async (payload, thunkApi) => {
   const { email } = payload;
   try {
-    // 正常時は`200`バリデーションエラー時は`422`
     await apiClient({ apiRoute: false }).get(GET_CSRF_TOKEN_PATH);
     await apiClient().post(FORGOT_PASSWORD_PATH, { email });
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 422)
+    if (isInvalidRequest(error))
       return thunkApi.rejectWithValue({
-        error: { message: '指定されたメールアドレスは存在しません' },
+        error: { message: makeErrorMessageFrom(error) },
+      });
+    if (isHttpException(error))
+      return thunkApi.rejectWithValue({
+        error: {
+          message: `${error.response.status}: ${error.response.data.message}`,
+        },
       });
     return thunkApi.rejectWithValue({
       error: { message: String(error) },

@@ -1,9 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 
 import { GET_CSRF_TOKEN_PATH, SIGNIN_PATH } from 'config/api';
 import { User } from 'models/User';
 import { apiClient } from 'utils/api';
+import {
+  isHttpException,
+  isInvalidRequest,
+  makeErrorMessageFrom,
+} from 'utils/api/errors';
 import { fetchAuthUser } from './fetchAuthUser';
 import { RejectWithValue } from '../types';
 
@@ -33,32 +37,26 @@ export const signInWithEmail = createAsyncThunk<
     });
     return response?.data;
   } catch (error) {
-    if (!axios.isAxiosError(error))
-      return thunkApi.rejectWithValue({
-        error: { message: String(error) },
-      });
-
-    switch (error.response?.status) {
-      case 403: // 認証用メールから遷移して、認証リンクが無効だった場合
-        const { setFlash } = await import('store/slices/authSlice');
-        thunkApi.dispatch(fetchAuthUser());
-        thunkApi.dispatch(
-          setFlash({ type: 'warning', message: '認証に失敗しました' })
-        );
-        break;
-      case 422:
-        return thunkApi.rejectWithValue({
-          error: { message: 'メールアドレスまたはパスワードが間違っています' },
-        });
-      case 429:
-        return thunkApi.rejectWithValue({
-          error: {
-            message:
-              '所定回数を超えて誤った入力が行われたため、アクセスを制限しております',
-          },
-        });
-      default:
-        return thunkApi.rejectWithValue(error.response?.data);
+    // 認証用メールから遷移して、認証リンクが無効だった場合
+    if (isHttpException(error) && error.response.status === 403) {
+      const { setFlash } = await import('store/slices/authSlice');
+      thunkApi.dispatch(fetchAuthUser());
+      thunkApi.dispatch(
+        setFlash({ type: 'warning', message: '認証に失敗しました' })
+      );
     }
+    if (isInvalidRequest(error))
+      return thunkApi.rejectWithValue({
+        error: { message: makeErrorMessageFrom(error) },
+      });
+    if (isHttpException(error))
+      return thunkApi.rejectWithValue({
+        error: {
+          message: `${error.response.status}:  ${error.response.data.message}`,
+        },
+      });
+    return thunkApi.rejectWithValue({
+      error: { message: String(error) },
+    });
   }
 });

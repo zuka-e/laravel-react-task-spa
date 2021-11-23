@@ -1,8 +1,9 @@
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 
 import { API_HOST, API_ROUTE } from 'config/api';
 import { DocumentBase } from 'models';
 import { setError404 } from 'store/slices/appSlice';
+import { isHttpException } from './errors';
 
 /**
  * Laravelからデータの配列と共にページネーションに関する情報及びリンクをリクエストする際のレスポンスタイプ
@@ -55,17 +56,16 @@ export const apiClient = (options?: ApiClientOption) => {
 
   apiClient.interceptors.response.use(
     (response) => response, // response = 2xx の場合は素通り
-    async (err) => {
+    async (error) => {
       const { default: store } =
         process.env.NODE_ENV === 'test'
           ? await import('mocks/store')
           : await import('store');
       const { setFlash, signOut } = await import('store/slices/authSlice');
 
-      const error = err as AxiosError;
-      const statuscode = error.response?.status || 500;
+      if (!isHttpException(error)) return Promise.reject(error);
 
-      switch (statuscode) {
+      switch (error.response?.status || 500) {
         case 401:
         case 419:
           store.dispatch(signOut()); // ->initializeAuthState()

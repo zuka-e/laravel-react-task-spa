@@ -1,8 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 
 import { UPDATE_USER_INFO_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
+import {
+  isHttpException,
+  isInvalidRequest,
+  makeErrorMessageFrom,
+} from 'utils/api/errors';
 import { RejectWithValue } from '../types';
 
 export type UpdateProfileResponse = {
@@ -25,9 +29,15 @@ export const updateProfile = createAsyncThunk<
     await apiClient().put(UPDATE_USER_INFO_PATH, { name, email });
     return { name, email }; // fulfill時は、requestの値をそのまま`return`
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 422)
+    if (isInvalidRequest(error))
       return thunkApi.rejectWithValue({
-        error: { message: 'このメールアドレスは既に使用されています' },
+        error: { message: makeErrorMessageFrom(error) },
+      });
+    if (isHttpException(error))
+      return thunkApi.rejectWithValue({
+        error: {
+          message: `${error.response.status}: ${error.response.data.message}`,
+        },
       });
     return thunkApi.rejectWithValue({
       error: { message: String(error) },

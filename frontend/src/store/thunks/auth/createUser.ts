@@ -1,10 +1,14 @@
 // `createAsyncThunk` returns a standard Redux thunk action creator.
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 
 import { GET_CSRF_TOKEN_PATH, SIGNUP_PATH } from 'config/api';
 import { User } from 'models/User';
 import { apiClient } from 'utils/api';
+import {
+  isHttpException,
+  isInvalidRequest,
+  makeErrorMessageFrom,
+} from 'utils/api/errors';
 import { RejectWithValue } from '../types';
 
 export type SignUpRequest = {
@@ -33,9 +37,15 @@ export const createUser = createAsyncThunk<
     return response?.data as SignUpResponse;
   } catch (error) {
     // 他のバリデーションはフロントエンドで実施
-    if (axios.isAxiosError(error) && error.response?.status === 422)
+    if (isInvalidRequest(error))
       return thunkApi.rejectWithValue({
-        error: { message: 'このメールアドレスは既に使用されています' },
+        error: { message: makeErrorMessageFrom(error) },
+      });
+    if (isHttpException(error))
+      return thunkApi.rejectWithValue({
+        error: {
+          message: `${error.response.status}: ${error.response.data.message}`,
+        },
       });
     // `Slice`の`extraReducers`の`rejected`を呼び出す
     return thunkApi.rejectWithValue({

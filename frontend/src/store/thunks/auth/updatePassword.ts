@@ -1,8 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 
 import { UPDATE_PASSWORD_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
+import {
+  isHttpException,
+  isInvalidRequest,
+  makeErrorMessageFrom,
+} from 'utils/api/errors';
 import { RejectWithValue } from '../types';
 
 export type UpdatePasswordRequest = {
@@ -24,9 +28,15 @@ export const updatePassword = createAsyncThunk<
       password_confirmation,
     });
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 422)
+    if (isInvalidRequest(error))
       return thunkApi.rejectWithValue({
-        error: { message: 'パスワードが間違っています' },
+        error: { message: makeErrorMessageFrom(error) },
+      });
+    if (isHttpException(error))
+      return thunkApi.rejectWithValue({
+        error: {
+          message: `${error.response.status}: ${error.response.data.message}`,
+        },
       });
     return thunkApi.rejectWithValue({
       error: { message: String(error) },
