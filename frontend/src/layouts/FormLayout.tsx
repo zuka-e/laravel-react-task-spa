@@ -14,6 +14,12 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(8),
       marginBottom: theme.spacing(8),
     },
+    error: {
+      width: '100%',
+      marginBottom: theme.spacing(2),
+      whiteSpace: 'pre-wrap',
+      fontSize: theme.typography.caption.fontSize,
+    },
     paper: { padding: theme.spacing(3) },
     logo: {
       marginTop: theme.spacing(1),
@@ -52,9 +58,15 @@ const FormLayout: React.FC<FormLayoutProps> = (props) => {
   return (
     <React.Fragment>
       <Container className={classes.main} component='main' maxWidth='xs'>
+        {message && (
+          <AlertMessage
+            severity='error'
+            body={message}
+            className={classes.error}
+          />
+        )}
         <Card classes={{ root: classes.paper }} elevation={2}>
           <Grid container direction='column' alignItems='center'>
-            {message && <AlertMessage severity='error' body={message} />}
             <Avatar
               className={classes.logo}
               component={RouterLink}
