@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios';
 
 import { TaskCard } from 'models';
 import { apiClient, makePath } from 'utils/api';
-import { AsyncThunkConfig } from '../types';
+import { AsyncThunkConfig } from '../config';
 
 type UpdateTaskCardRelationshipsResponse = Pick<AxiosResponse, 'status'>;
 

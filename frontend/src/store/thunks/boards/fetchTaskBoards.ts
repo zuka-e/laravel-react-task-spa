@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import { TaskBoard } from 'models';
 import { apiClient, makePath, ResponseWithPagination } from 'utils/api';
-import { RejectWithValue } from '../types';
+import { AsyncThunkConfig } from '../config';
 
 export type FetchTaskBoardsResponse = ResponseWithPagination<TaskBoard>;
 
@@ -14,7 +14,7 @@ export type FetchTaskBoardsRequest = {
 export const fetchTaskBoards = createAsyncThunk<
   FetchTaskBoardsResponse,
   FetchTaskBoardsRequest,
-  { rejectValue: RejectWithValue }
+  AsyncThunkConfig
 >('boards/fetchTaskBoards', async (payload, thunkApi) => {
   const { userId, page } = payload;
   const query = page ? `?page=${page}` : '';

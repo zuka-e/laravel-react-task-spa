@@ -9,7 +9,7 @@ import {
   isInvalidRequest,
   makeErrorMessageFrom,
 } from 'utils/api/errors';
-import { RejectWithValue } from '../types';
+import { AsyncThunkConfig } from '../config';
 
 export type SignUpRequest = {
   email: string;
@@ -24,7 +24,7 @@ export type SignUpResponse = {
 export const createUser = createAsyncThunk<
   SignUpResponse,
   SignUpRequest,
-  { rejectValue: RejectWithValue }
+  AsyncThunkConfig
 >('auth/createUser', async (payload, thunkApi) => {
   const { email, password, password_confirmation } = payload;
   try {

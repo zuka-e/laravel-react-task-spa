@@ -3,14 +3,14 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AUTH_USER_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
 import { isHttpException } from 'utils/api/errors';
-import { RejectWithValue } from '../types';
+import { AsyncThunkConfig } from '../config';
 
 type DeleteAccountResponse = {};
 
 export const deleteAccount = createAsyncThunk<
   DeleteAccountResponse,
   void,
-  { rejectValue: RejectWithValue }
+  AsyncThunkConfig
 >('auth/deleteAccount', async (_, thunkApi) => {
   try {
     await apiClient().delete(AUTH_USER_PATH);

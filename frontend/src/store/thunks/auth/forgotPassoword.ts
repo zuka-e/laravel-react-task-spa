@@ -7,7 +7,7 @@ import {
   isInvalidRequest,
   makeErrorMessageFrom,
 } from 'utils/api/errors';
-import { RejectWithValue } from '../types';
+import { AsyncThunkConfig } from '../config';
 
 export type ForgotPasswordResponse = {};
 
@@ -18,7 +18,7 @@ export type ForgotPasswordRequest = {
 export const forgotPassword = createAsyncThunk<
   ForgotPasswordResponse,
   ForgotPasswordRequest,
-  { rejectValue: RejectWithValue }
+  AsyncThunkConfig
 >('auth/forgotPassword', async (payload, thunkApi) => {
   const { email } = payload;
   try {

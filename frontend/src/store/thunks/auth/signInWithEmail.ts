@@ -9,7 +9,7 @@ import {
   makeErrorMessageFrom,
 } from 'utils/api/errors';
 import { fetchAuthUser } from './fetchAuthUser';
-import { RejectWithValue } from '../types';
+import { AsyncThunkConfig } from '../config';
 
 export type SignInResponse = {
   user: User;
@@ -25,7 +25,7 @@ export type SignInRequest = {
 export const signInWithEmail = createAsyncThunk<
   SignInResponse,
   SignInRequest,
-  { rejectValue: RejectWithValue }
+  AsyncThunkConfig
 >('auth/signInWithEmail', async (payload, thunkApi) => {
   const { email, password, remember } = payload;
   try {

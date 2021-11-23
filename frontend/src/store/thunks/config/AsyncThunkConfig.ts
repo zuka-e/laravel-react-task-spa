@@ -1,5 +1,6 @@
 import { AppDispatch, RootState } from 'store';
-import { RejectWithValue } from '.';
+
+type RejectValue = { error: { message: string } };
 
 /**
  * @see https://redux-toolkit.js.org/usage/usage-with-typescript#createasyncthunk
@@ -12,7 +13,7 @@ export type AsyncThunkConfig = {
   /** type of the `extra` argument for the thunk middleware, which will be passed in as `thunkApi.extra` */
   extra?: unknown;
   /** type to be passed into `rejectWithValue`'s first argument that will end up on `rejectedAction.payload` */
-  rejectValue: RejectWithValue;
+  rejectValue: RejectValue;
   /** return type of the `serializeError` option callback */
   serializedErrorType?: unknown;
   /** type to be returned from the `getPendingMeta` option callback & merged into `pendingAction.meta` */

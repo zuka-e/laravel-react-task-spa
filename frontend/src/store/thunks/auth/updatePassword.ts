@@ -7,7 +7,7 @@ import {
   isInvalidRequest,
   makeErrorMessageFrom,
 } from 'utils/api/errors';
-import { RejectWithValue } from '../types';
+import { AsyncThunkConfig } from '../config';
 
 export type UpdatePasswordRequest = {
   current_password: string;
@@ -17,8 +17,8 @@ export type UpdatePasswordRequest = {
 
 export const updatePassword = createAsyncThunk<
   void,
-  { current_password: string; password: string; password_confirmation: string },
-  { rejectValue: RejectWithValue }
+  UpdatePasswordRequest,
+  AsyncThunkConfig
 >('auth/updatePassword', async (payload, thunkApi) => {
   const { current_password, password, password_confirmation } = payload;
   try {

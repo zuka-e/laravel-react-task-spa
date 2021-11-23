@@ -8,12 +8,12 @@ import {
   isInvalidRequest,
   makeErrorMessageFrom,
 } from 'utils/api/errors';
-import { RejectWithValue } from '../types';
+import { AsyncThunkConfig } from '../config';
 
 export const sendEmailVerificationLink = createAsyncThunk<
   AxiosResponse['status'],
   void,
-  { rejectValue: RejectWithValue }
+  AsyncThunkConfig
 >('auth/sendVerificationLink', async (_, thunkApi) => {
   try {
     // 正常時は`202`(認証済みの場合`204`)

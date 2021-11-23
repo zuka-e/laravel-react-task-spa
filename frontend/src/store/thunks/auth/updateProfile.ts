@@ -7,7 +7,7 @@ import {
   isInvalidRequest,
   makeErrorMessageFrom,
 } from 'utils/api/errors';
-import { RejectWithValue } from '../types';
+import { AsyncThunkConfig } from '../config';
 
 export type UpdateProfileResponse = {
   name: string;
@@ -22,7 +22,7 @@ export type UpdateProfileRequest = {
 export const updateProfile = createAsyncThunk<
   UpdateProfileResponse,
   UpdateProfileRequest,
-  { rejectValue: RejectWithValue }
+  AsyncThunkConfig
 >('auth/updateProfile', async (payload, thunkApi) => {
   const { name, email } = payload;
   try {
