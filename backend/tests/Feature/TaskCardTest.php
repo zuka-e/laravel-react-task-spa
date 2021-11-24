@@ -42,12 +42,12 @@ class TaskCardTest extends TestCase
         $cardId = $this->taskCard->id;
 
         // create
-        $url = $this->routePrefix . "/task_lists/${listId}/task_cards";
+        $url = $this->routePrefix . "/task-lists/${listId}/task-cards";
         $response = $this->postJson($url, ['title' => 'testTitle']);
         $response->assertUnauthorized();
 
         // update
-        $url = $this->routePrefix . "/task_lists/${listId}/task_cards/${cardId}";
+        $url = $this->routePrefix . "/task-lists/${listId}/task-cards/${cardId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
         $response->assertUnauthorized();
 
@@ -71,12 +71,12 @@ class TaskCardTest extends TestCase
         $cardId = $this->taskCard->id;
 
         // create
-        $url = $this->routePrefix . "/task_lists/${otherListId}/task_cards";
+        $url = $this->routePrefix . "/task-lists/${otherListId}/task-cards";
         $response = $this->postJson($url, ['title' => 'testTitle']);
         $response->assertForbidden();
 
         // update
-        $url = $this->routePrefix . "/task_lists/${otherListId}/task_cards/${cardId}";
+        $url = $this->routePrefix . "/task-lists/${otherListId}/task-cards/${cardId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
         $response->assertForbidden();
 
@@ -103,7 +103,7 @@ class TaskCardTest extends TestCase
 
         $listId = $this->taskList->id;
         $otherCardId = $otherCard->id;
-        $url = $this->routePrefix . "/task_lists/${listId}/task_cards/${otherCardId}";
+        $url = $this->routePrefix . "/task-lists/${listId}/task-cards/${otherCardId}";
 
         // update
         $response = $this->patchJson($url, ['title' => 'testTitle']);
@@ -126,7 +126,7 @@ class TaskCardTest extends TestCase
         $listId = (string)Str::uuid();
 
         // create
-        $url = $this->routePrefix . "/task_lists/${listId}/task_cards";
+        $url = $this->routePrefix . "/task-lists/${listId}/task-cards";
         $response = $this->postJson($url, ['title' => 'testTitle']);
         $response->assertNotFound();
 
@@ -137,7 +137,7 @@ class TaskCardTest extends TestCase
         */
         $listId = $this->taskList->id;
         $cardId = (string)Str::uuid();
-        $url = $this->routePrefix . "/task_lists/${listId}/task_cards/${cardId}";
+        $url = $this->routePrefix . "/task-lists/${listId}/task-cards/${cardId}";
 
         // update
         $response = $this->patchJson($url, ['title' => 'testTitle']);
@@ -153,7 +153,7 @@ class TaskCardTest extends TestCase
         $this->login($this->guestUser);
 
         $listId = $this->taskList->id;
-        $url = $this->routePrefix . "/task_lists/${listId}/task_cards";
+        $url = $this->routePrefix . "/task-lists/${listId}/task-cards";
 
         // `title`
         $emptyRequest = [];
@@ -211,7 +211,7 @@ class TaskCardTest extends TestCase
 
         $listId = $this->taskList->id;
         $cardId = $this->taskCard->id;
-        $url = $this->routePrefix . "/task_lists/${listId}/task_cards/${cardId}";
+        $url = $this->routePrefix . "/task-lists/${listId}/task-cards/${cardId}";
 
         // `title`
         $emptyRequest = [];
@@ -269,7 +269,7 @@ class TaskCardTest extends TestCase
 
         $listId = $this->taskList->id;
         $cardId = $this->taskCard->id;
-        $url = $this->routePrefix . "/task_lists/${listId}/task_cards/${cardId}";
+        $url = $this->routePrefix . "/task-lists/${listId}/task-cards/${cardId}";
 
         $cardBeforeDeleted = TaskCard::find($cardId);
         $this->assertNotNull($cardBeforeDeleted);

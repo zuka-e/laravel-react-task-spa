@@ -46,10 +46,10 @@ Route::group([
     | Task
     |--------------------------------------------------------------
     */
-    Route::apiResource('users.task_boards', TaskBoardController::class);
-    Route::apiResource('task_boards.task_lists', TaskListController::class)
+    Route::apiResource('users.task-boards', TaskBoardController::class);
+    Route::apiResource('task-boards.task-lists', TaskListController::class)
         ->only('store', 'update', 'destroy');
-    Route::apiResource('task_lists.task_cards', TaskCardController::class)
+    Route::apiResource('task-lists.task-cards', TaskCardController::class)
         ->only('store', 'update', 'destroy');
 });
 
