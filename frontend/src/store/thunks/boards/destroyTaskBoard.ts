@@ -20,7 +20,7 @@ export const destroyTaskBoard = createAsyncThunk<
   const { setFlash } = await import('store/slices/authSlice');
 
   const userId = String(thunkApi.getState().auth.user?.id);
-  const path = makePath(['users', userId], ['task_boards', payload.id]);
+  const path = makePath(['users', userId], ['task-boards', payload.id]);
 
   try {
     const response = await apiClient().delete(path);

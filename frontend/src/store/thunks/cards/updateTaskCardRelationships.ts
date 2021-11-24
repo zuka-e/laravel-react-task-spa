@@ -21,8 +21,8 @@ export const updateTaskCardRelationships = createAsyncThunk<
   AsyncThunkConfig
 >('cards/updateTaskCardRelationships', async (payload, thunkApi) => {
   const path = makePath(
-    ['task_lists', payload.data.listId],
-    ['task_cards', payload.data.id]
+    ['task-lists', payload.data.listId],
+    ['task-cards', payload.data.id]
   );
 
   try {

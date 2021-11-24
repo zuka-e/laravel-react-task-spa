@@ -24,7 +24,7 @@ type TaskCardParams = {
 
 export const handlers = [
   rest.post<CreateTaskCardRequest, CreateTaskCardResponse, TaskCardParams>(
-    API_ROUTE + makePath(['task_lists', ':listId'], ['task_cards']),
+    API_ROUTE + makePath(['task-lists', ':listId'], ['task-cards']),
     (req, res, ctx) => {
       const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);
@@ -48,7 +48,7 @@ export const handlers = [
   ),
 
   rest.patch<UpdateTaskCardRequest, UpdateTaskCardResponse, TaskCardParams>(
-    API_ROUTE + makePath(['task_lists', ':listId'], ['task_cards', ':cardId']),
+    API_ROUTE + makePath(['task-lists', ':listId'], ['task-cards', ':cardId']),
     (req, res, ctx) => {
       const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);
@@ -81,7 +81,7 @@ export const handlers = [
   ),
 
   rest.delete<DefaultRequestBody, DestroyTaskCardResponse, TaskCardParams>(
-    API_ROUTE + makePath(['task_lists', ':listId'], ['task_cards', ':cardId']),
+    API_ROUTE + makePath(['task-lists', ':listId'], ['task-cards', ':cardId']),
     (req, res, ctx) => {
       const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);

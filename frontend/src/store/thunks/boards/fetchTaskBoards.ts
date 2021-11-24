@@ -18,7 +18,7 @@ export const fetchTaskBoards = createAsyncThunk<
   AsyncThunkConfig
 >('boards/fetchTaskBoards', async (payload, thunkApi) => {
   const { userId, page } = payload;
-  const path = makePath(['users', userId], ['task_boards']);
+  const path = makePath(['users', userId], ['task-boards']);
 
   try {
     const response = await apiClient().get(path, { params: { page } });

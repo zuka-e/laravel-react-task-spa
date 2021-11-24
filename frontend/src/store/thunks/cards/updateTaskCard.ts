@@ -26,7 +26,7 @@ export const updateTaskCard = createAsyncThunk<
   AsyncThunkConfig
 >('cards/updateTaskCard', async (payload, thunkApi) => {
   const { id, boardId, listId, ...requestBody } = payload;
-  const path = makePath(['task_lists', listId], ['task_cards', id]);
+  const path = makePath(['task-lists', listId], ['task-cards', id]);
   /**
    * - `Data`型はタイムゾーンを反映させた値としてAPIリクエストを送る
    * - Laravel側ではこれを`DateTime`型にキャストして扱い、またDBに保存する

@@ -18,7 +18,7 @@ import {
 
 export const handlers = [
   rest.get(
-    API_ROUTE + makePath(['users', ':userId'], ['task_boards']),
+    API_ROUTE + makePath(['users', ':userId'], ['task-boards']),
     (req, res, ctx) => {
       const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);
@@ -38,7 +38,7 @@ export const handlers = [
   ),
 
   rest.post<CreateTaskBoardRequest, CreateTaskBoardResponse>(
-    API_ROUTE + makePath(['users', ':userId'], ['task_boards']),
+    API_ROUTE + makePath(['users', ':userId'], ['task-boards']),
     (req, res, ctx) => {
       const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);
@@ -58,7 +58,7 @@ export const handlers = [
   ),
 
   rest.get(
-    API_ROUTE + makePath(['users', ':userId'], ['task_boards', ':boardId']),
+    API_ROUTE + makePath(['users', ':userId'], ['task-boards', ':boardId']),
     (req, res, ctx) => {
       const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);
@@ -80,7 +80,7 @@ export const handlers = [
   ),
 
   rest.patch<UpdateTaskBoardRequest>(
-    API_ROUTE + makePath(['users', ':userId'], ['task_boards', ':boardId']),
+    API_ROUTE + makePath(['users', ':userId'], ['task-boards', ':boardId']),
     (req, res, ctx) => {
       const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);
@@ -102,7 +102,7 @@ export const handlers = [
   ),
 
   rest.delete<DestroyTaskBoardRequest, DestroyTaskBoardResponse>(
-    API_ROUTE + makePath(['users', ':userId'], ['task_boards', ':boardId']),
+    API_ROUTE + makePath(['users', ':userId'], ['task-boards', ':boardId']),
     (req, res, ctx) => {
       const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);

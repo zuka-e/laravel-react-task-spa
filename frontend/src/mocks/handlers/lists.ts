@@ -23,7 +23,7 @@ type TaskListParams = {
 
 export const handlers = [
   rest.post<CreateTaskListRequest, CreateTaskListResponse, TaskListParams>(
-    API_ROUTE + makePath(['task_boards', ':boardId'], ['task_lists']),
+    API_ROUTE + makePath(['task-boards', ':boardId'], ['task-lists']),
     (req, res, ctx) => {
       const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);
@@ -48,7 +48,7 @@ export const handlers = [
 
   rest.patch<UpdateTaskListRequest, any, TaskListParams>(
     API_ROUTE +
-      makePath(['task_boards', ':boardId'], ['task_lists', ':listId']),
+      makePath(['task-boards', ':boardId'], ['task-lists', ':listId']),
     (req, res, ctx) => {
       const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);
@@ -82,7 +82,7 @@ export const handlers = [
 
   rest.delete<DefaultRequestBody, DestroyTaskListResponse, TaskListParams>(
     API_ROUTE +
-      makePath(['task_boards', ':boardId'], ['task_lists', ':listId']),
+      makePath(['task-boards', ':boardId'], ['task-lists', ':listId']),
     (req, res, ctx) => {
       const currentUser = getUserFromSession(req.cookies.session_id);
       const token = req.headers.get(X_XSRF_TOKEN);

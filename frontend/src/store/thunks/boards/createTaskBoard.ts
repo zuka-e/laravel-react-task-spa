@@ -18,7 +18,7 @@ export const createTaskBoard = createAsyncThunk<
   AsyncThunkConfig
 >('boards/createTaskBoard', async (payload, thunkApi) => {
   const userId = String(thunkApi.getState().auth.user?.id);
-  const path = makePath(['users', userId], ['task_boards']);
+  const path = makePath(['users', userId], ['task-boards']);
 
   try {
     const response = await apiClient().post(path, payload);
