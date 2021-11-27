@@ -1,21 +1,19 @@
-import { DefaultRequestBody, rest } from 'msw';
+import type { DefaultRequestBody } from 'msw';
+import { rest } from 'msw';
 
-import { API_ROUTE } from 'config/api';
-import { makePath } from 'utils/api';
-import {
+import type {
   CreateTaskCardRequest,
   CreateTaskCardResponse,
   UpdateTaskCardRequest,
   UpdateTaskCardResponse,
   DestroyTaskCardResponse,
 } from 'store/thunks/cards';
+import type { ErrorResponse } from './types';
+import { API_ROUTE } from 'config/api';
+import { makePath } from 'utils/api';
 import { db } from 'mocks/models';
-import {
-  X_XSRF_TOKEN,
-  hasValidToken,
-  getUserFromSession,
-} from 'mocks/utils/validation';
 import { taskCardController } from 'mocks/controllers';
+import { applyMiddleware } from './utils';
 
 type TaskCardParams = {
   listId: string;
@@ -23,23 +21,21 @@ type TaskCardParams = {
 };
 
 export const handlers = [
-  rest.post<CreateTaskCardRequest, CreateTaskCardResponse, TaskCardParams>(
+  rest.post<
+    CreateTaskCardRequest,
+    CreateTaskCardResponse & ErrorResponse,
+    TaskCardParams
+  >(
     API_ROUTE + makePath(['task-lists', ':listId'], ['task-cards']),
     (req, res, ctx) => {
-      const currentUser = getUserFromSession(req.cookies.session_id);
-      const token = req.headers.get(X_XSRF_TOKEN);
       const list = db.where('taskLists', 'id', req.params.listId)[0];
-      const board = db.where('taskBoards', 'id', list.boardId)[0];
-      const belongsTo = { list, board };
 
-      if (!currentUser) return res(ctx.status(401));
-
-      if (!currentUser.emailVerifiedAt) return res(ctx.status(403));
-
-      if (currentUser.id !== belongsTo.board.userId)
-        return res(ctx.status(403));
-
-      if (!token || !hasValidToken(token)) return res(ctx.status(419));
+      const httpException = applyMiddleware(req, [
+        'authenticate',
+        `authorize:${list?.userId}`,
+        'verified',
+      ]);
+      if (httpException) return res(httpException);
 
       const response = taskCardController.store(req);
 
@@ -47,30 +43,22 @@ export const handlers = [
     }
   ),
 
-  rest.patch<UpdateTaskCardRequest, UpdateTaskCardResponse, TaskCardParams>(
+  rest.patch<
+    UpdateTaskCardRequest,
+    UpdateTaskCardResponse & ErrorResponse,
+    TaskCardParams
+  >(
     API_ROUTE + makePath(['task-lists', ':listId'], ['task-cards', ':cardId']),
     (req, res, ctx) => {
-      const currentUser = getUserFromSession(req.cookies.session_id);
-      const token = req.headers.get(X_XSRF_TOKEN);
       const list = db.where('taskLists', 'id', req.params.listId)[0];
-      const board = db.where('taskBoards', 'id', list?.boardId)[0];
-      const belongsTo = { list, board };
-      const target = db.where('taskCards', 'id', req.params.cardId)[0];
+      const card = db.where('taskCards', 'id', req.params.cardId)[0];
 
-      if (!currentUser) return res(ctx.status(401));
-
-      if (!token || !hasValidToken(token)) return res(ctx.status(419));
-
-      if (!currentUser.emailVerifiedAt) return res(ctx.status(403));
-
-      if (!belongsTo.list) return res(ctx.status(404));
-
-      if (belongsTo.board.userId !== currentUser.id)
-        return res(ctx.status(403));
-
-      if (!target) return res(ctx.status(404));
-
-      if (target.listId !== req.params.listId) return res(ctx.status(403));
+      const httpException = applyMiddleware(req, [
+        'authenticate',
+        `authorize:${list?.userId},${card?.userId}`,
+        'verified',
+      ]);
+      if (httpException) return res(httpException);
 
       const updated = taskCardController.update(req);
 
@@ -80,30 +68,22 @@ export const handlers = [
     }
   ),
 
-  rest.delete<DefaultRequestBody, DestroyTaskCardResponse, TaskCardParams>(
+  rest.delete<
+    DefaultRequestBody,
+    DestroyTaskCardResponse & ErrorResponse,
+    TaskCardParams
+  >(
     API_ROUTE + makePath(['task-lists', ':listId'], ['task-cards', ':cardId']),
     (req, res, ctx) => {
-      const currentUser = getUserFromSession(req.cookies.session_id);
-      const token = req.headers.get(X_XSRF_TOKEN);
       const list = db.where('taskLists', 'id', req.params.listId)[0];
-      const board = db.where('taskBoards', 'id', list?.boardId)[0];
-      const belongsTo = { list, board };
-      const target = db.where('taskCards', 'id', req.params.cardId)[0];
+      const card = db.where('taskCards', 'id', req.params.cardId)[0];
 
-      if (!currentUser) return res(ctx.status(401));
-
-      if (!token || !hasValidToken(token)) return res(ctx.status(419));
-
-      if (!currentUser.emailVerifiedAt) return res(ctx.status(403));
-
-      if (!belongsTo.list) return res(ctx.status(404));
-
-      if (belongsTo.board.userId !== currentUser.id)
-        return res(ctx.status(403));
-
-      if (!target) return res(ctx.status(404));
-
-      if (target.listId !== req.params.listId) return res(ctx.status(403));
+      const httpException = applyMiddleware(req, [
+        'authenticate',
+        `authorize:${list?.userId},${card?.userId}`,
+        'verified',
+      ]);
+      if (httpException) return res(httpException);
 
       const deleted = taskCardController.destroy(req);
 

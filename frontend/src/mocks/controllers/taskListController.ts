@@ -29,8 +29,9 @@ export const update = (req: RestRequest<UpdateTaskListRequest>) => {
   if (!list) return;
 
   const updated = db.update('taskLists', { ...list, ...req.body });
+  const response: TaskList = { ...updated, cards: [] };
 
-  return updated;
+  return response;
 };
 
 export const destroy = (req: RestRequest) => {

@@ -9,7 +9,11 @@ import { db, TaskBoardDocument } from 'mocks/models';
 import { paginate } from 'mocks/utils/paginate';
 
 export const index = (req: RestRequest) => {
-  const boards = db.where('taskBoards', 'userId', req.params.userId);
+  const boards = db.where(
+    'taskBoards',
+    'userId',
+    req.params.userId
+  ) as TaskBoard[];
   const response = paginate({ req: req, allData: boards });
 
   return response;
@@ -62,7 +66,7 @@ export const update = (req: RestRequest<UpdateTaskBoardRequest>) => {
 
   const updated = db.update('taskBoards', { ...board, ...req.body });
 
-  return updated;
+  return updated as TaskBoard;
 };
 
 export const destroy = (req: RestRequest<UpdateTaskBoardRequest>) => {

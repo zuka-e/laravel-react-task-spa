@@ -1,6 +1,7 @@
-import { DefaultRequestBody, RequestParams, rest } from 'msw';
+import { DefaultRequestBody, RequestParams } from 'msw';
+import { rest } from 'msw';
 
-import {
+import type {
   SignUpRequest,
   SignUpResponse,
   FetchAuthUserResponse,
@@ -12,6 +13,7 @@ import {
   ForgotPasswordRequest,
   ResetPasswordRequest,
 } from 'store/thunks/auth';
+import type { ErrorResponse } from './types';
 import { auth, db, sanitizeUser } from 'mocks/models';
 import {
   createUserController,
@@ -23,8 +25,6 @@ import {
 import { url } from 'mocks/utils/route';
 import {
   XSRF_TOKEN,
-  X_XSRF_TOKEN,
-  hasValidToken,
   isUniqueEmail,
   authenticate,
   isValidPassword,
@@ -34,19 +34,17 @@ import {
   generateCsrfToken,
   isValidPasswordResetToken,
 } from 'mocks/utils/validation';
+import { applyMiddleware } from './utils';
 
 export const handlers = [
-  rest.post<SignUpRequest, SignUpResponse, RequestParams>(
+  rest.post<SignUpRequest, SignUpResponse & ErrorResponse, RequestParams>(
     url('SIGNUP_PATH'),
     (req, res, ctx) => {
-      const token = req.headers.get(X_XSRF_TOKEN);
-      const { email } = req.body;
-
-      // token mismatch error
-      if (!token || !hasValidToken(token)) return res(ctx.status(419));
+      const httpException = applyMiddleware(req);
+      if (httpException) return res(httpException);
 
       // validation error
-      if (!isUniqueEmail(email)) return res(ctx.status(422));
+      if (!isUniqueEmail(req.body.email)) return res(ctx.status(422));
 
       const response = createUserController.store(req.body);
       const encryptedSessionId = createSessionId(response.user.id);
@@ -59,46 +57,44 @@ export const handlers = [
     }
   ),
 
-  rest.get(url('GET_CSRF_TOKEN_PATH'), (_req, res, ctx) => {
-    const csrfToken = generateCsrfToken();
-    return res(ctx.cookie(XSRF_TOKEN, csrfToken));
+  rest.get<DefaultRequestBody, undefined, RequestParams>(
+    url('GET_CSRF_TOKEN_PATH'),
+    (_req, res, ctx) => {
+      const csrfToken = generateCsrfToken();
+      return res(ctx.cookie(XSRF_TOKEN, csrfToken));
+    }
+  ),
+
+  rest.get<
+    DefaultRequestBody,
+    FetchAuthUserResponse & ErrorResponse,
+    RequestParams
+  >(url('AUTH_USER_PATH'), (req, res, ctx) => {
+    const httpException = applyMiddleware(req, ['authenticate']);
+    if (httpException) return res(httpException);
+
+    const currentUser = getUserFromSession(req.cookies.session_id);
+    auth.login(currentUser!);
+
+    return res(
+      ctx.status(200),
+      ctx.json({
+        user: sanitizeUser(currentUser!),
+      })
+    );
   }),
 
-  rest.get<DefaultRequestBody, FetchAuthUserResponse, RequestParams>(
-    url('AUTH_USER_PATH'),
-    (req, res, ctx) => {
-      const currentUser = getUserFromSession(req.cookies.session_id);
-      const token = req.headers.get(X_XSRF_TOKEN);
+  rest.post<
+    DefaultRequestBody,
+    FetchAuthUserResponse & ErrorResponse,
+    RequestParams
+  >(url('VERIFICATION_NOTIFICATION_PATH'), (req, res, ctx) => {
+    const httpException = applyMiddleware(req, ['authenticate']);
+    if (httpException) return res(httpException);
 
-      if (!currentUser) return res(ctx.status(401));
-
-      if (!token || !hasValidToken(token)) return res(ctx.status(419));
-
-      auth.login(currentUser);
-
-      const response: FetchAuthUserResponse = {
-        user: sanitizeUser(currentUser),
-      };
-
-      return res(ctx.status(200), ctx.json(response));
-    }
-  ),
-
-  rest.post<DefaultRequestBody, FetchAuthUserResponse, RequestParams>(
-    url('VERIFICATION_NOTIFICATION_PATH'),
-    (req, res, ctx) => {
-      const currentUser = getUserFromSession(req.cookies.session_id);
-      const token = req.headers.get(X_XSRF_TOKEN);
-
-      if (!currentUser) return res(ctx.status(401));
-
-      if (!token || !hasValidToken(token)) return res(ctx.status(419));
-
-      const statusCode = currentUser.emailVerifiedAt ? 204 : 202;
-
-      return res(ctx.status(statusCode));
-    }
-  ),
+    const currentUser = getUserFromSession(req.cookies.session_id);
+    return res(ctx.status(currentUser!.emailVerifiedAt ? 204 : 202));
+  }),
 
   rest.post<SignInRequest, SignInResponse, RequestParams>(
     url('SIGNIN_PATH'),
@@ -118,46 +114,45 @@ export const handlers = [
     }
   ),
 
-  rest.put<UpdateProfileRequest, UpdateProfileResponse, RequestParams>(
-    url('UPDATE_USER_INFO_PATH'),
-    (req, res, ctx) => {
-      const currentUser = getUserFromSession(req.cookies.session_id);
-      const token = req.headers.get(X_XSRF_TOKEN);
+  rest.put<
+    UpdateProfileRequest,
+    UpdateProfileResponse & ErrorResponse,
+    RequestParams
+  >(url('UPDATE_USER_INFO_PATH'), (req, res, ctx) => {
+    const httpException = applyMiddleware(req, ['authenticate']);
+    if (httpException) return res(httpException);
 
-      if (!currentUser) return res(ctx.status(401));
+    if (!isUniqueEmail(req.body.email)) return res(ctx.status(422));
 
-      if (!token || !hasValidToken(token)) return res(ctx.status(419));
+    const currentUser = getUserFromSession(req.cookies.session_id);
+    const newSessionId = regenerateSessionId(req.cookies.session_id);
+    const response = updateProfileController.update({
+      currentUser: currentUser!,
+      request: req.body,
+    });
 
-      if (!isUniqueEmail(req.body.email)) return res(ctx.status(422));
+    return res(
+      ctx.status(200),
+      ctx.cookie('session_id', newSessionId, { httpOnly: true }),
+      ctx.json(response)
+    );
+  }),
 
-      const newSessionId = regenerateSessionId(req.cookies.session_id);
-      const response = updateProfileController.update({
-        currentUser,
-        request: req.body,
-      });
-
-      return res(
-        ctx.status(200),
-        ctx.cookie('session_id', newSessionId, { httpOnly: true }),
-        ctx.json(response)
-      );
-    }
-  ),
-
-  rest.put<UpdatePasswordRequest, undefined, RequestParams>(
+  rest.put<UpdatePasswordRequest, void & ErrorResponse, RequestParams>(
     url('UPDATE_PASSWORD_PATH'),
     (req, res, ctx) => {
+      const httpException = applyMiddleware(req, ['authenticate']);
+      if (httpException) return res(httpException);
+
       const currentUser = getUserFromSession(req.cookies.session_id);
-      const token = req.headers.get(X_XSRF_TOKEN);
 
-      if (!currentUser) return res(ctx.status(401));
-
-      if (!token || !hasValidToken(token)) return res(ctx.status(419));
-
-      if (!isValidPassword(req.body.current_password, currentUser.password))
+      if (!isValidPassword(req.body.current_password, currentUser!.password))
         return res(ctx.status(422));
 
-      updatePasswordController.update({ currentUser, request: req.body });
+      updatePasswordController.update({
+        currentUser: currentUser!,
+        request: req.body,
+      });
 
       const newSessionId = regenerateSessionId(req.cookies.session_id);
 
@@ -196,33 +191,29 @@ export const handlers = [
     }
   ),
 
-  rest.post(url('SIGNOUT_PATH'), (req, res, ctx) => {
-    const { session_id } = req.cookies;
-    const token = req.headers.get(X_XSRF_TOKEN);
+  rest.post<DefaultRequestBody, void & ErrorResponse, RequestParams>(
+    url('SIGNOUT_PATH'),
+    (req, res, ctx) => {
+      const httpException = applyMiddleware(req, ['authenticate']);
+      if (httpException) return res(httpException);
 
-    if (!session_id) return res(ctx.status(401));
+      auth.logout();
 
-    if (!token || !hasValidToken(token)) return res(ctx.status(419));
+      return res(
+        ctx.status(204),
+        ctx.cookie('session_id', '', { httpOnly: true })
+      );
+    }
+  ),
 
-    auth.logout();
-
-    return res(
-      ctx.status(204),
-      ctx.cookie('session_id', '', { httpOnly: true })
-    );
-  }),
-
-  rest.delete<DefaultRequestBody, undefined, RequestParams>(
+  rest.delete<DefaultRequestBody, void & ErrorResponse, RequestParams>(
     url('AUTH_USER_PATH'),
     (req, res, ctx) => {
+      const httpException = applyMiddleware(req, ['authenticate']);
+      if (httpException) return res(httpException);
+
       const currentUser = getUserFromSession(req.cookies.session_id);
-      const token = req.headers.get(X_XSRF_TOKEN);
-
-      if (!currentUser) return res(ctx.status(401));
-
-      if (!token || !hasValidToken(token)) return res(ctx.status(419));
-
-      deleteAccountController.remove(currentUser);
+      deleteAccountController.remove(currentUser!);
 
       return res(
         ctx.status(204),
