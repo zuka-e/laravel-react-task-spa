@@ -5,6 +5,7 @@ import {
   SignInRequest,
   signInWithEmail,
 } from 'store/thunks/auth';
+import { isInvalidRequest } from 'utils/api/errors';
 import { initializeStore, store } from 'mocks/store';
 import { getFlashState, isLoading, isSignedIn } from 'mocks/utils/store/auth';
 import { validPasswordResetTokenOf } from 'mocks/utils/validation';
@@ -38,49 +39,48 @@ describe('Thunk for resetting the password', () => {
     const invalidReq = { ...request, token: '' };
 
     it('should be an error with a set of email and token', async () => {
-      expect(isSignedIn(store)).toBeFalsy();
+      expect(isSignedIn(store)).toBeUndefined();
       const invalidReq = { ...request, email: ownEmail + 'a' };
       const response = await store.dispatch(resetPassword(invalidReq));
-      expect(resetPassword.rejected.match(response)).toBeTruthy();
+      expect(resetPassword.rejected.match(response)).toBe(true);
       if (!resetPassword.rejected.match(response)) return;
 
-      expect(isLoading(store)).toBeFalsy();
+      expect(isLoading(store)).toBe(false);
       const error = response.payload?.error;
       expect(isInvalidRequest(error) && error.response.status).toBe(422);
     });
 
     it('should receive an error if the token unmatchs', async () => {
-      expect(isSignedIn(store)).toBeFalsy();
+      expect(isSignedIn(store)).toBeUndefined();
       const response = await store.dispatch(resetPassword(invalidReq));
-      expect(resetPassword.rejected.match(response)).toBeTruthy();
+      expect(resetPassword.rejected.match(response)).toBe(true);
       if (!resetPassword.rejected.match(response)) return;
 
-      expect(resetPassword.rejected.match(response)).toBeTruthy();
-      expect(isLoading(store)).toBeFalsy();
+      expect(isLoading(store)).toBe(false);
       const error = response.payload?.error;
       expect(isInvalidRequest(error) && error.response.status).toBe(422);
     });
 
     it('should be authenticated with a original password', async () => {
       const response = await store.dispatch(resetPassword(invalidReq));
-      expect(resetPassword.rejected.match(response)).toBeTruthy();
+      expect(resetPassword.rejected.match(response)).toBe(true);
       if (!resetPassword.rejected.match(response)) return;
 
       const signInResponse = await store.dispatch(
         signInWithEmail(signInRequestWithOriginalPassword)
       );
-      expect(signInWithEmail.fulfilled.match(signInResponse)).toBeTruthy();
+      expect(signInWithEmail.fulfilled.match(signInResponse)).toBe(true);
     });
 
     it('should not be authenticated with a requested password', async () => {
       const response = await store.dispatch(resetPassword(invalidReq));
-      expect(resetPassword.rejected.match(response)).toBeTruthy();
+      expect(resetPassword.rejected.match(response)).toBe(true);
       if (!resetPassword.rejected.match(response)) return;
 
       const signInResponse = await store.dispatch(
         signInWithEmail(signInRequestWithUpdatedPassword)
       );
-      expect(signInWithEmail.rejected.match(signInResponse)).toBeTruthy();
+      expect(signInWithEmail.rejected.match(signInResponse)).toBe(true);
     });
   });
 
@@ -89,7 +89,7 @@ describe('Thunk for resetting the password', () => {
       expect(isSignedIn(store)).toBeFalsy();
       await store.dispatch(resetPassword(request)); // dispatch
 
-      expect(isLoading(store)).toBeFalsy();
+      expect(isLoading(store)).toBe(false);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
         type: 'success',
         message: 'パスワードを再設定しました',
@@ -98,22 +98,22 @@ describe('Thunk for resetting the password', () => {
 
     it('should be authenticated with a updated password', async () => {
       const response = await store.dispatch(resetPassword(request));
-      expect(resetPassword.fulfilled.match(response)).toBeTruthy();
+      expect(resetPassword.fulfilled.match(response)).toBe(true);
 
       const signInResponse = await store.dispatch(
         signInWithEmail(signInRequestWithUpdatedPassword)
       );
-      expect(signInWithEmail.fulfilled.match(signInResponse)).toBeTruthy();
+      expect(signInWithEmail.fulfilled.match(signInResponse)).toBe(true);
     });
 
     it('should not be authenticated with a previous password', async () => {
       const response = await store.dispatch(resetPassword(request));
-      expect(resetPassword.fulfilled.match(response)).toBeTruthy();
+      expect(resetPassword.fulfilled.match(response)).toBe(true);
 
       const signInResponse = await store.dispatch(
         signInWithEmail(signInRequestWithOriginalPassword)
       );
-      expect(signInWithEmail.rejected.match(signInResponse)).toBeTruthy();
+      expect(signInWithEmail.rejected.match(signInResponse)).toBe(true);
     });
   });
 });

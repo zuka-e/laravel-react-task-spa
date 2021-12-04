@@ -23,13 +23,12 @@ describe('Thunk authenticating user with email', () => {
       expect(isSignedIn(store)).toEqual(undefined);
       // ログインリクエスト
       const response = await store.dispatch(signInWithEmail(signInRequest));
-      expect(signInWithEmail.rejected.match(response)).toBeTruthy();
-      // `rejected`の場合
-      if (signInWithEmail.fulfilled.match(response)) return;
+      expect(signInWithEmail.rejected.match(response)).toBe(true);
+      if (!signInWithEmail.rejected.match(response)) return; // 以下`rejected`
 
       const error = response.payload?.error;
       expect(isInvalidRequest(error) && error.response.status).toBe(422);
-      expect(isSignedIn(store)).toEqual(false);
+      expect(isSignedIn(store)).toBe(false);
     });
   });
 
@@ -41,11 +40,11 @@ describe('Thunk authenticating user with email', () => {
       };
       // ログイン
       const response = await store.dispatch(signInWithEmail(signInRequest));
-      expect(signInWithEmail.fulfilled.match(response)).toBeTruthy();
-      // `fulfilled`の場合
-      if (signInWithEmail.rejected.match(response)) return;
+      expect(signInWithEmail.fulfilled.match(response)).toBe(true);
+      if (signInWithEmail.rejected.match(response)) return; // 以下`fulfilled`
+
       expect(response.payload?.user).toEqual(getUserState(store));
-      expect(isSignedIn(store)).toBeTruthy();
+      expect(isSignedIn(store)).toBe(true);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
         type: 'info',
         message: 'ログインしました',

@@ -15,12 +15,12 @@ describe('Thunk for a forgot password', () => {
     };
 
     it('should receive an error if the email unmatchs', async () => {
-      expect(isSignedIn(store)).toBeFalsy();
+      expect(isSignedIn(store)).toBeUndefined();
       const response = await store.dispatch(forgotPassword(request));
-      if (!forgotPassword.rejected.match(response)) return;
-      // 以下`rejected`
-      expect(forgotPassword.rejected.match(response)).toBeTruthy();
-      expect(isLoading(store)).toBeFalsy();
+      expect(forgotPassword.rejected.match(response)).toBe(true);
+      if (!forgotPassword.rejected.match(response)) return; // 以下`rejected`
+
+      expect(isLoading(store)).toBe(false);
       const error = response.payload?.error;
       expect(isInvalidRequest(error) && error.response.status).toBe(422);
     });
@@ -32,10 +32,10 @@ describe('Thunk for a forgot password', () => {
     };
 
     it('should send an email if an requested email exists', async () => {
-      expect(isSignedIn(store)).toBeFalsy();
+      expect(isSignedIn(store)).toBeUndefined();
       await store.dispatch(forgotPassword(request)); // dispatch
 
-      expect(isLoading(store)).toBeFalsy();
+      expect(isLoading(store)).toBe(false);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
         type: 'success',
         message: 'パスワード再設定用のメールを送信しました',
