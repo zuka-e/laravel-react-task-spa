@@ -1,3 +1,6 @@
+import { HttpException, InvalidRequest } from 'utils/api/errors';
+
 export type ErrorResponse = {
-  message?: string;
+  message?: HttpException['response']['data']['message'];
+  errors?: InvalidRequest['response']['data']['errors'];
 };

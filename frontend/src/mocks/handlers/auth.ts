@@ -34,7 +34,7 @@ import {
   generateCsrfToken,
   isValidPasswordResetToken,
 } from 'mocks/utils/validation';
-import { applyMiddleware } from './utils';
+import { applyMiddleware, returnInvalidRequest } from './utils';
 
 export const handlers = [
   rest.post<SignUpRequest, SignUpResponse & ErrorResponse, RequestParams>(
@@ -43,8 +43,12 @@ export const handlers = [
       const httpException = applyMiddleware(req);
       if (httpException) return res(httpException);
 
-      // validation error
-      if (!isUniqueEmail(req.body.email)) return res(ctx.status(422));
+      if (!isUniqueEmail(req.body.email))
+        return res(
+          returnInvalidRequest({
+            email: ['このメールアドレスは既に使用されています。'],
+          })
+        );
 
       const response = createUserController.store(req.body);
       const encryptedSessionId = createSessionId(response.user.id);
@@ -96,20 +100,18 @@ export const handlers = [
     return res(ctx.status(currentUser!.emailVerifiedAt ? 204 : 202));
   }),
 
-  rest.post<SignInRequest, SignInResponse, RequestParams>(
+  rest.post<SignInRequest, SignInResponse & ErrorResponse, RequestParams>(
     url('SIGNIN_PATH'),
     (req, res, ctx) => {
       const user = authenticate(req.body);
 
-      if (!user) return res(ctx.status(422));
-
-      const encryptedSessionId = createSessionId(user.id);
-      const response: SignInResponse = { user: sanitizeUser(user) };
+      if (!user)
+        return res(returnInvalidRequest({ email: ['認証に失敗しました。'] }));
 
       return res(
         ctx.status(200),
-        ctx.cookie('session_id', encryptedSessionId, { httpOnly: true }),
-        ctx.json(response)
+        ctx.cookie('session_id', createSessionId(user.id), { httpOnly: true }),
+        ctx.json({ user: sanitizeUser(user) })
       );
     }
   ),
@@ -122,7 +124,12 @@ export const handlers = [
     const httpException = applyMiddleware(req, ['authenticate']);
     if (httpException) return res(httpException);
 
-    if (!isUniqueEmail(req.body.email)) return res(ctx.status(422));
+    if (!isUniqueEmail(req.body.email))
+      return res(
+        returnInvalidRequest({
+          email: ['このメールアドレスは既に使用されています。'],
+        })
+      );
 
     const currentUser = getUserFromSession(req.cookies.session_id);
     const newSessionId = regenerateSessionId(req.cookies.session_id);
@@ -147,7 +154,11 @@ export const handlers = [
       const currentUser = getUserFromSession(req.cookies.session_id);
 
       if (!isValidPassword(req.body.current_password, currentUser!.password))
-        return res(ctx.status(422));
+        return res(
+          returnInvalidRequest({
+            password: ['パスワードが間違っています。'],
+          })
+        );
 
       updatePasswordController.update({
         currentUser: currentUser!,
@@ -163,30 +174,35 @@ export const handlers = [
     }
   ),
 
-  rest.post<ForgotPasswordRequest, undefined, RequestParams>(
+  rest.post<ForgotPasswordRequest, void & ErrorResponse, RequestParams>(
     url('FORGOT_PASSWORD_PATH'),
     (req, res, ctx) => {
-      const { email } = req.body;
-      const requestedUser = db.where('users', 'email', email)[0];
+      const requestedUser = db.where('users', 'email', req.body.email)[0];
 
-      if (!requestedUser) return res(ctx.status(422));
+      if (!requestedUser)
+        return res(
+          returnInvalidRequest({
+            email: ['指定されたメールアドレスは存在しません。'],
+          })
+        );
 
       return res(ctx.status(200));
     }
   ),
 
-  rest.post<ResetPasswordRequest, undefined, RequestParams>(
+  rest.post<ResetPasswordRequest, void & ErrorResponse, RequestParams>(
     url('RESET_PASSWORD_PATH'),
     (req, res, ctx) => {
-      if (!isValidPasswordResetToken(req.body)) return res(ctx.status(422));
+      if (!isValidPasswordResetToken(req.body))
+        return res(returnInvalidRequest({ email: ['認証に失敗しました。'] }));
 
       resetPasswordController.reset(req.body);
 
-      const newSessionId = regenerateSessionId(req.cookies.session_id);
-
       return res(
         ctx.status(200),
-        ctx.cookie('session_id', newSessionId, { httpOnly: true })
+        ctx.cookie('session_id', regenerateSessionId(req.cookies.session_id), {
+          httpOnly: true,
+        })
       );
     }
   ),

@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
-interface HttpException extends AxiosError {
+export interface HttpException extends AxiosError {
   response: AxiosResponse<{
     message: string;
   }>;
