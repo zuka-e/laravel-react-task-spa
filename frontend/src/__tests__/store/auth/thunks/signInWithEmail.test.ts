@@ -6,6 +6,7 @@ import {
   getUserState,
   isSignedIn,
 } from 'mocks/utils/store/auth';
+import { isInvalidRequest } from 'utils/api/errors';
 
 describe('Thunk authenticating user with email', () => {
   beforeEach(() => {
@@ -25,9 +26,9 @@ describe('Thunk authenticating user with email', () => {
       expect(signInWithEmail.rejected.match(response)).toBeTruthy();
       // `rejected`の場合
       if (signInWithEmail.fulfilled.match(response)) return;
-      expect(response.payload?.error.message).toEqual(
-        'メールアドレスまたはパスワードが間違っています'
-      );
+
+      const error = response.payload?.error;
+      expect(isInvalidRequest(error) && error.response.status).toBe(422);
       expect(isSignedIn(store)).toEqual(false);
     });
   });

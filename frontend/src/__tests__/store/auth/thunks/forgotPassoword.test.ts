@@ -1,5 +1,6 @@
 import { GUEST_EMAIL } from 'config/app';
 import { forgotPassword, ForgotPasswordRequest } from 'store/thunks/auth';
+import { isInvalidRequest } from 'utils/api/errors';
 import { initializeStore, store } from 'mocks/store';
 import { getFlashState, isLoading, isSignedIn } from 'mocks/utils/store/auth';
 
@@ -20,9 +21,8 @@ describe('Thunk for a forgot password', () => {
       // 以下`rejected`
       expect(forgotPassword.rejected.match(response)).toBeTruthy();
       expect(isLoading(store)).toBeFalsy();
-      expect(response.payload?.error.message).toEqual(
-        '指定されたメールアドレスは存在しません'
-      );
+      const error = response.payload?.error;
+      expect(isInvalidRequest(error) && error.response.status).toBe(422);
     });
   });
 

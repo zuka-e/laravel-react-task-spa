@@ -45,9 +45,8 @@ describe('Thunk for resetting the password', () => {
       if (!resetPassword.rejected.match(response)) return;
 
       expect(isLoading(store)).toBeFalsy();
-      expect(response.payload?.error.message).toEqual(
-        '認証に失敗しました\n再度お試しください'
-      );
+      const error = response.payload?.error;
+      expect(isInvalidRequest(error) && error.response.status).toBe(422);
     });
 
     it('should receive an error if the token unmatchs', async () => {
@@ -58,9 +57,8 @@ describe('Thunk for resetting the password', () => {
 
       expect(resetPassword.rejected.match(response)).toBeTruthy();
       expect(isLoading(store)).toBeFalsy();
-      expect(response.payload?.error.message).toEqual(
-        '認証に失敗しました\n再度お試しください'
-      );
+      const error = response.payload?.error;
+      expect(isInvalidRequest(error) && error.response.status).toBe(422);
     });
 
     it('should be authenticated with a original password', async () => {

@@ -5,6 +5,7 @@ import {
   signInWithEmail,
   updateProfile,
 } from 'store/thunks/auth';
+import { isInvalidRequest } from 'utils/api/errors';
 import { initializeStore, store } from 'mocks/store';
 import {
   getFlashState,
@@ -65,9 +66,8 @@ describe('Thunk updating the user profile', () => {
       // 以下`rejected`
       if (!updateProfile.rejected.match(response)) return;
 
-      expect(response.payload?.error.message).toEqual(
-        'このメールアドレスは既に使用されています'
-      );
+      const error = response.payload?.error;
+      expect(isInvalidRequest(error) && error.response.status).toBe(422);
     });
   });
 

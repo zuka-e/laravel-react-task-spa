@@ -85,7 +85,7 @@ describe('Sign Up', () => {
   describe('Form input', () => {
     const newEmail = 'test' + GUEST_EMAIL;
     const password = 'password';
-    const errorData = { '422': { message: new RegExp('既に使用されて', 'i') } };
+    const errorData = { '422': { message: /^Error/ } };
     const successMessage = /ユーザー登録が完了しました/;
     const warning = /登録が抹消されます/;
 

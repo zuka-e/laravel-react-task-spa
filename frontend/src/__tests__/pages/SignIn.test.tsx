@@ -91,7 +91,7 @@ describe('SignIn', () => {
   });
 
   describe('Form input', () => {
-    const errorData = { '422': { message: new RegExp('間違っています', 'i') } };
+    const errorData = { '422': { message: /^Error/ } };
     const successMessage = new RegExp('ログインしました', 'i');
 
     it('should be invalidated with the empty password', async () => {

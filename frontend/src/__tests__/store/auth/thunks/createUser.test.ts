@@ -1,5 +1,6 @@
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import { createUser, SignUpRequest } from 'store/thunks/auth';
+import { isInvalidRequest } from 'utils/api/errors';
 import { makeEmail } from 'utils/generator';
 import { initializeStore, store } from 'mocks/store';
 import {
@@ -26,9 +27,9 @@ describe('Thunk for an user registration', () => {
       expect(createUser.rejected.match(response)).toBeTruthy();
       // `rejected`時のレスポンスを参照するため`fulfilled`の条件で`return`
       if (createUser.fulfilled.match(response)) return;
-      expect(response.payload?.error.message).toEqual(
-        'このメールアドレスは既に使用されています'
-      );
+
+      const error = response.payload?.error;
+      expect(isInvalidRequest(error) && error.response.status).toBe(422);
     });
   });
 

@@ -6,6 +6,7 @@ import {
   updatePassword,
   UpdatePasswordRequest,
 } from 'store/thunks/auth';
+import { isInvalidRequest } from 'utils/api/errors';
 import { initializeStore, store } from 'mocks/store';
 import {
   getFlashState,
@@ -73,9 +74,8 @@ describe('Thunk updating the user password', () => {
       // 以下`rejected`
       if (!updatePassword.rejected.match(response)) return;
 
-      expect(response.payload?.error.message).toEqual(
-        'パスワードが間違っています'
-      );
+      const error = response.payload?.error;
+      expect(isInvalidRequest(error) && error.response.status).toBe(422);
     });
   });
 
