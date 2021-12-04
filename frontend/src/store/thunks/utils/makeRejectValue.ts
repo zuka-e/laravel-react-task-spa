@@ -8,11 +8,15 @@ import { RejectValue } from 'store/thunks/config';
 export const makeRejectValue = (error: unknown): RejectValue => {
   if (isInvalidRequest(error))
     return {
-      error: { message: makeErrorMessageFrom(error) },
+      error: {
+        ...error,
+        message: makeErrorMessageFrom(error),
+      },
     };
   if (isHttpException(error))
     return {
       error: {
+        ...error,
         message: `${error.response.status}: ${error.response.data.message}`,
       },
     };

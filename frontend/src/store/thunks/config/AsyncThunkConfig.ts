@@ -1,6 +1,10 @@
 import { AppDispatch, RootState } from 'store';
+import { HttpException } from 'utils/api/errors';
 
-export type RejectValue = { error: { message: string } };
+// export type RejectValue = { error: { message: string } };
+export type RejectValue = {
+  error: HttpException | { message: string };
+};
 
 /**
  * @see https://redux-toolkit.js.org/usage/usage-with-typescript#createasyncthunk
