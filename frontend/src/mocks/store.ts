@@ -1,12 +1,12 @@
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
+import type { CurriedGetDefaultMiddleware } from '@reduxjs/toolkit/dist/getDefaultMiddleware';
+import { configureStore } from '@reduxjs/toolkit';
 
 import { rootReducer } from 'store';
 
 const options = {
   reducer: rootReducer,
-  middleware: getDefaultMiddleware({
-    serializableCheck: false,
-  }),
+  middleware: (getDefaultMiddleware: CurriedGetDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }),
 };
 
 export const store = configureStore(options);

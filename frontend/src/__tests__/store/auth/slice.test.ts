@@ -1,7 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
-
 import {
-  authSlice,
   FlashNotificationProps,
   removeEmailVerificationPage,
   setFlash,
@@ -10,18 +7,11 @@ import {
 } from 'store/slices/authSlice';
 import { createUser, SignUpRequest } from 'store/thunks/auth';
 import { generateRandomString, makeEmail } from 'utils/generator';
+import { initializeStore, store } from 'mocks/store';
 
 describe('authSlice reducers', () => {
-  // `store`の生成
-  const initializedStore = () =>
-    configureStore({ reducer: { auth: authSlice.reducer } });
-
-  // 初回`store`生成
-  let store = initializedStore();
-
-  // test毎に`store`を再生成 (初期化)
   beforeEach(() => {
-    store = initializedStore();
+    initializeStore();
   });
 
   describe('setFlash', () => {

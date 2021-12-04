@@ -1,9 +1,4 @@
-import {
-  AnyAction,
-  combineReducers,
-  configureStore,
-  getDefaultMiddleware,
-} from '@reduxjs/toolkit';
+import { AnyAction, combineReducers, configureStore } from '@reduxjs/toolkit';
 
 import { appSlice, authSlice, taskBoardSlice } from './slices';
 
@@ -33,14 +28,15 @@ export const rootReducer = (
 
 export const store = configureStore({
   reducer: rootReducer,
-  middleware: getDefaultMiddleware({
-    /**
-     *  If your state or actions are very large,
-     *  the SerializableStateInvariantMiddleware,
-     *  that causes a slowdown in dev, can be disabled
-     */
-    serializableCheck: false,
-  }),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      /**
+       *  If your state or actions are very large,
+       *  the SerializableStateInvariantMiddleware,
+       *  that causes a slowdown in dev, can be disabled
+       */
+      serializableCheck: false,
+    }),
 });
 
 export type AppDispatch = typeof store.dispatch;
