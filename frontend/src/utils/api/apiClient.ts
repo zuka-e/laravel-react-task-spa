@@ -3,7 +3,6 @@ import axios from 'axios';
 import { API_HOST, API_ROUTE } from 'config/api';
 import { DocumentBase } from 'models';
 import { setError404 } from 'store/slices/appSlice';
-import { isHttpException } from './errors';
 
 /**
  * Laravelからデータの配列と共にページネーションに関する情報及びリンクをリクエストする際のレスポンスタイプ
@@ -63,7 +62,7 @@ export const apiClient = (options?: ApiClientOption) => {
           : await import('store');
       const { setFlash, signOut } = await import('store/slices/authSlice');
 
-      if (!isHttpException(error)) return Promise.reject(error);
+      if (!axios.isAxiosError(error)) return Promise.reject(error);
 
       switch (error.response?.status || 500) {
         case 401:
