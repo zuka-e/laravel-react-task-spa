@@ -31,34 +31,34 @@ class TaskBoardTest extends TestCase
 
         // index
         $otherUserId = $this->otherUser->id;
-        $url = $this->routePrefix . "/users/${otherUserId}/task_boards";
+        $url = $this->routePrefix . "/users/${otherUserId}/task-boards";
         $response = $this->getJson($url);
 
         $response->assertUnauthorized();
 
         // create
-        $url = $this->routePrefix . "/users/${otherUserId}/task_boards";
+        $url = $this->routePrefix . "/users/${otherUserId}/task-boards";
         $response = $this->postJson($url, ['title' => 'testTitle']);
 
         $response->assertUnauthorized();
 
         // show
         $boardId = $this->guestUser->taskBoards()->first()->id;
-        $url = $this->routePrefix . "/users/${otherUserId}/task_boards/${boardId}";
+        $url = $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
         $response = $this->getJson($url);
 
         $response->assertUnauthorized();
 
         // update
         $boardId = $this->guestUser->taskBoards()->first()->id;
-        $url = $this->routePrefix . "/users/${otherUserId}/task_boards/${boardId}";
+        $url = $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
 
         $response->assertUnauthorized();
 
         // delete
         $boardId = $this->guestUser->taskBoards()->first()->id;
-        $url = $this->routePrefix . "/users/${otherUserId}/task_boards/${boardId}";
+        $url = $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
         $response = $this->deleteJson($url);
 
         $response->assertUnauthorized();
@@ -72,34 +72,34 @@ class TaskBoardTest extends TestCase
 
         // index
         $otherUserId = $this->otherUser->id;
-        $url = $this->routePrefix . "/users/${otherUserId}/task_boards";
+        $url = $this->routePrefix . "/users/${otherUserId}/task-boards";
         $response = $this->getJson($url);
 
         $response->assertForbidden();
 
         // create
-        $url = $this->routePrefix . "/users/${otherUserId}/task_boards";
+        $url = $this->routePrefix . "/users/${otherUserId}/task-boards";
         $response = $this->postJson($url, ['title' => 'testTitle']);
 
         $response->assertForbidden();
 
         // show
         $boardId = $this->guestUser->taskBoards()->first()->id;
-        $url = $this->routePrefix . "/users/${otherUserId}/task_boards/${boardId}";
+        $url = $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
         $response = $this->getJson($url);
 
         $response->assertForbidden();
 
         // update
         $boardId = $this->guestUser->taskBoards()->first()->id;
-        $url = $this->routePrefix . "/users/${otherUserId}/task_boards/${boardId}";
+        $url = $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
 
         $response->assertForbidden();
 
         // delete
         $boardId = $this->guestUser->taskBoards()->first()->id;
-        $url = $this->routePrefix . "/users/${otherUserId}/task_boards/${boardId}";
+        $url = $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
         $response = $this->deleteJson($url);
 
         $response->assertForbidden();
@@ -110,7 +110,7 @@ class TaskBoardTest extends TestCase
         $this->login($this->guestUser);
 
         $userId = $this->guestUser->id;
-        $url = $this->routePrefix . "/users/${userId}/task_boards";
+        $url = $this->routePrefix . "/users/${userId}/task-boards";
         $response = $this->getJson($url);
 
         $response->assertJson(
@@ -131,7 +131,7 @@ class TaskBoardTest extends TestCase
         ]);
 
         $userId = $this->guestUser->id;
-        $url = $this->routePrefix . "/users/${userId}/task_boards?page=2";
+        $url = $this->routePrefix . "/users/${userId}/task-boards?page=2";
         $response = $this->getJson($url); // 2ページ目
 
         $response->assertJson(fn (AssertableJson $json) => $json->has(
@@ -148,7 +148,7 @@ class TaskBoardTest extends TestCase
         $this->login($this->guestUser);
 
         $userId = $this->guestUser->id;
-        $url = $this->routePrefix . "/users/${userId}/task_boards";
+        $url = $this->routePrefix . "/users/${userId}/task-boards";
 
         $emptyRequest = [];
         $response = $this->postJson($url, $emptyRequest);
@@ -187,7 +187,7 @@ class TaskBoardTest extends TestCase
 
         $userId = $this->guestUser->id;
         $boardId = $this->guestUser->taskBoards()->first()->id;
-        $url = $this->routePrefix . "/users/${userId}/task_boards/${boardId}";
+        $url = $this->routePrefix . "/users/${userId}/task-boards/${boardId}";
 
         $emptyRequest = [];
         $response = $this->patchJson($url, $emptyRequest);
@@ -264,7 +264,7 @@ class TaskBoardTest extends TestCase
 
         $userId = $this->guestUser->id;
         $boardId = (string)Str::uuid();
-        $url = $this->routePrefix . "/users/${userId}/task_boards/${boardId}";
+        $url = $this->routePrefix . "/users/${userId}/task-boards/${boardId}";
 
         $successfulRequest = ['title' => str_repeat('!', 20)];
         $response = $this->patchJson($url, $successfulRequest);
@@ -277,7 +277,7 @@ class TaskBoardTest extends TestCase
 
         $userId = $this->guestUser->id;
         $boardId = $this->guestUser->taskBoards()->first()->id;
-        $url = $this->routePrefix . "/users/${userId}/task_boards/${boardId}";
+        $url = $this->routePrefix . "/users/${userId}/task-boards/${boardId}";
 
         $response = $this->deleteJson($url);
         $response->assertOk();
