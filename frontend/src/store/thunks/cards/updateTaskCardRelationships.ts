@@ -3,7 +3,8 @@ import { AxiosResponse } from 'axios';
 
 import { TaskCard } from 'models';
 import { apiClient, makePath } from 'utils/api';
-import { AsyncThunkConfig } from '../types';
+import { AsyncThunkConfig } from 'store/thunks/config';
+import { makeRejectValue } from 'store/thunks/utils';
 
 type UpdateTaskCardRelationshipsResponse = Pick<AxiosResponse, 'status'>;
 
@@ -20,16 +21,14 @@ export const updateTaskCardRelationships = createAsyncThunk<
   AsyncThunkConfig
 >('cards/updateTaskCardRelationships', async (payload, thunkApi) => {
   const path = makePath(
-    ['task_lists', payload.data.listId],
-    ['task_cards', payload.data.id]
+    ['task-lists', payload.data.listId],
+    ['task-cards', payload.data.id]
   );
 
   try {
     const response = await apiClient().patch(path, payload.body);
     return { status: response.status };
-  } catch (e) {
-    return thunkApi.rejectWithValue({
-      error: { message: 'システムエラーが発生しました' },
-    });
+  } catch (error) {
+    return thunkApi.rejectWithValue(makeRejectValue(error));
   }
 });

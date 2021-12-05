@@ -37,7 +37,7 @@ const BoardMenu: React.FC<BoardMenuProps> = (props) => {
 
     switch (key) {
       case 'info':
-        dispatch(openInfoBox({ type: 'board', data: board }));
+        dispatch(openInfoBox({ model: 'board', data: board }));
         break;
       case 'delete':
         setOpenDeleteDialog(true);
@@ -59,7 +59,7 @@ const BoardMenu: React.FC<BoardMenuProps> = (props) => {
             </ListItem>
           }
         >
-          <SortSelect type='list' boardId={board.id} />
+          <SortSelect model='list' boardId={board.id} />
         </PopoverControl>
       )}
       {boardId && (
@@ -72,7 +72,7 @@ const BoardMenu: React.FC<BoardMenuProps> = (props) => {
       )}
       {openDeleteDialog && (
         <DeleteTaskDialog
-          type='board'
+          model='board'
           data={board}
           setOpen={setOpenDeleteDialog}
         />

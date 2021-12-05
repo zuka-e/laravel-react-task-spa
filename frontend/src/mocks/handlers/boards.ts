@@ -1,35 +1,43 @@
 import { rest } from 'msw';
 
-import { API_ROUTE } from 'config/api';
-import { makePath } from 'utils/api';
-import {
-  X_XSRF_TOKEN,
-  hasValidToken,
-  getUserFromSession,
-} from 'mocks/utils/validation';
-import { taskBoardController } from 'mocks/controllers';
-import {
+import type {
   CreateTaskBoardRequest,
   CreateTaskBoardResponse,
   DestroyTaskBoardRequest,
   DestroyTaskBoardResponse,
+  FetchTaskBoardRequest,
+  FetchTaskBoardResponse,
+  FetchTaskBoardsRequest,
+  FetchTaskBoardsResponse,
   UpdateTaskBoardRequest,
+  UpdateTaskBoardResponse,
 } from 'store/thunks/boards';
+import type { ErrorResponse } from './types';
+import { API_ROUTE } from 'config/api';
+import { makePath } from 'utils/api';
+import { db } from 'mocks/models';
+import { taskBoardController } from 'mocks/controllers';
+import { applyMiddleware } from './utils';
+
+type TaskBoardParams = {
+  userId: string;
+  boardId: string;
+};
 
 export const handlers = [
-  rest.get(
-    API_ROUTE + makePath(['users', ':userId'], ['task_boards']),
+  rest.get<
+    FetchTaskBoardsRequest,
+    FetchTaskBoardsResponse & ErrorResponse,
+    TaskBoardParams
+  >(
+    API_ROUTE + makePath(['users', ':userId'], ['task-boards']),
     (req, res, ctx) => {
-      const currentUser = getUserFromSession(req.cookies.session_id);
-      const token = req.headers.get(X_XSRF_TOKEN);
-
-      if (!currentUser) return res(ctx.status(401));
-
-      if (!currentUser.emailVerifiedAt) return res(ctx.status(403));
-
-      if (currentUser.id !== req.params.userId) return res(ctx.status(403));
-
-      if (!token || !hasValidToken(token)) return res(ctx.status(419));
+      const httpException = applyMiddleware(req, [
+        'authenticate',
+        `authorize:${req.params.userId}`,
+        'verified',
+      ]);
+      if (httpException) return res(httpException);
 
       const response = taskBoardController.index(req);
 
@@ -37,19 +45,19 @@ export const handlers = [
     }
   ),
 
-  rest.post<CreateTaskBoardRequest, CreateTaskBoardResponse>(
-    API_ROUTE + makePath(['users', ':userId'], ['task_boards']),
+  rest.post<
+    CreateTaskBoardRequest,
+    CreateTaskBoardResponse & ErrorResponse,
+    TaskBoardParams
+  >(
+    API_ROUTE + makePath(['users', ':userId'], ['task-boards']),
     (req, res, ctx) => {
-      const currentUser = getUserFromSession(req.cookies.session_id);
-      const token = req.headers.get(X_XSRF_TOKEN);
-
-      if (!currentUser) return res(ctx.status(401));
-
-      if (!currentUser.emailVerifiedAt) return res(ctx.status(403));
-
-      if (currentUser.id !== req.params.userId) return res(ctx.status(403));
-
-      if (!token || !hasValidToken(token)) return res(ctx.status(419));
+      const httpException = applyMiddleware(req, [
+        'authenticate',
+        `authorize:${req.params.userId}`,
+        'verified',
+      ]);
+      if (httpException) return res(httpException);
 
       const response = taskBoardController.store(req);
 
@@ -57,21 +65,21 @@ export const handlers = [
     }
   ),
 
-  rest.get(
-    API_ROUTE + makePath(['users', ':userId'], ['task_boards', ':boardId']),
+  rest.get<
+    FetchTaskBoardRequest,
+    FetchTaskBoardResponse & ErrorResponse,
+    TaskBoardParams
+  >(
+    API_ROUTE + makePath(['users', ':userId'], ['task-boards', ':boardId']),
     (req, res, ctx) => {
-      const currentUser = getUserFromSession(req.cookies.session_id);
-      const token = req.headers.get(X_XSRF_TOKEN);
-
-      if (!currentUser) return res(ctx.status(401));
-
-      if (!currentUser.emailVerifiedAt) return res(ctx.status(403));
-
-      if (currentUser.id !== req.params.userId) return res(ctx.status(403));
-
-      if (!token || !hasValidToken(token)) return res(ctx.status(419));
-
       const board = taskBoardController.show(req);
+
+      const httpException = applyMiddleware(req, [
+        'authenticate',
+        `authorize:${req.params.userId},${board?.userId}`,
+        'verified',
+      ]);
+      if (httpException) return res(httpException);
 
       if (!board) return res(ctx.status(404));
 
@@ -79,19 +87,21 @@ export const handlers = [
     }
   ),
 
-  rest.patch<UpdateTaskBoardRequest>(
-    API_ROUTE + makePath(['users', ':userId'], ['task_boards', ':boardId']),
+  rest.patch<
+    UpdateTaskBoardRequest,
+    UpdateTaskBoardResponse & ErrorResponse,
+    TaskBoardParams
+  >(
+    API_ROUTE + makePath(['users', ':userId'], ['task-boards', ':boardId']),
     (req, res, ctx) => {
-      const currentUser = getUserFromSession(req.cookies.session_id);
-      const token = req.headers.get(X_XSRF_TOKEN);
+      const board = db.where('taskBoards', 'id', req.params.boardId)[0];
 
-      if (!currentUser) return res(ctx.status(401));
-
-      if (!currentUser.emailVerifiedAt) return res(ctx.status(403));
-
-      if (currentUser.id !== req.params.userId) return res(ctx.status(403));
-
-      if (!token || !hasValidToken(token)) return res(ctx.status(419));
+      const httpException = applyMiddleware(req, [
+        'authenticate',
+        `authorize:${req.params.userId},${board?.userId}`,
+        'verified',
+      ]);
+      if (httpException) return res(httpException);
 
       const newState = taskBoardController.update(req);
 
@@ -101,19 +111,21 @@ export const handlers = [
     }
   ),
 
-  rest.delete<DestroyTaskBoardRequest, DestroyTaskBoardResponse>(
-    API_ROUTE + makePath(['users', ':userId'], ['task_boards', ':boardId']),
+  rest.delete<
+    DestroyTaskBoardRequest,
+    DestroyTaskBoardResponse & ErrorResponse,
+    TaskBoardParams
+  >(
+    API_ROUTE + makePath(['users', ':userId'], ['task-boards', ':boardId']),
     (req, res, ctx) => {
-      const currentUser = getUserFromSession(req.cookies.session_id);
-      const token = req.headers.get(X_XSRF_TOKEN);
+      const board = db.where('taskBoards', 'id', req.params.boardId)[0];
 
-      if (!currentUser) return res(ctx.status(401));
-
-      if (!currentUser.emailVerifiedAt) return res(ctx.status(403));
-
-      if (currentUser.id !== req.params.userId) return res(ctx.status(403));
-
-      if (!token || !hasValidToken(token)) return res(ctx.status(419));
+      const httpException = applyMiddleware(req, [
+        'authenticate',
+        `authorize:${req.params.userId},${board?.userId}`,
+        'verified',
+      ]);
+      if (httpException) return res(httpException);
 
       const deleted = taskBoardController.destroy(req);
 

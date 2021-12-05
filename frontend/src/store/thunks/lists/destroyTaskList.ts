@@ -2,7 +2,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import { TaskList } from 'models';
 import { apiClient, makePath } from 'utils/api';
-import { AsyncThunkConfig } from '../types';
+import { AsyncThunkConfig } from 'store/thunks/config';
+import { makeRejectValue } from 'store/thunks/utils';
 
 export type DestroyTaskListResponse = {
   data: TaskList;
@@ -16,7 +17,7 @@ export const destroyTaskList = createAsyncThunk<
   const { setFlash } = await import('store/slices/authSlice');
 
   const { id, boardId } = payload;
-  const path = makePath(['task_boards', boardId], ['task_lists', id]);
+  const path = makePath(['task-boards', boardId], ['task-lists', id]);
 
   try {
     const response = await apiClient().delete<DestroyTaskListResponse>(path);
@@ -29,9 +30,7 @@ export const destroyTaskList = createAsyncThunk<
     );
 
     return response?.data;
-  } catch (e) {
-    return thunkApi.rejectWithValue({
-      error: { message: 'システムエラーが発生しました' },
-    });
+  } catch (error) {
+    return thunkApi.rejectWithValue(makeRejectValue(error));
   }
 });

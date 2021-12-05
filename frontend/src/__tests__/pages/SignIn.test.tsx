@@ -13,11 +13,11 @@ import App from 'App';
 
 describe('SignIn', () => {
   const signInFormName = new RegExp('Sign in to ' + APP_NAME, 'i');
-  const signUpFormName = new RegExp('Create an account', 'i');
-  const forgotPasswordFormName = new RegExp('Forgot Password\\?', 'i');
-  const emailFieldName = new RegExp('Email Address', 'i');
-  const passwordFieldName = new RegExp('^Password(?!.*Confirm)', 'i');
-  const submitButtonName = new RegExp('Sign in', 'i');
+  const signUpFormName = /Create an account/i;
+  const forgotPasswordFormName = /Forgot Password\\?/i;
+  const emailFieldName = /Email Address/i;
+  const passwordFieldName = /^Password(?!.*Confirm)/i;
+  const submitButtonName = /Sign in/i;
 
   beforeEach(() => {
     render(
@@ -91,8 +91,8 @@ describe('SignIn', () => {
   });
 
   describe('Form input', () => {
-    const errorData = { '422': { message: new RegExp('間違っています', 'i') } };
-    const successMessage = new RegExp('ログインしました', 'i');
+    const errorData = { '422': { message: /^Error/ } };
+    const successMessage = /ログインしました/;
 
     it('should be invalidated with the empty password', async () => {
       const emailField = screen.getByRole('textbox', { name: emailFieldName });

@@ -5,6 +5,7 @@ import {
   signInWithEmail,
   updateProfile,
 } from 'store/thunks/auth';
+import { isInvalidRequest } from 'utils/api/errors';
 import { initializeStore, store } from 'mocks/store';
 import {
   getFlashState,
@@ -34,10 +35,10 @@ describe('Thunk updating the user profile', () => {
       // dispatch
       const response = await store.dispatch(updateProfile(request));
 
-      expect(updateProfile.rejected.match(response)).toBeTruthy();
-      expect(isLoading(store)).toBeFalsy();
-      expect(getUserState(store)).toBeFalsy();
-      expect(isSignedIn(store)).toEqual(false);
+      expect(updateProfile.rejected.match(response)).toBe(true);
+      expect(isLoading(store)).toBe(false);
+      expect(isSignedIn(store)).toBe(false);
+      expect(getUserState(store)).toBeNull();
       expect(getFlashState(store).slice(-1)[0]).toEqual({
         type: 'error',
         message: 'ログインしてください',
@@ -65,9 +66,8 @@ describe('Thunk updating the user profile', () => {
       // 以下`rejected`
       if (!updateProfile.rejected.match(response)) return;
 
-      expect(response.payload?.error.message).toEqual(
-        'このメールアドレスは既に使用されています'
-      );
+      const error = response.payload?.error;
+      expect(isInvalidRequest(error) && error.response.status).toBe(422);
     });
   });
 
@@ -83,9 +83,9 @@ describe('Thunk updating the user profile', () => {
       const request = { name: newName, email: currentUser.email };
       await store.dispatch(updateProfile(request));
 
-      expect(isLoading(store)).toBeFalsy();
-      expect(getUserState(store)?.name).toEqual(newName);
-      expect(getUserState(store)?.email).toEqual(currentUser.email);
+      expect(isLoading(store)).toBe(false);
+      expect(getUserState(store)?.name).toBe(newName);
+      expect(getUserState(store)?.email).toBe(currentUser.email);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
         type: 'success',
         message: 'ユーザー情報を更新しました',
@@ -101,8 +101,8 @@ describe('Thunk updating the user profile', () => {
       const request = { name: currentUser.name, email: newEmail };
       const response = await store.dispatch(updateProfile(request));
 
-      expect(updateProfile.fulfilled.match(response)).toBeTruthy();
-      expect(isLoading(store)).toBeFalsy();
+      expect(updateProfile.fulfilled.match(response)).toBe(true);
+      expect(isLoading(store)).toBe(false);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
         type: 'info',
         message: '認証用メールを送信しました',

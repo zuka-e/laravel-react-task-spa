@@ -44,7 +44,7 @@ const InfoBox: React.FC<JSX.IntrinsicElements['div']> = (props) => {
   const dispatch = useAppDispatch();
   const currentState = useDeepEqualSelector((state) => state.boards.infoBox);
   const previousState = usePrevious(
-    currentState.type ? currentState : undefined
+    currentState.model ? currentState : undefined
   );
   const classNameProp = `${classes.root} ${
     currentState.open ? classes.open : ''
@@ -53,7 +53,7 @@ const InfoBox: React.FC<JSX.IntrinsicElements['div']> = (props) => {
   useEffect(() => {
     if (!previousState) return; // `open`を実行していない(`prev`が存在していない)場合
     if (currentState.open) return; // `close`されていない場合
-    if (!currentState.type) return; // 既に`remove`されている場合
+    if (!currentState.model) return; // 既に`remove`されている場合
 
     /** `close`後`transition`動作を待機してから`remove` */
     const timeoutId = setTimeout(() => {
@@ -64,7 +64,7 @@ const InfoBox: React.FC<JSX.IntrinsicElements['div']> = (props) => {
     return function cleanup() {
       clearTimeout(timeoutId);
     };
-  }, [dispatch, previousState, currentState.open, currentState.type]);
+  }, [dispatch, previousState, currentState.open, currentState.model]);
 
   useEffect(() => {
     return function cleanup() {
@@ -73,7 +73,7 @@ const InfoBox: React.FC<JSX.IntrinsicElements['div']> = (props) => {
   }, [dispatch]);
 
   const renderInfoBox = () => {
-    switch (currentState.type) {
+    switch (currentState.model) {
       case 'board':
         return <TaskBoardDetails board={currentState.data as TaskBoard} />;
       case 'list':
@@ -85,7 +85,7 @@ const InfoBox: React.FC<JSX.IntrinsicElements['div']> = (props) => {
 
   return (
     <div className={classNameProp} {...divProps}>
-      {currentState.type ? (
+      {currentState.model ? (
         <Wrapper>{renderInfoBox()}</Wrapper>
       ) : (
         <h2 style={{ textAlign: 'center' }}>There is no content</h2>

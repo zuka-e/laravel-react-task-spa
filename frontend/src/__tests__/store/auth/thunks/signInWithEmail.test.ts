@@ -6,6 +6,7 @@ import {
   getUserState,
   isSignedIn,
 } from 'mocks/utils/store/auth';
+import { isInvalidRequest } from 'utils/api/errors';
 
 describe('Thunk authenticating user with email', () => {
   beforeEach(() => {
@@ -22,13 +23,12 @@ describe('Thunk authenticating user with email', () => {
       expect(isSignedIn(store)).toEqual(undefined);
       // ログインリクエスト
       const response = await store.dispatch(signInWithEmail(signInRequest));
-      expect(signInWithEmail.rejected.match(response)).toBeTruthy();
-      // `rejected`の場合
-      if (signInWithEmail.fulfilled.match(response)) return;
-      expect(response.payload?.error.message).toEqual(
-        'メールアドレスまたはパスワードが間違っています'
-      );
-      expect(isSignedIn(store)).toEqual(false);
+      expect(signInWithEmail.rejected.match(response)).toBe(true);
+      if (!signInWithEmail.rejected.match(response)) return; // 以下`rejected`
+
+      const error = response.payload?.error;
+      expect(isInvalidRequest(error) && error.response.status).toBe(422);
+      expect(isSignedIn(store)).toBe(false);
     });
   });
 
@@ -40,11 +40,11 @@ describe('Thunk authenticating user with email', () => {
       };
       // ログイン
       const response = await store.dispatch(signInWithEmail(signInRequest));
-      expect(signInWithEmail.fulfilled.match(response)).toBeTruthy();
-      // `fulfilled`の場合
-      if (signInWithEmail.rejected.match(response)) return;
+      expect(signInWithEmail.fulfilled.match(response)).toBe(true);
+      if (signInWithEmail.rejected.match(response)) return; // 以下`fulfilled`
+
       expect(response.payload?.user).toEqual(getUserState(store));
-      expect(isSignedIn(store)).toBeTruthy();
+      expect(isSignedIn(store)).toBe(true);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
         type: 'info',
         message: 'ログインしました',

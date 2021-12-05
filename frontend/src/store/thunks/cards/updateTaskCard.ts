@@ -2,7 +2,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import { TaskCard } from 'models';
 import { apiClient, makePath } from 'utils/api';
-import { AsyncThunkConfig } from '../types';
+import { AsyncThunkConfig } from 'store/thunks/config';
+import { makeRejectValue } from 'store/thunks/utils';
 
 export type UpdateTaskCardResponse = {
   data: TaskCard;
@@ -25,7 +26,7 @@ export const updateTaskCard = createAsyncThunk<
   AsyncThunkConfig
 >('cards/updateTaskCard', async (payload, thunkApi) => {
   const { id, boardId, listId, ...requestBody } = payload;
-  const path = makePath(['task_lists', listId], ['task_cards', id]);
+  const path = makePath(['task-lists', listId], ['task-cards', id]);
   /**
    * - `Data`型はタイムゾーンを反映させた値としてAPIリクエストを送る
    * - Laravel側ではこれを`DateTime`型にキャストして扱い、またDBに保存する
@@ -39,9 +40,7 @@ export const updateTaskCard = createAsyncThunk<
   try {
     const response = await apiClient().patch(path, request);
     return { ...response?.data, boardId: payload.boardId };
-  } catch (e) {
-    return thunkApi.rejectWithValue({
-      error: { message: 'システムエラーが発生しました' },
-    });
+  } catch (error) {
+    return thunkApi.rejectWithValue(makeRejectValue(error));
   }
 });

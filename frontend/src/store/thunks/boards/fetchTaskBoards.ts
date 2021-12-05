@@ -2,7 +2,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import { TaskBoard } from 'models';
 import { apiClient, makePath, ResponseWithPagination } from 'utils/api';
-import { RejectWithValue } from '../types';
+import { AsyncThunkConfig } from 'store/thunks/config';
+import { makeRejectValue } from 'store/thunks/utils';
 
 export type FetchTaskBoardsResponse = ResponseWithPagination<TaskBoard>;
 
@@ -14,19 +15,16 @@ export type FetchTaskBoardsRequest = {
 export const fetchTaskBoards = createAsyncThunk<
   FetchTaskBoardsResponse,
   FetchTaskBoardsRequest,
-  { rejectValue: RejectWithValue }
+  AsyncThunkConfig
 >('boards/fetchTaskBoards', async (payload, thunkApi) => {
   const { userId, page } = payload;
-  const query = page ? `?page=${page}` : '';
-  const path = makePath(['users', userId], ['task_boards']) + query;
+  const path = makePath(['users', userId], ['task-boards']);
 
   try {
-    const response = await apiClient().get(path);
+    const response = await apiClient().get(path, { params: { page } });
     return response?.data;
-  } catch (e) {
-    return thunkApi.rejectWithValue({
-      error: { message: 'システムエラーが発生しました' },
-    });
+  } catch (error) {
+    return thunkApi.rejectWithValue(makeRejectValue(error));
   }
 });
 

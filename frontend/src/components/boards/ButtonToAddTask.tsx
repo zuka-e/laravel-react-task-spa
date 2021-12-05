@@ -71,7 +71,7 @@ const ButtonToAddTask: React.FC<ButtonToAddTaskProps> = (props) => {
           }}
           className={props.transparent ? classes.transparent : classes.dim}
         >
-          Add new {props.type}
+          Add new {props.model}
         </Button>
       )}
     </ClickAwayListener>

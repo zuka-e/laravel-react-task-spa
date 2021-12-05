@@ -44,17 +44,17 @@ describe('taskBoardSlice reducers', () => {
     const expected = {
       card: {
         open: true,
-        type: 'card',
+        model: 'card',
         data: taskCard,
       },
       list: {
         open: true,
-        type: 'list',
+        model: 'list',
         data: taskList,
       },
       board: {
         open: true,
-        type: 'board',
+        model: 'board',
         data: taskBoard,
       },
     } as const;
@@ -63,7 +63,7 @@ describe('taskBoardSlice reducers', () => {
       const { openInfoBox } = await import('store/slices/taskBoardSlice');
 
       expect(store.getState().boards.infoBox).toEqual({});
-      store.dispatch(openInfoBox({ type: 'board', data: taskBoard }));
+      store.dispatch(openInfoBox({ model: 'board', data: taskBoard }));
       expect(store.getState().boards.infoBox).toEqual(expected.board);
     });
 
@@ -71,7 +71,7 @@ describe('taskBoardSlice reducers', () => {
       const { openInfoBox } = await import('store/slices/taskBoardSlice');
 
       expect(store.getState().boards.infoBox).toEqual({});
-      store.dispatch(openInfoBox({ type: 'list', data: taskList }));
+      store.dispatch(openInfoBox({ model: 'list', data: taskList }));
       expect(store.getState().boards.infoBox).toEqual(expected.list);
     });
 
@@ -79,32 +79,32 @@ describe('taskBoardSlice reducers', () => {
       const { openInfoBox } = await import('store/slices/taskBoardSlice');
 
       expect(store.getState().boards.infoBox).toEqual({});
-      store.dispatch(openInfoBox({ type: 'card', data: taskCard }));
+      store.dispatch(openInfoBox({ model: 'card', data: taskCard }));
       expect(store.getState().boards.infoBox).toEqual(expected.card);
     });
 
     it('should update if the state is already set', async () => {
       const { openInfoBox } = await import('store/slices/taskBoardSlice');
 
-      store.dispatch(openInfoBox({ type: 'board', data: taskBoard }));
+      store.dispatch(openInfoBox({ model: 'board', data: taskBoard }));
       expect(store.getState().boards.infoBox).toEqual(expected.board);
 
-      store.dispatch(openInfoBox({ type: 'list', data: taskList }));
+      store.dispatch(openInfoBox({ model: 'list', data: taskList }));
       expect(store.getState().boards.infoBox).toEqual(expected.list);
 
-      store.dispatch(openInfoBox({ type: 'card', data: taskCard }));
+      store.dispatch(openInfoBox({ model: 'card', data: taskCard }));
       expect(store.getState().boards.infoBox).toEqual(expected.card);
 
-      store.dispatch(openInfoBox({ type: 'board', data: taskBoard }));
+      store.dispatch(openInfoBox({ model: 'board', data: taskBoard }));
       expect(store.getState().boards.infoBox).toEqual(expected.board);
     });
   });
 
   describe('closeInfoBox', () => {
-    const openInfoBoxAction = { type: 'board', data: taskBoard } as const;
+    const openInfoBoxAction = { model: 'board', data: taskBoard } as const;
     const infoBox = {
       open: true,
-      type: 'board',
+      model: 'board',
       data: taskBoard,
     } as const;
 
@@ -143,10 +143,10 @@ describe('taskBoardSlice reducers', () => {
   });
 
   describe('removeInfoBox', () => {
-    const openInfoBoxAction = { type: 'board', data: taskBoard } as const;
+    const openInfoBoxAction = { model: 'board', data: taskBoard } as const;
     const infoBox = {
       open: true,
-      type: 'board',
+      model: 'board',
       data: taskBoard,
     } as const;
 

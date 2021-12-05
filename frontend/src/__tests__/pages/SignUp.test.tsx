@@ -13,12 +13,12 @@ import App from 'App';
 
 describe('Sign Up', () => {
   const signInFormName = new RegExp('Sign in to ' + APP_NAME, 'i');
-  const signUpFormName = new RegExp('Create an account', 'i');
-  const emailFieldName = new RegExp('Email Address', 'i');
-  const passwordFieldName = new RegExp('^Password(?!.*Confirm)', 'i');
-  const passwordConfirmFieldName = new RegExp('Password Confirmation', 'i');
-  const submitButtonName = new RegExp('Create an account', 'i');
-  const emailVerificationTitle = new RegExp('認証用メールを送信');
+  const signUpFormName = /Create an account/i;
+  const emailFieldName = /Email Address/i;
+  const passwordFieldName = /^Password(?!.*Confirm)/i;
+  const passwordConfirmFieldName = /Password Confirmation/i;
+  const submitButtonName = /Create an account/i;
+  const emailVerificationTitle = /認証用メールを送信/;
 
   beforeEach(() => {
     // 各テストで`history`は初期化されない (cf. MemoryRouter)
@@ -59,7 +59,7 @@ describe('Sign Up', () => {
         </HelmetProvider>
       </Provider>
     );
-    const signInSubmitName = new RegExp('Sign in', 'i');
+    const signInSubmitName = /Sign in/i;
     expect(screen.queryByRole('heading', { name: signInFormName })).toBeNull();
     userEvent.click(screen.getByRole('button', { name: signInSubmitName }));
     expect(screen.getByRole('heading', { name: signInFormName })).toBeVisible();
@@ -85,7 +85,7 @@ describe('Sign Up', () => {
   describe('Form input', () => {
     const newEmail = 'test' + GUEST_EMAIL;
     const password = 'password';
-    const errorData = { '422': { message: new RegExp('既に使用されて', 'i') } };
+    const errorData = { '422': { message: /^Error/ } };
     const successMessage = /ユーザー登録が完了しました/;
     const warning = /登録が抹消されます/;
 

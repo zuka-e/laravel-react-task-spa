@@ -103,7 +103,7 @@ const TaskBoard = () => {
           <Grid item className={classes.titleBox}>
             <EditableTitle
               method='PATCH'
-              type='board'
+              model='board'
               data={board}
               disableMargin
               inputStyle={classes.title}
@@ -137,7 +137,7 @@ const TaskBoard = () => {
               </Grid>
             ))}
             <Grid item className='listItem'>
-              <ButtonToAddTask method='POST' type='list' parent={board} />
+              <ButtonToAddTask method='POST' model='list' parent={board} />
             </Grid>
           </ScrolledGridContainer>
           <InfoBox style={belowSm ? { flexShrink: 0 } : undefined} />

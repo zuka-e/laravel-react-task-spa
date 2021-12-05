@@ -161,7 +161,7 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
       </CardActions>
       <CardHeader
         classes={{ root: classes.header }}
-        title={<EditableTitle method='PATCH' type='card' data={card} />}
+        title={<EditableTitle method='PATCH' model='card' data={card} />}
       />
       <CardContent className={classes.rows}>
         <FormControlLabel
@@ -218,7 +218,7 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
       <CardActions className={classes.footer}>
         {openDeleteDialog && (
           <DeleteTaskDialog
-            type='card'
+            model='card'
             data={card}
             setOpen={setOpenDeleteDialog}
           />

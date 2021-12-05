@@ -37,7 +37,7 @@ const BoardCardHeader: React.FC<BoardCardHeaderProps> = (props) => {
   const Title = () => (
     <EditableTitle
       method='PATCH'
-      type='board'
+      model='board'
       data={board}
       disableMargin
       inputStyle={classes.title}

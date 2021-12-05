@@ -2,7 +2,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import { TaskList } from 'models';
 import { apiClient, makePath } from 'utils/api';
-import { AsyncThunkConfig } from '../types';
+import { AsyncThunkConfig } from 'store/thunks/config';
+import { makeRejectValue } from 'store/thunks/utils';
 
 export type CreateTaskListResponse = {
   data: TaskList;
@@ -17,14 +18,12 @@ export const createTaskList = createAsyncThunk<
   AsyncThunkConfig
 >('lists/createTaskList', async (payload, thunkApi) => {
   const { boardId, ...mainPayload } = payload;
-  const path = makePath(['task_boards', boardId], ['task_lists']);
+  const path = makePath(['task-boards', boardId], ['task-lists']);
 
   try {
     const response = await apiClient().post(path, mainPayload);
     return response?.data;
-  } catch (e) {
-    return thunkApi.rejectWithValue({
-      error: { message: 'システムエラーが発生しました' },
-    });
+  } catch (error) {
+    return thunkApi.rejectWithValue(makeRejectValue(error));
   }
 });

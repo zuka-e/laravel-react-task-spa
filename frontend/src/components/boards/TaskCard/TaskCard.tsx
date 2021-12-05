@@ -103,7 +103,7 @@ const TaskCard: React.FC<TaskCardProps> = (props) => {
 
   const handleClick = () => {
     if (isSelected()) activateInfoBoxEventAttr('shown');
-    else dispatch(openInfoBox({ type: 'card', data: card }));
+    else dispatch(openInfoBox({ model: 'card', data: card }));
   };
 
   return (

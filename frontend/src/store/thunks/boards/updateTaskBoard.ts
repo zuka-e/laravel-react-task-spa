@@ -2,7 +2,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import { TaskBoard } from 'models';
 import { apiClient, makePath } from 'utils/api';
-import { AsyncThunkConfig } from '../types';
+import { AsyncThunkConfig } from 'store/thunks/config';
+import { makeRejectValue } from 'store/thunks/utils';
 
 export type UpdateTaskBoardResponse = {
   data: TaskBoard;
@@ -22,14 +23,12 @@ export const updateTaskBoard = createAsyncThunk<
 >('boards/updateTaskBoard', async (payload, thunkApi) => {
   const { id, ...mainPayload } = payload;
   const userId = String(thunkApi.getState().auth.user?.id);
-  const path = makePath(['users', userId], ['task_boards', id]);
+  const path = makePath(['users', userId], ['task-boards', id]);
 
   try {
     const response = await apiClient().patch(path, mainPayload);
     return response?.data;
-  } catch (e) {
-    return thunkApi.rejectWithValue({
-      error: { message: 'システムエラーが発生しました' },
-    });
+  } catch (error) {
+    return thunkApi.rejectWithValue(makeRejectValue(error));
   }
 });

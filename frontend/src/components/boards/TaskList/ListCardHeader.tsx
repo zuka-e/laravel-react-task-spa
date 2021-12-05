@@ -39,7 +39,7 @@ const ListCardHeader: React.FC<ListCardHeaderProps> = (props) => {
   const Title = () => (
     <EditableTitle
       method='PATCH'
-      type='list'
+      model='list'
       data={list}
       disableMargin
       inputStyle={classes.title}

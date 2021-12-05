@@ -1,5 +1,6 @@
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import { createUser, SignUpRequest } from 'store/thunks/auth';
+import { isInvalidRequest } from 'utils/api/errors';
 import { makeEmail } from 'utils/generator';
 import { initializeStore, store } from 'mocks/store';
 import {
@@ -23,20 +24,20 @@ describe('Thunk for an user registration', () => {
       };
       // 登録リクエスト
       const response = await store.dispatch(createUser(newUser));
-      expect(createUser.rejected.match(response)).toBeTruthy();
+      expect(createUser.rejected.match(response)).toBe(true);
       // `rejected`時のレスポンスを参照するため`fulfilled`の条件で`return`
-      if (createUser.fulfilled.match(response)) return;
-      expect(response.payload?.error.message).toEqual(
-        'このメールアドレスは既に使用されています'
-      );
+      if (!createUser.rejected.match(response)) return;
+
+      const error = response.payload?.error;
+      expect(isInvalidRequest(error) && error.response.status).toBe(422);
     });
   });
 
   describe('Fulfilled', () => {
     it('should create a new user', async () => {
-      expect(getUserState(store)).toBeFalsy();
-      expect(isAfterRegistration(store)).toBeFalsy();
-      expect(isSignedIn(store)).toBeFalsy();
+      expect(getUserState(store)).toBeUndefined();
+      expect(isAfterRegistration(store)).toBeUndefined();
+      expect(isSignedIn(store)).toBeUndefined();
 
       const newUser: SignUpRequest = {
         email: makeEmail(),
@@ -44,14 +45,13 @@ describe('Thunk for an user registration', () => {
         password_confirmation: GUEST_PASSWORD,
       };
       const response = await store.dispatch(createUser(newUser));
-      expect(createUser.fulfilled.match(response)).toBeTruthy();
-      // `fulfilled`のレスポンスを参照するため`rejected`の条件で`return`
-      if (createUser.rejected.match(response)) return;
-      expect(response.payload.user.name).toEqual(newUser.email);
+      expect(createUser.fulfilled.match(response)).toBe(true);
 
-      expect(getUserState(store)?.name).toEqual(newUser.email);
-      expect(isAfterRegistration(store)).toBeTruthy();
-      expect(isSignedIn(store)).toBeTruthy();
+      if (!createUser.fulfilled.match(response)) return; // 以下`fulfilled`
+      expect(response.payload.user.name).toBe(newUser.email);
+      expect(getUserState(store)?.name).toBe(newUser.email);
+      expect(isAfterRegistration(store)).toBe(true);
+      expect(isSignedIn(store)).toBe(true);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
         type: 'success',
         message: 'ユーザー登録が完了しました',
