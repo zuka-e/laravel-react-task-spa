@@ -1,20 +1,19 @@
-import { DefaultRequestBody, rest } from 'msw';
+import type { DefaultRequestBody } from 'msw';
+import { rest } from 'msw';
 
-import { API_ROUTE } from 'config/api';
-import { makePath } from 'utils/api';
-import {
+import type {
   CreateTaskListRequest,
   CreateTaskListResponse,
   UpdateTaskListRequest,
+  UpdateTaskListResponse,
   DestroyTaskListResponse,
 } from 'store/thunks/lists';
+import type { ErrorResponse } from './types';
+import { API_ROUTE } from 'config/api';
+import { makePath } from 'utils/api';
 import { db } from 'mocks/models';
-import {
-  X_XSRF_TOKEN,
-  hasValidToken,
-  getUserFromSession,
-} from 'mocks/utils/validation';
 import { taskListController } from 'mocks/controllers';
+import { applyMiddleware } from './utils';
 
 type TaskListParams = {
   boardId: string;
@@ -22,23 +21,21 @@ type TaskListParams = {
 };
 
 export const handlers = [
-  rest.post<CreateTaskListRequest, CreateTaskListResponse, TaskListParams>(
-    API_ROUTE + makePath(['task_boards', ':boardId'], ['task_lists']),
+  rest.post<
+    CreateTaskListRequest,
+    CreateTaskListResponse & ErrorResponse,
+    TaskListParams
+  >(
+    API_ROUTE + makePath(['task-boards', ':boardId'], ['task-lists']),
     (req, res, ctx) => {
-      const currentUser = getUserFromSession(req.cookies.session_id);
-      const token = req.headers.get(X_XSRF_TOKEN);
-      const belongsTo = {
-        board: db.where('taskBoards', 'id', req.params.boardId)[0],
-      };
+      const board = db.where('taskBoards', 'id', req.params.boardId)[0];
 
-      if (!currentUser) return res(ctx.status(401));
-
-      if (!currentUser.emailVerifiedAt) return res(ctx.status(403));
-
-      if (currentUser.id !== belongsTo.board.userId)
-        return res(ctx.status(403));
-
-      if (!token || !hasValidToken(token)) return res(ctx.status(419));
+      const httpException = applyMiddleware(req, [
+        'authenticate',
+        `authorize:${board?.userId}`,
+        'verified',
+      ]);
+      if (httpException) return res(httpException);
 
       const response = taskListController.store(req);
 
@@ -46,31 +43,23 @@ export const handlers = [
     }
   ),
 
-  rest.patch<UpdateTaskListRequest, any, TaskListParams>(
+  rest.patch<
+    UpdateTaskListRequest,
+    UpdateTaskListResponse & ErrorResponse,
+    TaskListParams
+  >(
     API_ROUTE +
-      makePath(['task_boards', ':boardId'], ['task_lists', ':listId']),
+      makePath(['task-boards', ':boardId'], ['task-lists', ':listId']),
     (req, res, ctx) => {
-      const currentUser = getUserFromSession(req.cookies.session_id);
-      const token = req.headers.get(X_XSRF_TOKEN);
-      const belongsTo = {
-        board: db.where('taskBoards', 'id', req.params.boardId)[0],
-      };
-      const target = db.where('taskLists', 'id', req.params.listId)[0];
+      const board = db.where('taskBoards', 'id', req.params.boardId)[0];
+      const list = db.where('taskLists', 'id', req.params.listId)[0];
 
-      if (!currentUser) return res(ctx.status(401));
-
-      if (!token || !hasValidToken(token)) return res(ctx.status(419));
-
-      if (!currentUser.emailVerifiedAt) return res(ctx.status(403));
-
-      if (!belongsTo.board) return res(ctx.status(404));
-
-      if (belongsTo.board.userId !== currentUser.id)
-        return res(ctx.status(403));
-
-      if (!target) return res(ctx.status(404));
-
-      if (target.boardId !== req.params.boardId) return res(ctx.status(403));
+      const httpException = applyMiddleware(req, [
+        'authenticate',
+        `authorize:${board?.userId},${list?.userId}`,
+        'verified',
+      ]);
+      if (httpException) return res(httpException);
 
       const updated = taskListController.update(req);
 
@@ -80,31 +69,23 @@ export const handlers = [
     }
   ),
 
-  rest.delete<DefaultRequestBody, DestroyTaskListResponse, TaskListParams>(
+  rest.delete<
+    DefaultRequestBody,
+    DestroyTaskListResponse & ErrorResponse,
+    TaskListParams
+  >(
     API_ROUTE +
-      makePath(['task_boards', ':boardId'], ['task_lists', ':listId']),
+      makePath(['task-boards', ':boardId'], ['task-lists', ':listId']),
     (req, res, ctx) => {
-      const currentUser = getUserFromSession(req.cookies.session_id);
-      const token = req.headers.get(X_XSRF_TOKEN);
-      const belongsTo = {
-        board: db.where('taskBoards', 'id', req.params.boardId)[0],
-      };
-      const target = db.where('taskLists', 'id', req.params.listId)[0];
+      const board = db.where('taskBoards', 'id', req.params.boardId)[0];
+      const list = db.where('taskLists', 'id', req.params.listId)[0];
 
-      if (!currentUser) return res(ctx.status(401));
-
-      if (!token || !hasValidToken(token)) return res(ctx.status(419));
-
-      if (!currentUser.emailVerifiedAt) return res(ctx.status(403));
-
-      if (!belongsTo.board) return res(ctx.status(404));
-
-      if (belongsTo.board.userId !== currentUser.id)
-        return res(ctx.status(403));
-
-      if (!target) return res(ctx.status(404));
-
-      if (target.boardId !== req.params.boardId) return res(ctx.status(403));
+      const httpException = applyMiddleware(req, [
+        'authenticate',
+        `authorize:${board?.userId},${list?.userId}`,
+        'verified',
+      ]);
+      if (httpException) return res(httpException);
 
       const deleted = taskListController.destroy(req);
 

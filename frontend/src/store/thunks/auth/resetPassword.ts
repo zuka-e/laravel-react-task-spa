@@ -1,9 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosError } from 'axios';
 
 import { GET_CSRF_TOKEN_PATH, RESET_PASSWORD_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
-import { RejectWithValue } from '../types';
+import { AsyncThunkConfig } from 'store/thunks/config';
+import { makeRejectValue } from 'store/thunks/utils';
 
 export type ResetPasswordResponse = {};
 
@@ -17,7 +17,7 @@ export type ResetPasswordRequest = {
 export const resetPassword = createAsyncThunk<
   ResetPasswordResponse,
   ResetPasswordRequest,
-  { rejectValue: RejectWithValue }
+  AsyncThunkConfig
 >('auth/resetPassword', async (payload, thunkApi) => {
   const { email, password, password_confirmation, token } = payload;
   try {
@@ -29,13 +29,7 @@ export const resetPassword = createAsyncThunk<
       password_confirmation,
       token,
     });
-  } catch (e) {
-    const error: AxiosError = e;
-    if (error.response?.status === 422) {
-      return thunkApi.rejectWithValue({
-        error: { message: '認証に失敗しました\n再度お試しください' },
-      });
-    }
-    return thunkApi.rejectWithValue(error.response?.data);
+  } catch (error) {
+    return thunkApi.rejectWithValue(makeRejectValue(error));
   }
 });

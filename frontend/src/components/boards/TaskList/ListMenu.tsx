@@ -35,7 +35,7 @@ const ListMenu: React.FC<ListMenuProps> = (props) => {
 
     switch (key) {
       case 'info':
-        dispatch(openInfoBox({ type: 'list', data: list }));
+        dispatch(openInfoBox({ model: 'list', data: list }));
         break;
       case 'delete':
         setOpenDeleteDialog(true);
@@ -56,7 +56,7 @@ const ListMenu: React.FC<ListMenuProps> = (props) => {
           </ListItem>
         }
       >
-        <SortSelect type='card' boardId={list.boardId} listId={list.id} />
+        <SortSelect model='card' boardId={list.boardId} listId={list.id} />
       </PopoverControl>
       <ListItem button onClick={handleClick('info')} title={menuItem.info}>
         <ListItemIcon>
@@ -66,7 +66,7 @@ const ListMenu: React.FC<ListMenuProps> = (props) => {
       </ListItem>
       {openDeleteDialog && (
         <DeleteTaskDialog
-          type='list'
+          model='list'
           data={props.list}
           setOpen={setOpenDeleteDialog}
         />

@@ -116,7 +116,7 @@ const TaskBoardDetails: React.FC<TaskBoardDetailsProps> = (props) => {
       <CardHeader
         className={classes.cardHeader}
         disableTypography
-        title={<EditableTitle method='PATCH' type='board' data={board} />}
+        title={<EditableTitle method='PATCH' model='board' data={board} />}
       />
       <CardContent className={classes.rows}>
         <Grid container>

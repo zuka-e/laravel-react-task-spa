@@ -103,7 +103,7 @@ const SearchResult: React.FC<SearchResultProps> = (props) => {
             <ListItem
               key={list.id}
               button
-              onClick={handleClick({ type: 'list', data: list })}
+              onClick={handleClick({ model: 'list', data: list })}
             >
               <ListItemText
                 primary={list.title}
@@ -128,7 +128,7 @@ const SearchResult: React.FC<SearchResultProps> = (props) => {
             <ListItem
               key={card.id}
               button
-              onClick={handleClick({ type: 'card', data: card })}
+              onClick={handleClick({ model: 'card', data: card })}
             >
               <ListItemText
                 primary={card.title}

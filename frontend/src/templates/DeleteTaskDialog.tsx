@@ -24,7 +24,7 @@ const DeleteTaskDialog: React.FC<DeleteTaskDialogProps> = (props) => {
   const dispatch = useAppDispatch();
 
   const renderTitle = () => {
-    switch (props.type) {
+    switch (props.model) {
       case 'board':
         return `本当にボード ${props.data.title} を削除しますか？`;
       case 'list':
@@ -35,7 +35,7 @@ const DeleteTaskDialog: React.FC<DeleteTaskDialogProps> = (props) => {
   };
 
   const renderContent = () => {
-    switch (props.type) {
+    switch (props.model) {
       case 'board':
         return `ボード消滅後は復元することはできません。
                 このボードで作成したデータは、リスト及びカードも含め全て削除されます。`;
@@ -51,7 +51,7 @@ const DeleteTaskDialog: React.FC<DeleteTaskDialogProps> = (props) => {
   const handleClose = () => props.setOpen(false);
 
   const handleDelete = async () => {
-    switch (props.type) {
+    switch (props.model) {
       case 'board':
         return await dispatch(destroyTaskBoard(props.data));
       case 'list':

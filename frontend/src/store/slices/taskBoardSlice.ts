@@ -24,17 +24,17 @@ import {
 import { updateTaskCardRelationships } from 'store/thunks/cards/updateTaskCardRelationships';
 
 export type FormAction =
-  | { method: 'POST'; type: 'board' }
-  | { method: 'POST'; type: 'list'; parent: TaskBoard }
-  | { method: 'POST'; type: 'card'; parent: TaskList }
-  | { method: 'PATCH'; type: 'board'; data: TaskBoard }
-  | { method: 'PATCH'; type: 'list'; data: TaskList }
-  | { method: 'PATCH'; type: 'card'; data: TaskCard };
+  | { method: 'POST'; model: 'board' }
+  | { method: 'POST'; model: 'list'; parent: TaskBoard }
+  | { method: 'POST'; model: 'card'; parent: TaskList }
+  | { method: 'PATCH'; model: 'board'; data: TaskBoard }
+  | { method: 'PATCH'; model: 'list'; data: TaskList }
+  | { method: 'PATCH'; model: 'card'; data: TaskCard };
 
 export type DeleteAction =
-  | { type: 'board'; data: TaskBoard }
-  | { type: 'list'; data: TaskList }
-  | { type: 'card'; data: TaskCard };
+  | { model: 'board'; data: TaskBoard }
+  | { model: 'list'; data: TaskList }
+  | { model: 'card'; data: TaskCard };
 
 type SortListAction = Pick<TaskList, 'boardId'> & SortOperation<TaskList>;
 
@@ -52,9 +52,9 @@ type MoveCardAction = {
 };
 
 type InfoBoxAction =
-  | { type: 'board'; data: TaskBoard }
-  | { type: 'list'; data: TaskList }
-  | { type: 'card'; data: TaskCard };
+  | { model: 'board'; data: TaskBoard }
+  | { model: 'list'; data: TaskList }
+  | { model: 'card'; data: TaskCard };
 
 type TaskBoardState = {
   loading: boolean;
@@ -77,7 +77,7 @@ export const taskBoardSlice = createSlice({
   reducers: {
     openInfoBox(state, action: PayloadAction<InfoBoxAction>) {
       state.infoBox.open = true;
-      state.infoBox.type = action.payload.type;
+      state.infoBox.model = action.payload.model;
       state.infoBox.data = action.payload.data;
     },
     closeInfoBox(state) {

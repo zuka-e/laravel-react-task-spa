@@ -110,7 +110,7 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = (props) => {
       <CardHeader
         className={classes.cardHeader}
         disableTypography
-        title={<EditableTitle method='PATCH' type='list' data={list} />}
+        title={<EditableTitle method='PATCH' model='list' data={list} />}
       />
       <CardContent className={classes.rows}>
         <Grid container>

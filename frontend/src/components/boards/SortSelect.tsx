@@ -19,12 +19,12 @@ const options = {
 type SortOption = keyof typeof options;
 
 type SortSelectProps =
-  | { type: 'list'; boardId: TaskList['boardId'] }
-  | { type: 'card'; boardId: TaskCard['boardId']; listId: TaskCard['listId'] };
+  | { model: 'list'; boardId: TaskList['boardId'] }
+  | { model: 'card'; boardId: TaskCard['boardId']; listId: TaskCard['listId'] };
 
 const SortSelect: React.FC<SortSelectProps> = (props) => {
   const boardId = props.boardId;
-  const listId = props.type === 'card' ? props.listId : undefined;
+  const listId = props.model === 'card' ? props.listId : undefined;
   const dispatch = useAppDispatch();
   const [currentValue, setCurrentValue] = useState<SortOption>();
 

@@ -22,12 +22,11 @@ describe('Thunk logging out', () => {
     it('should throw an error without a session', async () => {
       // `store`によるログイン状態を用意する
       store.dispatch(signIn());
-      expect(isSignedIn(store)).toBeTruthy();
+      expect(isSignedIn(store)).toBe(true);
       // dispatch
       const response = await store.dispatch(signOutFromAPI());
-      expect(signOutFromAPI.rejected.match(response)).toBeTruthy();
-      expect(isSignedIn(store)).toBeFalsy();
-      expect(isSignedIn(store)).not.toEqual(undefined);
+      expect(signOutFromAPI.rejected.match(response)).toBe(true);
+      expect(isSignedIn(store)).toBe(false);
     });
   });
 
@@ -41,18 +40,17 @@ describe('Thunk logging out', () => {
       await store.dispatch(signInWithEmail(signInRequest));
       // セッション有効なら`fulfilled`
       const fetchAuthUserResponse = await store.dispatch(fetchAuthUser());
-      expect(fetchAuthUser.fulfilled.match(fetchAuthUserResponse)).toBeTruthy();
+      expect(fetchAuthUser.fulfilled.match(fetchAuthUserResponse)).toBe(true);
       // ログアウト前の`store`を確認
-      expect(isSignedIn(store)).toBeTruthy();
+      expect(isSignedIn(store)).toBe(true);
       expect(getUserState(store)).toBeTruthy();
       // dispatch
       const signOutResponse = await store.dispatch(signOutFromAPI());
-      expect(signOutFromAPI.fulfilled.match(signOutResponse)).toBeTruthy();
+      expect(signOutFromAPI.fulfilled.match(signOutResponse)).toBe(true);
 
       // state更新
-      expect(isSignedIn(store)).toBeFalsy();
-      expect(isSignedIn(store)).not.toEqual(undefined);
-      expect(getUserState(store)).toEqual(null);
+      expect(isSignedIn(store)).toBe(false);
+      expect(getUserState(store)).toBeNull();
       expect(getFlashState(store).slice(-1)[0].message).toEqual(
         'ログアウトしました'
       );

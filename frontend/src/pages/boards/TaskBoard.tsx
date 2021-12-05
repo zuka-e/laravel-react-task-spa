@@ -96,11 +96,14 @@ const TaskBoard = () => {
   return (
     <BaseLayout subtitle={board.title}>
       <Container component='main' maxWidth={false} className={classes.main}>
-        <ScrolledGridContainer justify='space-between' alignItems='center'>
+        <ScrolledGridContainer
+          justifyContent='space-between'
+          alignItems='center'
+        >
           <Grid item className={classes.titleBox}>
             <EditableTitle
               method='PATCH'
-              type='board'
+              model='board'
               data={board}
               disableMargin
               inputStyle={classes.title}
@@ -134,7 +137,7 @@ const TaskBoard = () => {
               </Grid>
             ))}
             <Grid item className='listItem'>
-              <ButtonToAddTask method='POST' type='list' parent={board} />
+              <ButtonToAddTask method='POST' model='list' parent={board} />
             </Grid>
           </ScrolledGridContainer>
           <InfoBox style={belowSm ? { flexShrink: 0 } : undefined} />

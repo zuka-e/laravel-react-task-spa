@@ -1,7 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
-
 import {
-  authSlice,
   FlashNotificationProps,
   removeEmailVerificationPage,
   setFlash,
@@ -10,18 +7,11 @@ import {
 } from 'store/slices/authSlice';
 import { createUser, SignUpRequest } from 'store/thunks/auth';
 import { generateRandomString, makeEmail } from 'utils/generator';
+import { initializeStore, store } from 'mocks/store';
 
 describe('authSlice reducers', () => {
-  // `store`の生成
-  const initializedStore = () =>
-    configureStore({ reducer: { auth: authSlice.reducer } });
-
-  // 初回`store`生成
-  let store = initializedStore();
-
-  // test毎に`store`を再生成 (初期化)
   beforeEach(() => {
-    store = initializedStore();
+    initializeStore();
   });
 
   describe('setFlash', () => {
@@ -63,11 +53,10 @@ describe('authSlice reducers', () => {
       // `true`の状態を用意する (手段は`createUser`のみ)
       expect(getAfterRegistrationState()).toEqual(undefined);
       await store.dispatch(createUser(createdUser));
-      expect(getAfterRegistrationState()).toBeTruthy();
+      expect(getAfterRegistrationState()).toBe(true);
 
       store.dispatch(removeEmailVerificationPage());
-      expect(getAfterRegistrationState()).toBeFalsy();
-      expect(getAfterRegistrationState()).not.toEqual(undefined);
+      expect(getAfterRegistrationState()).toBe(false);
     });
   });
 
@@ -75,9 +64,9 @@ describe('authSlice reducers', () => {
     const isSignedIn = () => store.getState().auth.signedIn;
 
     it('should update a`signedIn`state to true after login', () => {
-      expect(isSignedIn()).toEqual(undefined);
+      expect(isSignedIn()).toBeUndefined();
       store.dispatch(signIn());
-      expect(isSignedIn()).toBeTruthy();
+      expect(isSignedIn()).toBe(true);
     });
   });
 
@@ -86,10 +75,9 @@ describe('authSlice reducers', () => {
 
     it('should update a`signedIn`state to false after logout', () => {
       store.dispatch(signIn());
-      expect(isSignedIn()).toBeTruthy();
+      expect(isSignedIn()).toBe(true);
       store.dispatch(signOut());
-      expect(isSignedIn()).toBeFalsy();
-      expect(isSignedIn()).not.toEqual(undefined);
+      expect(isSignedIn()).toBe(false);
     });
   });
 });

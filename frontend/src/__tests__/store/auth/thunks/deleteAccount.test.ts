@@ -31,11 +31,11 @@ describe('Thunk for an account delete', () => {
     it('should receive an error without a session', async () => {
       store.dispatch(signIn()); //`store`によるログイン状態
       const response = await store.dispatch(deleteAccount()); // dispatch
-
       expect(deleteAccount.rejected.match(response)).toBeTruthy();
-      expect(isLoading(store)).toBeFalsy();
-      expect(getUserState(store)).toBeFalsy();
-      expect(isSignedIn(store)).toEqual(false);
+
+      expect(isLoading(store)).toBe(false);
+      expect(isSignedIn(store)).toBe(false);
+      expect(getUserState(store)).toBeNull();
       expect(getFlashState(store).slice(-1)[0]).toEqual({
         type: 'error',
         message: 'ログインしてください',
@@ -46,8 +46,8 @@ describe('Thunk for an account delete', () => {
       await store.dispatch(signInWithEmail(signInRequest)); // ログイン
       sessionStorage.removeItem(CSRF_TOKEN); // token削除
       const response = await store.dispatch(deleteAccount()); // dispatch
+      expect(deleteAccount.rejected.match(response)).toBe(true);
 
-      expect(deleteAccount.rejected.match(response)).toBeTruthy();
       expect(getFlashState(store).slice(-1)[0]).toEqual({
         type: 'error',
         message: 'ログインしてください',
@@ -56,13 +56,13 @@ describe('Thunk for an account delete', () => {
 
     it('should not be deleted if the request is rejected', async () => {
       const response = await store.dispatch(deleteAccount()); // dispatch
-      expect(deleteAccount.rejected.match(response)).toBeTruthy();
+      expect(deleteAccount.rejected.match(response)).toBe(true);
       if (!deleteAccount.rejected.match(response)) return;
 
       const signInResponse = await store.dispatch(
         signInWithEmail(signInRequest)
       );
-      expect(signInWithEmail.fulfilled.match(signInResponse)).toBeTruthy();
+      expect(signInWithEmail.fulfilled.match(signInResponse)).toBe(true);
     });
   });
 
@@ -70,29 +70,28 @@ describe('Thunk for an account delete', () => {
     it('should delete an account', async () => {
       await store.dispatch(signInWithEmail(signInRequest)); // ログイン
       const response = await store.dispatch(deleteAccount()); // dispatch
-      expect(deleteAccount.fulfilled.match(response)).toBeTruthy();
+      expect(deleteAccount.fulfilled.match(response)).toBe(true);
 
-      expect(isLoading(store)).toBeFalsy();
-      expect(getUserState(store)).toBeFalsy();
-      expect(isSignedIn(store)).toEqual(false);
-      expect(isLoading(store)).toBeFalsy();
+      expect(isLoading(store)).toBe(false);
+      expect(isSignedIn(store)).toBe(false);
+      expect(getUserState(store)).toBeNull();
       expect(getFlashState(store).slice(-1)[0]).toEqual({
         type: 'warning',
         message: 'アカウントは削除されました',
       });
       const fetchAuthUserResponse = await store.dispatch(fetchAuthUser());
-      expect(fetchAuthUser.fulfilled.match(fetchAuthUserResponse)).toBeFalsy();
+      expect(fetchAuthUser.fulfilled.match(fetchAuthUserResponse)).toBe(false);
     });
 
     it('should not be authenticated with the data before deleted', async () => {
       await store.dispatch(signInWithEmail(signInRequest)); // ログイン
       const response = await store.dispatch(deleteAccount()); // dispatch
-      expect(deleteAccount.fulfilled.match(response)).toBeTruthy();
+      expect(deleteAccount.fulfilled.match(response)).toBe(true);
 
       const signInResponse = await store.dispatch(
         signInWithEmail(signInRequest)
       );
-      expect(signInWithEmail.fulfilled.match(signInResponse)).toBeFalsy();
+      expect(signInWithEmail.fulfilled.match(signInResponse)).toBe(false);
     });
   });
 });

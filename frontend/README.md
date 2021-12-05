@@ -542,19 +542,19 @@ yarn add @material-ui/core @material-ui/icons @material-ui/lab
 
 MUIのスタイリングは利用する際にそのモジュール毎に変更を加えることが可能です。しかし、毎回同一のスタイルを割り当てる場合も考えられます。そのような時にはテーマ (メイン及びサブの配色やフォントサイズなどの設定) をカスタマイズすることで対応を行います。詳細は[公式ドキュメント](https://material-ui.com/customization/theming)を参照します。  
 
-ここでは主に配色を司る[Palette](https://material-ui.com/customization/palette)のデフォルト設定を変更します。そのためにまずテーマ管理用のディレクトリとして、`src/theme`を新たに作成し、配下に`index.ts`ファイルを加え、`createMuiTheme`によってテーマを作成します。  
+ここでは主に配色を司る[Palette](https://material-ui.com/customization/palette)のデフォルト設定を変更します。そのためにまずテーマ管理用のディレクトリとして、`src/theme`を新たに作成し、配下に`index.ts`ファイルを加え、`createTheme`によってテーマを作成します。  
 
 ```ts :src/theme/index.ts
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@material-ui/core/styles';
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {},
 });
 
 export default theme;
 ```
 
-この`createMuiTheme`のプロパティとして`palette`を追加することでカスタマイズされたテーマを作成することができます。同じファイル内にそのまま記述する方法もありますが、`palette.ts`という別ファイルを用意することにします。関数内での記述ではない場合そのままでは補完機能が働かなくなりますが、TypeScriptの型を指定することで問題なく動作します。  
+この`createTheme`のプロパティとして`palette`を追加することでカスタマイズされたテーマを作成することができます。同じファイル内にそのまま記述する方法もありますが、`palette.ts`という別ファイルを用意することにします。関数内での記述ではない場合そのままでは補完機能が働かなくなりますが、TypeScriptの型を指定することで問題なく動作します。  
 
 具体的にはこの`palette`は以下のように作成しています。  
 
@@ -578,17 +578,17 @@ const palette: PaletteOptions = {
 export default palette;
 ```
 
-`createMuiTheme`の`palette`プロパティには`PaletteOptions`という型が与えられているのでそれを`import`して付与しています。尚、使用されている型が不明な場合でも`createMuiTheme`の補完機能を利用することで判断可能です。(VSCodeでは、`palette`プロパティにマウスオーバーします。)  
+`createTheme`の`palette`プロパティには`PaletteOptions`という型が与えられているのでそれを`import`して付与しています。尚、使用されている型が不明な場合でも`createTheme`の補完機能を利用することで判断可能です。(VSCodeでは、`palette`プロパティにマウスオーバーします。)  
 
 `primary`はメインの配色に関するプロパティで、その内`main`は最も基本的に使用される配色、`light`は明るめの配色です。逆に暗めは`dark`ですが、どちらも指定しなかった場合は自動で計算された色が決定されます。その時の基準として利用されるのが`tonalOffset`プロパティで、0〜1の範囲で値を設定し、1に近いほど`light`ならより明るくなり`dark`はその逆となります。  
 
 これによって`index.ts`を以下のように修正します。  
 
 ```ts :src/theme/index.ts
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@material-ui/core/styles';
 import palette from './palette';
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette,
 });
 
@@ -620,7 +620,7 @@ ReactDOM.render(
 
 ここで同時に`CssBaseline`というものを導入しています。これは異なるブラウザ環境の差異を解消する効果がある他、アプリケーション全体に適用させる[グローバルCSSをテーマとしてカスタマイズする](https://material-ui.com/customization/globals/#global-css)際にもなります。これまでのカスタマイズはMUIコンポーネントが対象だったのに対し、こちらは`a`や`li`などのHTMLタグに対するものです。  
 
-以上でMUIの基本的な設定は完了です。必要に応じて`createMuiTheme`のプロパティとしてのモジュールを`theme`ディレクトリに追加していきます。  
+以上でMUIの基本的な設定は完了です。必要に応じて`createTheme`のプロパティとしてのモジュールを`theme`ディレクトリに追加していきます。  
 
 #### バンドルサイズ削減
 

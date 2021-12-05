@@ -121,7 +121,7 @@ const TaskList: React.FC<TaskListProps> = (props) => {
         <ListCardHeader list={list} />
 
         <CardActions>
-          <Grid container alignItems='center' justify='space-between'>
+          <Grid container alignItems='center' justifyContent='space-between'>
             <Grid item>
               <LabeledSelect
                 label='Filter'
@@ -146,7 +146,7 @@ const TaskList: React.FC<TaskListProps> = (props) => {
           </ScrolledDiv>
         </CardContent>
 
-        <ButtonToAddTask method='POST' type='card' parent={list} transparent />
+        <ButtonToAddTask method='POST' model='card' parent={list} transparent />
       </div>
     </Card>
   );

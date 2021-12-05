@@ -1,11 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AxiosError } from 'axios';
 
 import { GET_CSRF_TOKEN_PATH, SIGNIN_PATH } from 'config/api';
 import { User } from 'models/User';
 import { apiClient } from 'utils/api';
+import { isHttpException } from 'utils/api/errors';
+import { AsyncThunkConfig } from 'store/thunks/config';
+import { makeRejectValue } from 'store/thunks/utils';
 import { fetchAuthUser } from './fetchAuthUser';
-import { RejectWithValue } from '../types';
 
 export type SignInResponse = {
   user: User;
@@ -21,7 +22,7 @@ export type SignInRequest = {
 export const signInWithEmail = createAsyncThunk<
   SignInResponse,
   SignInRequest,
-  { rejectValue: RejectWithValue }
+  AsyncThunkConfig
 >('auth/signInWithEmail', async (payload, thunkApi) => {
   const { email, password, remember } = payload;
   try {
@@ -32,30 +33,15 @@ export const signInWithEmail = createAsyncThunk<
       remember,
     });
     return response?.data;
-  } catch (e) {
-    const error: AxiosError = e;
-
-    switch (error.response?.status) {
-      case 403: // 認証用メールから遷移して、認証リンクが無効だった場合
-        const { setFlash } = await import('store/slices/authSlice');
-        thunkApi.dispatch(fetchAuthUser());
-        thunkApi.dispatch(
-          setFlash({ type: 'warning', message: '認証に失敗しました' })
-        );
-        break;
-      case 422:
-        return thunkApi.rejectWithValue({
-          error: { message: 'メールアドレスまたはパスワードが間違っています' },
-        });
-      case 429:
-        return thunkApi.rejectWithValue({
-          error: {
-            message:
-              '所定回数を超えて誤った入力が行われたため、アクセスを制限しております',
-          },
-        });
-      default:
-        return thunkApi.rejectWithValue(error.response?.data);
+  } catch (error) {
+    // 認証用メールから遷移して、認証リンクが無効だった場合
+    if (isHttpException(error) && error.response.status === 403) {
+      const { setFlash } = await import('store/slices/authSlice');
+      thunkApi.dispatch(fetchAuthUser());
+      thunkApi.dispatch(
+        setFlash({ type: 'warning', message: '認証に失敗しました' })
+      );
     }
+    return thunkApi.rejectWithValue(makeRejectValue(error));
   }
 });

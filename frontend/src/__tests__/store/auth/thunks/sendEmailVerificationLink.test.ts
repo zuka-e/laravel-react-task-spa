@@ -25,14 +25,14 @@ describe('Thunk requsting the Email verification link', () => {
     it('should throw an error without a session', async () => {
       // `store`によるログイン状態を用意する
       store.dispatch(signIn());
-      expect(isSignedIn(store)).toBeTruthy();
+      expect(isSignedIn(store)).toBe(true);
       // dispatch
       const response = await store.dispatch(sendEmailVerificationLink());
-      expect(sendEmailVerificationLink.rejected.match(response)).toBeTruthy();
+      expect(sendEmailVerificationLink.rejected.match(response)).toBe(true);
 
-      expect(isLoading(store)).toBeFalsy();
-      expect(getUserState(store)).toBeFalsy();
-      expect(isSignedIn(store)).toEqual(false);
+      expect(isLoading(store)).toBe(false);
+      expect(isSignedIn(store)).toBe(false);
+      expect(getUserState(store)).toBeNull();
       expect(getFlashState(store).slice(-1)[0]).toEqual({
         type: 'error',
         message: 'ログインしてください',
@@ -50,11 +50,11 @@ describe('Thunk requsting the Email verification link', () => {
       sessionStorage.removeItem(CSRF_TOKEN);
       // dispatch
       const response = await store.dispatch(sendEmailVerificationLink());
-      expect(sendEmailVerificationLink.rejected.match(response)).toBeTruthy();
+      expect(sendEmailVerificationLink.rejected.match(response)).toBe(true);
 
-      expect(isLoading(store)).toBeFalsy();
-      expect(getUserState(store)).toBeFalsy();
-      expect(isSignedIn(store)).toEqual(false);
+      expect(isLoading(store)).toBe(false);
+      expect(isSignedIn(store)).toBe(false);
+      expect(getUserState(store)).toBeNull();
       expect(getFlashState(store).slice(-1)[0]).toEqual({
         type: 'error',
         message: 'ログインしてください',
@@ -68,16 +68,14 @@ describe('Thunk requsting the Email verification link', () => {
         email: GUEST_EMAIL,
         password: GUEST_PASSWORD,
       };
-      // ログイン
-      await store.dispatch(signInWithEmail(signInRequest));
-      // 認証済みユーザー
-      expect(getUserState(store)?.emailVerifiedAt).toBeTruthy();
+      await store.dispatch(signInWithEmail(signInRequest)); // ログイン
+      expect(getUserState(store)?.emailVerifiedAt).toBeTruthy(); // 認証済みユーザー
       // dispatch
       const response = await store.dispatch(sendEmailVerificationLink());
-      expect(sendEmailVerificationLink.fulfilled.match(response)).toBeTruthy();
+      expect(sendEmailVerificationLink.fulfilled.match(response)).toBe(true);
 
-      expect(isLoading(store)).toBeFalsy();
-      expect(isAfterRegistration(store)).toBeFalsy();
+      expect(isLoading(store)).toBe(false);
+      expect(isAfterRegistration(store)).toBe(false);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
         type: 'error',
         message: '既に認証済みです',
@@ -89,15 +87,13 @@ describe('Thunk requsting the Email verification link', () => {
         email: unverifiedUser.email,
         password: GUEST_PASSWORD,
       };
-      // ログイン
-      await store.dispatch(signInWithEmail(signInRequest));
-      // 未認証ユーザー
-      expect(getUserState(store)?.emailVerifiedAt).toBeFalsy();
+      await store.dispatch(signInWithEmail(signInRequest)); // ログイン
+      expect(getUserState(store)?.emailVerifiedAt).toBeNull(); // 未認証ユーザー
       // dispatch
       const response = await store.dispatch(sendEmailVerificationLink());
-      expect(sendEmailVerificationLink.fulfilled.match(response)).toBeTruthy();
+      expect(sendEmailVerificationLink.fulfilled.match(response)).toBe(true);
 
-      expect(isLoading(store)).toBeFalsy();
+      expect(isLoading(store)).toBe(false);
       expect(getFlashState(store).slice(-1)[0]).toEqual({
         type: 'success',
         message: '認証用メールを送信しました',
