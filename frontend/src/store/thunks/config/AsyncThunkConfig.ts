@@ -1,9 +1,8 @@
 import { AppDispatch, RootState } from 'store';
-import { HttpException } from 'utils/api/errors';
+import { HttpException, InvalidRequest } from 'utils/api/errors';
 
-// export type RejectValue = { error: { message: string } };
 export type RejectValue = {
-  error: HttpException | { message: string };
+  error: HttpException | InvalidRequest | { message: string };
 };
 
 /**
