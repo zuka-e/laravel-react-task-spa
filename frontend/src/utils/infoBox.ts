@@ -2,7 +2,7 @@
  * イベント発生時に`eventState`を指定することで`ClickAwayListener`の適用を免れる
  *
  * @property shown 既に表示されていることを示す
- * */
+ */
 const eventState = { shown: false };
 
 /** イベントの種類を指定する */
@@ -25,10 +25,10 @@ export const hasChanged = <T extends { id: string }>(prev?: T, current?: T) =>
 /**
  * @returns `Button`及び`Popover`状態でのクリックを除外
  * @see https://developer.mozilla.org/ja/docs/Web/CSS/pointer-events
- * */
+ */
 export const isIgnoredTarget = (eventTarget: HTMLElement) => {
   const isButton = () =>
-    eventTarget.nodeName === 'BUTTON' ||
+    eventTarget.tagName === 'BUTTON' ||
     eventTarget.getAttribute('role') === 'button';
   const isPopoverDisplayed = () => eventTarget.style['zIndex'] === '-1';
   const ignored = isButton() || isPopoverDisplayed();
