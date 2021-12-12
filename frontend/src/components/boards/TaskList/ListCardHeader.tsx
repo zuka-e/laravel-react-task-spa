@@ -43,7 +43,6 @@ const ListCardHeader: React.FC<ListCardHeaderProps> = (props) => {
       data={list}
       disableMargin
       inputStyle={classes.title}
-      helperText=''
     />
   );
 

@@ -41,7 +41,6 @@ const BoardCardHeader: React.FC<BoardCardHeaderProps> = (props) => {
       data={board}
       disableMargin
       inputStyle={classes.title}
-      helperText=''
     />
   );
 
