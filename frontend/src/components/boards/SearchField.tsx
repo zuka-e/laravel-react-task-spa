@@ -70,7 +70,7 @@ const SearchField = () => {
     );
 
   return (
-    <ClickAwayListener onClickAway={handleClickAway}>
+    <ClickAwayListener mouseEvent='onMouseDown' onClickAway={handleClickAway}>
       <div aria-labelledby='search-area'>
         <TextField
           onFocus={handleFocus}
