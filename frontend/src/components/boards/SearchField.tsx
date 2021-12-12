@@ -40,9 +40,7 @@ const SearchField = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [value, setValue] = useState('');
 
-  const handleClickAway = (event: React.MouseEvent<Document, MouseEvent>) => {
-    if ((event.target as HTMLElement).id === SEARCH) return;
-
+  const handleClickAway = () => {
     setInputOpen(false);
     setPopperOpen(false);
     setAnchorEl(null);
@@ -92,16 +90,14 @@ const SearchField = () => {
             ),
           }}
         />
-        <ClickAwayListener onClickAway={handleClickAway}>
-          <Popper open={popperOpen} anchorEl={anchorEl} placement='bottom-end'>
-            <Card
-              classes={{ root: classes.popper }}
-              aria-labelledby='search-result'
-            >
-              <SearchResult input={value} />
-            </Card>
-          </Popper>
-        </ClickAwayListener>
+        <Popper open={popperOpen} anchorEl={anchorEl} placement='bottom-end'>
+          <Card
+            classes={{ root: classes.popper }}
+            aria-labelledby='search-result'
+          >
+            <SearchResult input={value} />
+          </Card>
+        </Popper>
       </div>
     </ClickAwayListener>
   );
