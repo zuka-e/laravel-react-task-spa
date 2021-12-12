@@ -115,23 +115,19 @@ const TitleForm: React.FC<FormProps> = (props) => {
     }
   };
 
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.target.select();
+  const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
+    event.target.select();
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
       submitRef.current?.click();
     }
   };
 
   return (
-    <ClickAwayListener
-      mouseEvent='onMouseDown'
-      touchEvent='onTouchEnd'
-      onClickAway={handleClose}
-    >
+    <ClickAwayListener mouseEvent='onMouseDown' onClickAway={handleClose}>
       <form onSubmit={handleSubmit(onSubmit)} onKeyDown={handleKeyDown}>
         <TextField
           id='title'
