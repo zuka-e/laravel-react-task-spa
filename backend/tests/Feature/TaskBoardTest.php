@@ -136,11 +136,11 @@ class TaskBoardTest extends TestCase
 
         $response->assertJson(fn (AssertableJson $json) => $json->has(
             'data.0',
-            fn ($json) =>
+            fn (AssertableJson $json) =>
             $json->where('id', $firstBoard->id)
                 ->where('title', $firstBoard->title)
                 ->etc()
-        ));
+        )->etc());
     }
 
     public function test_validate_request_when_created()
