@@ -16,6 +16,8 @@ services:
       LARAVEL_SAIL: 1
     volumes:
       - ".:/var/www/html"
+      - vendor:/var/www/html/vendor
+      - node_modules:/var/www/html/node_modules
     networks:
       - sail
     depends_on:
@@ -71,6 +73,10 @@ networks:
   sail:
     driver: bridge
 volumes:
+  vendor:
+    driver: local
+  node_modules:
+    driver: local
   sailmysql:
     driver: local
   sailredis:
