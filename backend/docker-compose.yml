@@ -25,7 +25,7 @@ services:
   mysql.test:
     image: "mysql:8.0"
     ports:
-      - "${FORWARD_DB_PORT:-3307}:3306"
+      - "${FORWARD_TEST_DB_PORT:-3307}:3306"
     environment:
       TZ: "Asia/Tokyo"
       MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
