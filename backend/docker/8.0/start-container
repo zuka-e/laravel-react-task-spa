@@ -10,6 +10,16 @@ fi
 
 chmod -R ugo+rw /.composer
 
+if [ ! -d vendor ]; then
+    mkdir vendor
+fi
+
+if [ ! -d vendor ]; then
+    mkdir node_modules
+fi
+
+chown sail:sail vendor node_modules
+
 if [ $# -gt 0 ];then
     exec gosu $WWWUSER "$@"
 else
