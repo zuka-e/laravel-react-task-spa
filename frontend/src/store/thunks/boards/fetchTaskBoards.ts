@@ -1,11 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import { TaskBoard } from 'models';
-import { apiClient, makePath, ResponseWithPagination } from 'utils/api';
+import { apiClient, makePath, PaginationResponse } from 'utils/api';
 import { AsyncThunkConfig } from 'store/thunks/config';
 import { makeRejectValue } from 'store/thunks/utils';
 
-export type FetchTaskBoardsResponse = ResponseWithPagination<TaskBoard>;
+export type FetchTaskBoardsResponse = PaginationResponse<TaskBoard>;
 
 export type FetchTaskBoardsRequest = {
   userId: string;

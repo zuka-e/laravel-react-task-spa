@@ -1,7 +1,7 @@
 import { RestRequest } from 'msw';
 
 import { DocumentBase } from 'mocks/models';
-import { ResponseWithPagination } from 'utils/api';
+import { PaginationResponse } from 'utils/api';
 
 type PaginateProps<T> = {
   req: RestRequest;
@@ -32,7 +32,7 @@ export const paginate = <T extends DocumentBase>(props: PaginateProps<T>) => {
       ? allData.length
       : perPage * currentPage;
 
-  const response: ResponseWithPagination<T> = {
+  const response: PaginationResponse<T> = {
     data: allData.slice(from - 1, to),
     links: {
       first: path + '?page=' + 1,
@@ -59,9 +59,9 @@ export const paginate = <T extends DocumentBase>(props: PaginateProps<T>) => {
 };
 
 /**
- * `ResponseWithPagination`の`meta`に`links`を設定する
+ * `PaginationResponse`の`meta`に`links`を設定する
  * */
-const addMetaLinks = (props: ResponseWithPagination<any>) => {
+const addMetaLinks = (props: PaginationResponse<any>) => {
   const count = props.meta.last_page + 2; // page総数 + 2 (prev, next);
   Array(count)
     .fill('_')
