@@ -16,13 +16,8 @@ export const updatePassword = createAsyncThunk<
   UpdatePasswordRequest,
   AsyncThunkConfig
 >('auth/updatePassword', async (payload, thunkApi) => {
-  const { current_password, password, password_confirmation } = payload;
   try {
-    await apiClient().put(UPDATE_PASSWORD_PATH, {
-      current_password,
-      password,
-      password_confirmation,
-    });
+    await apiClient().put(UPDATE_PASSWORD_PATH, payload);
   } catch (error) {
     return thunkApi.rejectWithValue(makeRejectValue(error));
   }

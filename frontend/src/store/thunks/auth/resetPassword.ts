@@ -19,16 +19,10 @@ export const resetPassword = createAsyncThunk<
   ResetPasswordRequest,
   AsyncThunkConfig
 >('auth/resetPassword', async (payload, thunkApi) => {
-  const { email, password, password_confirmation, token } = payload;
   try {
     // 正常時は`200`バリデーションエラー時は`422`
     await apiClient({ apiRoute: false }).get(GET_CSRF_TOKEN_PATH);
-    await apiClient().post(RESET_PASSWORD_PATH, {
-      email,
-      password,
-      password_confirmation,
-      token,
-    });
+    await apiClient().post(RESET_PASSWORD_PATH, payload);
   } catch (error) {
     return thunkApi.rejectWithValue(makeRejectValue(error));
   }

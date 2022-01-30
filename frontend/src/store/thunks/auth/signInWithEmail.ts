@@ -24,14 +24,9 @@ export const signInWithEmail = createAsyncThunk<
   SignInRequest,
   AsyncThunkConfig
 >('auth/signInWithEmail', async (payload, thunkApi) => {
-  const { email, password, remember } = payload;
   try {
     await apiClient({ apiRoute: false }).get(GET_CSRF_TOKEN_PATH);
-    const response = await apiClient().post(SIGNIN_PATH, {
-      email,
-      password,
-      remember,
-    });
+    const response = await apiClient().post(SIGNIN_PATH, payload);
     return response?.data;
   } catch (error) {
     // 認証用メールから遷移して、認証リンクが無効だった場合
