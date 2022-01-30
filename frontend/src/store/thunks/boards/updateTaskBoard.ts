@@ -9,10 +9,9 @@ export type UpdateTaskBoardResponse = {
   data: TaskBoard;
 };
 
-export type UpdateTaskBoardRequest = Partial<Pick<TaskBoard, 'title'>> &
-  Partial<Pick<TaskBoard, 'description'>> &
-  Partial<Pick<TaskBoard, 'listIndexMap'>> &
-  Partial<Pick<TaskBoard, 'cardIndexMap'>>;
+export type UpdateTaskBoardRequest = Partial<
+  Pick<TaskBoard, 'title' | 'description' | 'listIndexMap' | 'cardIndexMap'>
+>;
 
 type UpdateTaskBoardArg = Pick<TaskBoard, 'id'> & UpdateTaskBoardRequest;
 

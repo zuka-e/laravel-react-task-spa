@@ -9,9 +9,7 @@ export type DestroyTaskCardResponse = {
   data: TaskCard;
 };
 
-export type DestroyTaskCardArg = Pick<TaskCard, 'id'> &
-  Pick<TaskCard, 'boardId'> &
-  Pick<TaskCard, 'listId'>;
+export type DestroyTaskCardArg = Pick<TaskCard, 'id' | 'boardId' | 'listId'>;
 
 export const destroyTaskCard = createAsyncThunk<
   Pick<TaskCard, 'boardId'> & DestroyTaskCardResponse,

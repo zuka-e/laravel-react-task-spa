@@ -9,8 +9,7 @@ export type DestroyTaskBoardResponse = {
   data: TaskBoard;
 };
 
-export type DestroyTaskBoardRequest = Pick<TaskBoard, 'id'> &
-  Pick<TaskBoard, 'title'>;
+export type DestroyTaskBoardRequest = Pick<TaskBoard, 'id' | 'title'>;
 
 export const destroyTaskBoard = createAsyncThunk<
   DestroyTaskBoardResponse,

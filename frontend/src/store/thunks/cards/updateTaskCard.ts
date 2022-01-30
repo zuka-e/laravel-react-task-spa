@@ -9,15 +9,11 @@ export type UpdateTaskCardResponse = {
   data: TaskCard;
 };
 
-export type UpdateTaskCardRequest = Partial<Pick<TaskCard, 'listId'>> &
-  Partial<Pick<TaskCard, 'title'>> &
-  Partial<Pick<TaskCard, 'content'>> &
-  Partial<Pick<TaskCard, 'deadline'>> &
-  Partial<Pick<TaskCard, 'done'>>;
+export type UpdateTaskCardRequest = Partial<
+  Pick<TaskCard, 'listId' | 'title' | 'content' | 'deadline' | 'done'>
+>;
 
-export type UpdateTaskCardArg = Pick<TaskCard, 'id'> &
-  Pick<TaskCard, 'boardId'> &
-  Pick<TaskCard, 'listId'> &
+export type UpdateTaskCardArg = Pick<TaskCard, 'id' | 'boardId' | 'listId'> &
   UpdateTaskCardRequest;
 
 export const updateTaskCard = createAsyncThunk<

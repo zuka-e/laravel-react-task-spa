@@ -38,8 +38,7 @@ export type DeleteAction =
 
 type SortListAction = Pick<TaskList, 'boardId'> & SortOperation<TaskList>;
 
-type SortCardAction = Pick<TaskCard, 'boardId'> &
-  Pick<TaskCard, 'listId'> &
+type SortCardAction = Pick<TaskCard, 'boardId' | 'listId'> &
   SortOperation<TaskCard>;
 
 type MoveCardAction = {
