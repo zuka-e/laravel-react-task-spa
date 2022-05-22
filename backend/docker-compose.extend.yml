@@ -2,6 +2,7 @@ version: "3"
 services:
   laravel.test:
     volumes:
+      - "..:${WORKING_DIR}"
       - "vscode-extensions:/home/sail/.vscode-server/extensions"
 volumes:
   vscode-extensions:

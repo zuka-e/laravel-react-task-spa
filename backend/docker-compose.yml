@@ -16,12 +16,13 @@ services:
     environment:
       WWWUSER: "${WWWUSER}"
       WORKING_DIR: "${WORKING_DIR}"
+      BACKEND_DIR: "${BACKEND_DIR}"
       LARAVEL_SAIL: 1
     working_dir: "${WORKING_DIR}"
     volumes:
-      - ".:${WORKING_DIR}"
-      - "vendor:${WORKING_DIR}/vendor"
-      - "node_modules:${WORKING_DIR}/node_modules"
+      - ".:${WORKING_DIR}/${BACKEND_DIR}"
+      - "vendor:${WORKING_DIR}/${BACKEND_DIR}/vendor"
+      - "node_modules:${WORKING_DIR}/${BACKEND_DIR}/node_modules"
     networks:
       - sail
     depends_on:
