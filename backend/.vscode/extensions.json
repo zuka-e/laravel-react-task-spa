@@ -1,0 +1,9 @@
+// https://code.visualstudio.com/docs/editor/extension-marketplace#_workspace-recommended-extensions
+{
+  "recommendations": [
+    "bmewburn.vscode-intelephense-client", // PHP intellisense
+    "amiralizadeh9480.laravel-extra-intellisense", // Laravel intellisense
+    "dbaeumer.vscode-eslint", // ESLint
+    "esbenp.prettier-vscode" // Prettier
+  ]
+}
