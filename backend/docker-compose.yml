@@ -14,7 +14,6 @@ services:
       - "${APP_PORT:-80}:80"
     # ref. `start-container`, `supervisord.conf`
     environment:
-      TZ: "Asia/Tokyo"
       WWWUSER: "${WWWUSER}"
       WORKING_DIR: "${WORKING_DIR}"
       LARAVEL_SAIL: 1
@@ -33,7 +32,6 @@ services:
     ports:
       - "${FORWARD_TEST_DB_PORT:-3307}:3306"
     environment:
-      TZ: "Asia/Tokyo"
       MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
       MYSQL_ROOT_HOST: "%"
       MYSQL_DATABASE: "${DB_DATABASE}"
@@ -46,7 +44,6 @@ services:
     ports:
       - "${FORWARD_DB_PORT:-3306}:3306"
     environment:
-      TZ: "Asia/Tokyo"
       MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
       MYSQL_ROOT_HOST: "%"
       MYSQL_DATABASE: "${DB_DATABASE}"
