@@ -30,6 +30,7 @@ services:
     environment:
       TZ: "Asia/Tokyo"
       MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_ROOT_HOST: "%"
       MYSQL_DATABASE: "${DB_DATABASE}"
       MYSQL_USER: "${DB_USERNAME}"
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
@@ -42,26 +43,31 @@ services:
     environment:
       TZ: "Asia/Tokyo"
       MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+      MYSQL_ROOT_HOST: "%"
       MYSQL_DATABASE: "${DB_DATABASE}"
       MYSQL_USER: "${DB_USERNAME}"
       MYSQL_PASSWORD: "${DB_PASSWORD}"
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
     volumes:
-      - "sailmysql:/var/lib/mysql"
+      - "sail-mysql:/var/lib/mysql"
     networks:
       - sail
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping"]
+      test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
+      retries: 3
+      timeout: 5s
   redis:
     image: "redis:alpine"
     ports:
       - "${FORWARD_REDIS_PORT:-6379}:6379"
     volumes:
-      - "sailredis:/data"
+      - "sail-redis:/data"
     networks:
       - sail
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
+      retries: 3
+      timeout: 5s
   mailhog:
     image: "mailhog/mailhog:latest"
     ports:
@@ -77,7 +83,7 @@ volumes:
     driver: local
   node_modules:
     driver: local
-  sailmysql:
+  sail-mysql:
     driver: local
-  sailredis:
+  sail-redis:
     driver: local
