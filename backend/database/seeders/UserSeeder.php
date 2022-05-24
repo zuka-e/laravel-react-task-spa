@@ -18,12 +18,12 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        self::$guestUser =  User::factory()->create([
+        self::$guestUser = User::factory()->create([
             'name' => env('GUEST_NAME'),
             'email' => env('GUEST_EMAIL'),
             'password' => Hash::make(env('GUEST_PASSWORD')),
         ]);
 
-        self::$anotherUser =  User::factory()->create();
+        self::$anotherUser = User::factory()->create();
     }
 }

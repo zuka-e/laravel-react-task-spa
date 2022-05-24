@@ -48,19 +48,23 @@ class TaskListTest extends TestCase
         $response->assertUnauthorized();
 
         // update
-        $url = $this->routePrefix . "/task-boards/${boardId}/task-lists/${listId}";
+        $url =
+            $this->routePrefix . "/task-boards/${boardId}/task-lists/${listId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
         $response->assertUnauthorized();
 
         // destroy
-        $url = $this->routePrefix . "/task-boards/${boardId}/task-lists/${listId}";
+        $url =
+            $this->routePrefix . "/task-boards/${boardId}/task-lists/${listId}";
         $response = $this->deleteJson($url);
         $response->assertUnauthorized();
     }
 
     public function test_forbidden_from_accessing_others_board()
     {
-        TaskBoard::factory()->for($this->otherUser)->create();
+        TaskBoard::factory()
+            ->for($this->otherUser)
+            ->create();
 
         TaskList::factory()
             ->for($this->otherUser)
@@ -81,19 +85,25 @@ class TaskListTest extends TestCase
         $response->assertForbidden();
 
         // update
-        $url = $this->routePrefix . "/task-boards/${otherBoardId}/task-lists/${listId}";
+        $url =
+            $this->routePrefix .
+            "/task-boards/${otherBoardId}/task-lists/${listId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
         $response->assertForbidden();
 
         // destroy
-        $url = $this->routePrefix . "/task-boards/${otherBoardId}/task-lists/${listId}";
+        $url =
+            $this->routePrefix .
+            "/task-boards/${otherBoardId}/task-lists/${listId}";
         $response = $this->deleteJson($url);
         $response->assertForbidden();
     }
 
     public function test_forbidden_from_accessing_others_list()
     {
-        TaskBoard::factory()->for($this->otherUser)->create();
+        TaskBoard::factory()
+            ->for($this->otherUser)
+            ->create();
 
         TaskList::factory()
             ->for($this->otherUser)
@@ -109,12 +119,16 @@ class TaskListTest extends TestCase
         $otherListId = $otherBoard->taskLists[0]->id;
 
         // update
-        $url = $this->routePrefix . "/task-boards/${boardId}/task-lists/${otherListId}";
+        $url =
+            $this->routePrefix .
+            "/task-boards/${boardId}/task-lists/${otherListId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
         $response->assertForbidden();
 
         // destroy
-        $url = $this->routePrefix . "/task-boards/${boardId}/task-lists/${otherListId}";
+        $url =
+            $this->routePrefix .
+            "/task-boards/${boardId}/task-lists/${otherListId}";
         $response = $this->deleteJson($url);
         $response->assertForbidden();
     }
@@ -128,16 +142,18 @@ class TaskListTest extends TestCase
         | Non-existent `TaskBoard`
         |--------------------------------------------------------------
         */
-        $boardId = (string)Str::uuid();
+        $boardId = (string) Str::uuid();
         $listId = $this->guestUser->taskBoards[0]->taskLists[0]->id;
 
         // update
-        $url = $this->routePrefix . "/task-boards/${boardId}/task-lists/${listId}";
+        $url =
+            $this->routePrefix . "/task-boards/${boardId}/task-lists/${listId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
         $response->assertNotFound();
 
         // destroy
-        $url = $this->routePrefix . "/task-boards/${boardId}/task-lists/${listId}";
+        $url =
+            $this->routePrefix . "/task-boards/${boardId}/task-lists/${listId}";
         $response = $this->deleteJson($url);
         $response->assertNotFound();
 
@@ -147,15 +163,17 @@ class TaskListTest extends TestCase
         |--------------------------------------------------------------
         */
         $boardId = $this->guestUser->taskBoards[0]->id;
-        $listId =  (string)Str::uuid();
+        $listId = (string) Str::uuid();
 
         // update
-        $url = $this->routePrefix . "/task-boards/${boardId}/task-lists/${listId}";
+        $url =
+            $this->routePrefix . "/task-boards/${boardId}/task-lists/${listId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
         $response->assertNotFound();
 
         // destroy
-        $url = $this->routePrefix . "/task-boards/${boardId}/task-lists/${listId}";
+        $url =
+            $this->routePrefix . "/task-boards/${boardId}/task-lists/${listId}";
         $response = $this->deleteJson($url);
         $response->assertNotFound();
     }
@@ -189,11 +207,15 @@ class TaskListTest extends TestCase
         $response = $this->postJson($url, $emptyRequest);
         $response->assertStatus(201);
 
-        $tooLongRequest = $successfulRequest + ['description' => str_repeat('a', floor(65535 / 3) + 1)];
+        $tooLongRequest = $successfulRequest + [
+            'description' => str_repeat('a', floor(65535 / 3) + 1),
+        ];
         $response = $this->postJson($url, $tooLongRequest);
         $response->assertStatus(422);
 
-        $successfulRequest = $successfulRequest + ['description' => str_repeat('亜', floor(65535 / 3))];
+        $successfulRequest = $successfulRequest + [
+            'description' => str_repeat('亜', floor(65535 / 3)),
+        ];
         $response = $this->postJson($url, $successfulRequest);
         $response->assertStatus(201);
     }
@@ -205,7 +227,8 @@ class TaskListTest extends TestCase
         $board = $this->guestUser->taskBoards[0];
         $boardId = $board->id;
         $listId = $board->taskLists[0]->id;
-        $url = $this->routePrefix . "/task-boards/${boardId}/task-lists/${listId}";
+        $url =
+            $this->routePrefix . "/task-boards/${boardId}/task-lists/${listId}";
 
         $emptyRequest = [];
         $response = $this->patchJson($url, $emptyRequest);
@@ -229,11 +252,15 @@ class TaskListTest extends TestCase
         $response = $this->patchJson($url, $emptyRequest);
         $response->assertStatus(200);
 
-        $tooLongRequest = ['description' => str_repeat('a', floor(65535 / 3) + 1)];
+        $tooLongRequest = [
+            'description' => str_repeat('a', floor(65535 / 3) + 1),
+        ];
         $response = $this->patchJson($url, $tooLongRequest);
         $response->assertStatus(422);
 
-        $successfulRequest = ['description' => str_repeat('亜', floor(65535 / 3))];
+        $successfulRequest = [
+            'description' => str_repeat('亜', floor(65535 / 3)),
+        ];
         $response = $this->patchJson($url, $successfulRequest);
         $response->assertStatus(200);
     }
@@ -246,7 +273,8 @@ class TaskListTest extends TestCase
         $boardId = $board->id;
         $list = $board->taskLists[0];
         $listId = $list->id;
-        $url = $this->routePrefix . "/task-boards/${boardId}/task-lists/${listId}";
+        $url =
+            $this->routePrefix . "/task-boards/${boardId}/task-lists/${listId}";
 
         $listBeforeDeleted = TaskList::find($listId);
         $cardsBeforeDeleted = TaskCard::where('task_list_id', $listId)->get();

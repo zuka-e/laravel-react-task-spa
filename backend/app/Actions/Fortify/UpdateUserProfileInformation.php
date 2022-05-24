@@ -18,7 +18,9 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
      */
     public function update($user, array $input)
     {
-        if ($user->email === env('GUEST_EMAIL')) abort(403);
+        if ($user->email === env('GUEST_EMAIL')) {
+            abort(403);
+        }
 
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
@@ -32,14 +34,18 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             ],
         ])->validateWithBag('updateProfileInformation');
 
-        if ($input['email'] !== $user->email &&
-            $user instanceof MustVerifyEmail) {
+        if (
+            $input['email'] !== $user->email &&
+            $user instanceof MustVerifyEmail
+        ) {
             $this->updateVerifiedUser($user, $input);
         } else {
-            $user->forceFill([
-                'name' => $input['name'],
-                'email' => $input['email'],
-            ])->save();
+            $user
+                ->forceFill([
+                    'name' => $input['name'],
+                    'email' => $input['email'],
+                ])
+                ->save();
         }
     }
 
@@ -52,11 +58,13 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
      */
     protected function updateVerifiedUser($user, array $input)
     {
-        $user->forceFill([
-            'name' => $input['name'],
-            'email' => $input['email'],
-            'email_verified_at' => null,
-        ])->save();
+        $user
+            ->forceFill([
+                'name' => $input['name'],
+                'email' => $input['email'],
+                'email_verified_at' => null,
+            ])
+            ->save();
 
         $user->sendEmailVerificationNotification();
     }
