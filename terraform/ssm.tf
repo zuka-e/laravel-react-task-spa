@@ -108,7 +108,7 @@ resource "aws_ssm_parameter" "db_username" {
 resource "aws_ssm_parameter" "db_password" {
   name        = "/${var.project}/${var.stage}/DB_PASSWORD"
   type        = "SecureString"
-  value       = module.db.db_master_password
+  value       = module.db.db_instance_password
   description = "The master password to connect to the database"
 }
 
