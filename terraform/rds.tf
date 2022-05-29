@@ -26,7 +26,7 @@ module "db" {
   port                   = "3306"
 
   create_db_subnet_group = true
-  subnet_ids             = module.vpc.database_subnets
+  subnet_ids             = module.vpc.private_subnets
   vpc_security_group_ids = [module.security_group.security_group_id]
 
   # Parameter group
