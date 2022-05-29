@@ -3,7 +3,7 @@ name: Continuous Deployment
 on:
   push:
     branches:
-      - $default-branch
+      - development
   pull_request:
 
 env:
@@ -12,6 +12,7 @@ env:
 jobs:
   # see: https://github.com/hashicorp/learn-terraform-github-actions
   build-shared-infrastructure:
+    name: Build Shared Infrastructure
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -19,7 +20,7 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
@@ -44,29 +45,31 @@ jobs:
         run: terraform plan -no-color
         continue-on-error: true
 
-      - uses: actions/github-script@0.9.0
+      - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
         env:
-          PLAN: '${{ steps.plan.outputs.stdout }}'
+          PLAN: ${{ steps.plan.outputs.stdout }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            const output = `
+              #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+              #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+              #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+              #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
 
-            <details><summary>Show Plan</summary>
+              <details><summary>Show Plan</summary>
 
-            \`\`\`terraform
-            ${process.env.PLAN}
-            \`\`\`
+              \`\`\`terraform
+              ${process.env.PLAN}
+              \`\`\`
 
-            </details>
+              </details>
 
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+              *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*
+            `;
 
-            github.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -78,13 +81,14 @@ jobs:
         run: exit 1
 
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/$default-branch' && github.event_name == 'push'
+        if: github.ref == 'refs/heads/development' && github.event_name == 'push'
         run: terraform apply -auto-approve
 
   # see: https://github.com/serverless/github-action
   build-app-specific-infrastructure:
+    name: Build App-Specific Infrastructure
     needs: build-shared-infrastructure
-    if: github.ref == 'refs/heads/$default-branch' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/development' && github.event_name == 'push'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -95,24 +99,15 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
-
-      # see: https://github.com/aws-actions/configure-aws-credentials
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+        uses: actions/checkout@v3
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
       - name: Cache Node.js modules
-        id: node-cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ./backend/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -120,12 +115,10 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install Node.js dependencies
-        if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ./backend/vendor
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -134,29 +127,38 @@ jobs:
 
       # see: https://bref.sh/docs/deploy.html#automating-deployments
       - name: Install Composer dependencies
-        if: steps.composer-cache.outputs.cache-hit != 'true'
         run: composer install --prefer-dist --optimize-autoloader --no-dev
 
-      - name: Generate APP_KEY
-        run: php artisan key:generate --env dev
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+
+      - name: Install Serverless globally
+        run: npm install -g serverless
 
       - name: Serverless Config Credentials
         run: |
-          ./node_modules/serverless/bin/serverless.js config credentials \
+          serverless config credentials \
             --provider aws \
             --key ${{ secrets.AWS_ACCESS_KEY_ID }} \
             --secret ${{ secrets.AWS_SECRET_ACCESS_KEY }} \
             --profile dev
 
       - name: Serverless Deploy
-        run: |
-          ./node_modules/serverless/bin/serverless.js deploy \
-            --stage dev --aws-profile dev --verbose
+        run: serverless deploy --stage dev --aws-profile dev --verbose
         env:
+          APP_KEY: ${{ secrets.APP_KEY }}
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
 
       - name: Compile Assets
         run: npm run prod
+
+      # see: https://github.com/aws-actions/configure-aws-credentials
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Synchronize Assets with S3 Buckets
         run: |
@@ -169,4 +171,4 @@ jobs:
               --profile dev \
           )
           aws s3 sync public/ s3://${S3_BUCKET}/public \
-            --delete --exclude index.php --profile dev
+            --delete --exclude index.php --profile dev --acl public-read

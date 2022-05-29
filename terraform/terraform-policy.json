@@ -102,6 +102,7 @@
                 "rds:DescribeDBParameters",
                 "rds:DescribeOptionGroups",
                 "rds:ListTagsForResource",
+                "rds:ModifyDBInstance",
                 "rds:ModifyDBParameterGroup",
                 "rds:ModifyOptionGroup"
             ],

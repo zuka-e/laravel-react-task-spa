@@ -13,20 +13,20 @@ module "db" {
   identifier = local.identifier
 
   engine         = local.engine
-  engine_version = "${local.major_engine_version}.13"
+  engine_version = local.major_engine_version
   instance_class = "db.t2.micro"
 
   storage_type          = "gp2" # General purpose SSD
   allocated_storage     = 20    # 20 GiB
   max_allocated_storage = 0     # Disable autoscaling
 
-  name                   = local.name
+  db_name                = local.name
   username               = local.username
   create_random_password = true
   port                   = "3306"
 
   subnet_ids             = module.vpc.private_subnets
-  vpc_security_group_ids = [module.vote_service_sg.security_group_id]
+  vpc_security_group_ids = [module.security_group.security_group_id]
 
   # Parameter group
   family = "${local.engine}${local.major_engine_version}"

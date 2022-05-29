@@ -33,14 +33,14 @@ module "vpc" {
 # Security Group
 ################################################################################
 # https://github.com/terraform-aws-modules/terraform-aws-security-group#security-group-with-custom-rules
-module "vote_service_sg" {
+module "security_group" {
   source = "terraform-aws-modules/security-group/aws"
 
   name        = "main-sg"
   description = "Security group"
   vpc_id      = module.vpc.vpc_id
 
-  # https://github.com/terraform-aws-modules/terraform-aws-security-group/blob/master/main.tf#L358
+  # https://github.com/terraform-aws-modules/terraform-aws-security-group/blob/master/main.tf
   # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group#ingress
   ingress_with_self = [
     {
@@ -79,7 +79,7 @@ resource "aws_vpc_endpoint" "ses" {
   service_name      = "com.amazonaws.${local.region}.email-smtp"
   vpc_endpoint_type = "Interface"
 
-  security_group_ids  = [module.vote_service_sg.security_group_id]
+  security_group_ids  = [module.security_group.security_group_id]
   subnet_ids          = [module.vpc.private_subnets[0]]
   private_dns_enabled = true
 }
