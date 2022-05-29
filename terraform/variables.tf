@@ -18,7 +18,7 @@ variable "stage" {
 variable "aws_profile" {
   description = "AWS profile"
   type        = string
-  default     = "default"
+  default     = ""
 }
 
 variable "aws_region" {

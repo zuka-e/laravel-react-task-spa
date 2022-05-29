@@ -20,7 +20,7 @@ module "db" {
   allocated_storage     = 20    # 20 GiB
   max_allocated_storage = 0     # Disable autoscaling
 
-  name                   = local.name
+  db_name                = local.name
   username               = local.username
   create_random_password = true
   port                   = "3306"
