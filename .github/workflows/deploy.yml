@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
@@ -45,7 +45,7 @@ jobs:
         run: terraform plan -no-color
         continue-on-error: true
 
-      - uses: actions/github-script@0.9.0
+      - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
         env:
           PLAN: ${{ steps.plan.outputs.stdout }}
@@ -69,7 +69,7 @@ jobs:
               *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*
             `;
 
-            github.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -99,15 +99,15 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
       - name: Cache Node.js modules
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ./backend/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -118,7 +118,7 @@ jobs:
         run: npm ci
 
       - name: Cache Composer packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ./backend/vendor
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
