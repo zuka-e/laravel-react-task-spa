@@ -25,7 +25,7 @@ module "db" {
   create_random_password = true
   port                   = "3306"
 
-  subnet_ids             = module.vpc.private_subnets
+  subnet_ids             = module.vpc.database_subnets
   vpc_security_group_ids = [module.security_group.security_group_id]
 
   # Parameter group
