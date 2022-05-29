@@ -33,6 +33,7 @@
                 "cloudformation:CreateChangeSet",
                 "cloudformation:CreateStack",
                 "cloudformation:CreateUploadBucket",
+                "cloudformation:DeleteChangeSet",
                 "cloudformation:DeleteStack",
                 "cloudformation:Describe*",
                 "cloudformation:EstimateTemplateCost",
