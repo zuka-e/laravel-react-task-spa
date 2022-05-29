@@ -19,7 +19,7 @@ custom:
     domainName: api.${ssm:/${env:APP_NAME}/${sls:stage}/DOMAIN_NAME}
     certificateArn: ${ssm:/${env:APP_NAME}/${sls:stage}/CERTIFICATE_ARN}
     createRoute53Record: true
-    endpointType: "regional"
+    endpointType: 'regional'
     securityPolicy: tls_1_2
     apiType: http
     autoDomain: true
@@ -36,9 +36,9 @@ provider:
   iam:
     role:
       managedPolicies:
-        - "arn:aws:iam::aws:policy/service-role/AWSLambdaDynamoDBExecutionRole"
-        - "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
-        - "arn:aws:iam::aws:policy/AmazonSESFullAccess"
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaDynamoDBExecutionRole'
+        - 'arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonSESFullAccess'
   httpApi:
     # https://www.serverless.com/framework/docs/providers/aws/events/http-api#disable-default-endpoint
     disableDefaultEndpoint: true
@@ -102,11 +102,11 @@ provider:
 package:
   # https://www.serverless.com/framework/docs/deprecations#new-way-to-define-packaging-patterns
   patterns:
-    - "!node_modules/**"
-    - "!public/storage"
-    - "!resources/assets/**"
-    - "!storage/**"
-    - "!tests/**"
+    - '!node_modules/**'
+    - '!public/storage'
+    - '!resources/assets/**'
+    - '!storage/**'
+    - '!tests/**'
 
 functions:
   # This function runs the Laravel website/API
@@ -116,7 +116,7 @@ functions:
     layers:
       - ${bref:layer.php-81-fpm}
     events:
-      - httpApi: "*"
+      - httpApi: '*'
   # This function lets us run artisan commands in Lambda
   artisan:
     handler: artisan
@@ -131,7 +131,7 @@ functions:
     timeout: 120
     layers:
       - ${bref:layer.php-81}
-    description: "Delete unverified users every day at 3AM(UTC+9)"
+    description: 'Delete unverified users every day at 3AM(UTC+9)'
     events:
       - schedule: cron(0 18 * * ? *)
 

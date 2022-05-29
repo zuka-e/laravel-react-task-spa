@@ -23,7 +23,9 @@ class TaskCardTest extends TestCase
     {
         parent::setUp();
 
-        $this->taskBoard = TaskBoard::factory()->for($this->guestUser)->create();
+        $this->taskBoard = TaskBoard::factory()
+            ->for($this->guestUser)
+            ->create();
 
         $this->taskList = TaskList::factory()
             ->for($this->guestUser)
@@ -47,7 +49,8 @@ class TaskCardTest extends TestCase
         $response->assertUnauthorized();
 
         // update
-        $url = $this->routePrefix . "/task-lists/${listId}/task-cards/${cardId}";
+        $url =
+            $this->routePrefix . "/task-lists/${listId}/task-cards/${cardId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
         $response->assertUnauthorized();
 
@@ -58,7 +61,9 @@ class TaskCardTest extends TestCase
 
     public function test_forbidden_from_accessing_others_list()
     {
-        $otherBoard = TaskBoard::factory()->for($this->otherUser)->create();
+        $otherBoard = TaskBoard::factory()
+            ->for($this->otherUser)
+            ->create();
 
         $otherList = TaskList::factory()
             ->for($this->otherUser)
@@ -76,7 +81,9 @@ class TaskCardTest extends TestCase
         $response->assertForbidden();
 
         // update
-        $url = $this->routePrefix . "/task-lists/${otherListId}/task-cards/${cardId}";
+        $url =
+            $this->routePrefix .
+            "/task-lists/${otherListId}/task-cards/${cardId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
         $response->assertForbidden();
 
@@ -87,7 +94,9 @@ class TaskCardTest extends TestCase
 
     public function test_forbidden_from_accessing_others_card()
     {
-        $otherBoard = TaskBoard::factory()->for($this->otherUser)->create();
+        $otherBoard = TaskBoard::factory()
+            ->for($this->otherUser)
+            ->create();
 
         $otherList = TaskList::factory()
             ->for($this->otherUser)
@@ -103,7 +112,9 @@ class TaskCardTest extends TestCase
 
         $listId = $this->taskList->id;
         $otherCardId = $otherCard->id;
-        $url = $this->routePrefix . "/task-lists/${listId}/task-cards/${otherCardId}";
+        $url =
+            $this->routePrefix .
+            "/task-lists/${listId}/task-cards/${otherCardId}";
 
         // update
         $response = $this->patchJson($url, ['title' => 'testTitle']);
@@ -123,7 +134,7 @@ class TaskCardTest extends TestCase
         | Non-existent `TaskList`
         |--------------------------------------------------------------
         */
-        $listId = (string)Str::uuid();
+        $listId = (string) Str::uuid();
 
         // create
         $url = $this->routePrefix . "/task-lists/${listId}/task-cards";
@@ -136,8 +147,9 @@ class TaskCardTest extends TestCase
         |--------------------------------------------------------------
         */
         $listId = $this->taskList->id;
-        $cardId = (string)Str::uuid();
-        $url = $this->routePrefix . "/task-lists/${listId}/task-cards/${cardId}";
+        $cardId = (string) Str::uuid();
+        $url =
+            $this->routePrefix . "/task-lists/${listId}/task-cards/${cardId}";
 
         // update
         $response = $this->patchJson($url, ['title' => 'testTitle']);
@@ -173,11 +185,15 @@ class TaskCardTest extends TestCase
         $response->assertStatus(201);
 
         // `content`
-        $tooLongRequest = $successfulRequest + ['content' => str_repeat('a', floor(65535 / 3) + 1)];
+        $tooLongRequest = $successfulRequest + [
+            'content' => str_repeat('a', floor(65535 / 3) + 1),
+        ];
         $response = $this->postJson($url, $tooLongRequest);
         $response->assertStatus(422);
 
-        $successfulRequest = $successfulRequest + ['content' => str_repeat('亜', floor(65535 / 3))];
+        $successfulRequest = $successfulRequest + [
+            'content' => str_repeat('亜', floor(65535 / 3)),
+        ];
         $response = $this->postJson($url, $successfulRequest);
         $response->assertStatus(201);
 
@@ -188,11 +204,15 @@ class TaskCardTest extends TestCase
         $response = $this->postJson($url, $invalidFormatRequest);
         $response->assertStatus(422);
 
-        $invalidFormatRequest = $successfulRequest + ['deadline' => "1546268400"];
+        $invalidFormatRequest = $successfulRequest + [
+            'deadline' => '1546268400',
+        ];
         $response = $this->postJson($url, $invalidFormatRequest);
         $response->assertStatus(422);
 
-        $pastDateRequest = $successfulRequest + ['deadline' => $now->sub(new DateInterval('PT1S'))];
+        $pastDateRequest = $successfulRequest + [
+            'deadline' => $now->sub(new DateInterval('PT1S')),
+        ];
         $response = $this->postJson($url, $pastDateRequest);
         $response->assertStatus(422);
 
@@ -200,7 +220,9 @@ class TaskCardTest extends TestCase
         $response = $this->postJson($url, $currentDateRequest);
         $response->assertStatus(422);
 
-        $futureDateRequest = $successfulRequest + ['deadline' => $now->add(new DateInterval('PT1S'))];
+        $futureDateRequest = $successfulRequest + [
+            'deadline' => $now->add(new DateInterval('PT1S')),
+        ];
         $response = $this->postJson($url, $futureDateRequest);
         $response->assertStatus(422);
     }
@@ -211,7 +233,8 @@ class TaskCardTest extends TestCase
 
         $listId = $this->taskList->id;
         $cardId = $this->taskCard->id;
-        $url = $this->routePrefix . "/task-lists/${listId}/task-cards/${cardId}";
+        $url =
+            $this->routePrefix . "/task-lists/${listId}/task-cards/${cardId}";
 
         // `title`
         $emptyRequest = [];
@@ -231,11 +254,15 @@ class TaskCardTest extends TestCase
         $response->assertStatus(200);
 
         // `content`
-        $tooLongRequest = $successfulRequest + ['content' => str_repeat('a', floor(65535 / 3) + 1)];
+        $tooLongRequest = $successfulRequest + [
+            'content' => str_repeat('a', floor(65535 / 3) + 1),
+        ];
         $response = $this->patchJson($url, $tooLongRequest);
         $response->assertStatus(422);
 
-        $successfulRequest = $successfulRequest + ['content' => str_repeat('亜', floor(65535 / 3))];
+        $successfulRequest = $successfulRequest + [
+            'content' => str_repeat('亜', floor(65535 / 3)),
+        ];
         $response = $this->patchJson($url, $successfulRequest);
         $response->assertStatus(200);
 
@@ -246,11 +273,15 @@ class TaskCardTest extends TestCase
         $response = $this->patchJson($url, $invalidFormatRequest);
         $response->assertStatus(422);
 
-        $invalidFormatRequest = $successfulRequest + ['deadline' => "1546268400"];
+        $invalidFormatRequest = $successfulRequest + [
+            'deadline' => '1546268400',
+        ];
         $response = $this->patchJson($url, $invalidFormatRequest);
         $response->assertStatus(422);
 
-        $pastDateRequest = $successfulRequest + ['deadline' => $now->sub(new DateInterval('PT1S'))];
+        $pastDateRequest = $successfulRequest + [
+            'deadline' => $now->sub(new DateInterval('PT1S')),
+        ];
         $response = $this->patchJson($url, $pastDateRequest);
         $response->assertStatus(422);
 
@@ -258,7 +289,9 @@ class TaskCardTest extends TestCase
         $response = $this->patchJson($url, $currentDateRequest);
         $response->assertStatus(422);
 
-        $futureDateRequest = $successfulRequest + ['deadline' => $now->add(new DateInterval('PT1S'))];
+        $futureDateRequest = $successfulRequest + [
+            'deadline' => $now->add(new DateInterval('PT1S')),
+        ];
         $response = $this->patchJson($url, $futureDateRequest);
         $response->assertStatus(422);
     }
@@ -269,7 +302,8 @@ class TaskCardTest extends TestCase
 
         $listId = $this->taskList->id;
         $cardId = $this->taskCard->id;
-        $url = $this->routePrefix . "/task-lists/${listId}/task-cards/${cardId}";
+        $url =
+            $this->routePrefix . "/task-lists/${listId}/task-cards/${cardId}";
 
         $cardBeforeDeleted = TaskCard::find($cardId);
         $this->assertNotNull($cardBeforeDeleted);

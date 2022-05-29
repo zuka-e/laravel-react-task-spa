@@ -1,0 +1,17 @@
+# https://prettier.io/docs/en/ignore.html
+
+public
+storage
+
+vendor
+node_modules
+
+composer.json
+composer.lock
+package.json
+package-lock.json
+
+_ide_helper.php
+_ide_helper_models.php
+
+*.md

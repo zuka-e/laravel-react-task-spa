@@ -15,9 +15,15 @@ class TaskBoardSeeder extends Seeder
     public function run()
     {
         $user = UserSeeder::$guestUser;
-        $anotherUser =  UserSeeder::$anotherUser;
+        $anotherUser = UserSeeder::$anotherUser;
 
-        TaskBoard::factory()->count(41)->for($user)->create();
-        TaskBoard::factory()->count(21)->for($anotherUser)->create();
+        TaskBoard::factory()
+            ->count(41)
+            ->for($user)
+            ->create();
+        TaskBoard::factory()
+            ->count(21)
+            ->for($anotherUser)
+            ->create();
     }
 }

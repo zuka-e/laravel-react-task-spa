@@ -23,7 +23,7 @@ class VerifyEmailController extends Controller
             return $request->wantsJson() // 認証リンク遷移後にログインした場合`true`
                 ? response()->json([
                     'user' => new UserResource(Auth::user()),
-                    'verified' => true
+                    'verified' => true,
                 ])
                 : redirect()->intended(config('fortify.home') . '?verified=1');
         }
@@ -37,7 +37,7 @@ class VerifyEmailController extends Controller
         return $request->wantsJson()
             ? response()->json([
                 'user' => new UserResource(Auth::user()),
-                'verified' => true
+                'verified' => true,
             ])
             : redirect()->intended(config('fortify.home') . '?verified=1');
     }

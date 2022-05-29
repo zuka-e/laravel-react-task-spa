@@ -28,7 +28,9 @@ class TaskBoardController extends Controller
     public function index(string $user)
     {
         return new TaskBoardCollection(
-            TaskBoard::where('user_id', $user)->orderBy('updated_at', 'desc')->paginate(20)
+            TaskBoard::where('user_id', $user)
+                ->orderBy('updated_at', 'desc')
+                ->paginate(20),
         );
     }
 
@@ -44,19 +46,27 @@ class TaskBoardController extends Controller
         $newBoard = new TaskBoard($validated);
         $newBoard->user()->associate($user);
 
-        if ($newBoard->save()) return new TaskBoardResource($newBoard);
+        if ($newBoard->save()) {
+            return new TaskBoardResource($newBoard);
+        }
     }
 
     public function show(string $user, TaskBoard $taskBoard)
     {
         // `TaskBoardResource`に`lists`を追加することでこれを含めて返却するようにする
         $taskBoard->lists = TaskListResource::collection(
-            $taskBoard->taskLists()->orderBy('updated_at', 'desc')->get()
+            $taskBoard
+                ->taskLists()
+                ->orderBy('updated_at', 'desc')
+                ->get(),
         );
 
         // 以下で使用するため、事前にデータを取得しておく (無駄なクエリの大量発行を防止)
         $taskBoard->cards = TaskCardResource::collection(
-            $taskBoard->taskCards()->orderBy('updated_at', 'desc')->get()
+            $taskBoard
+                ->taskCards()
+                ->orderBy('updated_at', 'desc')
+                ->get(),
         );
 
         // `$taskBoard`の各`list`に所属する`cards`を設定する
@@ -73,16 +83,22 @@ class TaskBoardController extends Controller
         return new TaskBoardResource($taskBoard);
     }
 
-    public function update(TaskBoardRequest $request, string $user, TaskBoard $taskBoard)
-    {
+    public function update(
+        TaskBoardRequest $request,
+        string $user,
+        TaskBoard $taskBoard,
+    ) {
         $validated = $request->validated();
 
-        if ($taskBoard->fill($validated)->save())
+        if ($taskBoard->fill($validated)->save()) {
             return new TaskBoardResource($taskBoard);
+        }
     }
 
     public function destroy(string $user, TaskBoard $taskBoard)
     {
-        if ($taskBoard->delete()) return new TaskBoardResource($taskBoard);
+        if ($taskBoard->delete()) {
+            return new TaskBoardResource($taskBoard);
+        }
     }
 }

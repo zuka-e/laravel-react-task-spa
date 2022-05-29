@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->job(new DeleteUnverifiedUser)->cron('* 0 * * *');
+        $schedule->job(new DeleteUnverifiedUser())->cron('* 0 * * *');
     }
 
     /**

@@ -49,7 +49,7 @@ class TaskCardRequest extends FormRequest
                 'title' => "required|string|max:${maxTitle}",
                 'content' => "nullable|string|max:${maxContent}",
                 'deadline' => 'date',
-                'done' => 'boolean'
+                'done' => 'boolean',
             ];
         } else {
             return [
@@ -57,7 +57,7 @@ class TaskCardRequest extends FormRequest
                 'title' => "string|max:${maxTitle}",
                 'content' => "nullable|string|max:${maxContent}",
                 'deadline' => 'date',
-                'done' => 'boolean'
+                'done' => 'boolean',
             ];
         }
     }

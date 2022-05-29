@@ -13,7 +13,7 @@ class TaskList extends Model
     protected static function booted()
     {
         static::creating(function (TaskList $task_list) {
-            $task_list->id = (string)Str::uuid();
+            $task_list->id = (string) Str::uuid();
         });
     }
 
@@ -31,10 +31,7 @@ class TaskList extends Model
      */
     protected $keyType = 'string';
 
-    protected $fillable = [
-        'title',
-        'description',
-    ];
+    protected $fillable = ['title', 'description'];
 
     protected $hidden = [];
 

@@ -16,42 +16,48 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/home', fn () => Auth::user());
+Route::get('/home', fn() => Auth::user());
 
 /*
 |--------------------------------------------------------------
 |  Version 1.0
 |--------------------------------------------------------------
 */
-Route::group([
-    'prefix' => 'v1',
-    'namespace' => 'App\Http\Controllers',
-    'middleware' => 'auth:sanctum'
-], function () {
-
-    /*
+Route::group(
+    [
+        'prefix' => 'v1',
+        'namespace' => 'App\Http\Controllers',
+        'middleware' => 'auth:sanctum',
+    ],
+    function () {
+        /*
     |--------------------------------------------------------------
     | Auth
     |--------------------------------------------------------------
     */
-    Route::get('/users/auth', fn () => new UserResource(Auth::user()));
+        Route::get('/users/auth', fn() => new UserResource(Auth::user()));
 
-    Route::delete('/users/auth', function (Request $request) {
-        $request->user()->delete();
-        return response()->json([], 204);
-    });
+        Route::delete('/users/auth', function (Request $request) {
+            $request->user()->delete();
+            return response()->json([], 204);
+        });
 
-    /*
+        /*
     |--------------------------------------------------------------
     | Task
     |--------------------------------------------------------------
     */
-    Route::apiResource('users.task-boards', TaskBoardController::class);
-    Route::apiResource('task-boards.task-lists', TaskListController::class)
-        ->only('store', 'update', 'destroy');
-    Route::apiResource('task-lists.task-cards', TaskCardController::class)
-        ->only('store', 'update', 'destroy');
-});
+        Route::apiResource('users.task-boards', TaskBoardController::class);
+        Route::apiResource(
+            'task-boards.task-lists',
+            TaskListController::class,
+        )->only('store', 'update', 'destroy');
+        Route::apiResource(
+            'task-lists.task-cards',
+            TaskCardController::class,
+        )->only('store', 'update', 'destroy');
+    },
+);
 
 /*
 |--------------------------------------------------------------
@@ -59,10 +65,13 @@ Route::group([
 |--------------------------------------------------------------
 */
 Route::any('/{any?}', function ($any = null) {
-    return response()->json([
-        'error' => [
-            'title' => '404 Not Found',
-            'message' => 'The requested URL was not found'
-        ]
-    ], 404);
+    return response()->json(
+        [
+            'error' => [
+                'title' => '404 Not Found',
+                'message' => 'The requested URL was not found',
+            ],
+        ],
+        404,
+    );
 })->where('any', '.*');

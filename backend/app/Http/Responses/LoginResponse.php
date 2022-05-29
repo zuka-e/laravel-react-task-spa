@@ -18,13 +18,15 @@ class LoginResponse implements LoginResponseContract
     {
         // 認証メールリンクからのアクセスの場合
         $path = $request->session()->get('url.intended');
-        if ($path) return redirect()->intended();
+        if ($path) {
+            return redirect()->intended();
+        }
 
         // `vendor/laravel/fortify/src/Http/Responses/LoginResponse.php`転記
         return $request->wantsJson()
             ? response()->json([
                 'user' => new UserResource(Auth::user()),
-                'two_factor' => false
+                'two_factor' => false,
             ])
             : redirect()->intended(config('fortify.home'));
     }

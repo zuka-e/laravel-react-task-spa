@@ -40,33 +40,42 @@ class TaskCardController extends Controller
         $newCard->user()->associate($taskList->taskBoard->user);
         $newCard->taskList()->associate($taskList);
 
-        if ($newCard->save()) return new TaskCardResource($newCard);
+        if ($newCard->save()) {
+            return new TaskCardResource($newCard);
+        }
     }
-
 
     public function show(User $user, TaskCard $taskCard)
     {
         //
     }
 
-    public function update(TaskCardRequest $request, string $taskList, TaskCard $taskCard)
-    {
+    public function update(
+        TaskCardRequest $request,
+        string $taskList,
+        TaskCard $taskCard,
+    ) {
         $validated = $request->validated();
 
         if (array_key_exists('list_id', $validated)) {
             $parent = TaskList::find($validated['list_id']);
-            if (!$parent) abort(500, '指定されたリストは存在しません');
+            if (!$parent) {
+                abort(500, '指定されたリストは存在しません');
+            }
 
             $taskCard->taskList()->disassociate();
             $taskCard->taskList()->associate($parent);
         }
 
-        if ($taskCard->fill($validated)->save())
+        if ($taskCard->fill($validated)->save()) {
             return new TaskCardResource($taskCard);
+        }
     }
 
     public function destroy(string $taskList, TaskCard $taskCard)
     {
-        if ($taskCard->delete()) return new TaskCardResource($taskCard);
+        if ($taskCard->delete()) {
+            return new TaskCardResource($taskCard);
+        }
     }
 }

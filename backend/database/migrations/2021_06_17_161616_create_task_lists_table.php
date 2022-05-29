@@ -21,12 +21,14 @@ class CreateTaskListsTable extends Migration
             $table->text('description')->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')
+            $table
+                ->foreign('user_id')
                 ->references('id')
                 ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->foreign('task_board_id')
+            $table
+                ->foreign('task_board_id')
                 ->references('id')
                 ->on('task_boards')
                 ->onUpdate('cascade')

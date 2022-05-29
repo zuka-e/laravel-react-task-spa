@@ -47,12 +47,12 @@ class TaskListRequest extends FormRequest
         if ($request->method() === 'POST') {
             return [
                 'title' => "required|string|max:${maxTitle}",
-                'description' => "nullable|string|max:${maxDescription}"
+                'description' => "nullable|string|max:${maxDescription}",
             ];
         } else {
             return [
                 'title' => "string|max:${maxTitle}",
-                'description' => "nullable|string|max:${maxDescription}"
+                'description' => "nullable|string|max:${maxDescription}",
             ];
         }
     }

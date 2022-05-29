@@ -35,18 +35,20 @@ $app->make(Kernel::class)->bootstrap();
 
 /** 登録から24時間経過した未認証ユーザーを削除 */
 return function () {
-  $now = new DateTimeImmutable();
-  $yesterday = $now->sub(new DateInterval('PT24H'));
-  $unverifiedUsers = User::where('email_verified_at', null);
-  $targetUsers = $unverifiedUsers->where('created_at', '<', $yesterday);
-  $deletedUsers = $targetUsers->pluck('email', 'id');
+    $now = new DateTimeImmutable();
+    $yesterday = $now->sub(new DateInterval('PT24H'));
+    $unverifiedUsers = User::where('email_verified_at', null);
+    $targetUsers = $unverifiedUsers->where('created_at', '<', $yesterday);
+    $deletedUsers = $targetUsers->pluck('email', 'id');
 
-  if ($targetUsers->delete()) {
-    Log::notice(
-      __FILE__ . ': The following users have been deleted => ' . $deletedUsers
-    );
-    return;
-  };
+    if ($targetUsers->delete()) {
+        Log::notice(
+            __FILE__ .
+                ': The following users have been deleted => ' .
+                $deletedUsers,
+        );
+        return;
+    }
 
-  Log::debug(__FILE__ . ': There were no deleted users');
+    Log::debug(__FILE__ . ': There were no deleted users');
 };

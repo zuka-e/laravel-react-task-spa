@@ -13,14 +13,12 @@ abstract class TestCase extends BaseTestCase
     protected User $guestUser;
     protected User $otherUser;
 
-
     public function setUp(): void
     {
         parent::setUp();
 
         $this->routePrefix =
-            env('API_ROUTE_PREFIX', '/api/') .
-            env('API_VERSION', 'v1');
+            env('API_ROUTE_PREFIX', '/api/') . env('API_VERSION', 'v1');
 
         $this->guestUser = User::factory()->create([
             'name' => env('GUEST_NAME'),
@@ -34,7 +32,7 @@ abstract class TestCase extends BaseTestCase
     {
         $response = $this->postJson($this->routePrefix . '/login', [
             'email' => $user->email,
-            'password' => 'password'
+            'password' => 'password',
         ]);
         $response->assertOk(); // 200
         return $response;

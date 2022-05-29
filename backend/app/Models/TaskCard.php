@@ -13,7 +13,7 @@ class TaskCard extends Model
     protected static function booted()
     {
         static::creating(function (TaskCard $task_card) {
-            $task_card->id = (string)Str::uuid();
+            $task_card->id = (string) Str::uuid();
         });
     }
 
@@ -31,19 +31,14 @@ class TaskCard extends Model
      */
     protected $keyType = 'string';
 
-    protected $fillable = [
-        'title',
-        'content',
-        'deadline',
-        'done'
-    ];
+    protected $fillable = ['title', 'content', 'deadline', 'done'];
 
     protected $hidden = [];
 
     /** @see [https://laravel.com/docs/8.x/eloquent-mutators#date-casting-and-timezones */
     protected $casts = [
         'deadline' => 'datetime',
-        'done' => 'boolean'
+        'done' => 'boolean',
     ];
 
     // 使用例: TaskCard::find(1)->user;

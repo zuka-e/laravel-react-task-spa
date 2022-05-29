@@ -20,7 +20,8 @@ class CreateTaskBoardsTable extends Migration
             $table->text('description')->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')
+            $table
+                ->foreign('user_id')
                 ->references('id')
                 ->on('users')
                 ->onUpdate('cascade')

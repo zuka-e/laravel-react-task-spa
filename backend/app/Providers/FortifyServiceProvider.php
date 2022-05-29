@@ -18,7 +18,6 @@ use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 
-
 class FortifyServiceProvider extends ServiceProvider
 {
     /**
@@ -38,12 +37,23 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->singleton(RegisterResponseContract::class, RegisterResponse::class);
-        $this->app->singleton(LoginResponseContract::class, LoginResponse::class);
-        $this->app->singleton(VerifyEmailController::class, VerifyEmailControllerOverride::class);
+        $this->app->singleton(
+            RegisterResponseContract::class,
+            RegisterResponse::class,
+        );
+        $this->app->singleton(
+            LoginResponseContract::class,
+            LoginResponse::class,
+        );
+        $this->app->singleton(
+            VerifyEmailController::class,
+            VerifyEmailControllerOverride::class,
+        );
 
         Fortify::createUsersUsing(CreateNewUser::class);
-        Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
+        Fortify::updateUserProfileInformationUsing(
+            UpdateUserProfileInformation::class,
+        );
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
@@ -52,7 +62,9 @@ class FortifyServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for('two-factor', function (Request $request) {
-            return Limit::perMinute(5)->by($request->session()->get('login.id'));
+            return Limit::perMinute(5)->by(
+                $request->session()->get('login.id'),
+            );
         });
     }
 }

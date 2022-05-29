@@ -21,13 +21,17 @@ class TaskBoardTest extends TestCase
     {
         parent::setUp();
 
-        TaskBoard::factory()->count(self::TOTAL_NUM_OF_TASKS_PER_PAGE)
-            ->for($this->guestUser)->create();
+        TaskBoard::factory()
+            ->count(self::TOTAL_NUM_OF_TASKS_PER_PAGE)
+            ->for($this->guestUser)
+            ->create();
     }
 
     public function test_unauthorized_unless_logged_in()
     {
-        TaskBoard::factory()->for($this->otherUser)->create();
+        TaskBoard::factory()
+            ->for($this->otherUser)
+            ->create();
 
         // index
         $otherUserId = $this->otherUser->id;
@@ -44,21 +48,24 @@ class TaskBoardTest extends TestCase
 
         // show
         $boardId = $this->guestUser->taskBoards()->first()->id;
-        $url = $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
+        $url =
+            $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
         $response = $this->getJson($url);
 
         $response->assertUnauthorized();
 
         // update
         $boardId = $this->guestUser->taskBoards()->first()->id;
-        $url = $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
+        $url =
+            $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
 
         $response->assertUnauthorized();
 
         // delete
         $boardId = $this->guestUser->taskBoards()->first()->id;
-        $url = $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
+        $url =
+            $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
         $response = $this->deleteJson($url);
 
         $response->assertUnauthorized();
@@ -66,7 +73,9 @@ class TaskBoardTest extends TestCase
 
     public function test_forbidden_from_accessing_others_data()
     {
-        TaskBoard::factory()->for($this->otherUser)->create();
+        TaskBoard::factory()
+            ->for($this->otherUser)
+            ->create();
 
         $this->login($this->guestUser);
 
@@ -85,21 +94,24 @@ class TaskBoardTest extends TestCase
 
         // show
         $boardId = $this->guestUser->taskBoards()->first()->id;
-        $url = $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
+        $url =
+            $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
         $response = $this->getJson($url);
 
         $response->assertForbidden();
 
         // update
         $boardId = $this->guestUser->taskBoards()->first()->id;
-        $url = $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
+        $url =
+            $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
 
         $response->assertForbidden();
 
         // delete
         $boardId = $this->guestUser->taskBoards()->first()->id;
-        $url = $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
+        $url =
+            $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
         $response = $this->deleteJson($url);
 
         $response->assertForbidden();
@@ -114,10 +126,10 @@ class TaskBoardTest extends TestCase
         $response = $this->getJson($url);
 
         $response->assertJson(
-            fn (AssertableJson $json) =>
-            $json->has('meta') // JSONのkey有無をテスト
+            fn(AssertableJson $json) => $json
+                ->has('meta') // JSONのkey有無をテスト
                 ->has('links')
-                ->has('data', self::TOTAL_NUM_OF_TASKS_PER_PAGE)
+                ->has('data', self::TOTAL_NUM_OF_TASKS_PER_PAGE),
         );
     }
 
@@ -125,22 +137,28 @@ class TaskBoardTest extends TestCase
     {
         $this->login($this->guestUser);
 
-        $firstBoard = TaskBoard::factory()->for($this->guestUser)->create([
-            'title' => 'first board title',
-            'updated_at' => Carbon::now()->addDay(-1)
-        ]);
+        $firstBoard = TaskBoard::factory()
+            ->for($this->guestUser)
+            ->create([
+                'title' => 'first board title',
+                'updated_at' => Carbon::now()->addDay(-1),
+            ]);
 
         $userId = $this->guestUser->id;
         $url = $this->routePrefix . "/users/${userId}/task-boards?page=2";
         $response = $this->getJson($url); // 2ページ目
 
-        $response->assertJson(fn (AssertableJson $json) => $json->has(
-            'data.0',
-            fn (AssertableJson $json) =>
-            $json->where('id', $firstBoard->id)
-                ->where('title', $firstBoard->title)
-                ->etc()
-        )->etc());
+        $response->assertJson(
+            fn(AssertableJson $json) => $json
+                ->has(
+                    'data.0',
+                    fn(AssertableJson $json) => $json
+                        ->where('id', $firstBoard->id)
+                        ->where('title', $firstBoard->title)
+                        ->etc(),
+                )
+                ->etc(),
+        );
     }
 
     public function test_validate_request_when_created()
@@ -172,11 +190,15 @@ class TaskBoardTest extends TestCase
         $response = $this->postJson($url, $emptyRequest);
         $response->assertStatus(201);
 
-        $tooLongRequest = $successfulRequest + ['description' => str_repeat('a', floor(65535 / 3) + 1)];
+        $tooLongRequest = $successfulRequest + [
+            'description' => str_repeat('a', floor(65535 / 3) + 1),
+        ];
         $response = $this->postJson($url, $tooLongRequest);
         $response->assertStatus(422);
 
-        $successfulRequest = $successfulRequest + ['description' => str_repeat('亜', floor(65535 / 3))];
+        $successfulRequest = $successfulRequest + [
+            'description' => str_repeat('亜', floor(65535 / 3)),
+        ];
         $response = $this->postJson($url, $successfulRequest);
         $response->assertStatus(201);
     }
@@ -211,11 +233,15 @@ class TaskBoardTest extends TestCase
         $response = $this->patchJson($url, $emptyRequest);
         $response->assertStatus(200);
 
-        $tooLongRequest = ['description' => str_repeat('a', floor(65535 / 3) + 1)];
+        $tooLongRequest = [
+            'description' => str_repeat('a', floor(65535 / 3) + 1),
+        ];
         $response = $this->patchJson($url, $tooLongRequest);
         $response->assertStatus(422);
 
-        $successfulRequest = ['description' => str_repeat('亜', floor(65535 / 3))];
+        $successfulRequest = [
+            'description' => str_repeat('亜', floor(65535 / 3)),
+        ];
         $response = $this->patchJson($url, $successfulRequest);
         $response->assertStatus(200);
 
@@ -263,7 +289,7 @@ class TaskBoardTest extends TestCase
         $this->login($this->guestUser);
 
         $userId = $this->guestUser->id;
-        $boardId = (string)Str::uuid();
+        $boardId = (string) Str::uuid();
         $url = $this->routePrefix . "/users/${userId}/task-boards/${boardId}";
 
         $successfulRequest = ['title' => str_repeat('!', 20)];

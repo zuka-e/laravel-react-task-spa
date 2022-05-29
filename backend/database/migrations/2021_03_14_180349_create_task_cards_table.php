@@ -22,7 +22,8 @@ class CreateTaskCardsTable extends Migration
             $table->boolean('done')->default(false);
             $table->timestamps();
 
-            $table->foreign('user_id')
+            $table
+                ->foreign('user_id')
                 ->references('id')
                 ->on('users')
                 ->onUpdate('cascade')

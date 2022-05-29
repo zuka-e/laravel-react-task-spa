@@ -34,7 +34,10 @@ class DeleteUnverifiedUser implements ShouldQueue, ShouldBeUnique
     {
         // SQL => DB::delete('delete from users where email_verified_at is null');
         $unverified_user = User::where('email_verified_at', null);
-        Log::debug('App\Jobs\DeleteUnverifiedUser; Deleted User => ' . $unverified_user->pluck('email', 'id'));
+        Log::debug(
+            'App\Jobs\DeleteUnverifiedUser; Deleted User => ' .
+                $unverified_user->pluck('email', 'id'),
+        );
         $unverified_user->delete();
     }
 }

@@ -40,7 +40,9 @@ class TaskListController extends Controller
         $newList->user()->associate($taskBoard->user);
         $newList->taskBoard()->associate($taskBoard);
 
-        if ($newList->save()) return new TaskListResource($newList);
+        if ($newList->save()) {
+            return new TaskListResource($newList);
+        }
     }
 
     /**
@@ -54,16 +56,22 @@ class TaskListController extends Controller
         //
     }
 
-    public function update(TaskListRequest $request, string $taskBoard, TaskList $taskList)
-    {
+    public function update(
+        TaskListRequest $request,
+        string $taskBoard,
+        TaskList $taskList,
+    ) {
         $validated = $request->validated();
 
-        if ($taskList->fill($validated)->save())
+        if ($taskList->fill($validated)->save()) {
             return new TaskListResource($taskList);
+        }
     }
 
     public function destroy(string $taskBoard, TaskList $taskList)
     {
-        if ($taskList->delete()) return new TaskListResource($taskList);
+        if ($taskList->delete()) {
+            return new TaskListResource($taskList);
+        }
     }
 }

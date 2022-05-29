@@ -4,7 +4,6 @@ use Laravel\Telescope\Http\Middleware\Authorize;
 use Laravel\Telescope\Watchers;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Telescope Domain
@@ -75,10 +74,7 @@ return [
     |
     */
 
-    'middleware' => [
-        'web',
-        Authorize::class,
-    ],
+    'middleware' => ['web', Authorize::class],
 
     /*
     |--------------------------------------------------------------------------
@@ -95,9 +91,7 @@ return [
         // 'api/*'
     ],
 
-    'ignore_paths' => [
-        'nova-api*',
-    ],
+    'ignore_paths' => ['nova-api*'],
 
     'ignore_commands' => [
         //
@@ -130,7 +124,10 @@ return [
             'ignore' => [],
         ],
 
-        Watchers\ExceptionWatcher::class => env('TELESCOPE_EXCEPTION_WATCHER', true),
+        Watchers\ExceptionWatcher::class => env(
+            'TELESCOPE_EXCEPTION_WATCHER',
+            true,
+        ),
         Watchers\JobWatcher::class => env('TELESCOPE_JOB_WATCHER', true),
         Watchers\LogWatcher::class => env('TELESCOPE_LOG_WATCHER', true),
         Watchers\MailWatcher::class => env('TELESCOPE_MAIL_WATCHER', true),
@@ -141,7 +138,10 @@ return [
             'hydrations' => true,
         ],
 
-        Watchers\NotificationWatcher::class => env('TELESCOPE_NOTIFICATION_WATCHER', true),
+        Watchers\NotificationWatcher::class => env(
+            'TELESCOPE_NOTIFICATION_WATCHER',
+            true,
+        ),
 
         Watchers\QueryWatcher::class => [
             'enabled' => env('TELESCOPE_QUERY_WATCHER', true),
@@ -162,7 +162,10 @@ return [
             'ignore_packages' => true,
         ],
 
-        Watchers\ScheduleWatcher::class => env('TELESCOPE_SCHEDULE_WATCHER', true),
+        Watchers\ScheduleWatcher::class => env(
+            'TELESCOPE_SCHEDULE_WATCHER',
+            true,
+        ),
 
         Watchers\ViewWatcher::class => env('TELESCOPE_VIEW_WATCHER', true),
     ],
