@@ -16,10 +16,9 @@ export const forgotPassword = createAsyncThunk<
   ForgotPasswordRequest,
   AsyncThunkConfig
 >('auth/forgotPassword', async (payload, thunkApi) => {
-  const { email } = payload;
   try {
     await apiClient({ apiRoute: false }).get(GET_CSRF_TOKEN_PATH);
-    await apiClient().post(FORGOT_PASSWORD_PATH, { email });
+    await apiClient().post(FORGOT_PASSWORD_PATH, payload);
   } catch (error) {
     return thunkApi.rejectWithValue(makeRejectValue(error));
   }

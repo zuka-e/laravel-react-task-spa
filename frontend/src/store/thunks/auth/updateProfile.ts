@@ -20,10 +20,9 @@ export const updateProfile = createAsyncThunk<
   UpdateProfileRequest,
   AsyncThunkConfig
 >('auth/updateProfile', async (payload, thunkApi) => {
-  const { name, email } = payload;
   try {
-    await apiClient().put(UPDATE_USER_INFO_PATH, { name, email });
-    return { name, email }; // fulfill時は、requestの値をそのまま`return`
+    await apiClient().put(UPDATE_USER_INFO_PATH, payload);
+    return payload; // fulfill時は、requestの値をそのまま`return`
   } catch (error) {
     return thunkApi.rejectWithValue(makeRejectValue(error));
   }

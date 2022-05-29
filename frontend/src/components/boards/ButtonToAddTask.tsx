@@ -47,11 +47,7 @@ const ButtonToAddTask: React.FC<ButtonToAddTaskProps> = (props) => {
   };
 
   return (
-    <ClickAwayListener
-      mouseEvent='onMouseUp'
-      touchEvent='onTouchEnd'
-      onClickAway={handleClickAway}
-    >
+    <ClickAwayListener mouseEvent='onMouseDown' onClickAway={handleClickAway}>
       {isEditing ? (
         <Card
           elevation={7}

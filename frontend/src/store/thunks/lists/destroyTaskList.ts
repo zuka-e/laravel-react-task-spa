@@ -11,7 +11,7 @@ export type DestroyTaskListResponse = {
 
 export const destroyTaskList = createAsyncThunk<
   DestroyTaskListResponse,
-  Pick<TaskList, 'id'> & Pick<TaskList, 'boardId'>,
+  Pick<TaskList, 'id' | 'boardId'>,
   AsyncThunkConfig
 >('lists/destroyTaskList', async (payload, thunkApi) => {
   const { setFlash } = await import('store/slices/authSlice');

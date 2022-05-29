@@ -8,11 +8,11 @@ import { setError404 } from 'store/slices/appSlice';
  * Laravelからデータの配列と共にページネーションに関する情報及びリンクをリクエストする際のレスポンスタイプ
  *
  * @property {Object[]} data 受け取るデータ本体の配列
- * @param {Object} links 隣り合うページ及び端のページのリンク
- * @param {Object} meta 現在のページやデータ総数などの情報
+ * @property {Object} links 隣り合うページ及び端のページのリンク
+ * @property {Object} meta 現在のページやデータ総数などの情報
  * @see https://laravel.com/docs/8.x/eloquent-resources#pagination
  */
-export type ResponseWithPagination<T extends DocumentBase> = {
+export type PaginationResponse<T extends DocumentBase> = {
   data: T[];
   links: {
     first: string;

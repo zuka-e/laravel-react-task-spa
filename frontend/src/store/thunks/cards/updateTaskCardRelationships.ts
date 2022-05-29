@@ -11,7 +11,7 @@ type UpdateTaskCardRelationshipsResponse = Pick<AxiosResponse, 'status'>;
 type UpdateTaskCardRelationshipsRequest = Pick<TaskCard, 'listId'>;
 
 type UpdateTaskCardRelationshipsArg = {
-  data: Pick<TaskCard, 'id'> & Pick<TaskCard, 'listId'>;
+  data: Pick<TaskCard, 'id' | 'listId'>;
   body: UpdateTaskCardRelationshipsRequest;
 };
 

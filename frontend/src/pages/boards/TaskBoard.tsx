@@ -107,7 +107,6 @@ const TaskBoard = () => {
               data={board}
               disableMargin
               inputStyle={classes.title}
-              helperText=''
             />
           </Grid>
           <Grid item>

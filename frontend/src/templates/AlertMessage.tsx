@@ -1,6 +1,6 @@
 import { Alert, AlertProps, AlertTitle, Color } from '@material-ui/lab';
 
-const headerMap: Record<Color, string> = {
+const headerMap: Record<Color, Capitalize<Color>> = {
   success: 'Success',
   info: 'Info',
   warning: 'Warning',
@@ -13,7 +13,7 @@ type AlertMessageProps = {
   body?: string;
 } & AlertProps;
 
-const AlertMessage: React.FC<AlertMessageProps> = (props) => {
+const AlertMessage = (props: AlertMessageProps) => {
   const { header, body, ...alertProps } = props;
   const title = props.header || headerMap[props.severity];
 

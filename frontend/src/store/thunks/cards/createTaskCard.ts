@@ -10,9 +10,7 @@ export type CreateTaskCardResponse = {
 };
 
 export type CreateTaskCardRequest = Pick<TaskCard, 'title'> &
-  Partial<Pick<TaskCard, 'content'>> &
-  Partial<Pick<TaskCard, 'deadline'>> &
-  Partial<Pick<TaskCard, 'done'>>;
+  Partial<Pick<TaskCard, 'content' | 'deadline' | 'done'>>;
 
 export const createTaskCard = createAsyncThunk<
   { boardId: string } & CreateTaskCardResponse,

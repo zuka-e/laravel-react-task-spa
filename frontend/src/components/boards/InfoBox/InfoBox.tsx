@@ -129,7 +129,7 @@ const Wrapper: React.FC = (props) => {
   };
 
   return (
-    <ClickAwayListener onClickAway={handleClickAway}>
+    <ClickAwayListener mouseEvent='onMouseDown' onClickAway={handleClickAway}>
       <div className='infoWrapper'>{props.children}</div>
     </ClickAwayListener>
   );

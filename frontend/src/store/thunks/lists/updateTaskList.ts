@@ -9,11 +9,11 @@ export type UpdateTaskListResponse = {
   data: TaskList;
 };
 
-export type UpdateTaskListRequest = Partial<Pick<TaskList, 'title'>> &
-  Partial<Pick<TaskList, 'description'>>;
+export type UpdateTaskListRequest = Partial<
+  Pick<TaskList, 'title' | 'description'>
+>;
 
-export type UpdateTaskListArg = Pick<TaskList, 'id'> &
-  Pick<TaskList, 'boardId'> &
+export type UpdateTaskListArg = Pick<TaskList, 'id' | 'boardId'> &
   UpdateTaskListRequest;
 
 export const updateTaskList = createAsyncThunk<

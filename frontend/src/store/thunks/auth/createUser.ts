@@ -22,12 +22,11 @@ export const createUser = createAsyncThunk<
   SignUpRequest,
   AsyncThunkConfig
 >('auth/createUser', async (payload, thunkApi) => {
-  const { email, password, password_confirmation } = payload;
   try {
     await apiClient({ apiRoute: false }).get(GET_CSRF_TOKEN_PATH);
     const response = await apiClient().post(
       SIGNUP_PATH,
-      { name: email, email, password, password_confirmation },
+      { name: payload.email, ...payload },
       { validateStatus: (status) => status === 201 } // `201`以外 error
     );
     return response?.data as SignUpResponse;
