@@ -1,0 +1,16 @@
+// https://code.visualstudio.com/docs/remote/devcontainerjson-reference
+{
+  "dockerComposeFile": [
+    "../docker-compose.yml",
+    "../docker-compose.extend.yml"
+  ],
+  "service": "laravel.test",
+  "workspaceFolder": "/var/www/html/backend",
+  "remoteUser": "sail",
+  "extensions": [
+    "bmewburn.vscode-intelephense-client", // PHP intellisense
+    "amiralizadeh9480.laravel-extra-intellisense", // Laravel intellisense
+    "dbaeumer.vscode-eslint", // ESLint
+    "esbenp.prettier-vscode" // Prettier
+  ]
+}
