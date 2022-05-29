@@ -36,11 +36,11 @@ const useStyles = makeStyles((theme: Theme) =>
 type EditableTitleProps = FormAction & {
   inputStyle?: string;
   disableMargin?: boolean;
-  rowsMax?: number;
+  maxRows?: number;
 } & TextFieldProps;
 
 const EditableTitle: React.FC<EditableTitleProps> = (props) => {
-  const { inputStyle, disableMargin, rowsMax, ...formProps } = props;
+  const { inputStyle, disableMargin, maxRows, ...formProps } = props;
   const { method, model, variant, ...textFieldProps } = formProps;
   const defaultValue = props.method === 'PATCH' ? props.data.title : '';
   const classes = useStyles();
@@ -79,7 +79,7 @@ const EditableTitle: React.FC<EditableTitleProps> = (props) => {
       value={defaultValue || ''} // `defaultValue`の場合初レンダリング時の値を固定
       inputProps={{ title: defaultValue }}
       multiline
-      rowsMax={props.rowsMax || maxRow}
+      maxRows={props.maxRows || maxRow}
       variant='outlined'
       InputProps={{
         onClick: handleOpenForm,
