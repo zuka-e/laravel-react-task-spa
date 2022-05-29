@@ -14,7 +14,7 @@ module "db" {
 
   engine         = local.engine
   engine_version = local.major_engine_version
-  instance_class = "db.t2.micro"
+  instance_class = "db.t3.micro"
 
   storage_type          = "gp2" # General purpose SSD
   allocated_storage     = 20    # 20 GiB
@@ -46,7 +46,7 @@ module "db" {
   # Log
   enabled_cloudwatch_logs_exports = ["audit", "error", "general", "slowquery"]
 
-  # Performance Insights not supported for this configuration (db.t2.micro).
+  # Performance Insights not supported for this configuration (db.t3.micro).
   # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.Overview.Engines.html
   # performance_insights_enabled          = true
   # performance_insights_retention_period = 7
