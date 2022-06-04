@@ -19,7 +19,7 @@ class UpdateUserPassword implements UpdatesUserPasswords
      */
     public function update($user, array $input)
     {
-        if ($user->email === env('GUEST_EMAIL')) {
+        if ($user->email === config('fortify.guest.email')) {
             abort(403);
         }
 

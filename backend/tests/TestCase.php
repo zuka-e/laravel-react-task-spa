@@ -17,12 +17,11 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->routePrefix =
-            env('API_ROUTE_PREFIX', '/api/') . env('API_VERSION', 'v1');
+        $this->routePrefix = config('fortify.prefix');
 
         $this->guestUser = User::factory()->create([
-            'name' => env('GUEST_NAME'),
-            'email' => env('GUEST_EMAIL'),
+            'name' => config('fortify.guest.name'),
+            'email' => config('fortify.guest.email'),
         ]);
 
         $this->otherUser = User::factory()->create();

@@ -18,8 +18,8 @@ class Authenticate extends Middleware
         if (!$request->expectsJson()) {
             $path = $request->session()->get('url.intended');
             $url = $path
-                ? url(env('SPA_URL') . '/login' . '?dest=' . $path)
-                : url(env('SPA_URL') . '/login');
+                ? url(config('fortify.home') . '/login' . '?dest=' . $path)
+                : url(config('fortify.home') . '/login');
             return $url;
         }
     }

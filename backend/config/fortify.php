@@ -140,4 +140,20 @@ return [
         //     'confirmPassword' => true,
         // ]),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Test User
+    |--------------------------------------------------------------------------
+    |
+    | The email-validated test user data that doesn't want to be updated.
+    | This user should be created before the application starts.
+    |
+    */
+
+    'guest' => [
+        'name' => env('GUEST_NAME', 'Guest'),
+        'email' => env('GUEST_EMAIL', 'test@example.com'),
+        'password' => env('GUEST_PASSWORD', 'password'),
+    ],
 ];

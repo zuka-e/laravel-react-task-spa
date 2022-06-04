@@ -78,6 +78,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Telescope Authenticated Users
+    |--------------------------------------------------------------------------
+    |
+    | The following array lists the "watchers" that will be registered with
+    | Telescope. The watchers gather the application's profile data when
+    | a request or task is executed. Feel free to customize this list.
+    |
+    */
+
+    'user' => [
+        'emails' => [env('ADMIN_EMAIL')],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Allowed / Ignored Paths & Commands
     |--------------------------------------------------------------------------
     |
