@@ -18,7 +18,8 @@ services:
       WORKING_DIR: '${WORKING_DIR}'
       BACKEND_DIR: '${BACKEND_DIR}'
       LARAVEL_SAIL: 1
-    working_dir: '${WORKING_DIR}'
+    # Starting directory in the container
+    working_dir: '${WORKIN_DIR}/${BACKEND_DIR}'
     volumes:
       - '.:${WORKING_DIR}/${BACKEND_DIR}'
       - 'vendor:${WORKING_DIR}/${BACKEND_DIR}/vendor'
