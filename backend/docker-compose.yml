@@ -8,21 +8,23 @@ services:
       # ref. `Dockerfile`.`ARG`
       args:
         WWWGROUP: '${WWWGROUP}'
-        WORKDIR: '${WORKING_DIR}'
+        WORKDIR: '${PROJECT_DIR}'
     image: sail-8.1/app
     ports:
       - '${APP_PORT:-80}:80'
     # ref. `start-container`, `supervisord.conf`
     environment:
+      LANG: 'C.UTF-8'
       WWWUSER: '${WWWUSER}'
-      WORKING_DIR: '${WORKING_DIR}'
+      PROJECT_DIR: '${PROJECT_DIR}'
       BACKEND_DIR: '${BACKEND_DIR}'
       LARAVEL_SAIL: 1
-    working_dir: '${WORKING_DIR}'
+    # Starting directory in the container
+    working_dir: '${PROJECT_DIR}/${BACKEND_DIR}'
     volumes:
-      - '.:${WORKING_DIR}/${BACKEND_DIR}'
-      - 'vendor:${WORKING_DIR}/${BACKEND_DIR}/vendor'
-      - 'node_modules:${WORKING_DIR}/${BACKEND_DIR}/node_modules'
+      - '.:${PROJECT_DIR}/${BACKEND_DIR}'
+      - 'vendor:${PROJECT_DIR}/${BACKEND_DIR}/vendor'
+      - 'node_modules:${PROJECT_DIR}/${BACKEND_DIR}/node_modules'
     networks:
       - sail
     depends_on:
