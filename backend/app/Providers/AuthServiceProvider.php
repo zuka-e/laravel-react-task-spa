@@ -33,7 +33,7 @@ class AuthServiceProvider extends ServiceProvider
         VerifyEmail::toMailUsing(function ($notifiable, $url) {
             return (new MailMessage())
                 ->subject(Lang::get('Verify Your Email Address'))
-                ->greeting(Lang::get('Thanks for registraion'))
+                ->greeting(Lang::get('Thanks for registration'))
                 ->line(
                     Lang::get(
                         'Please click the button below to verify your email address.',
