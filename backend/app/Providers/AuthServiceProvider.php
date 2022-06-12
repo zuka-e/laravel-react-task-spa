@@ -53,7 +53,7 @@ class AuthServiceProvider extends ServiceProvider
         ResetPassword::toMailUsing(function ($notifiable, string $token) {
             $email = $notifiable->getEmailForPasswordReset();
             $queryParams = '?token=' . $token . '&email=' . $email;
-            $url = env('SPA_URL') . '/reset-password' . $queryParams;
+            $url = config('fortify.home') . '/reset-password' . $queryParams;
 
             return (new MailMessage())
                 ->subject(Lang::get('Reset Password Notification'))

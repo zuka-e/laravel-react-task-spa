@@ -132,6 +132,9 @@ jobs:
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
 
+      - name: Cache Bootstrap Files
+        run: php artisan optimize
+
       - name: Install Serverless globally
         run: npm install -g serverless
 
