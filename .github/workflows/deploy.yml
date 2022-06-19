@@ -146,10 +146,11 @@ jobs:
             --stage dev \
             --path provider.environment \
             | sed "s/: /=/" >> .env
-          serverless print \
+          echo AWS_DEFAULT_REGION=$(
+            serverless print \
             --stage dev \
-            --path provider.region \
-            | sed "s/: /=/" >> .env
+            --path provider.region
+          ) >> .env
           # https://www.serverless.com/framework/docs/environment-variables#support-for-env-files
           rm .env.dev
         env:
