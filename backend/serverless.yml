@@ -60,6 +60,7 @@ provider:
 
   # https://www.serverless.com/framework/docs/providers/aws/guide/variables
   environment:
+    AWS_DEFAULT_REGION: ${env:AWS_DEFAULT_REGION}
     APP_NAME: ${env:APP_NAME}
     APP_KEY: ${env:APP_KEY}
     APP_URL: https://api.${ssm:/${env:APP_NAME}/${sls:stage}/DOMAIN_NAME}
