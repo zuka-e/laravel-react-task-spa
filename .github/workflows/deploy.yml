@@ -147,6 +147,8 @@ jobs:
             --path provider.environment \
             | sed "s/: /=/" >> .env
         env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           APP_KEY: ${{ secrets.APP_KEY }}
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
 
