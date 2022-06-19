@@ -129,12 +129,6 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --prefer-dist --optimize-autoloader --no-dev
 
-      - name: Directory Permissions
-        run: chmod -R 777 storage bootstrap/cache
-
-      - name: Cache Bootstrap Files
-        run: php artisan optimize
-
       - name: Install Serverless globally
         run: npm install -g serverless
 
@@ -146,11 +140,24 @@ jobs:
             --secret ${{ secrets.AWS_SECRET_ACCESS_KEY }} \
             --profile dev
 
-      - name: Serverless Deploy
-        run: serverless deploy --stage dev --aws-profile dev --verbose
+      - name: Setup Environment variables
+        run: |
+          serverless print \
+            --stage dev \
+            --path provider.environment \
+            | sed "s/: /=/" >> .env
         env:
           APP_KEY: ${{ secrets.APP_KEY }}
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+
+      - name: Directory Permissions
+        run: chmod -R 777 storage bootstrap/cache
+
+      - name: Cache Bootstrap Files
+        run: php artisan optimize
+
+      - name: Serverless Deploy
+        run: serverless deploy --stage dev --verbose
 
       - name: Compile Assets
         run: npm run prod
