@@ -3,9 +3,6 @@ service: ${env:APP_NAME}
 # https://www.serverless.com/framework/docs/deprecations#automatic-loading-environment-variables-from-env-and-envstage-files
 useDotenv: true
 
-# https://www.serverless.com/framework/docs/providers/aws/guide/variables#reference-variables-using-the-ssm-parameter-store
-variablesResolutionMode: 20210326
-
 custom:
   # https://github.com/amplify-education/serverless-domain-manager
   # 1. 事前に作成した証明書(by Terraform)を使用してカスタムドメイン(domainName)作成
