@@ -19,8 +19,6 @@ custom:
     autoDomain: true
 
 provider:
-  # https://www.serverless.com/framework/docs/deprecations#default-providerlambdahashingversion
-  lambdaHashingVersion: 20201221
   name: aws
   region: ${opt:region, env:AWS_DEFAULT_REGION}
   stage: ${opt:stage}
