@@ -10,8 +10,10 @@ fi
 
 chmod -R ugo+rw /.composer
 
-mkdir -p $BACKEND_DIR/{node_modules,vendor} \
-    && chown -R sail:sail $BACKEND_DIR/{node_modules,vendor}
+# Relative path to `working_dir` in `docker-compose.yml` is used.
+# Absolute path, ${PROJECT_DIR}/${BACKEND_DIR}/, can also be used.
+mkdir -p node_modules vendor \
+    && chown -R sail:sail node_modules vendor
 
 if [ $# -gt 0 ]; then
     exec gosu $WWWUSER "$@"
