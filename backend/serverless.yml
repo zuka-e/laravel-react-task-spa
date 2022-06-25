@@ -1,13 +1,10 @@
 service: ${env:APP_NAME}
 
+# https://www.serverless.com/framework/docs/deprecations#notification-mode
+deprecationNotificationMode: warn
+
 # https://www.serverless.com/framework/docs/deprecations#automatic-loading-environment-variables-from-env-and-envstage-files
 useDotenv: true
-
-# https://www.serverless.com/framework/docs/deprecations#configvalidationmode-error-will-be-new-default
-configValidationMode: error
-
-# https://www.serverless.com/framework/docs/providers/aws/guide/variables#reference-variables-using-the-ssm-parameter-store
-variablesResolutionMode: 20210326
 
 custom:
   # https://github.com/amplify-education/serverless-domain-manager
@@ -25,8 +22,6 @@ custom:
     autoDomain: true
 
 provider:
-  # https://www.serverless.com/framework/docs/deprecations#default-providerlambdahashingversion
-  lambdaHashingVersion: 20201221
   name: aws
   region: ${opt:region, env:AWS_DEFAULT_REGION}
   stage: ${opt:stage}
