@@ -1,5 +1,8 @@
 service: ${env:APP_NAME}
 
+# https://www.serverless.com/framework/docs/deprecations#notification-mode
+deprecationNotificationMode: warn
+
 # https://www.serverless.com/framework/docs/deprecations#automatic-loading-environment-variables-from-env-and-envstage-files
 useDotenv: true
 
