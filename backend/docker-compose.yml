@@ -30,16 +30,6 @@ services:
     depends_on:
       - mysql
       - redis
-  mysql.test:
-    image: 'mysql:8.0'
-    ports:
-      - '${FORWARD_TEST_DB_PORT:-3307}:3306'
-    environment:
-      MYSQL_ROOT_HOST: '%'
-      MYSQL_DATABASE: '${DB_DATABASE}'
-      MYSQL_ALLOW_EMPTY_PASSWORD: 1
-    networks:
-      - sail
   mysql:
     image: 'mysql:8.0'
     ports:
@@ -56,6 +46,16 @@ services:
       test: ['CMD', 'mysqladmin', 'ping', '-p${DB_PASSWORD}']
       retries: 3
       timeout: 5s
+  mysql.test:
+    image: 'mysql:8.0'
+    ports:
+      - '${FORWARD_TEST_DB_PORT:-3307}:3306'
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    networks:
+      - sail
   redis:
     image: 'redis:alpine'
     ports:
