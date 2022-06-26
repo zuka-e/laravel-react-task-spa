@@ -7,14 +7,18 @@ deprecationNotificationMode: warn
 useDotenv: true
 
 custom:
+  # https://www.serverless.com/framework/docs/providers/aws/guide/variables#reference-properties-in-serverlessyml
+  ssmPrefix: /${env:PROJECT}/${sls:stage}
+  # https://www.serverless.com/framework/docs/providers/aws/guide/variables#reference-variables-using-the-ssm-parameter-store
+  domainName: ${ssm:${self:custom.ssmPrefix}/DOMAIN_NAME}
   # https://github.com/amplify-education/serverless-domain-manager
   # 1. 事前に作成した証明書(by Terraform)を使用してカスタムドメイン(domainName)作成
   # 2. 指定したホストゾーン(hostsZoneId)にカスタムドメインのAレコードを登録
   # 3. API Gateway作成後 APIマッピングを設定
   customDomain:
-    hostsZoneId: ${ssm:/${env:PROJECT}/${sls:stage}/HOSTED_ZONE_ID}
-    domainName: api.${ssm:/${env:PROJECT}/${sls:stage}/DOMAIN_NAME}
-    certificateArn: ${ssm:/${env:PROJECT}/${sls:stage}/CERTIFICATE_ARN}
+    hostsZoneId: ${ssm:${self:custom.ssmPrefix}/HOSTED_ZONE_ID}
+    domainName: api.${self:custom.domainName}
+    certificateArn: ${ssm:${self:custom.ssmPrefix}/CERTIFICATE_ARN}
     createRoute53Record: true
     endpointType: 'regional'
     securityPolicy: tls_1_2
@@ -40,7 +44,7 @@ provider:
     # https://www.serverless.com/framework/docs/providers/aws/events/http-api#cors-setup
     cors:
       allowedOrigins:
-        - https://www.${ssm:/${env:PROJECT}/${sls:stage}/DOMAIN_NAME}
+        - https://www.${self:custom.domainName}
       allowedHeaders:
         - Content-Type
         - X-XSRF-TOKEN
@@ -59,29 +63,29 @@ provider:
     APP_ENV: ${env:APP_ENV}
     APP_KEY: ${env:APP_KEY}
     APP_DEBUG: ${env:APP_DEBUG}
-    APP_URL: https://api.${ssm:/${env:PROJECT}/${sls:stage}/DOMAIN_NAME}
+    APP_URL: https://api.${self:custom.domainName}
     LOG_CHANNEL: ${env:LOG_CHANNEL, "stderr"}
     LOG_LEVEL: ${env:LOG_LEVEL}
     DB_CONNECTION: ${env:DB_CONNECTION}
     DB_PORT: ${env:DB_PORT}
-    DB_HOST: ${ssm:/${env:PROJECT}/${sls:stage}/DB_HOST}
-    DB_DATABASE: ${ssm:/${env:PROJECT}/${sls:stage}/DB_DATABASE}
-    DB_USERNAME: ${ssm:/${env:PROJECT}/${sls:stage}/DB_USERNAME}
-    DB_PASSWORD: ${ssm:/${env:PROJECT}/${sls:stage}/DB_PASSWORD}
+    DB_HOST: ${ssm:${self:custom.ssmPrefix}/DB_HOST}
+    DB_DATABASE: ${ssm:${self:custom.ssmPrefix}/DB_DATABASE}
+    DB_USERNAME: ${ssm:${self:custom.ssmPrefix}/DB_USERNAME}
+    DB_PASSWORD: ${ssm:${self:custom.ssmPrefix}/DB_PASSWORD}
     CACHE_DRIVER: ${env:CACHE_DRIVER}
     SESSION_DRIVER: ${env:SESSION_DRIVER}
-    SESSION_DOMAIN: .${ssm:/${env:PROJECT}/${sls:stage}/DOMAIN_NAME}
+    SESSION_DOMAIN: .${self:custom.domainName}
     SESSION_LIFETIME: ${env:SESSION_LIFETIME}
     SESSION_SECURE_COOKIE: ${env:SESSION_SECURE_COOKIE, "true"}
-    SANCTUM_STATEFUL_DOMAINS: www.${ssm:/${env:PROJECT}/${sls:stage}/DOMAIN_NAME}
-    SPA_URL: https://www.${ssm:/${env:PROJECT}/${sls:stage}/DOMAIN_NAME}
+    SANCTUM_STATEFUL_DOMAINS: www.${self:custom.domainName}
+    SPA_URL: https://www.${self:custom.domainName}
     MAIL_MAILER: ${env:MAIL_MAILER}
     MAIL_PORT: ${env:MAIL_PORT}
     MAIL_HOST: ${env:MAIL_HOST}
-    MAIL_USERNAME: ${ssm:/${env:PROJECT}/${sls:stage}/MAIL_USERNAME}
-    MAIL_PASSWORD: ${ssm:/${env:PROJECT}/${sls:stage}/MAIL_PASSWORD}
+    MAIL_USERNAME: ${ssm:${self:custom.ssmPrefix}/MAIL_USERNAME}
+    MAIL_PASSWORD: ${ssm:${self:custom.ssmPrefix}/MAIL_PASSWORD}
     MAIL_ENCRYPTION: ${env:MAIL_ENCRYPTION}
-    MAIL_FROM_ADDRESS: no-reply@${ssm:/${env:PROJECT}/${sls:stage}/DOMAIN_NAME}
+    MAIL_FROM_ADDRESS: no-reply@${self:custom.domainName}
     MAIL_FROM_NAME: ${env:MAIL_FROM_NAME}
     ADMIN_EMAIL: ${env:ADMIN_EMAIL}
     GUEST_NAME: ${env:GUEST_NAME}
@@ -90,8 +94,8 @@ provider:
   # https://www.serverless.com/framework/docs/providers/aws/guide/functions#vpc-configuration
   vpc:
     securityGroupIds:
-      - ${ssm:/${env:PROJECT}/${sls:stage}/SECURITY_GROUP_ID}
-    subnetIds: ${ssm:/${env:PROJECT}/${sls:stage}/PRIVATE_SUBNET_IDS}
+      - ${ssm:${self:custom.ssmPrefix}/SECURITY_GROUP_ID}
+    subnetIds: ${ssm:${self:custom.ssmPrefix}/PRIVATE_SUBNET_IDS}
 
 package:
   # https://www.serverless.com/framework/docs/deprecations#new-way-to-define-packaging-patterns
