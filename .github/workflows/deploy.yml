@@ -33,9 +33,9 @@ jobs:
       - name: Setup Terraform Variables
         run: |
           cat << EOF >> terraform.tfvars
-          project = ${{ env.PROJECT }}
-          stage = ${{ env.STAGE }}
-          aws_region = ${{ env.AWS_DEFAULT_REGION }}
+          project = "${{ env.PROJECT }}"
+          stage = "${{ env.STAGE }}"
+          aws_region = "${{ env.AWS_DEFAULT_REGION }}"
           EOF
           terraform fmt terraform.tfvars
 
