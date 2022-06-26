@@ -187,10 +187,8 @@ jobs:
               --with-decryption \
               --query Parameter.Value \
               --output text \
-              --profile ${{ env.STAGE }} \
           )
           aws s3 sync public/ s3://${S3_BUCKET}/public \
             --delete \
             --exclude index.php \
-            --profile ${{ env.STAGE }} \
             --acl public-read
