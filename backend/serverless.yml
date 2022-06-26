@@ -65,7 +65,7 @@ provider:
     APP_KEY: ${env:APP_KEY}
     APP_DEBUG: ${env:APP_DEBUG}
     APP_URL: https://api.${self:custom.domainName}
-    MIX_ASSET_URL: https://${ssm:/${self:custom.ssmPrefix}/S3_BUCKET}.s3.amazonaws.com/public
+    MIX_ASSET_URL: https://${ssm:${self:custom.ssmPrefix}/S3_BUCKET}.s3.amazonaws.com/public
     LOG_CHANNEL: ${env:LOG_CHANNEL, "stderr"}
     LOG_LEVEL: ${env:LOG_LEVEL}
     DB_CONNECTION: ${env:DB_CONNECTION}
