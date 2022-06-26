@@ -7,7 +7,9 @@ on:
   pull_request:
 
 env:
-  AWS_REGION: us-east-1
+  PROJECT: Miwataru
+  STAGE: dev
+  AWS_DEFAULT_REGION: us-east-1
 
 jobs:
   # see: https://github.com/hashicorp/learn-terraform-github-actions
@@ -27,13 +29,23 @@ jobs:
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
+      # see: https://www.terraform.io/language/values/variables#variable-definitions-tfvars-files
+      - name: Setup Terraform Variables
+        run: |
+          cat << EOF >> terraform.tfvars
+          project = "${{ env.PROJECT }}"
+          stage = "${{ env.STAGE }}"
+          aws_region = "${{ env.AWS_DEFAULT_REGION }}"
+          EOF
+          terraform fmt terraform.tfvars
+
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
 
       - name: Terraform Init
         id: init
-        run: terraform init -backend-config=backend.dev.hcl
+        run: terraform init -backend-config=backend.${{ env.STAGE }}.hcl
 
       - name: Terraform Validate
         id: validate
@@ -74,7 +86,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: output
-            })
+            });
 
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
@@ -130,29 +142,24 @@ jobs:
         run: composer install --prefer-dist --optimize-autoloader --no-dev
 
       - name: Install Serverless globally
-        run: npm install -g serverless
+        run: npm install --location=global serverless
 
-      - name: Serverless Config Credentials
-        run: |
-          serverless config credentials \
-            --provider aws \
-            --key ${{ secrets.AWS_ACCESS_KEY_ID }} \
-            --secret ${{ secrets.AWS_SECRET_ACCESS_KEY }} \
-            --profile dev
+      # see: https://github.com/aws-actions/configure-aws-credentials
+      - name: Configure AWS Environment Variables and Enable aws Command
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
-      - name: Setup Environment variables
+      - name: Setup Environment Variables
         run: |
           serverless print \
-            --stage dev \
+            --stage ${{ env.STAGE }} \
             --path provider.environment \
             | sed "s/: /=/" >> .env
-          echo AWS_DEFAULT_REGION=$(
-            serverless print \
-            --stage dev \
-            --path provider.region
-          ) >> .env
           # https://www.serverless.com/framework/docs/environment-variables#support-for-env-files
-          rm .env.dev
+          rm .env.${{ env.STAGE }}
         env:
           APP_KEY: ${{ secrets.APP_KEY }}
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
@@ -167,28 +174,23 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Serverless Deploy
-        run: serverless deploy --stage dev --verbose
+        run: serverless deploy --stage ${{ env.STAGE }} --verbose
 
       - name: Compile Assets
         run: npm run prod
-
-      # see: https://github.com/aws-actions/configure-aws-credentials
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
 
       - name: Synchronize Assets with S3 Buckets
         run: |
           S3_BUCKET=$(
             aws ssm get-parameter \
-              --name "/Miwataru/dev/S3_BUCKET" \
+              --name "/${{ env.PROJECT }}/${{ env.STAGE }}/S3_BUCKET" \
               --with-decryption \
               --query Parameter.Value \
               --output text \
-              --profile dev \
+              --profile ${{ env.STAGE }} \
           )
           aws s3 sync public/ s3://${S3_BUCKET}/public \
-            --delete --exclude index.php --profile dev --acl public-read
+            --delete \
+            --exclude index.php \
+            --profile ${{ env.STAGE }} \
+            --acl public-read
