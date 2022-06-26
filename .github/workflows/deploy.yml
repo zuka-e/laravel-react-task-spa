@@ -141,7 +141,7 @@ jobs:
         run: composer install --prefer-dist --optimize-autoloader --no-dev
 
       - name: Install Serverless globally
-        run: npm install -g serverless
+        run: npm install --location=global serverless
 
       # see: https://github.com/aws-actions/configure-aws-credentials
       - name: Configure AWS Environment Variables and Enable aws Command
