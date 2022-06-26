@@ -1,4 +1,4 @@
-service: ${env:APP_NAME}
+service: ${env:PROJECT}
 
 # https://www.serverless.com/framework/docs/deprecations#notification-mode
 deprecationNotificationMode: warn
@@ -12,9 +12,9 @@ custom:
   # 2. 指定したホストゾーン(hostsZoneId)にカスタムドメインのAレコードを登録
   # 3. API Gateway作成後 APIマッピングを設定
   customDomain:
-    hostsZoneId: ${ssm:/${env:APP_NAME}/${sls:stage}/HOSTED_ZONE_ID}
-    domainName: api.${ssm:/${env:APP_NAME}/${sls:stage}/DOMAIN_NAME}
-    certificateArn: ${ssm:/${env:APP_NAME}/${sls:stage}/CERTIFICATE_ARN}
+    hostsZoneId: ${ssm:/${env:PROJECT}/${sls:stage}/HOSTED_ZONE_ID}
+    domainName: api.${ssm:/${env:PROJECT}/${sls:stage}/DOMAIN_NAME}
+    certificateArn: ${ssm:/${env:PROJECT}/${sls:stage}/CERTIFICATE_ARN}
     createRoute53Record: true
     endpointType: 'regional'
     securityPolicy: tls_1_2
@@ -40,7 +40,7 @@ provider:
     # https://www.serverless.com/framework/docs/providers/aws/events/http-api#cors-setup
     cors:
       allowedOrigins:
-        - https://www.${ssm:/${env:APP_NAME}/${sls:stage}/DOMAIN_NAME}
+        - https://www.${ssm:/${env:PROJECT}/${sls:stage}/DOMAIN_NAME}
       allowedHeaders:
         - Content-Type
         - X-XSRF-TOKEN
@@ -55,34 +55,34 @@ provider:
 
   # https://www.serverless.com/framework/docs/providers/aws/guide/variables
   environment:
-    APP_NAME: ${env:APP_NAME}
+    PROJECT: ${env:PROJECT}
     APP_KEY: ${env:APP_KEY}
-    APP_URL: https://api.${ssm:/${env:APP_NAME}/${sls:stage}/DOMAIN_NAME}
+    APP_URL: https://api.${ssm:/${env:PROJECT}/${sls:stage}/DOMAIN_NAME}
     API_ROUTE_PREFIX: ${env:API_ROUTE_PREFIX}
     API_VERSION: ${env:API_VERSION}
     LOG_CHANNEL: ${env:LOG_CHANNEL, "stderr"}
-    MIX_ASSET_URL: https://${ssm:/${env:APP_NAME}/${sls:stage}/S3_BUCKET}.s3.amazonaws.com/public
+    MIX_ASSET_URL: https://${ssm:/${env:PROJECT}/${sls:stage}/S3_BUCKET}.s3.amazonaws.com/public
     DB_CONNECTION: ${env:DB_CONNECTION}
     DB_PORT: ${env:DB_PORT}
-    DB_HOST: ${ssm:/${env:APP_NAME}/${sls:stage}/DB_HOST}
-    DB_DATABASE: ${ssm:/${env:APP_NAME}/${sls:stage}/DB_DATABASE}
-    DB_USERNAME: ${ssm:/${env:APP_NAME}/${sls:stage}/DB_USERNAME}
-    DB_PASSWORD: ${ssm:/${env:APP_NAME}/${sls:stage}/DB_PASSWORD}
+    DB_HOST: ${ssm:/${env:PROJECT}/${sls:stage}/DB_HOST}
+    DB_DATABASE: ${ssm:/${env:PROJECT}/${sls:stage}/DB_DATABASE}
+    DB_USERNAME: ${ssm:/${env:PROJECT}/${sls:stage}/DB_USERNAME}
+    DB_PASSWORD: ${ssm:/${env:PROJECT}/${sls:stage}/DB_PASSWORD}
     CACHE_DRIVER: ${env:CACHE_DRIVER}
     QUEUE_CONNECTION: ${env:QUEUE_CONNECTION}
     SESSION_DRIVER: ${env:SESSION_DRIVER}
-    SESSION_DOMAIN: .${ssm:/${env:APP_NAME}/${sls:stage}/DOMAIN_NAME}
+    SESSION_DOMAIN: .${ssm:/${env:PROJECT}/${sls:stage}/DOMAIN_NAME}
     SESSION_LIFETIME: ${env:SESSION_LIFETIME}
     SESSION_SECURE_COOKIE: ${env:SESSION_SECURE_COOKIE, "true"}
-    SANCTUM_STATEFUL_DOMAINS: www.${ssm:/${env:APP_NAME}/${sls:stage}/DOMAIN_NAME}
-    SPA_URL: https://www.${ssm:/${env:APP_NAME}/${sls:stage}/DOMAIN_NAME}
+    SANCTUM_STATEFUL_DOMAINS: www.${ssm:/${env:PROJECT}/${sls:stage}/DOMAIN_NAME}
+    SPA_URL: https://www.${ssm:/${env:PROJECT}/${sls:stage}/DOMAIN_NAME}
     MAIL_MAILER: ${env:MAIL_MAILER}
     MAIL_PORT: ${env:MAIL_PORT}
     MAIL_HOST: ${env:MAIL_HOST}
-    MAIL_USERNAME: ${ssm:/${env:APP_NAME}/${sls:stage}/MAIL_USERNAME}
-    MAIL_PASSWORD: ${ssm:/${env:APP_NAME}/${sls:stage}/MAIL_PASSWORD}
+    MAIL_USERNAME: ${ssm:/${env:PROJECT}/${sls:stage}/MAIL_USERNAME}
+    MAIL_PASSWORD: ${ssm:/${env:PROJECT}/${sls:stage}/MAIL_PASSWORD}
     MAIL_ENCRYPTION: ${env:MAIL_ENCRYPTION}
-    MAIL_FROM_ADDRESS: no-reply@${ssm:/${env:APP_NAME}/${sls:stage}/DOMAIN_NAME}
+    MAIL_FROM_ADDRESS: no-reply@${ssm:/${env:PROJECT}/${sls:stage}/DOMAIN_NAME}
     MAIL_FROM_NAME: ${env:MAIL_FROM_NAME}
     ADMIN_EMAIL: ${env:ADMIN_EMAIL}
     GUEST_NAME: ${env:GUEST_NAME}
@@ -91,8 +91,8 @@ provider:
   # https://www.serverless.com/framework/docs/providers/aws/guide/functions#vpc-configuration
   vpc:
     securityGroupIds:
-      - ${ssm:/${env:APP_NAME}/${sls:stage}/SECURITY_GROUP_ID}
-    subnetIds: ${ssm:/${env:APP_NAME}/${sls:stage}/PRIVATE_SUBNET_IDS}
+      - ${ssm:/${env:PROJECT}/${sls:stage}/SECURITY_GROUP_ID}
+    subnetIds: ${ssm:/${env:PROJECT}/${sls:stage}/PRIVATE_SUBNET_IDS}
 
 package:
   # https://www.serverless.com/framework/docs/deprecations#new-way-to-define-packaging-patterns
