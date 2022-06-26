@@ -69,10 +69,10 @@ provider:
     LOG_LEVEL: ${env:LOG_LEVEL}
     DB_CONNECTION: ${env:DB_CONNECTION}
     DB_PORT: ${env:DB_PORT}
-    DB_HOST: ${ssm:${self:custom.ssmPrefix}/DB_HOST}
-    DB_DATABASE: ${ssm:${self:custom.ssmPrefix}/DB_DATABASE}
-    DB_USERNAME: ${ssm:${self:custom.ssmPrefix}/DB_USERNAME}
-    DB_PASSWORD: ${ssm:${self:custom.ssmPrefix}/DB_PASSWORD}
+    DB_HOST: ${env:DB_HOST, ssm:${self:custom.ssmPrefix}/DB_HOST}
+    DB_DATABASE: ${env:DB_DATABASE, ssm:${self:custom.ssmPrefix}/DB_DATABASE}
+    DB_USERNAME: ${env:DB_USERNAME, ssm:${self:custom.ssmPrefix}/DB_USERNAME}
+    DB_PASSWORD: ${env:DB_PASSWORD, ssm:${self:custom.ssmPrefix}/DB_PASSWORD}
     CACHE_DRIVER: ${env:CACHE_DRIVER}
     SESSION_DRIVER: ${env:SESSION_DRIVER}
     SESSION_DOMAIN: .${self:custom.domainName}
@@ -83,8 +83,8 @@ provider:
     MAIL_MAILER: ${env:MAIL_MAILER}
     MAIL_PORT: ${env:MAIL_PORT}
     MAIL_HOST: ${env:MAIL_HOST}
-    MAIL_USERNAME: ${ssm:${self:custom.ssmPrefix}/MAIL_USERNAME}
-    MAIL_PASSWORD: ${ssm:${self:custom.ssmPrefix}/MAIL_PASSWORD}
+    MAIL_USERNAME: ${env:MAIL_USERNAME, ssm:${self:custom.ssmPrefix}/MAIL_USERNAME}
+    MAIL_PASSWORD: ${env:MAIL_PASSWORD, ssm:${self:custom.ssmPrefix}/MAIL_PASSWORD}
     MAIL_ENCRYPTION: ${env:MAIL_ENCRYPTION}
     MAIL_FROM_ADDRESS: no-reply@${self:custom.domainName}
     MAIL_FROM_NAME: ${env:MAIL_FROM_NAME}
