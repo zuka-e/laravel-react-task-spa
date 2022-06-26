@@ -55,13 +55,13 @@ provider:
 
   # https://www.serverless.com/framework/docs/providers/aws/guide/variables
   environment:
-    PROJECT: ${env:PROJECT}
+    APP_NAME: ${env:APP_NAME}
+    APP_ENV: ${env:APP_ENV}
     APP_KEY: ${env:APP_KEY}
+    APP_DEBUG: ${env:APP_DEBUG}
     APP_URL: https://api.${ssm:/${env:PROJECT}/${sls:stage}/DOMAIN_NAME}
-    API_ROUTE_PREFIX: ${env:API_ROUTE_PREFIX}
-    API_VERSION: ${env:API_VERSION}
     LOG_CHANNEL: ${env:LOG_CHANNEL, "stderr"}
-    MIX_ASSET_URL: https://${ssm:/${env:PROJECT}/${sls:stage}/S3_BUCKET}.s3.amazonaws.com/public
+    LOG_LEVEL: ${env:LOG_LEVEL}
     DB_CONNECTION: ${env:DB_CONNECTION}
     DB_PORT: ${env:DB_PORT}
     DB_HOST: ${ssm:/${env:PROJECT}/${sls:stage}/DB_HOST}
@@ -69,7 +69,6 @@ provider:
     DB_USERNAME: ${ssm:/${env:PROJECT}/${sls:stage}/DB_USERNAME}
     DB_PASSWORD: ${ssm:/${env:PROJECT}/${sls:stage}/DB_PASSWORD}
     CACHE_DRIVER: ${env:CACHE_DRIVER}
-    QUEUE_CONNECTION: ${env:QUEUE_CONNECTION}
     SESSION_DRIVER: ${env:SESSION_DRIVER}
     SESSION_DOMAIN: .${ssm:/${env:PROJECT}/${sls:stage}/DOMAIN_NAME}
     SESSION_LIFETIME: ${env:SESSION_LIFETIME}
