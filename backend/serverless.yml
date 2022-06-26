@@ -29,7 +29,8 @@ provider:
   name: aws
   region: ${opt:region, env:AWS_DEFAULT_REGION}
   stage: ${opt:stage}
-  profile: ${opt:aws-profile, opt:stage}
+  # https://www.serverless.com/framework/docs/providers/aws/guide/credentials
+  profile: ${opt:aws-profile, ''}
   runtime: provided.al2
   # https://www.serverless.com/framework/docs/providers/aws/guide/iam#the-default-iam-role
   iam:
