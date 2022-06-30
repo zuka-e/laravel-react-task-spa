@@ -15,24 +15,21 @@ class CreateTaskListsTable extends Migration
     {
         Schema::create('task_lists', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('user_id');
-            $table->uuid('task_board_id');
+            $table
+                ->foreignUuid('user_id')
+                ->comment('User ID')
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
+            $table
+                ->foreignUuid('task_board_id')
+                ->comment('Task Board ID')
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
             $table->string('title', 191);
             $table->text('description')->nullable();
             $table->timestamps();
-
-            $table
-                ->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
-            $table
-                ->foreign('task_board_id')
-                ->references('id')
-                ->on('task_boards')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
         });
     }
 

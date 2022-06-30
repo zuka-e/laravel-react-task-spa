@@ -14,14 +14,12 @@ class AddTaskListIdColumnsToTaskCardsTable extends Migration
     public function up()
     {
         Schema::table('task_cards', function (Blueprint $table) {
-            $table->uuid('task_list_id');
-
             $table
-                ->foreign('task_list_id')
-                ->references('id')
-                ->on('task_lists')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+                ->foreignUuid('task_list_id')
+                ->comment('Task List ID')
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
         });
     }
 
