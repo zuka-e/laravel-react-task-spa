@@ -31,6 +31,7 @@ class AddTaskListIdColumnsToTaskCardsTable extends Migration
     public function down()
     {
         Schema::table('task_cards', function (Blueprint $table) {
+            $table->dropForeign(['task_list_id']);
             $table->dropColumn('task_list_id');
         });
     }
