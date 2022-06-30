@@ -21,9 +21,14 @@ class TaskCardFactory extends Factory
      */
     public function definition()
     {
+        $createdAt = $this->faker->dateTimeBetween('-2 years');
+        $updatedAt = $this->faker->dateTimeBetween($createdAt);
+
         return [
             'title' => $this->faker->sentence,
-            'content' => $this->faker->paragraph,
+            'content' => implode("\n", $this->faker->paragraphs()),
+            'created_at' => $createdAt,
+            'updated_at' => $updatedAt,
         ];
     }
 }
