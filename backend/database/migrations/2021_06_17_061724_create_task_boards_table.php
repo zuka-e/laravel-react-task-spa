@@ -14,6 +14,8 @@ class CreateTaskBoardsTable extends Migration
     public function up()
     {
         Schema::create('task_boards', function (Blueprint $table) {
+            $table->comment('Group of task lists');
+
             $table->uuid('id')->primary();
             $table
                 ->foreignUuid('user_id')

@@ -14,6 +14,8 @@ class CreateTaskListsTable extends Migration
     public function up()
     {
         Schema::create('task_lists', function (Blueprint $table) {
+            $table->comment('Group of task cards');
+
             $table->uuid('id')->primary();
             $table
                 ->foreignUuid('user_id')
