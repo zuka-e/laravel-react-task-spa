@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\TaskCard;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class TaskCardSeeder extends Seeder
@@ -15,27 +14,9 @@ class TaskCardSeeder extends Seeder
      */
     public function run()
     {
-        $user = UserSeeder::$guestUser;
-        $anotherUser = UserSeeder::$anotherUser;
-
-        foreach ($user->taskBoards()->get() as $board) {
-            foreach ($board->taskLists as $list) {
-                TaskCard::factory()
-                    ->count(5)
-                    ->for($list)
-                    ->for($user)
-                    ->create();
-            }
-        }
-
-        foreach ($anotherUser->taskBoards()->get() as $board) {
-            foreach ($board->taskLists as $list) {
-                TaskCard::factory()
-                    ->count(5)
-                    ->for($list)
-                    ->for($anotherUser)
-                    ->create();
-            }
-        }
+        TaskCard::factory()
+            ->for(UserSeeder::$anotherUser)
+            ->for(UserSeeder::$anotherUser->taskLists->first())
+            ->create();
     }
 }

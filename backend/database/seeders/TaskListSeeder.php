@@ -14,23 +14,9 @@ class TaskListSeeder extends Seeder
      */
     public function run()
     {
-        $user = UserSeeder::$guestUser;
-        $anotherUser = UserSeeder::$anotherUser;
-
-        foreach ($user->taskBoards()->get() as $board) {
-            TaskList::factory()
-                ->count(21)
-                ->for($board)
-                ->for($user)
-                ->create();
-        }
-
-        foreach ($anotherUser->taskBoards()->get() as $board) {
-            TaskList::factory()
-                ->count(21)
-                ->for($board)
-                ->for($user)
-                ->create();
-        }
+        TaskList::factory()
+            ->for(UserSeeder::$anotherUser)
+            ->for(UserSeeder::$anotherUser->taskBoards->first())
+            ->create();
     }
 }
