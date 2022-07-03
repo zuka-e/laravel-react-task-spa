@@ -41,18 +41,15 @@ class TaskBoardRequest extends FormRequest
      */
     public function rules(Request $request)
     {
-        $maxTitle = floor(191 / 3);
-        $maxDescription = floor(65535 / 3);
-
         if ($request->method() === 'POST') {
             return [
-                'title' => "required|string|max:${maxTitle}",
-                'description' => "nullable|string|max:${maxDescription}",
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string|max:2000',
             ];
         } else {
             return [
-                'title' => "string|max:${maxTitle}",
-                'description' => "nullable|string|max:${maxDescription}",
+                'title' => 'string|max:255',
+                'description' => 'nullable|string|max:2000',
                 'list_index_map' => 'array',
                 'card_index_map' => 'array',
             ];

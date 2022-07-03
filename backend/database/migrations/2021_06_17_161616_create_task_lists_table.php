@@ -29,8 +29,8 @@ class CreateTaskListsTable extends Migration
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
-            $table->string('title', 191);
-            $table->text('description')->nullable();
+            $table->string('title', 255);
+            $table->string('description', 2000)->nullable();
             $table->timestamps();
         });
     }

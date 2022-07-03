@@ -23,8 +23,8 @@ class CreateTaskCardsTable extends Migration
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
-            $table->string('title', 191);
-            $table->text('content')->nullable();
+            $table->string('title', 255);
+            $table->string('content', 2000)->nullable();
             $table->dateTime('deadline')->nullable();
             $table->boolean('done')->default(false);
             $table->timestamps();

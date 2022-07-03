@@ -41,21 +41,18 @@ class TaskCardRequest extends FormRequest
      */
     public function rules(Request $request)
     {
-        $maxTitle = floor(191 / 3);
-        $maxContent = floor(65535 / 3);
-
         if ($request->method() === 'POST') {
             return [
-                'title' => "required|string|max:${maxTitle}",
-                'content' => "nullable|string|max:${maxContent}",
+                'title' => 'required|string|max:255',
+                'content' => 'nullable|string|max:2000',
                 'deadline' => 'date',
                 'done' => 'boolean',
             ];
         } else {
             return [
                 'list_id' => 'uuid',
-                'title' => "string|max:${maxTitle}",
-                'content' => "nullable|string|max:${maxContent}",
+                'title' => 'string|max:255',
+                'content' => 'nullable|string|max:2000',
                 'deadline' => 'date',
                 'done' => 'boolean',
             ];
