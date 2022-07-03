@@ -14,8 +14,6 @@ class TaskBoard extends Model
     {
         static::creating(function (TaskBoard $task_board) {
             $task_board->id = (string) Str::uuid();
-            $task_board->list_index_map = json_encode([], JSON_FORCE_OBJECT);
-            $task_board->card_index_map = json_encode([], JSON_FORCE_OBJECT);
         });
     }
 

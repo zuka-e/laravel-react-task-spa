@@ -14,8 +14,14 @@ class AddIndexColumnsToTaskBoardsTable extends Migration
     public function up()
     {
         Schema::table('task_boards', function (Blueprint $table) {
-            $table->json('list_index_map');
-            $table->json('card_index_map');
+            $table
+                ->json('list_index_map')
+                ->comment('Object with a List ID key and its sequence value')
+                ->nullable();
+            $table
+                ->json('card_index_map')
+                ->comment('Object with a Card ID key and its sequence value')
+                ->nullable();
         });
     }
 

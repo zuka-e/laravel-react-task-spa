@@ -50,8 +50,8 @@ class TaskBoardRequest extends FormRequest
             return [
                 'title' => 'string|max:255',
                 'description' => 'nullable|string|max:2000',
-                'list_index_map' => 'array',
-                'card_index_map' => 'array',
+                'list_index_map' => 'nullable|array',
+                'card_index_map' => 'nullable|array',
             ];
         }
     }
