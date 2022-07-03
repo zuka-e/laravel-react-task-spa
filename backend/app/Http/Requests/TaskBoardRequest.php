@@ -43,15 +43,15 @@ class TaskBoardRequest extends FormRequest
     {
         if ($request->method() === 'POST') {
             return [
-                'title' => 'required|string|max:255',
+                'title' => 'required|string|min:1|max:255',
                 'description' => 'nullable|string|max:2000',
             ];
         } else {
             return [
-                'title' => 'string|max:255',
+                'title' => 'string|min:1|max:255',
                 'description' => 'nullable|string|max:2000',
-                'list_index_map' => 'nullable|array',
-                'card_index_map' => 'nullable|array',
+                'list_index_map' => 'nullable|array|min:1',
+                'card_index_map' => 'nullable|array|min:1',
             ];
         }
     }

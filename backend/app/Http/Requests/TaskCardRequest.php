@@ -43,16 +43,16 @@ class TaskCardRequest extends FormRequest
     {
         if ($request->method() === 'POST') {
             return [
-                'title' => 'required|string|max:255',
-                'content' => 'nullable|string|max:2000',
+                'title' => 'required|string|min:1|max:255',
+                'content' => 'nullable|string|min:1|max:2000',
                 'deadline' => 'date',
                 'done' => 'boolean',
             ];
         } else {
             return [
                 'list_id' => 'uuid',
-                'title' => 'string|max:255',
-                'content' => 'nullable|string|max:2000',
+                'title' => 'string|min:1|max:255',
+                'content' => 'nullable|string|min:1|max:2000',
                 'deadline' => 'date',
                 'done' => 'boolean',
             ];
