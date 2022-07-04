@@ -10,25 +10,8 @@ class TaskBoard extends Model
 {
     use HasFactory;
 
-    protected static function booted()
-    {
-        static::creating(function (TaskBoard $task_board) {
-            $task_board->id = (string) Str::uuid();
-        });
-    }
-
-    /**
-     * Indicates if the model's ID is auto-incrementing.
-     *
-     * @var bool
-     */
     public $incrementing = false;
 
-    /**
-     * The data type of the auto-incrementing ID.
-     *
-     * @var string
-     */
     protected $keyType = 'string';
 
     protected $fillable = [
@@ -38,13 +21,18 @@ class TaskBoard extends Model
         'card_index_map',
     ];
 
-    protected $hidden = [];
-
     /** @see https://laravel.com/docs/8.x/eloquent-mutators#array-and-json-casting */
     protected $casts = [
         'list_index_map' => 'array',
         'card_index_map' => 'array',
     ];
+
+    protected static function booted()
+    {
+        static::creating(function (TaskBoard $task_board) {
+            $task_board->id = (string) Str::uuid();
+        });
+    }
 
     public function user()
     {

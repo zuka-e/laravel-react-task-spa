@@ -10,32 +10,18 @@ class TaskList extends Model
 {
     use HasFactory;
 
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
+    protected $fillable = ['title', 'description'];
+
     protected static function booted()
     {
         static::creating(function (TaskList $task_list) {
             $task_list->id = (string) Str::uuid();
         });
     }
-
-    /**
-     * Indicates if the model's ID is auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
-     * The data type of the auto-incrementing ID.
-     *
-     * @var string
-     */
-    protected $keyType = 'string';
-
-    protected $fillable = ['title', 'description'];
-
-    protected $hidden = [];
-
-    protected $casts = [];
 
     public function user()
     {

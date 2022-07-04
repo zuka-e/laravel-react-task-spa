@@ -12,13 +12,6 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
 
-    protected static function booted()
-    {
-        static::creating(function ($user) {
-            $user->id = (string) Str::uuid();
-        });
-    }
-
     /**
      * Indicates if the model's ID is auto-incrementing.
      *
@@ -55,6 +48,17 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected static function booted()
+    {
+        // A default value in the migration can also be used.
+        // `->default(new Expression('(UUID())'));`
+        // https://laravel.com/docs/9.x/migrations#default-expressions
+        // But the created model doesn't have `id`.
+        static::creating(function (User $user) {
+            $user->id = (string) Str::uuid();
+        });
+    }
 
     public function taskBoards()
     {
