@@ -48,11 +48,11 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function taskLists()
     {
-        return $this->hasManyThrough(TaskList::class, TaskBoard::class);
+        return $this->hasMany(TaskList::class);
     }
 
     public function taskCards()
     {
-        return $this->hasManyThrough(TaskCard::class, TaskList::class);
+        return $this->hasMany(TaskCard::class);
     }
 }
