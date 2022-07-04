@@ -12,43 +12,24 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
 
-    /**
-     * Indicates if the model's ID is auto-incrementing.
-     *
-     * @var bool
-     */
+    /** @see https://laravel.com/docs/9.x/eloquent#primary-keys */
     public $incrementing = false;
 
-    /**
-     * The data type of the auto-incrementing ID.
-     *
-     * @var string
-     */
+    /** @see https://laravel.com/docs/9.x/eloquent#primary-keys */
     protected $keyType = 'string';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+    /** @see https://laravel.com/docs/9.x/eloquent#mass-assignment */
     protected $fillable = ['name', 'email', 'password'];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
+    /** @see https://laravel.com/docs/9.x/eloquent-serialization#hiding-attributes-from-json */
     protected $hidden = ['password', 'remember_token'];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
+    /** @see https://laravel.com/docs/9.x/eloquent-mutators#attribute-casting */
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 
+    /** @see https://laravel.com/docs/9.x/eloquent#events-using-closures */
     protected static function booted()
     {
         // A default value in the migration can also be used.
