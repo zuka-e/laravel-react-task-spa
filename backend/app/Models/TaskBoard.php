@@ -29,8 +29,8 @@ class TaskBoard extends Model
 
     protected static function booted()
     {
-        static::creating(function (TaskBoard $task_board) {
-            $task_board->id = (string) Str::uuid();
+        static::creating(function (self $taskBoard) {
+            $taskBoard->id = (string) Str::uuid();
         });
     }
 

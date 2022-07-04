@@ -55,7 +55,7 @@ class User extends Authenticatable implements MustVerifyEmail
         // `->default(new Expression('(UUID())'));`
         // https://laravel.com/docs/9.x/migrations#default-expressions
         // But the created model doesn't have `id`.
-        static::creating(function (User $user) {
+        static::creating(function (self $user) {
             $user->id = (string) Str::uuid();
         });
     }

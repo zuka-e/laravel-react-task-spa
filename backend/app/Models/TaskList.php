@@ -18,8 +18,8 @@ class TaskList extends Model
 
     protected static function booted()
     {
-        static::creating(function (TaskList $task_list) {
-            $task_list->id = (string) Str::uuid();
+        static::creating(function (self $taskList) {
+            $taskList->id = (string) Str::uuid();
         });
     }
 
