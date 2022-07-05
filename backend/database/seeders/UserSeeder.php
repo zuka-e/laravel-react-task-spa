@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\TaskBoard;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -25,11 +26,13 @@ class UserSeeder extends Seeder
         // Use `config()` instead. To remove the cache, run `php artisan config:clear`
         // (The cached config is stored in `bootstrap/cache/config.php`)
 
-        self::$guestUser = User::factory()->create([
-            'name' => config('fortify.guest.name'),
-            'email' => config('fortify.guest.email'),
-            'password' => Hash::make(config('fortify.guest.password')),
-        ]);
+        self::$guestUser = User::factory()
+            ->has(TaskBoard::factory()->count(40))
+            ->create([
+                'name' => config('fortify.guest.name'),
+                'email' => config('fortify.guest.email'),
+                'password' => Hash::make(config('fortify.guest.password')),
+            ]);
 
         self::$anotherUser = User::factory()->create();
     }

@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\TaskBoard;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -13,16 +12,12 @@ class TaskBoardTest extends TestCase
 {
     use RefreshDatabase; // DBリフレッシュ (`id`カラムの連番はリセットされない)
 
-    // クラス定数
-    const TOTAL_NUM_OF_TASKS = 21; // テスト環境で作成するデータの総量
-    const TOTAL_NUM_OF_TASKS_PER_PAGE = 20; // アクション内paginateメソッドの引数
-
     public function setUp(): void
     {
         parent::setUp();
 
         TaskBoard::factory()
-            ->count(self::TOTAL_NUM_OF_TASKS_PER_PAGE)
+            ->count(20)
             ->for($this->guestUser)
             ->create();
     }
@@ -46,8 +41,8 @@ class TaskBoardTest extends TestCase
 
         $response->assertUnauthorized();
 
-        // show
         $boardId = $this->guestUser->taskBoards()->first()->id;
+        // show
         $url =
             $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
         $response = $this->getJson($url);
@@ -55,7 +50,6 @@ class TaskBoardTest extends TestCase
         $response->assertUnauthorized();
 
         // update
-        $boardId = $this->guestUser->taskBoards()->first()->id;
         $url =
             $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
         $response = $this->patchJson($url, ['title' => 'testTitle']);
@@ -63,7 +57,6 @@ class TaskBoardTest extends TestCase
         $response->assertUnauthorized();
 
         // delete
-        $boardId = $this->guestUser->taskBoards()->first()->id;
         $url =
             $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
         $response = $this->deleteJson($url);
@@ -129,35 +122,7 @@ class TaskBoardTest extends TestCase
             fn(AssertableJson $json) => $json
                 ->has('meta') // JSONのkey有無をテスト
                 ->has('links')
-                ->has('data', self::TOTAL_NUM_OF_TASKS_PER_PAGE),
-        );
-    }
-
-    public function test_sort_in_descending_order_by_updated_at()
-    {
-        $this->login($this->guestUser);
-
-        $firstBoard = TaskBoard::factory()
-            ->for($this->guestUser)
-            ->create([
-                'title' => 'first board title',
-                'updated_at' => Carbon::now()->addDay(-1),
-            ]);
-
-        $userId = $this->guestUser->id;
-        $url = $this->routePrefix . "/users/${userId}/task-boards?page=2";
-        $response = $this->getJson($url); // 2ページ目
-
-        $response->assertJson(
-            fn(AssertableJson $json) => $json
-                ->has(
-                    'data.0',
-                    fn(AssertableJson $json) => $json
-                        ->where('id', $firstBoard->id)
-                        ->where('title', $firstBoard->title)
-                        ->etc(),
-                )
-                ->etc(),
+                ->has('data', 20),
         );
     }
 
@@ -177,11 +142,11 @@ class TaskBoardTest extends TestCase
         $response = $this->postJson($url, $emptyRequest);
         $response->assertStatus(422);
 
-        $tooLongRequest = ['title' => str_repeat('a', floor(191 / 3) + 1)];
+        $tooLongRequest = ['title' => str_repeat('a', 255 + 1)];
         $response = $this->postJson($url, $tooLongRequest);
         $response->assertStatus(422);
 
-        $successfulRequest = ['title' => str_repeat('亜', floor(191 / 3))];
+        $successfulRequest = ['title' => str_repeat('亜', 255)];
         $response = $this->postJson($url, $successfulRequest);
         $response->assertStatus(201);
 
@@ -191,13 +156,13 @@ class TaskBoardTest extends TestCase
         $response->assertStatus(201);
 
         $tooLongRequest = $successfulRequest + [
-            'description' => str_repeat('a', floor(65535 / 3) + 1),
+            'description' => str_repeat('a', 2000 + 1),
         ];
         $response = $this->postJson($url, $tooLongRequest);
         $response->assertStatus(422);
 
         $successfulRequest = $successfulRequest + [
-            'description' => str_repeat('亜', floor(65535 / 3)),
+            'description' => str_repeat('亜', 2000),
         ];
         $response = $this->postJson($url, $successfulRequest);
         $response->assertStatus(201);
@@ -220,11 +185,11 @@ class TaskBoardTest extends TestCase
         $response = $this->patchJson($url, $emptyRequest);
         $response->assertStatus(422);
 
-        $tooLongRequest = ['title' => str_repeat('a', floor(191 / 3) + 1)];
+        $tooLongRequest = ['title' => str_repeat('a', 255 + 1)];
         $response = $this->patchJson($url, $tooLongRequest);
         $response->assertStatus(422);
 
-        $successfulRequest = ['title' => str_repeat('亜', floor(191 / 3))];
+        $successfulRequest = ['title' => str_repeat('亜', 255)];
         $response = $this->patchJson($url, $successfulRequest);
         $response->assertStatus(200);
 
@@ -234,23 +199,23 @@ class TaskBoardTest extends TestCase
         $response->assertStatus(200);
 
         $tooLongRequest = [
-            'description' => str_repeat('a', floor(65535 / 3) + 1),
+            'description' => str_repeat('a', 2000 + 1),
         ];
         $response = $this->patchJson($url, $tooLongRequest);
         $response->assertStatus(422);
 
         $successfulRequest = [
-            'description' => str_repeat('亜', floor(65535 / 3)),
+            'description' => str_repeat('亜', 2000),
         ];
         $response = $this->patchJson($url, $successfulRequest);
         $response->assertStatus(200);
 
         // 'list_index_map' => 'array'
-        $emptyRequest = ['list_index_map' => []];
+        $emptyRequest = ['list_index_map' => null];
         $response = $this->patchJson($url, $emptyRequest);
         $response->assertStatus(200);
 
-        $camelcaseRequest = ['listIndexMap' => []];
+        $camelcaseRequest = ['listIndexMap' => null];
         $response = $this->patchJson($url, $camelcaseRequest);
         $response->assertStatus(200);
 
@@ -267,7 +232,7 @@ class TaskBoardTest extends TestCase
         $response->assertStatus(200);
 
         // 'card_index_map' => 'array'
-        $emptyRequest = ['card_index_map' => []];
+        $emptyRequest = ['card_index_map' => null];
         $response = $this->patchJson($url, $emptyRequest);
         $response->assertStatus(200);
 

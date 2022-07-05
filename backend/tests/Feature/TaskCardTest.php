@@ -176,23 +176,23 @@ class TaskCardTest extends TestCase
         $response = $this->postJson($url, $emptyRequest);
         $response->assertStatus(422);
 
-        $tooLongRequest = ['title' => str_repeat('a', floor(191 / 3) + 1)];
+        $tooLongRequest = ['title' => str_repeat('a', 255 + 1)];
         $response = $this->postJson($url, $tooLongRequest);
         $response->assertStatus(422);
 
-        $successfulRequest = ['title' => str_repeat('亜', floor(191 / 3))];
+        $successfulRequest = ['title' => str_repeat('亜', 255)];
         $response = $this->postJson($url, $successfulRequest);
         $response->assertStatus(201);
 
         // `content`
         $tooLongRequest = $successfulRequest + [
-            'content' => str_repeat('a', floor(65535 / 3) + 1),
+            'content' => str_repeat('a', 2000 + 1),
         ];
         $response = $this->postJson($url, $tooLongRequest);
         $response->assertStatus(422);
 
         $successfulRequest = $successfulRequest + [
-            'content' => str_repeat('亜', floor(65535 / 3)),
+            'content' => str_repeat('亜', 2000),
         ];
         $response = $this->postJson($url, $successfulRequest);
         $response->assertStatus(201);
@@ -245,23 +245,23 @@ class TaskCardTest extends TestCase
         $response = $this->patchJson($url, $emptyRequest);
         $response->assertStatus(422);
 
-        $tooLongRequest = ['title' => str_repeat('a', floor(191 / 3) + 1)];
+        $tooLongRequest = ['title' => str_repeat('a', 255 + 1)];
         $response = $this->patchJson($url, $tooLongRequest);
         $response->assertStatus(422);
 
-        $successfulRequest = ['title' => str_repeat('亜', floor(191 / 3))];
+        $successfulRequest = ['title' => str_repeat('亜', 255)];
         $response = $this->patchJson($url, $successfulRequest);
         $response->assertStatus(200);
 
         // `content`
         $tooLongRequest = $successfulRequest + [
-            'content' => str_repeat('a', floor(65535 / 3) + 1),
+            'content' => str_repeat('a', 2000 + 1),
         ];
         $response = $this->patchJson($url, $tooLongRequest);
         $response->assertStatus(422);
 
         $successfulRequest = $successfulRequest + [
-            'content' => str_repeat('亜', floor(65535 / 3)),
+            'content' => str_repeat('亜', 2000),
         ];
         $response = $this->patchJson($url, $successfulRequest);
         $response->assertStatus(200);

@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\TaskBoard;
+use App\Models\TaskCard;
+use App\Models\TaskList;
 use Illuminate\Database\Seeder;
 
 class TaskBoardSeeder extends Seeder
@@ -14,16 +16,32 @@ class TaskBoardSeeder extends Seeder
      */
     public function run()
     {
-        $user = UserSeeder::$guestUser;
-        $anotherUser = UserSeeder::$anotherUser;
+        $guestCardFactory = TaskCard::factory()->for(UserSeeder::$guestUser);
+        $guestListFactory = TaskList::factory()->for(UserSeeder::$guestUser);
 
         TaskBoard::factory()
-            ->count(41)
-            ->for($user)
-            ->create();
+            ->for(UserSeeder::$guestUser)
+            ->has(
+                $guestListFactory
+                    ->state(['title' => 'List 1'])
+                    ->has($guestCardFactory->state(['title' => 'Card 1']))
+                    ->has($guestCardFactory->state(['title' => 'Card 2']))
+                    ->has($guestCardFactory->state(['title' => 'Card 3'])),
+            )
+            ->has(
+                $guestListFactory
+                    ->state(['title' => 'List 2'])
+                    ->has($guestCardFactory->state(['title' => 'Card 4']))
+                    ->has($guestCardFactory->state(['title' => 'Card 5']))
+                    ->has($guestCardFactory->state(['title' => 'Card 6'])),
+            )
+            ->create([
+                'title' => 'Board 1',
+                'description' => 'Board description',
+            ]);
+
         TaskBoard::factory()
-            ->count(21)
-            ->for($anotherUser)
+            ->for(UserSeeder::$anotherUser)
             ->create();
     }
 }

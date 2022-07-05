@@ -14,20 +14,20 @@ class CreateTaskCardsTable extends Migration
     public function up()
     {
         Schema::create('task_cards', function (Blueprint $table) {
+            $table->comment('Minimum unit of a task');
+
             $table->uuid('id')->primary();
-            $table->uuid('user_id');
-            $table->string('title', 191);
-            $table->text('content')->nullable();
+            $table
+                ->foreignUuid('user_id')
+                ->comment('User ID')
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
+            $table->string('title', 255);
+            $table->string('content', 2000)->nullable();
             $table->dateTime('deadline')->nullable();
             $table->boolean('done')->default(false);
             $table->timestamps();
-
-            $table
-                ->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
         });
     }
 

@@ -10,30 +10,11 @@ class TaskCard extends Model
 {
     use HasFactory;
 
-    protected static function booted()
-    {
-        static::creating(function (TaskCard $task_card) {
-            $task_card->id = (string) Str::uuid();
-        });
-    }
-
-    /**
-     * Indicates if the model's ID is auto-incrementing.
-     *
-     * @var bool
-     */
     public $incrementing = false;
 
-    /**
-     * The data type of the auto-incrementing ID.
-     *
-     * @var string
-     */
     protected $keyType = 'string';
 
     protected $fillable = ['title', 'content', 'deadline', 'done'];
-
-    protected $hidden = [];
 
     /** @see [https://laravel.com/docs/8.x/eloquent-mutators#date-casting-and-timezones */
     protected $casts = [
@@ -41,7 +22,13 @@ class TaskCard extends Model
         'done' => 'boolean',
     ];
 
-    // 使用例: TaskCard::find(1)->user;
+    protected static function booted()
+    {
+        static::creating(function (self $taskCard) {
+            $taskCard->id = (string) Str::uuid();
+        });
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

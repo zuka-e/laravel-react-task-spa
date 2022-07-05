@@ -14,18 +14,18 @@ class CreateTaskBoardsTable extends Migration
     public function up()
     {
         Schema::create('task_boards', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->uuid('user_id');
-            $table->string('title', 191);
-            $table->text('description')->nullable();
-            $table->timestamps();
+            $table->comment('Group of task lists');
 
+            $table->uuid('id')->primary();
             $table
-                ->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+                ->foreignUuid('user_id')
+                ->comment('User ID')
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
+            $table->string('title', 255);
+            $table->string('description', 2000)->nullable();
+            $table->timestamps();
         });
     }
 

@@ -41,18 +41,15 @@ class TaskListRequest extends FormRequest
      */
     public function rules(Request $request)
     {
-        $maxTitle = floor(191 / 3);
-        $maxDescription = floor(65535 / 3);
-
         if ($request->method() === 'POST') {
             return [
-                'title' => "required|string|max:${maxTitle}",
-                'description' => "nullable|string|max:${maxDescription}",
+                'title' => 'required|string|min:1|max:255',
+                'description' => 'nullable|string|min:1|max:2000',
             ];
         } else {
             return [
-                'title' => "string|max:${maxTitle}",
-                'description' => "nullable|string|max:${maxDescription}",
+                'title' => 'string|min:1|max:255',
+                'description' => 'nullable|string|min:1|max:2000',
             ];
         }
     }
