@@ -2,93 +2,63 @@
 
 namespace App\Policies;
 
+use App\Models\TaskBoard;
 use App\Models\TaskList;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
+/**
+ * @see https://laravel.com/docs/9.x/authorization#authorizing-resource-controllers
+ */
 class TaskListPolicy
 {
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any models.
+     * Whether `create()` or `store()` is allowed.
      *
-     * @param  \App\Models\User  $user
-     * @return mixed
-     */
-    public function viewAny(User $user)
-    {
-        return true;
-    }
-
-    /**
-     * Determine whether the user can view the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\TaskList  $taskList
-     * @return mixed
-     */
-    public function view(User $user, TaskList $taskList)
-    {
-        return $user->id === $taskList->taskBoard->user_id;
-    }
-
-    /**
-     * Determine whether the user can create models.
-     *
-     * @param  \App\Models\User  $user
-     * @return mixed
+     * @param  \App\Models\User  $user  `Auth::user()`
+     * @return bool
      */
     public function create(User $user)
     {
-        return true;
+        /**
+         * Be sure the parameter type of `TaskListController::store()`
+         * is `TaskBoard`, or model binding won't work.
+         *
+         * @var string|object|null $taskBoard Model binded to the route
+         * @see https://laravel.com/docs/9.x/routing#implicit-binding
+         */
+        $taskBoard = request()
+            ->route()
+            ->parameter('task_board');
+
+        if (!($taskBoard instanceof TaskBoard)) {
+            throw new \LogicException('The route binding was not resolved.');
+        }
+
+        return $user->id === $taskBoard->user_id;
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Whether `edit()` or `update()` is allowed.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\TaskList  $taskList
-     * @return mixed
+     * @param  \App\Models\User  $user  `Auth::user()`
+     * @return bool
      */
     public function update(User $user, TaskList $taskList)
     {
-        return $user->id === $taskList->taskBoard->user_id;
+        return $user->id === $taskList->user_id;
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Whether `destroy()` is allowed.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\TaskList  $taskList
-     * @return mixed
+     * @param  \App\Models\User  $user  `Auth::user()`
+     * @return bool
      */
     public function delete(User $user, TaskList $taskList)
     {
-        return $user->id === $taskList->taskBoard->user_id;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\TaskList  $taskList
-     * @return mixed
-     */
-    public function restore(User $user, TaskList $taskList)
-    {
-        return $user->id === $taskList->taskBoard->user_id;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\TaskList  $taskList
-     * @return mixed
-     */
-    public function forceDelete(User $user, TaskList $taskList)
-    {
-        return $user->id === $taskList->taskBoard->user_id;
+        return $user->id === $taskList->user_id;
     }
 }

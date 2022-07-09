@@ -6,20 +6,16 @@ use App\Http\Requests\TaskListRequest;
 use App\Http\Resources\TaskListResource;
 use App\Models\TaskBoard;
 use App\Models\TaskList;
-use Illuminate\Http\Request;
 
 class TaskListController extends Controller
 {
-    public function __construct(Request $request)
+    public function __construct()
     {
-        $taskBoardId = $request->route('task_board');
-        $taskBoard = TaskBoard::find($taskBoardId);
-
-        $userId = $taskBoard ? $taskBoard->user_id : '';
-
-        $this->middleware("authorize:${userId}");
-
-        $this->authorizeResource(TaskList::class, 'task_list');
+        // > This method will attach the appropriate can middleware definitions
+        // > to the resource controller's methods.
+        // > https://laravel.com/docs/9.x/authorization#authorizing-resource-controllers
+        /** @see \App\Policies\TaskListPolicy */
+        $this->authorizeResource(TaskList::class);
     }
 
     /**
@@ -58,7 +54,7 @@ class TaskListController extends Controller
 
     public function update(
         TaskListRequest $request,
-        string $taskBoard,
+        TaskBoard $taskBoard,
         TaskList $taskList,
     ) {
         $validated = $request->validated();
@@ -68,7 +64,7 @@ class TaskListController extends Controller
         }
     }
 
-    public function destroy(string $taskBoard, TaskList $taskList)
+    public function destroy(TaskBoard $taskBoard, TaskList $taskList)
     {
         if ($taskList->delete()) {
             return new TaskListResource($taskList);

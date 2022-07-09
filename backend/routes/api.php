@@ -47,15 +47,17 @@ Route::group(
     | Task
     |--------------------------------------------------------------
     */
-        Route::apiResource('users.task-boards', TaskBoardController::class);
-        Route::apiResource(
-            'task-boards.task-lists',
-            TaskListController::class,
-        )->only('store', 'update', 'destroy');
-        Route::apiResource(
-            'task-lists.task-cards',
-            TaskCardController::class,
-        )->only('store', 'update', 'destroy');
+        Route::apiResource('users.task-boards', TaskBoardController::class)
+            ->except([])
+            ->scoped();
+
+        Route::apiResource('task-boards.task-lists', TaskListController::class)
+            ->only(['store', 'update', 'destroy'])
+            ->scoped();
+
+        Route::apiResource('task-lists.task-cards', TaskCardController::class)
+            ->only(['store', 'update', 'destroy'])
+            ->scoped();
     },
 );
 

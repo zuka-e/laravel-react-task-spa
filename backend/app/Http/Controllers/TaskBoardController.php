@@ -9,26 +9,25 @@ use App\Http\Resources\TaskListResource;
 use App\Http\Resources\TaskCardResource;
 use App\Models\TaskBoard;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class TaskBoardController extends Controller
 {
-    public function __construct(Request $request)
+    public function __construct()
     {
-        $userId = $request->route('user');
-
-        // `Controller`の各メソッドに`User $user` or `string $user`が必要
-        // パラメータ `{user}` を取得し、`middleware`に渡すため`
-        $this->middleware("authorize:${userId}");
+        // > This method will attach the appropriate can middleware definitions
+        // > to the resource controller's methods.
+        // > https://laravel.com/docs/9.x/authorization#authorizing-resource-controllers
+        /** @see \App\Policies\TaskBoardPolicy */
+        $this->authorizeResource(TaskBoard::class);
     }
 
     /**
-     * @param string $user パラメータの値 (ユーザーID)
+     * @param \App\Models\User $user パラメータの値 (ユーザーID)
      */
-    public function index(string $user)
+    public function index(User $user)
     {
         return new TaskBoardCollection(
-            TaskBoard::where('user_id', $user)
+            TaskBoard::where('user_id', $user->id)
                 ->orderBy('updated_at', 'desc')
                 ->paginate(20),
         );
@@ -51,7 +50,18 @@ class TaskBoardController extends Controller
         }
     }
 
-    public function show(string $user, TaskBoard $taskBoard)
+    /**
+     * Display the specified resource.
+     *
+     * Be sure to specify the parameter `$user` with `\App\Models\User`,
+     * and only the user's `TaskBoard` will be queried.
+     * it's not used here, but is required for `scoped()` in the routing.
+     *
+     * @param  \App\Models\User  $user  For Scoping Resource Routes
+     * @param  \App\Models\TaskBoard  $taskBoard
+     * @return \App\Http\Resources\TaskBoardResource
+     */
+    public function show(User $user, TaskBoard $taskBoard)
     {
         // `TaskBoardResource`に`lists`を追加することでこれを含めて返却するようにする
         $taskBoard->lists = TaskListResource::collection(
@@ -85,7 +95,7 @@ class TaskBoardController extends Controller
 
     public function update(
         TaskBoardRequest $request,
-        string $user,
+        User $user,
         TaskBoard $taskBoard,
     ) {
         $validated = $request->validated();
@@ -95,7 +105,7 @@ class TaskBoardController extends Controller
         }
     }
 
-    public function destroy(string $user, TaskBoard $taskBoard)
+    public function destroy(User $user, TaskBoard $taskBoard)
     {
         if ($taskBoard->delete()) {
             return new TaskBoardResource($taskBoard);

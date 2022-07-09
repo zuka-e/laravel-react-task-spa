@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\TaskBoard;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
@@ -64,50 +65,60 @@ class TaskBoardTest extends TestCase
         $response->assertUnauthorized();
     }
 
+    /**
+     * @test accessing other's data should be forbidden (403) by policies
+     */
     public function test_forbidden_from_accessing_others_data()
     {
-        TaskBoard::factory()
+        Auth::login($this->guestUser);
+
+        $otherUserId = $this->otherUser->id;
+
+        $urlWithOtherUser =
+            $this->routePrefix . "/users/${otherUserId}/task-boards";
+
+        // index
+        $this->getJson($urlWithOtherUser)->assertForbidden();
+
+        // create
+        $this->postJson($urlWithOtherUser)->assertForbidden();
+    }
+
+    /**
+     * @test other's data shouldn't be queried (404) by scoping routes
+     */
+    public function test_others_data_is_not_found()
+    {
+        Auth::login($this->guestUser);
+
+        $otherBoard = TaskBoard::factory()
             ->for($this->otherUser)
             ->create();
 
-        $this->login($this->guestUser);
-
-        // index
+        $authUserId = $this->guestUser->id;
         $otherUserId = $this->otherUser->id;
-        $url = $this->routePrefix . "/users/${otherUserId}/task-boards";
-        $response = $this->getJson($url);
+        $authUserboardId = $this->guestUser->taskBoards->first()->id;
+        $otherBoardId = $otherBoard->id;
 
-        $response->assertForbidden();
+        $urlWithOtherUser =
+            $this->routePrefix .
+            "/users/${otherUserId}/task-boards/${authUserboardId}";
 
-        // create
-        $url = $this->routePrefix . "/users/${otherUserId}/task-boards";
-        $response = $this->postJson($url, ['title' => 'testTitle']);
-
-        $response->assertForbidden();
+        $urlWithOtherBoard =
+            $this->routePrefix .
+            "/users/${authUserId}/task-boards/${otherBoardId}";
 
         // show
-        $boardId = $this->guestUser->taskBoards()->first()->id;
-        $url =
-            $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
-        $response = $this->getJson($url);
-
-        $response->assertForbidden();
+        $this->getJson($urlWithOtherUser)->assertNotFound();
+        $this->getJson($urlWithOtherBoard)->assertNotFound();
 
         // update
-        $boardId = $this->guestUser->taskBoards()->first()->id;
-        $url =
-            $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
-        $response = $this->patchJson($url, ['title' => 'testTitle']);
-
-        $response->assertForbidden();
+        $this->patchJson($urlWithOtherUser)->assertNotFound();
+        $this->patchJson($urlWithOtherBoard)->assertNotFound();
 
         // delete
-        $boardId = $this->guestUser->taskBoards()->first()->id;
-        $url =
-            $this->routePrefix . "/users/${otherUserId}/task-boards/${boardId}";
-        $response = $this->deleteJson($url);
-
-        $response->assertForbidden();
+        $this->deleteJson($urlWithOtherUser)->assertNotFound();
+        $this->deleteJson($urlWithOtherBoard)->assertNotFound();
     }
 
     public function test_limited_items_in_one_page()
