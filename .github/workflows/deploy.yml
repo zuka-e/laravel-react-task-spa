@@ -1,10 +1,10 @@
 name: Continuous Deployment
 
 on:
-  push:
-    branches:
-      - development
-  pull_request:
+  # push:
+  #   branches:
+  #     - development
+  # pull_request:
 
 env:
   PROJECT: Miwataru
