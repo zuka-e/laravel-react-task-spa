@@ -4,27 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TaskCardRequest;
 use App\Http\Resources\TaskCardResource;
-use App\Models\TaskBoard;
 use App\Models\TaskCard;
 use App\Models\TaskList;
 use App\Models\User;
-use Illuminate\Http\Request;
 
 class TaskCardController extends Controller
 {
-    public function __construct(Request $request)
+    public function __construct()
     {
-        $taskListId = $request->route('task_list');
-        $taskList = TaskList::find($taskListId);
-
-        $taskBoardId = $taskList ? $taskList->taskBoard->id : '';
-        $taskBoard = TaskBoard::find($taskBoardId);
-
-        $userId = $taskBoard ? $taskBoard->user_id : '';
-
-        $this->middleware("authorize:${userId}");
-
-        $this->authorizeResource(TaskCard::class, 'task_card');
+        // > This method will attach the appropriate can middleware definitions
+        // > to the resource controller's methods.
+        // > https://laravel.com/docs/9.x/authorization#authorizing-resource-controllers
+        /** @see \App\Policies\TaskCardPolicy */
+        $this->authorizeResource(TaskCard::class);
     }
 
     public function index(User $user)
@@ -52,7 +44,7 @@ class TaskCardController extends Controller
 
     public function update(
         TaskCardRequest $request,
-        string $taskList,
+        TaskList $taskList,
         TaskCard $taskCard,
     ) {
         $validated = $request->validated();
@@ -72,7 +64,7 @@ class TaskCardController extends Controller
         }
     }
 
-    public function destroy(string $taskList, TaskCard $taskCard)
+    public function destroy(TaskList $taskList, TaskCard $taskCard)
     {
         if ($taskCard->delete()) {
             return new TaskCardResource($taskCard);
