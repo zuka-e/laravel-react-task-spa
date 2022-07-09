@@ -6,6 +6,7 @@ use App\Models\TaskBoard;
 use App\Models\TaskCard;
 use App\Models\TaskList;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -60,77 +61,62 @@ class TaskListTest extends TestCase
         $response->assertUnauthorized();
     }
 
+    /**
+     * @test accessing other's data should be forbidden (403) by policies
+     */
     public function test_forbidden_from_accessing_others_board()
     {
-        TaskBoard::factory()
+        Auth::login($this->guestUser);
+
+        $otherBoard = TaskBoard::factory()
             ->for($this->otherUser)
             ->create();
 
-        TaskList::factory()
-            ->for($this->otherUser)
-            ->for($this->otherUser->taskBoards[0])
-            ->create();
-
-        $this->login($this->guestUser);
-
-        $board = $this->guestUser->taskBoards[0];
-        $listId = $board->taskLists[0]->id;
-
-        $otherBoard = $this->otherUser->taskBoards[0];
         $otherBoardId = $otherBoard->id;
 
+        $urlWithOtherBoard =
+            $this->routePrefix . "/task-boards/${otherBoardId}/task-lists";
+
         // create
-        $url = $this->routePrefix . "/task-boards/${otherBoardId}/task-lists";
-        $response = $this->postJson($url, ['title' => 'testTitle']);
-        $response->assertForbidden();
-
-        // update
-        $url =
-            $this->routePrefix .
-            "/task-boards/${otherBoardId}/task-lists/${listId}";
-        $response = $this->patchJson($url, ['title' => 'testTitle']);
-        $response->assertForbidden();
-
-        // destroy
-        $url =
-            $this->routePrefix .
-            "/task-boards/${otherBoardId}/task-lists/${listId}";
-        $response = $this->deleteJson($url);
-        $response->assertForbidden();
+        $this->postJson($urlWithOtherBoard)->assertForbidden();
     }
 
-    public function test_forbidden_from_accessing_others_list()
+    /**
+     * @test other's data shouldn't be queried (404) by scoping routes
+     */
+    public function test_others_data_is_not_found()
     {
-        TaskBoard::factory()
+        Auth::login($this->guestUser);
+
+        $otherBoard = TaskBoard::factory()
             ->for($this->otherUser)
             ->create();
 
-        TaskList::factory()
+        $otherList = TaskList::factory()
             ->for($this->otherUser)
-            ->for($this->otherUser->taskBoards[0])
+            ->for($otherBoard)
             ->create();
 
-        $this->login($this->guestUser);
+        $authUserBoardId = $this->guestUser->taskBoards->first()->id;
+        $authUserListId = $this->guestUser->taskLists->first()->id;
+        $otherBoardId = $otherBoard->id;
+        $otherListId = $otherList->id;
 
-        $board = $this->guestUser->taskBoards[0];
-        $boardId = $board->id;
+        $urlWithOtherBoard =
+            $this->routePrefix .
+            "/task-boards/${otherBoardId}/task-lists/${authUserListId}";
 
-        $otherBoard = $this->otherUser->taskBoards[0];
-        $otherListId = $otherBoard->taskLists[0]->id;
+        $urlWithOtherList =
+            $this->routePrefix .
+            "/task-boards/${authUserBoardId}/task-lists/${otherListId}";
 
         // update
-        $url =
-            $this->routePrefix .
-            "/task-boards/${boardId}/task-lists/${otherListId}";
-        $response = $this->patchJson($url, ['title' => 'testTitle']);
-        $response->assertForbidden();
+        $this->patchJson($urlWithOtherBoard)->assertNotFound();
+        $this->patchJson($urlWithOtherList)->assertNotFound();
 
         // destroy
-        $url =
-            $this->routePrefix .
-            "/task-boards/${boardId}/task-lists/${otherListId}";
-        $response = $this->deleteJson($url);
-        $response->assertForbidden();
+        $this->deleteJson($urlWithOtherBoard)->assertNotFound();
+        $this->deleteJson($urlWithOtherList)->assertNotFound();
     }
 
     public function test_return_404_error_if_data_is_not_found()
