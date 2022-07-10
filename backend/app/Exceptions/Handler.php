@@ -38,4 +38,17 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    /**
+     * Determine if the exception handler response should be JSON.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Throwable  $e
+     * @return bool
+     */
+    protected function shouldReturnJson($request, Throwable $e)
+    {
+        // Only JSON should be returned, as this Laravel app is used as API server.
+        return true;
+    }
 }
