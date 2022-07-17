@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\UserResource;
+use App\Http\Responses\VerifyEmailResponse;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\Http\Requests\VerifyEmailRequest;
 
 class VerifyEmailController extends Controller
@@ -14,8 +13,9 @@ class VerifyEmailController extends Controller
      * Mark the authenticated user's email address as verified.
      *
      * @param  \Laravel\Fortify\Http\Requests\VerifyEmailRequest  $request
-     * @return mixed
+     * @return \App\Http\Responses\VerifyEmailResponse
      * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     * @see \Laravel\Fortify\Http\Controllers\VerifyEmailController
      */
     public function __invoke(VerifyEmailRequest $request)
     {
@@ -31,12 +31,6 @@ class VerifyEmailController extends Controller
             event(new Verified($user));
         }
 
-        // 初回認証時
-        return $request->wantsJson()
-            ? response()->json([
-                'user' => new UserResource(Auth::user()),
-                'verified' => true,
-            ])
-            : redirect()->intended(config('fortify.home') . '?verified=1');
+        return app(VerifyEmailResponse::class);
     }
 }
