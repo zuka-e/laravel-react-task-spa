@@ -16,12 +16,6 @@ class LoginResponse implements LoginResponseContract
      */
     public function toResponse($request)
     {
-        // 認証メールリンクからのアクセスの場合
-        $path = $request->session()->get('url.intended');
-        if ($path) {
-            return redirect()->intended();
-        }
-
         // `vendor/laravel/fortify/src/Http/Responses/LoginResponse.php`転記
         return $request->wantsJson()
             ? response()->json([

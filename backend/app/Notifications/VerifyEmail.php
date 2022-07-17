@@ -18,6 +18,34 @@ use Illuminate\Support\Facades\Lang;
 class VerifyEmail extends VerifyEmailNotification
 {
     /**
+     * Build the mail representation of the notification.
+     *
+     * @param  \Illuminate\Foundation\Auth\User  $notifiable
+     * @return \Illuminate\Notifications\Messages\MailMessage
+     */
+    public function toMail($notifiable)
+    {
+        // Because the response will always be returned as JSON
+        // by `App\Exceptions\Handler::shouldReturnJson`,
+        // the redirect to the login page is no logner works when not logged in.
+        // Therefore, that behavior should be handled in the frontend.
+        // So replace the link on the email with frontend URL (e.g. localhost:3000),
+        // while the signed URL is created from backend URL (e.g. localhost).
+        //
+        // Instead of the above way, the relative signed URL can also be used.
+        // For more infomation, see `verificationUrl()` commented out.
+
+        /** @var array<string, string> Parsed verification URL */
+        $url = parse_url($this->verificationUrl($notifiable));
+
+        /** @var string Verification URL with frontend domain */
+        $spaVericationUrl =
+            config('fortify.home') . "{$url['path']}?{$url['query']}";
+
+        return $this->buildMailMessage($spaVericationUrl);
+    }
+
+    /**
      * Get the verify email notification mail message for the given URL.
      *
      * @param  string  $url
@@ -41,4 +69,31 @@ class VerifyEmail extends VerifyEmailNotification
             )
             ->salutation(Lang::get('Regards.'));
     }
+
+    /**
+     * Get the relative verification URL for the given notifiable.
+     *
+     * To validate, use relative `ValidateSignature` middleware (`signed:relative`).
+     *
+     * @param  \Illuminate\Foundation\Auth\User  $notifiable
+     * @return string
+     * @see \App\Http\Kernel $routeMiddleware['signed'] ↓
+     * @see \Illuminate\Routing\Middleware\ValidateSignature ↓
+     * @see \Illuminate\Routing\UrlGenerator hasValidRelativeSignature
+     * @see \Illuminate\Routing\UrlGenerator temporarySignedRoute
+     */
+    // protected function relativeVerificationUrl(User $notifiable)
+    // {
+    //     return URL::temporarySignedRoute(
+    //         'verification.verify',
+    //         Carbon::now()->addMinutes(
+    //             Config::get('auth.verification.expire', 60),
+    //         ),
+    //         [
+    //             'id' => $notifiable->getKey(),
+    //             'hash' => sha1($notifiable->getEmailForVerification()),
+    //         ],
+    //         absolute: false,
+    //     );
+    // }
 }
