@@ -1,5 +1,13 @@
 <?php
 
+/*
+|----------------------------------------------------------------------
+| This file overrides Fortify route definition by being registered
+| in \App\Providers\FortifyServiceProvider::configureRoutes()
+| The original content is defined in `vendor/laravel/fortify/routes/routes.php`.
+|----------------------------------------------------------------------
+*/
+
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
@@ -19,6 +27,8 @@ use Laravel\Fortify\Http\Controllers\TwoFactorAuthenticationController;
 use Laravel\Fortify\Http\Controllers\TwoFactorQrCodeController;
 use Laravel\Fortify\Http\Controllers\TwoFactorSecretKeyController;
 use Laravel\Fortify\Http\Controllers\VerifyEmailController;
+
+// prettier-ignore
 
 Route::group(['middleware' => config('fortify.middleware', ['web'])], function () {
     $enableViews = config('fortify.views', true);
