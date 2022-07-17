@@ -15,22 +15,20 @@ class VerifyEmailController extends Controller
      *
      * @param  \Laravel\Fortify\Http\Requests\VerifyEmailRequest  $request
      * @return mixed
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function __invoke(VerifyEmailRequest $request)
     {
-        // `email_verified_at`が存在する場合
-        if ($request->user()->hasVerifiedEmail()) {
-            return $request->wantsJson() // 認証リンク遷移後にログインした場合`true`
-                ? response()->json([
-                    'user' => new UserResource(Auth::user()),
-                    'verified' => true,
-                ])
-                : redirect()->intended(config('fortify.home') . '?verified=1');
+        /** @var \App\Models\User $user */
+        $user = $request->user();
+
+        // If already authenticated
+        if ($user->hasVerifiedEmail()) {
+            abort(403);
         }
 
-        // `email_verified_at`を更新
-        if ($request->user()->markEmailAsVerified()) {
-            event(new Verified($request->user()));
+        if ($user->markEmailAsVerified()) {
+            event(new Verified($user));
         }
 
         // 初回認証時
