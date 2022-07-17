@@ -18,6 +18,7 @@ use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 
+/** @see \Laravel\Fortify\FortifyServiceProvider */
 class FortifyServiceProvider extends ServiceProvider
 {
     /**
@@ -34,6 +35,7 @@ class FortifyServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      *
      * @return void
+     * @see https://laravel.com/docs/9.x/container#binding-a-singleton
      */
     public function boot()
     {

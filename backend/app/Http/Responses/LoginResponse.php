@@ -13,10 +13,10 @@ class LoginResponse implements LoginResponseContract
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @see \Laravel\Fortify\Http\Responses\LoginResponse
      */
     public function toResponse($request)
     {
-        // `vendor/laravel/fortify/src/Http/Responses/LoginResponse.php`転記
         return $request->wantsJson()
             ? response()->json([
                 'user' => new UserResource(Auth::user()),
