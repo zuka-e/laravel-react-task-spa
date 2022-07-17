@@ -11,16 +11,17 @@ class Authenticate extends Middleware
      *
      * @param  \Illuminate\Http\Request  $request
      * @return string|null
+     * @see \Illuminate\Auth\Middleware\Authenticate redirectTo
      */
     protected function redirectTo($request)
     {
-        // 認証メールリンクからのリダイレクトに使用 (クエリパラメータは飾り)
-        if (!$request->expectsJson()) {
-            $path = $request->session()->get('url.intended');
-            $url = $path
-                ? url(config('fortify.home') . '/login' . '?dest=' . $path)
-                : url(config('fortify.home') . '/login');
-            return $url;
-        }
+        // There is no effect even if anything is implemented.
+        // This is because `unauthenticated()` throws `AuthenticationException`,
+        // the response is always returned as JSON by `shouldReturnJson()`.
+        // Therefore, no redirect will occur.
+        /**
+         * @see \Illuminate\Auth\Middleware\Authenticate unautheticated
+         * @see \App\Exceptions\Handler shouldReturnJson
+         */
     }
 }
