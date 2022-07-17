@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Lang;
@@ -27,26 +26,6 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
-        // 参考： `vendor/laravel/framework/src/Illuminate/Auth/Notifications/VerifyEmail.php`
-        /** @see https://laravel.com/docs/8.x/verification#verification-email-customization */
-        VerifyEmail::toMailUsing(function ($notifiable, $url) {
-            return (new MailMessage())
-                ->subject(Lang::get('Verify Your Email Address'))
-                ->greeting(Lang::get('Thanks for registration'))
-                ->line(
-                    Lang::get(
-                        'Please click the button below to verify your email address.',
-                    ),
-                )
-                ->action(Lang::get('Verify Email Address'), $url)
-                ->line(
-                    Lang::get(
-                        'If you did not create an account, no further action is required.',
-                    ),
-                )
-                ->salutation(Lang::get('Regards.'));
-        });
 
         // 参考： `vendor/laravel/framework/src/Illuminate/Auth/Notifications/ResetPassword.php`
         /** @see https://laravel.com/docs/8.x/passwords#password-customization */
