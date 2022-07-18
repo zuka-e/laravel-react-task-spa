@@ -26,6 +26,8 @@ class TaskBoardController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      * @see https://laravel.com/docs/9.x/eloquent-resources#resource-collections
+     * @see https://laravel.com/docs/9.x/eloquent-resources#pagination
+     * @see https://laravel.com/docs/9.x/pagination
      */
     public function index(User $user)
     {
@@ -34,7 +36,8 @@ class TaskBoardController extends Controller
                 ->taskBoards()
                 ->getQuery()
                 ->orderBy('updated_at', 'desc')
-                ->paginate(20),
+                ->paginate(20)
+                ->withQueryString(),
         );
     }
 
