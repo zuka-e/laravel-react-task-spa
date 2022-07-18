@@ -7,6 +7,7 @@ use App\Http\Resources\TaskCardResource;
 use App\Models\TaskCard;
 use App\Models\TaskList;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class TaskCardController extends Controller
 {
@@ -27,13 +28,16 @@ class TaskCardController extends Controller
     public function store(TaskCardRequest $request, TaskList $taskList)
     {
         $validated = $request->validated();
-        $newCard = new TaskCard($validated);
+        /**
+         * @var \App\Models\TaskCard $created Newly created `TaskCard`
+         * @see https://laravel.com/docs/9.x/eloquent-relationships#the-create-method
+         * `create()` fill the model with fillable attributes and save it.
+         */
+        $created = $taskList->taskCards()->make($validated);
+        $created->user()->associate(Auth::id());
 
-        $newCard->user()->associate($taskList->taskBoard->user);
-        $newCard->taskList()->associate($taskList);
-
-        if ($newCard->save()) {
-            return new TaskCardResource($newCard);
+        if ($created->save()) {
+            return new TaskCardResource($created);
         }
     }
 

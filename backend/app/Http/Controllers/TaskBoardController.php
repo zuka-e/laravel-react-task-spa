@@ -30,7 +30,9 @@ class TaskBoardController extends Controller
     public function index(User $user)
     {
         return TaskBoardResource::collection(
-            TaskBoard::where('user_id', $user->id)
+            $user
+                ->taskBoards()
+                ->getQuery()
                 ->orderBy('updated_at', 'desc')
                 ->paginate(20),
         );
@@ -43,13 +45,15 @@ class TaskBoardController extends Controller
     public function store(TaskBoardRequest $request, User $user)
     {
         $validated = $request->validated();
+        /**
+         * @var \App\Models\TaskBoard $created Newly created `TaskBoard` of user
+         * @see https://laravel.com/docs/9.x/eloquent-relationships#the-create-method
+         * `create()` fill the model with fillable attributes and save it.
+         */
+        $created = $user->taskBoards()->create($validated);
 
-        /** @see https://laravel.com/docs/8.x/eloquent-relationships#updating-belongs-to-relationships */
-        $newBoard = new TaskBoard($validated);
-        $newBoard->user()->associate($user);
-
-        if ($newBoard->save()) {
-            return new TaskBoardResource($newBoard);
+        if ($created->save()) {
+            return new TaskBoardResource($created);
         }
     }
 

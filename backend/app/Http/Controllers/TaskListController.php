@@ -31,13 +31,17 @@ class TaskListController extends Controller
     public function store(TaskListRequest $request, TaskBoard $taskBoard)
     {
         $validated = $request->validated();
-        $newList = new TaskList($validated);
+        /**
+         * @var \App\Models\TaskList $created Newly created `TaskList`
+         * @see https://laravel.com/docs/9.x/eloquent-relationships#the-create-method
+         * `create()` fill the model with fillable attributes and save it.
+         */
+        $created = $taskBoard->taskLists()->make($validated);
+        $created->user()->associate(Auth::id());
+        $created->save();
 
-        $newList->user()->associate($taskBoard->user);
-        $newList->taskBoard()->associate($taskBoard);
-
-        if ($newList->save()) {
-            return new TaskListResource($newList);
+        if ($created->save()) {
+            return new TaskListResource($created);
         }
     }
 
