@@ -6,6 +6,7 @@ use App\Http\Requests\TaskListRequest;
 use App\Http\Resources\TaskListResource;
 use App\Models\TaskBoard;
 use App\Models\TaskList;
+use Illuminate\Support\Facades\Auth;
 
 class TaskListController extends Controller
 {
@@ -19,17 +20,18 @@ class TaskListController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @param  \App\Http\Requests\TaskListRequest  $request
+     * @param  \App\Models\TaskBoard  $taskBoard
+     * @return \App\Http\Resources\TaskListResource
      */
-    public function index()
-    {
-        //
-    }
-
     public function store(TaskListRequest $request, TaskBoard $taskBoard)
     {
+        /**
+         * @var array<string, mixed> $validated Array of only validated data
+         * @see https://laravel.com/docs/9.x/validation#working-with-validated-input
+         */
         $validated = $request->validated();
         /**
          * @var \App\Models\TaskList $created Newly created `TaskList`
@@ -40,38 +42,41 @@ class TaskListController extends Controller
         $created->user()->associate(Auth::id());
         $created->save();
 
-        if ($created->save()) {
-            return new TaskListResource($created);
-        }
+        return new TaskListResource($created);
     }
 
     /**
-     * Display the specified resource.
+     * Update the specified resource in storage.
      *
+     * @param  \App\Http\Requests\TaskListRequest  $request  Validation
+     * @param  \App\Models\TaskBoard  $taskBoard  For Scoping Resource Routes
      * @param  \App\Models\TaskList  $taskList
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\TaskListResource
      */
-    public function show(TaskList $taskList)
-    {
-        //
-    }
-
     public function update(
         TaskListRequest $request,
         TaskBoard $taskBoard,
         TaskList $taskList,
     ) {
+        /** @var array<string, mixed> $validated Array of only validated data */
         $validated = $request->validated();
 
-        if ($taskList->fill($validated)->save()) {
-            return new TaskListResource($taskList);
-        }
+        $taskList->fill($validated)->save();
+
+        return new TaskListResource($taskList);
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\TaskBoard  $taskBoard  For Scoping Resource Routes
+     * @param  \App\Models\TaskList  $taskList
+     * @return \App\Http\Resources\TaskListResource
+     */
     public function destroy(TaskBoard $taskBoard, TaskList $taskList)
     {
-        if ($taskList->delete()) {
-            return new TaskListResource($taskList);
-        }
+        $taskList->delete();
+
+        return new TaskListResource($taskList);
     }
 }

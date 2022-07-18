@@ -42,11 +42,18 @@ class TaskBoardController extends Controller
     }
 
     /**
-     * @param TaskBoardRequest $request - バリデーション付リクエスト
-     * @see https://laravel.com/docs/8.x/validation#form-request-validation
-     * */
+     * Store a newly created resource in storage.
+     *
+     * @param  \App\Http\Requests\TaskBoardRequest  $request
+     * @param  \App\Models\User  $user
+     * @return \App\Http\Resources\TaskBoardResource
+     */
     public function store(TaskBoardRequest $request, User $user)
     {
+        /**
+         * @var array<string, mixed> $validated Array of only validated data
+         * @see https://laravel.com/docs/9.x/validation#working-with-validated-input
+         */
         $validated = $request->validated();
         /**
          * @var \App\Models\TaskBoard $created Newly created `TaskBoard` of user
@@ -55,9 +62,7 @@ class TaskBoardController extends Controller
          */
         $created = $user->taskBoards()->create($validated);
 
-        if ($created->save()) {
-            return new TaskBoardResource($created);
-        }
+        return new TaskBoardResource($created);
     }
 
     /**
@@ -86,25 +91,38 @@ class TaskBoardController extends Controller
         );
     }
 
-        return new TaskBoardResource($taskBoard);
-    }
-
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \App\Http\Requests\TaskBoardRequest  $request  Validation
+     * @param  \App\Models\User  $user  For Scoping Resource Routes
+     * @param  \App\Models\TaskBoard  $taskBoard
+     * @return \App\Http\Resources\TaskBoardResource
+     */
     public function update(
         TaskBoardRequest $request,
         User $user,
         TaskBoard $taskBoard,
     ) {
+        /** @var array<string, mixed> $validated Array of only validated data */
         $validated = $request->validated();
 
-        if ($taskBoard->fill($validated)->save()) {
-            return new TaskBoardResource($taskBoard);
-        }
+        $taskBoard->fill($validated)->save();
+
+        return new TaskBoardResource($taskBoard);
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\User  $user  For Scoping Resource Routes
+     * @param  \App\Models\TaskBoard  $taskBoard
+     * @return \App\Http\Resources\TaskBoardResource
+     */
     public function destroy(User $user, TaskBoard $taskBoard)
     {
-        if ($taskBoard->delete()) {
-            return new TaskBoardResource($taskBoard);
-        }
+        $taskBoard->delete();
+
+        return new TaskBoardResource($taskBoard);
     }
 }
