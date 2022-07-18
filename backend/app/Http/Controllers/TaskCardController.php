@@ -61,15 +61,8 @@ class TaskCardController extends Controller
         /** @var array<string, mixed> $validated Array of only validated data */
         $validated = $request->validated();
 
-        if (array_key_exists('list_id', $validated)) {
-            $parent = TaskList::find($validated['list_id']);
-            if (!$parent) {
-                abort(500, '指定されたリストは存在しません');
-            }
-
-            $taskCard->taskList()->disassociate();
-            $taskCard->taskList()->associate($parent);
-        }
+        isset($validated['list_id']) &&
+            $taskCard->taskList()->associate($validated['list_id']);
 
         $taskCard->fill($validated)->save();
 
