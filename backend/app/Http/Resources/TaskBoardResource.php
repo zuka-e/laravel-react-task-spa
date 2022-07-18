@@ -19,7 +19,9 @@ class TaskBoardResource extends JsonResource
             'userId' => $this->user_id,
             'title' => $this->title,
             'description' => $this->description,
-            'lists' => $this->when($this->lists, $this->lists),
+            'lists' => TaskListResource::collection(
+                $this->whenLoaded('taskLists'),
+            ),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'listIndexMap' => $this->list_index_map,

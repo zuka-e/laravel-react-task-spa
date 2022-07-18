@@ -73,32 +73,18 @@ class TaskBoardController extends Controller
      */
     public function show(User $user, TaskBoard $taskBoard)
     {
-        // `TaskBoardResource`に`lists`を追加することでこれを含めて返却するようにする
-        $taskBoard->lists = TaskListResource::collection(
-            $taskBoard
-                ->taskLists()
-                ->orderBy('updated_at', 'desc')
-                ->get(),
+        return new TaskBoardResource(
+            $taskBoard->load([
+                // > When using this feature, you should always include
+                // > the id column and any relevant foreign key columns
+                // see: https://laravel.com/docs/9.x/eloquent-relationships#eager-loading-specific-columns
+                'taskLists:id,user_id,task_board_id,title,description,created_at,updated_at',
+                // Nested eager loading with specific columns can be used like this.
+                // see: https://laravel.com/docs/9.x/eloquent-relationships#nested-eager-loading
+                'taskLists.taskCards:*',
+            ]),
         );
-
-        // 以下で使用するため、事前にデータを取得しておく (無駄なクエリの大量発行を防止)
-        $taskBoard->cards = TaskCardResource::collection(
-            $taskBoard
-                ->taskCards()
-                ->orderBy('updated_at', 'desc')
-                ->get(),
-        );
-
-        // `$taskBoard`の各`list`に所属する`cards`を設定する
-        // `TaskListResource`に`cards`を追加することでこれを含めて返却するようにする
-        foreach ($taskBoard->lists as $list) {
-            $list->cards = [];
-            foreach ($taskBoard->cards as $card) {
-                if ($list->id === $card->task_list_id) {
-                    $list->cards[] = $card;
-                }
-            }
-        }
+    }
 
         return new TaskBoardResource($taskBoard);
     }
