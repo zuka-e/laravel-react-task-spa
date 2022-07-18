@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\TaskListRequest;
+use App\Http\Requests\StoreTaskListRequest;
+use App\Http\Requests\UpdateTaskListRequest;
 use App\Http\Resources\TaskListResource;
 use App\Models\TaskBoard;
 use App\Models\TaskList;
@@ -22,11 +23,11 @@ class TaskListController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\TaskListRequest  $request
+     * @param  \App\Http\Requests\StoreTaskListRequest  $request
      * @param  \App\Models\TaskBoard  $taskBoard
      * @return \App\Http\Resources\TaskListResource
      */
-    public function store(TaskListRequest $request, TaskBoard $taskBoard)
+    public function store(StoreTaskListRequest $request, TaskBoard $taskBoard)
     {
         /**
          * @var array<string, mixed> $validated Array of only validated data
@@ -48,13 +49,13 @@ class TaskListController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\TaskListRequest  $request  Validation
+     * @param  \App\Http\Requests\UpdateTaskListRequest  $request  Validation
      * @param  \App\Models\TaskBoard  $taskBoard  For Scoping Resource Routes
      * @param  \App\Models\TaskList  $taskList
      * @return \App\Http\Resources\TaskListResource
      */
     public function update(
-        TaskListRequest $request,
+        UpdateTaskListRequest $request,
         TaskBoard $taskBoard,
         TaskList $taskList,
     ) {

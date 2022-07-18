@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\TaskBoardRequest;
+use App\Http\Requests\StoreTaskBoardRequest;
+use App\Http\Requests\UpdateTaskBoardRequest;
 use App\Http\Resources\TaskBoardResource;
-use App\Http\Resources\TaskListResource;
-use App\Http\Resources\TaskCardResource;
 use App\Models\TaskBoard;
 use App\Models\User;
 
@@ -44,11 +43,11 @@ class TaskBoardController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\TaskBoardRequest  $request
+     * @param  \App\Http\Requests\StoreTaskBoardRequest  $request
      * @param  \App\Models\User  $user
      * @return \App\Http\Resources\TaskBoardResource
      */
-    public function store(TaskBoardRequest $request, User $user)
+    public function store(StoreTaskBoardRequest $request, User $user)
     {
         /**
          * @var array<string, mixed> $validated Array of only validated data
@@ -94,13 +93,13 @@ class TaskBoardController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\TaskBoardRequest  $request  Validation
+     * @param  \App\Http\Requests\UpdateTaskBoardRequest  $request  Validation
      * @param  \App\Models\User  $user  For Scoping Resource Routes
      * @param  \App\Models\TaskBoard  $taskBoard
      * @return \App\Http\Resources\TaskBoardResource
      */
     public function update(
-        TaskBoardRequest $request,
+        UpdateTaskBoardRequest $request,
         User $user,
         TaskBoard $taskBoard,
     ) {

@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\TaskCardRequest;
+use App\Http\Requests\StoreTaskCardRequest;
+use App\Http\Requests\UpdateTaskCardRequest;
 use App\Http\Resources\TaskCardResource;
 use App\Models\TaskCard;
 use App\Models\TaskList;
@@ -22,11 +23,11 @@ class TaskCardController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\TaskCardRequest  $request
+     * @param  \App\Http\Requests\StoreTaskCardRequest  $request
      * @param  \App\Models\TaskList  $taskList
      * @return \App\Http\Resources\TaskCardResource
      */
-    public function store(TaskCardRequest $request, TaskList $taskList)
+    public function store(StoreTaskCardRequest $request, TaskList $taskList)
     {
         /**
          * @var array<string, mixed> $validated Array of only validated data
@@ -48,13 +49,13 @@ class TaskCardController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\TaskCardRequest  $request  Validation
+     * @param  \App\Http\Requests\UpdateTaskCardRequest  $request  Validation
      * @param  \App\Models\TaskList  $taskList  For Scoping Resource Routes
      * @param  \App\Models\TaskCard  $taskCard
      * @return \App\Http\Resources\TaskCardResource
      */
     public function update(
-        TaskCardRequest $request,
+        UpdateTaskCardRequest $request,
         TaskList $taskList,
         TaskCard $taskCard,
     ) {
