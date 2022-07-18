@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TaskBoardRequest;
-use App\Http\Resources\TaskBoardCollection;
 use App\Http\Resources\TaskBoardResource;
 use App\Http\Resources\TaskListResource;
 use App\Http\Resources\TaskCardResource;
@@ -22,11 +21,15 @@ class TaskBoardController extends Controller
     }
 
     /**
-     * @param \App\Models\User $user パラメータの値 (ユーザーID)
+     * Display a listing of the resource.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @see https://laravel.com/docs/9.x/eloquent-resources#resource-collections
      */
     public function index(User $user)
     {
-        return new TaskBoardCollection(
+        return TaskBoardResource::collection(
             TaskBoard::where('user_id', $user->id)
                 ->orderBy('updated_at', 'desc')
                 ->paginate(20),
