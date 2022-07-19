@@ -18,45 +18,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/home', fn() => Auth::user());
 
-/*
-|--------------------------------------------------------------
-|  Version 1.0
-|--------------------------------------------------------------
-*/
-Route::group(
-    [
-        'prefix' => 'v1',
-        'namespace' => 'App\Http\Controllers',
-        'middleware' => 'auth:sanctum',
-    ],
-    function () {
-        /*
-    |--------------------------------------------------------------
-    | Auth
-    |--------------------------------------------------------------
-    */
-        Route::get('/users/auth', fn() => new UserResource(Auth::user()));
-
-        Route::delete('/users/auth', function (Request $request) {
-            $request->user()->delete();
-            return response()->json([], 204);
-        });
-
-        /*
-    |--------------------------------------------------------------
-    | Task
-    |--------------------------------------------------------------
-    */
-        Route::apiResource('users.task-boards', TaskBoardController::class)
-            ->except([])
-            ->scoped();
-
-        Route::apiResource('task-boards.task-lists', TaskListController::class)
-            ->only(['store', 'update', 'destroy'])
-            ->scoped();
-
-        Route::apiResource('task-lists.task-cards', TaskCardController::class)
-            ->only(['store', 'update', 'destroy'])
-            ->scoped();
-    },
-);
+Route::prefix('v1')
+    ->name('v1.')
+    ->group(function () {
+        require __DIR__ . '/api/v1.php';
+    });
