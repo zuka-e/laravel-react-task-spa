@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\TaskListRequest;
+use App\Http\Requests\StoreTaskListRequest;
+use App\Http\Requests\UpdateTaskListRequest;
 use App\Http\Resources\TaskListResource;
 use App\Models\TaskBoard;
 use App\Models\TaskList;
+use Illuminate\Support\Facades\Auth;
 
 class TaskListController extends Controller
 {
@@ -19,55 +21,63 @@ class TaskListController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @param  \App\Http\Requests\StoreTaskListRequest  $request
+     * @param  \App\Models\TaskBoard  $taskBoard
+     * @return \App\Http\Resources\TaskListResource
      */
-    public function index()
+    public function store(StoreTaskListRequest $request, TaskBoard $taskBoard)
     {
-        //
-    }
-
-    public function store(TaskListRequest $request, TaskBoard $taskBoard)
-    {
+        /**
+         * @var array<string, mixed> $validated Array of only validated data
+         * @see https://laravel.com/docs/9.x/validation#working-with-validated-input
+         */
         $validated = $request->validated();
-        $newList = new TaskList($validated);
+        /**
+         * @var \App\Models\TaskList $created Newly created `TaskList`
+         * @see https://laravel.com/docs/9.x/eloquent-relationships#the-create-method
+         * `create()` fill the model with fillable attributes and save it.
+         */
+        $created = $taskBoard->taskLists()->make($validated);
+        $created->user()->associate(Auth::id());
+        $created->save();
 
-        $newList->user()->associate($taskBoard->user);
-        $newList->taskBoard()->associate($taskBoard);
-
-        if ($newList->save()) {
-            return new TaskListResource($newList);
-        }
+        return new TaskListResource($created);
     }
 
     /**
-     * Display the specified resource.
+     * Update the specified resource in storage.
      *
+     * @param  \App\Http\Requests\UpdateTaskListRequest  $request  Validation
+     * @param  \App\Models\TaskBoard  $taskBoard  For Scoping Resource Routes
      * @param  \App\Models\TaskList  $taskList
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\TaskListResource
      */
-    public function show(TaskList $taskList)
-    {
-        //
-    }
-
     public function update(
-        TaskListRequest $request,
+        UpdateTaskListRequest $request,
         TaskBoard $taskBoard,
         TaskList $taskList,
     ) {
+        /** @var array<string, mixed> $validated Array of only validated data */
         $validated = $request->validated();
 
-        if ($taskList->fill($validated)->save()) {
-            return new TaskListResource($taskList);
-        }
+        $taskList->fill($validated)->save();
+
+        return new TaskListResource($taskList);
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\TaskBoard  $taskBoard  For Scoping Resource Routes
+     * @param  \App\Models\TaskList  $taskList
+     * @return \App\Http\Resources\TaskListResource
+     */
     public function destroy(TaskBoard $taskBoard, TaskList $taskList)
     {
-        if ($taskList->delete()) {
-            return new TaskListResource($taskList);
-        }
+        $taskList->delete();
+
+        return new TaskListResource($taskList);
     }
 }

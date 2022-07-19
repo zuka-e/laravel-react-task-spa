@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\TaskCardRequest;
+use App\Http\Requests\StoreTaskCardRequest;
+use App\Http\Requests\UpdateTaskCardRequest;
 use App\Http\Resources\TaskCardResource;
 use App\Models\TaskCard;
 use App\Models\TaskList;
-use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class TaskCardController extends Controller
 {
@@ -19,55 +20,67 @@ class TaskCardController extends Controller
         $this->authorizeResource(TaskCard::class);
     }
 
-    public function index(User $user)
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \App\Http\Requests\StoreTaskCardRequest  $request
+     * @param  \App\Models\TaskList  $taskList
+     * @return \App\Http\Resources\TaskCardResource
+     */
+    public function store(StoreTaskCardRequest $request, TaskList $taskList)
     {
-        //
-    }
-
-    public function store(TaskCardRequest $request, TaskList $taskList)
-    {
+        /**
+         * @var array<string, mixed> $validated Array of only validated data
+         * @see https://laravel.com/docs/9.x/validation#working-with-validated-input
+         */
         $validated = $request->validated();
-        $newCard = new TaskCard($validated);
+        /**
+         * @var \App\Models\TaskCard $created Newly created `TaskCard`
+         * @see https://laravel.com/docs/9.x/eloquent-relationships#the-create-method
+         * `create()` fill the model with fillable attributes and save it.
+         */
+        $created = $taskList->taskCards()->make($validated);
+        $created->user()->associate(Auth::id());
+        $created->save();
 
-        $newCard->user()->associate($taskList->taskBoard->user);
-        $newCard->taskList()->associate($taskList);
-
-        if ($newCard->save()) {
-            return new TaskCardResource($newCard);
-        }
+        return new TaskCardResource($created);
     }
 
-    public function show(User $user, TaskCard $taskCard)
-    {
-        //
-    }
-
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \App\Http\Requests\UpdateTaskCardRequest  $request  Validation
+     * @param  \App\Models\TaskList  $taskList  For Scoping Resource Routes
+     * @param  \App\Models\TaskCard  $taskCard
+     * @return \App\Http\Resources\TaskCardResource
+     */
     public function update(
-        TaskCardRequest $request,
+        UpdateTaskCardRequest $request,
         TaskList $taskList,
         TaskCard $taskCard,
     ) {
+        /** @var array<string, mixed> $validated Array of only validated data */
         $validated = $request->validated();
 
-        if (array_key_exists('list_id', $validated)) {
-            $parent = TaskList::find($validated['list_id']);
-            if (!$parent) {
-                abort(500, '指定されたリストは存在しません');
-            }
+        isset($validated['list_id']) &&
+            $taskCard->taskList()->associate($validated['list_id']);
 
-            $taskCard->taskList()->disassociate();
-            $taskCard->taskList()->associate($parent);
-        }
+        $taskCard->fill($validated)->save();
 
-        if ($taskCard->fill($validated)->save()) {
-            return new TaskCardResource($taskCard);
-        }
+        return new TaskCardResource($taskCard);
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\TaskList  $taskList  For Scoping Resource Routes
+     * @param  \App\Models\TaskCard  $taskCard
+     * @return \App\Http\Resources\TaskCardResource
+     */
     public function destroy(TaskList $taskList, TaskCard $taskCard)
     {
-        if ($taskCard->delete()) {
-            return new TaskCardResource($taskCard);
-        }
+        $taskCard->delete();
+
+        return new TaskCardResource($taskCard);
     }
 }
