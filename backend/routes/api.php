@@ -1,8 +1,6 @@
 <?php
 
-use App\Http\Resources\UserResource;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/home', fn() => Auth::user());
+Route::get('/', [HomeController::class, 'index']);
 
 Route::prefix('v1')
     ->name('v1.')
