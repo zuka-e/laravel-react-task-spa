@@ -39,7 +39,7 @@ class RouteServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
 
         $this->routes(function () {
-            Route::middleware('api')
+            Route::middleware(['api', 'throttle:api'])
                 ->namespace($this->namespace)
                 ->group(base_path('routes/api.php'));
 
@@ -56,6 +56,8 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function configureRateLimiting()
     {
+        // Usage: `Route::middleware(['throttle:api'])...`
+        // https://laravel.com/docs/9.x/routing#attaching-rate-limiters-to-routes
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by(
                 optional($request->user())->id ?: $request->ip(),
