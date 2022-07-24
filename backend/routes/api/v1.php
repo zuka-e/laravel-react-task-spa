@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\V1;
 
-use App\Http\Resources\UserResource;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,14 +10,6 @@ use Illuminate\Support\Facades\Route;
 |------------------------------------------------------------------------------
 */
 Route::middleware('auth:sanctum')->group(function () {
-    /*
-    |--------------------------------------------------------------------------
-    | Authenticatd Users
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get('/users/auth', fn() => new UserResource(Auth::user()));
-
     /*
     |--------------------------------------------------------------------------
     | Tasks
