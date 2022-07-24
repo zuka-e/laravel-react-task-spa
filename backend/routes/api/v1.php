@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\V1;
 
 use App\Http\Resources\UserResource;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -20,11 +19,6 @@ Route::middleware('auth:sanctum')->group(function () {
     */
 
     Route::get('/users/auth', fn() => new UserResource(Auth::user()));
-
-    Route::delete('/users/auth', function (Request $request) {
-        $request->user()->delete();
-        return response()->json([], 204);
-    });
 
     /*
     |--------------------------------------------------------------------------
