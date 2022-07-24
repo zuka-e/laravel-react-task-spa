@@ -10,7 +10,7 @@ use Laravel\Fortify\Http\Requests\VerifyEmailRequest;
 /**
  * `\Laravel\Fortify\Http\Controllers\VerifyEmailController`
  * defined in `vendor/laravel/fortify/routes/routes.php`
- * is binded into this class in `FortifyServiceProvider`.
+ * is bound into this class in `FortifyServiceProvider`.
  *
  * @see \App\Providers\FortifyServiceProvider
  */

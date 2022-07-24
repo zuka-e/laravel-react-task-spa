@@ -1,6 +1,5 @@
 <?php
 
-use App\Providers\RouteServiceProvider;
 use Laravel\Fortify\Features;
 
 return [
@@ -73,7 +72,7 @@ return [
     |
     */
 
-    'prefix' => env('API_ROUTE_PREFIX', '/api/') . env('API_VERSION', 'v1'),
+    'prefix' => 'v1',
 
     'domain' => null,
 
