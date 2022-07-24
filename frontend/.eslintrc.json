@@ -13,6 +13,8 @@
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
+    // https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/react-in-jsx-scope.md#when-not-to-use-it
+    "plugin:react/jsx-runtime",
     "plugin:@typescript-eslint/recommended"
   ],
   // https://eslint.org/docs/user-guide/configuring/plugins#specifying-parser
