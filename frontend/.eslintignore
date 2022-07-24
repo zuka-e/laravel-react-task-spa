@@ -1,0 +1,6 @@
+# In accordance with `.gitignore`,
+
+node_modules
+build
+coverage
+public
