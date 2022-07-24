@@ -1,15 +1,23 @@
+// https://eslint.org/docs/user-guide/getting-started#installation-and-usage
+// https://eslint.org/docs/user-guide/configuring/configuration-files
 {
+  // https://eslint.org/docs/user-guide/configuring/configuration-files#cascading-and-hierarchy
+  "root": true,
+  // https://eslint.org/docs/user-guide/configuring/language-options#specifying-environments
   "env": {
     "browser": true,
     "es2021": true,
     "node": true
   },
+  // https://eslint.org/docs/user-guide/configuring/configuration-files#extending-configuration-files
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended"
   ],
+  // https://eslint.org/docs/user-guide/configuring/plugins#specifying-parser
   "parser": "@typescript-eslint/parser",
+  // https://eslint.org/docs/user-guide/configuring/language-options#specifying-parser-options
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
@@ -17,6 +25,8 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
+  // https://eslint.org/docs/user-guide/configuring/plugins#configuring-plugins
   "plugins": ["react", "@typescript-eslint"],
+  // https://eslint.org/docs/user-guide/configuring/rules
   "rules": {}
 }
