@@ -26,7 +26,7 @@ class TaskListPolicy
          * Be sure the parameter type of `TaskListController::store()`
          * is `TaskBoard`, or model binding won't work.
          *
-         * @var string|object|null $taskBoard Model binded to the route
+         * @var string|object|null $taskBoard Model bound to the route
          * @see https://laravel.com/docs/9.x/routing#implicit-binding
          */
         $taskBoard = request()
