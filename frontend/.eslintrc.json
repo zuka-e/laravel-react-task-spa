@@ -37,7 +37,12 @@
         "ignoreRestSiblings": true,
         "argsIgnorePattern": "^_"
       }
-    ]
+    ],
+    // https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/prop-types.md
+    // Alternatives:
+    // 1. Add `import React` and use like `React.FC`
+    // 2. Use explicit types like `(props: Props)`
+    "react/prop-types": "off"
   },
   // https://github.com/jsx-eslint/eslint-plugin-react#configuration
   "settings": {
