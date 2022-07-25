@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async';
 import { MemoryRouter } from 'react-router-dom';
 
-import { APP_NAME, GUEST_NAME, GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
+import { APP_NAME, GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import { isSignedIn } from 'utils/auth';
 import store from 'store';
 import Routes from 'Routes';

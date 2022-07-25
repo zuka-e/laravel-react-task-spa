@@ -7,8 +7,6 @@ import {
 } from 'store/thunks/cards';
 import { db, TaskCardDocument } from 'mocks/models';
 
-export const index = (req: RestRequest) => {};
-
 export const store = (req: RestRequest<CreateTaskCardRequest>) => {
   const parent = db.where('taskLists', 'id', req.params.listId)[0];
   const newCard = db.create('taskCards', {
@@ -21,8 +19,6 @@ export const store = (req: RestRequest<CreateTaskCardRequest>) => {
 
   return response;
 };
-
-export const show = (req: RestRequest) => {};
 
 export const update = (req: RestRequest<UpdateTaskCardRequest>) => {
   const card = db.where('taskCards', 'id', req.params.cardId)[0];
