@@ -30,7 +30,15 @@
   // https://eslint.org/docs/user-guide/configuring/plugins#configuring-plugins
   "plugins": ["react", "@typescript-eslint"],
   // https://eslint.org/docs/user-guide/configuring/rules
-  "rules": {},
+  "rules": {
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "ignoreRestSiblings": true,
+        "argsIgnorePattern": "^_"
+      }
+    ]
+  },
   // https://github.com/jsx-eslint/eslint-plugin-react#configuration
   "settings": {
     "react": {
