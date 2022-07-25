@@ -30,5 +30,11 @@
   // https://eslint.org/docs/user-guide/configuring/plugins#configuring-plugins
   "plugins": ["react", "@typescript-eslint"],
   // https://eslint.org/docs/user-guide/configuring/rules
-  "rules": {}
+  "rules": {},
+  // https://github.com/jsx-eslint/eslint-plugin-react#configuration
+  "settings": {
+    "react": {
+      "version": "detect" // It will default to "latest" and warn if missing
+    }
+  }
 }
