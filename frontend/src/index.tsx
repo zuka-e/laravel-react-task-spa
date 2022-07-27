@@ -17,11 +17,15 @@ import App from './App';
 
 import 'config/moment';
 
-if (process.env.NODE_ENV === 'development') {
-  require('./mocks/data');
-  const { worker } = require('./mocks/browser');
-  worker.start({ onUnhandledRequest: 'warn' });
-}
+(async () => {
+  if (process.env.NODE_ENV === 'development') {
+    import('./mocks/data');
+
+    const { worker } = await import('./mocks/browser');
+
+    worker.start({ onUnhandledRequest: 'warn' });
+  }
+})();
 
 ReactDOM.render(
   <React.StrictMode>
