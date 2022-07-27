@@ -55,7 +55,11 @@ const TitleForm: React.FC<FormProps> = (props) => {
   }, [handleClose]);
 
   const handleDispatch = async <
-    T extends AsyncThunk<any, Parameters<T>[0], AsyncThunkConfig>
+    T extends AsyncThunk<
+      Parameters<T['fulfilled']>[0],
+      Parameters<T>[0],
+      AsyncThunkConfig
+    >
   >(
     thunk: T,
     payload: Parameters<T>[0]

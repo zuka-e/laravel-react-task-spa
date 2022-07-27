@@ -7,7 +7,7 @@ export interface InvalidRequest extends AxiosError {
   }>;
 }
 
-export const isInvalidRequest = (payload: any): payload is InvalidRequest =>
+export const isInvalidRequest = (payload: unknown): payload is InvalidRequest =>
   axios.isAxiosError(payload) &&
   payload.response?.status === 422 &&
   typeof payload.response?.data?.errors === 'object';

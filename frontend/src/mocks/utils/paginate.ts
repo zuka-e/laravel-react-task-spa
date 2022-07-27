@@ -61,7 +61,7 @@ export const paginate = <T extends DocumentBase>(props: PaginateProps<T>) => {
 /**
  * `PaginationResponse`の`meta`に`links`を設定する
  * */
-const addMetaLinks = (props: PaginationResponse<any>) => {
+const addMetaLinks = (props: PaginationResponse<DocumentBase>) => {
   const count = props.meta.last_page + 2; // page総数 + 2 (prev, next);
   Array(count)
     .fill('_')
