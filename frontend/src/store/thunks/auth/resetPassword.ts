@@ -5,7 +5,7 @@ import { apiClient } from 'utils/api';
 import { AsyncThunkConfig } from 'store/thunks/config';
 import { makeRejectValue } from 'store/thunks/utils';
 
-export type ResetPasswordResponse = {};
+export type ResetPasswordResponse = void;
 
 export type ResetPasswordRequest = {
   email: string;

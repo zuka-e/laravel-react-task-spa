@@ -20,7 +20,9 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type LinkButtonProps = {
   to: string;
-} & ButtonProps<ButtonTypeMap<{}, 'a'>['defaultComponent']>;
+} & ButtonProps<
+  ButtonTypeMap<Record<string, unknown>, 'a'>['defaultComponent']
+>;
 
 const LinkButton = (props: LinkButtonProps) => {
   const { to, classes, ...buttonProps } = props;

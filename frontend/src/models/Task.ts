@@ -1,12 +1,13 @@
-import { CollectionBase, DocumentBase } from 'models';
+import type { CollectionBase, DocumentBase } from 'models';
+import type { IndexMap } from 'utils/dnd';
 
 export type TaskBoard = {
   userId: string;
   title: string;
   description: string;
   lists: TaskList[];
-  listIndexMap: {};
-  cardIndexMap: {};
+  listIndexMap: IndexMap;
+  cardIndexMap: IndexMap;
 } & DocumentBase;
 
 export type TaskBoardsCollection = CollectionBase<TaskBoard>;

@@ -5,11 +5,12 @@ import { apiClient } from 'utils/api';
 import { AsyncThunkConfig } from 'store/thunks/config';
 import { makeRejectValue } from 'store/thunks/utils';
 
-type DeleteAccountResponse = {};
+type DeleteAccountResponse = void;
+type DeleteAccountRequest = void;
 
 export const deleteAccount = createAsyncThunk<
   DeleteAccountResponse,
-  void,
+  DeleteAccountRequest,
   AsyncThunkConfig
 >('auth/deleteAccount', async (_, thunkApi) => {
   try {
