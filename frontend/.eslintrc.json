@@ -38,6 +38,11 @@
         "argsIgnorePattern": "^_"
       }
     ],
+    // This rule isn't included in `recommended`.
+    // https://typescript-eslint.io/rules/explicit-module-boundary-types/#attributes
+    // But the warning is displayed in running `yarn start`,
+    // while not in case of `yarn lint`.
+    "@typescript-eslint/explicit-module-boundary-types": "off",
     // https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/prop-types.md
     // Alternatives:
     // 1. Add `import React` and use like `React.FC`
