@@ -8,6 +8,7 @@ import {
   Select,
   SelectProps,
   MenuItem,
+  MenuItemProps,
 } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -44,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type LabeledSelectProps = {
   label: string;
-  options: object;
+  options: Record<string, MenuItemProps['value']>;
 } & SelectProps;
 
 const LabeledSelect: React.FC<LabeledSelectProps> = (props) => {
