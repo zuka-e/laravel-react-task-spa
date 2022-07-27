@@ -86,11 +86,11 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
           name: register(prop)['name'],
           onBlur: register(prop)['onBlur'],
         }}
-        className={!!errors[prop] ? classes.error : undefined}
+        className={errors[prop] ? classes.error : undefined}
       />
       <CardActions>
         <span
-          className={`${classes.helperText}${!!errors[prop] ? ' error' : ''}`}
+          className={`${classes.helperText}${errors[prop] ? ' error' : ''}`}
         >
           {errors[prop]?.message}
         </span>
