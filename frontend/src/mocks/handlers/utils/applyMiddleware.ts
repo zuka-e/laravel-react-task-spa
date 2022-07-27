@@ -2,6 +2,7 @@ import { compose, context, RestRequest } from 'msw';
 
 import type { User } from 'models/User';
 import type { ErrorResponse } from 'mocks/handlers/types';
+import { auth } from 'mocks/models';
 import {
   X_XSRF_TOKEN,
   hasValidToken,
@@ -63,4 +64,8 @@ export const applyMiddleware = (
       context.status(419),
       context.json<ErrorResponse>({ message: 'Token mismatch.' })
     );
+
+  if (currentUser) {
+    auth.login(currentUser);
+  }
 };

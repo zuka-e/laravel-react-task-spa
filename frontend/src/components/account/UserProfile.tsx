@@ -29,12 +29,10 @@ const schema = yup.object().shape({
 });
 
 const UserProfile = () => {
-  /**
-   * `Account`ページは認証ルートのため以下が成立
-   * - `signedIn` === `true` && `user`!== `null` -> `user!`
-   */
   const user = {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     name: useAppSelector((state) => state.auth.user!.name),
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     email: useAppSelector((state) => state.auth.user!.email),
   };
   const dispatch = useAppDispatch();

@@ -28,7 +28,6 @@ import {
   isUniqueEmail,
   authenticate,
   isValidPassword,
-  getUserFromSession,
   regenerateSessionId,
   createSessionId,
   generateCsrfToken,
@@ -77,13 +76,13 @@ export const handlers = [
     const httpException = applyMiddleware(req, ['authenticate']);
     if (httpException) return res(httpException);
 
-    const currentUser = getUserFromSession(req.cookies.session_id);
-    auth.login(currentUser!);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const currentUser = auth.getUser()!;
 
     return res(
       ctx.status(200),
       ctx.json({
-        user: sanitizeUser(currentUser!),
+        user: sanitizeUser(currentUser),
       })
     );
   }),
@@ -96,8 +95,10 @@ export const handlers = [
     const httpException = applyMiddleware(req, ['authenticate']);
     if (httpException) return res(httpException);
 
-    const currentUser = getUserFromSession(req.cookies.session_id);
-    return res(ctx.status(currentUser!.emailVerifiedAt ? 204 : 202));
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const currentUser = auth.getUser()!;
+
+    return res(ctx.status(currentUser.emailVerifiedAt ? 204 : 202));
   }),
 
   rest.post<SignInRequest, SignInResponse & ErrorResponse, RequestParams>(
@@ -131,10 +132,11 @@ export const handlers = [
         })
       );
 
-    const currentUser = getUserFromSession(req.cookies.session_id);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const currentUser = auth.getUser()!;
     const newSessionId = regenerateSessionId(req.cookies.session_id);
     const response = updateProfileController.update({
-      currentUser: currentUser!,
+      currentUser: currentUser,
       request: req.body,
     });
 
@@ -151,9 +153,10 @@ export const handlers = [
       const httpException = applyMiddleware(req, ['authenticate']);
       if (httpException) return res(httpException);
 
-      const currentUser = getUserFromSession(req.cookies.session_id);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const currentUser = auth.getUser()!;
 
-      if (!isValidPassword(req.body.current_password, currentUser!.password))
+      if (!isValidPassword(req.body.current_password, currentUser.password))
         return res(
           returnInvalidRequest({
             password: ['パスワードが間違っています。'],
@@ -161,7 +164,7 @@ export const handlers = [
         );
 
       updatePasswordController.update({
-        currentUser: currentUser!,
+        currentUser: currentUser,
         request: req.body,
       });
 
@@ -228,8 +231,10 @@ export const handlers = [
       const httpException = applyMiddleware(req, ['authenticate']);
       if (httpException) return res(httpException);
 
-      const currentUser = getUserFromSession(req.cookies.session_id);
-      deleteAccountController.remove(currentUser!);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const currentUser = auth.getUser()!;
+
+      deleteAccountController.remove(currentUser);
 
       return res(
         ctx.status(204),
