@@ -49,5 +49,14 @@
     "react": {
       "version": "detect" // It will default to "latest" and warn if missing
     }
-  }
+  },
+  // https://eslint.org/docs/latest/user-guide/configuring/configuration-files#how-do-overrides-work
+  "overrides": [
+    {
+      "files": ["!src/*.js"],
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    }
+  ]
 }
