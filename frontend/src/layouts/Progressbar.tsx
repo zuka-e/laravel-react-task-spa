@@ -19,8 +19,8 @@ const Progressbar = (props: LinearProgressProps) => {
     return (
       <LinearProgress
         classes={{ root }}
-        variant='query'
-        color='secondary'
+        variant="query"
+        color="secondary"
         {...props}
       />
     );

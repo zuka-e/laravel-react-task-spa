@@ -31,8 +31,8 @@ const LinkButton = (props: LinkButtonProps) => {
   return (
     <Button
       classes={{ ...defaultClasses, ...classes }}
-      variant='contained'
-      color='primary'
+      variant="contained"
+      color="primary"
       component={RouterLink}
       to={to}
       {...buttonProps}

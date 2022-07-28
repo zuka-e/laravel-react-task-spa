@@ -39,7 +39,7 @@ const Header: React.FC = () => {
     };
 
   const SignInLinkButton = () => (
-    <LinkButton to='/login' color='secondary' startIcon={<AccountCircleIcon />}>
+    <LinkButton to="/login" color="secondary" startIcon={<AccountCircleIcon />}>
       {'ログイン'}
     </LinkButton>
   );
@@ -47,8 +47,8 @@ const Header: React.FC = () => {
   const AccountMenuButton = () => (
     <PopoverControl
       trigger={
-        <IconButton aria-label='account-menu'>
-          <Avatar alt='avatar' src={undefined} className={classes.avatar}>
+        <IconButton aria-label="account-menu">
+          <Avatar alt="avatar" src={undefined} className={classes.avatar}>
             <PersonIcon />
           </Avatar>
         </IconButton>
@@ -61,24 +61,24 @@ const Header: React.FC = () => {
   );
 
   return (
-    <AppBar position='static'>
+    <AppBar position="static">
       <Toolbar>
         <IconButton
-          edge='start'
-          color='inherit'
-          aria-label='menu'
-          aria-controls='menu'
-          aria-haspopup='true'
+          edge="start"
+          color="inherit"
+          aria-label="menu"
+          aria-controls="menu"
+          aria-haspopup="true"
           onClick={toggleDrawer(true)}
         >
           <MenuIcon />
         </IconButton>
-        <Drawer anchor='left' open={open} onClose={toggleDrawer(false)}>
+        <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
           <Sidebar toggleDrawer={toggleDrawer} />
         </Drawer>
         <div className={`${classes.root} ${classes.title}`}>
           <LinkWrapper to={'/'}>
-            <img src={logo} alt={APP_NAME} width='120' height='30' />
+            <img src={logo} alt={APP_NAME} width="120" height="30" />
           </LinkWrapper>
         </div>
         {isSignedIn() ? <AccountMenuButton /> : <SignInLinkButton />}

@@ -36,8 +36,8 @@ const BoardCardHeader: React.FC<BoardCardHeaderProps> = (props) => {
 
   const Title = () => (
     <EditableTitle
-      method='PATCH'
-      model='board'
+      method="PATCH"
+      model="board"
       data={board}
       disableMargin
       inputStyle={classes.title}
@@ -45,14 +45,14 @@ const BoardCardHeader: React.FC<BoardCardHeaderProps> = (props) => {
   );
 
   const Subheader = () => (
-    <Typography color='textSecondary' variant='body2'>
+    <Typography color="textSecondary" variant="body2">
       {moment(board.updatedAt).calendar()}
     </Typography>
   );
 
   const MenuButton = () => (
-    <Tooltip title='Menu' enterDelay={500}>
-      <IconButton aria-label='board-menu' size='small'>
+    <Tooltip title="Menu" enterDelay={500}>
+      <IconButton aria-label="board-menu" size="small">
         <MoreVertIcon />
       </IconButton>
     </Tooltip>

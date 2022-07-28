@@ -94,7 +94,7 @@ const TaskBoardDetails: React.FC<TaskBoardDetailsProps> = (props) => {
   return (
     <Card className={classes.root}>
       <CardActions disableSpacing>
-        <Breadcrumbs aria-label='breadcrumb' className={classes.breadcrumbs}>
+        <Breadcrumbs aria-label="breadcrumb" className={classes.breadcrumbs}>
           <Link to={`/users/${userId}/boards`}>
             <FolderIcon className={classes.icon} />
             {'Boards'}
@@ -105,9 +105,9 @@ const TaskBoardDetails: React.FC<TaskBoardDetailsProps> = (props) => {
           </Typography>
         </Breadcrumbs>
         <IconButton
-          aria-label='close'
+          aria-label="close"
           onClick={handleClose}
-          size='small'
+          size="small"
           className={classes.close}
         >
           <CloseIcon />
@@ -116,7 +116,7 @@ const TaskBoardDetails: React.FC<TaskBoardDetailsProps> = (props) => {
       <CardHeader
         className={classes.cardHeader}
         disableTypography
-        title={<EditableTitle method='PATCH' model='board' data={board} />}
+        title={<EditableTitle method="PATCH" model="board" data={board} />}
       />
       <CardContent className={classes.rows}>
         <Grid container>

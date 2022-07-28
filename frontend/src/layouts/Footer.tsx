@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Copyright = () => (
-  <Typography variant='body2' color='inherit'>
+  <Typography variant="body2" color="inherit">
     © {APP_NAME} {new Date().getFullYear()}
   </Typography>
 );
@@ -28,14 +28,14 @@ const Footer: React.FC = () => {
   const classes = useStyles();
 
   return (
-    <Container component='footer' className={classes.footer} maxWidth={false}>
-      <Grid container direction='column' alignItems='center'>
+    <Container component="footer" className={classes.footer} maxWidth={false}>
+      <Grid container direction="column" alignItems="center">
         <Grid item>
-          <Link component={RouterLink} to='/terms' color='inherit'>
+          <Link component={RouterLink} to="/terms" color="inherit">
             Terms
           </Link>
-          <Box display='inline' borderLeft='1px solid' ml={1} pl={1} />
-          <Link component={RouterLink} to='/privacy' color='inherit'>
+          <Box display="inline" borderLeft="1px solid" ml={1} pl={1} />
+          <Link component={RouterLink} to="/privacy" color="inherit">
             Privacy
           </Link>
         </Grid>

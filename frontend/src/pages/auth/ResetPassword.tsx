@@ -72,12 +72,12 @@ const ResetPassword = () => {
   };
 
   return (
-    <BaseLayout subtitle='Reset Password' withoutHeaders>
+    <BaseLayout subtitle="Reset Password" withoutHeaders>
       <FormLayout title={'Reset Password'} message={message}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
-            variant='outlined'
-            margin='normal'
+            variant="outlined"
+            margin="normal"
             required
             fullWidth
             id={formdata.password.id}
@@ -89,7 +89,7 @@ const ResetPassword = () => {
             error={!!errors?.password}
           />
           <TextField
-            variant='outlined'
+            variant="outlined"
             // margin='normal'
             required
             fullWidth
@@ -105,7 +105,7 @@ const ResetPassword = () => {
           />
           <Box ml={1} mb={2}>
             <LabeledCheckbox
-              label='Show Password'
+              label="Show Password"
               checked={visiblePassword}
               setChecked={setVisiblePassword}
             />
@@ -116,12 +116,12 @@ const ResetPassword = () => {
           <Box mb={2}>
             <Divider />
           </Box>
-          <Grid container justifyContent='flex-end'>
+          <Grid container justifyContent="flex-end">
             <Grid item>
               <AlertButton
-                color='info'
-                variant='text'
-                size='small'
+                color="info"
+                variant="text"
+                size="small"
                 onClick={() => history.push('/')}
               >
                 {'Cancel'}

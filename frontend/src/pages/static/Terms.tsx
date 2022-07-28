@@ -2,7 +2,7 @@ import { APP_NAME } from 'config/app';
 import { BaseLayout, MarkdownWithToc } from 'layouts';
 
 const Terms = () => (
-  <BaseLayout subtitle='Terms'>
+  <BaseLayout subtitle="Terms">
     <MarkdownWithToc articles={articles}>{terms}</MarkdownWithToc>
   </BaseLayout>
 );

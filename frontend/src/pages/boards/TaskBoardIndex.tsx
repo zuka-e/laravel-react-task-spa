@@ -64,8 +64,8 @@ const TaskBoardIndex: React.FC = () => {
   if (!boards || userId !== params.userId) return <StandbyScreen />;
 
   return (
-    <BaseLayout subtitle='Boards'>
-      <Container component='main' className={classes.main}>
+    <BaseLayout subtitle="Boards">
+      <Container component="main" className={classes.main}>
         <Grid container spacing={2}>
           {boards.map((board) => (
             <Grid item lg={3} md={4} xs={6} key={board.id}>
@@ -81,7 +81,7 @@ const TaskBoardIndex: React.FC = () => {
             </Grid>
           ))}
           <Grid item lg={3} sm={4} xs={6}>
-            <ButtonToAddTask method='POST' model='board' />
+            <ButtonToAddTask method="POST" model="board" />
           </Grid>
         </Grid>
       </Container>
@@ -91,8 +91,8 @@ const TaskBoardIndex: React.FC = () => {
           count={count}
           page={currentPage}
           siblingCount={2}
-          color='primary'
-          size='large'
+          color="primary"
+          size="large"
           onChange={handleChange}
           classes={{ root: classes.pagination, ul: classes.paginationUl }}
         />

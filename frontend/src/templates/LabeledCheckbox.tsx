@@ -29,8 +29,8 @@ const LabeledCheckbox: React.FC<LabeledCheckboxProps> = (props) => {
         control={
           <Checkbox
             onChange={handleChange}
-            color='primary'
-            size='small'
+            color="primary"
+            size="small"
             {...checkboxProps}
           />
         }

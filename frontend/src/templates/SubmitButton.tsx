@@ -8,9 +8,9 @@ const SubmitButton = (props: ButtonProps) => {
   return (
     <Button
       disabled={loading}
-      type='submit'
-      variant='contained'
-      color='primary'
+      type="submit"
+      variant="contained"
+      color="primary"
       {...props}
     />
   );

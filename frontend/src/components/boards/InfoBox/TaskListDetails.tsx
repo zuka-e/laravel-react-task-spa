@@ -86,7 +86,7 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = (props) => {
   return (
     <Card className={classes.root}>
       <CardActions disableSpacing>
-        <Breadcrumbs aria-label='breadcrumb' className={classes.breadcrumbs}>
+        <Breadcrumbs aria-label="breadcrumb" className={classes.breadcrumbs}>
           <Tooltip title={boardName}>
             <Typography>
               <FolderOpenIcon className={classes.icon} />
@@ -99,9 +99,9 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = (props) => {
           </a>
         </Breadcrumbs>
         <IconButton
-          aria-label='close'
+          aria-label="close"
           onClick={handleClose}
-          size='small'
+          size="small"
           className={classes.close}
         >
           <CloseIcon />
@@ -110,7 +110,7 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = (props) => {
       <CardHeader
         className={classes.cardHeader}
         disableTypography
-        title={<EditableTitle method='PATCH' model='list' data={list} />}
+        title={<EditableTitle method="PATCH" model="list" data={list} />}
       />
       <CardContent className={classes.rows}>
         <Grid container>

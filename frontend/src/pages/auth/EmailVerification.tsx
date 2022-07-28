@@ -50,16 +50,16 @@ const EmailVerification = () => {
   };
 
   return (
-    <BaseLayout subtitle='Email Verification'>
-      <Container className={classes.main} component='main' maxWidth='sm'>
-        <AlertMessage severity='warning' elevation={2}>
+    <BaseLayout subtitle="Email Verification">
+      <Container className={classes.main} component="main" maxWidth="sm">
+        <AlertMessage severity="warning" elevation={2}>
           <strong>
             {`登録から24時間以内に認証を完了させなかった場合、一定時間経過後に登録が抹消されます。`}
           </strong>
         </AlertMessage>
         <Card classes={{ root: classes.paper }} elevation={2}>
-          <Grid container direction='column' alignItems='center'>
-            <Typography variant='h4' component='h1' gutterBottom>
+          <Grid container direction="column" alignItems="center">
+            <Typography variant="h4" component="h1" gutterBottom>
               {`認証用メールを送信しました。`}
             </Typography>
             <Typography paragraph>
@@ -68,7 +68,7 @@ const EmailVerification = () => {
             <Typography paragraph>
               {`1時間以内に手続きを行わなかった場合、メールのリンクは無効になります。`}
             </Typography>
-            <Button variant='contained' color='secondary' onClick={handleClick}>
+            <Button variant="contained" color="secondary" onClick={handleClick}>
               {`メールを再送信する`}
             </Button>
           </Grid>

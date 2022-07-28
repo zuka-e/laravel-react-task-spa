@@ -138,7 +138,7 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
   return (
     <Card className={classes.root}>
       <CardActions disableSpacing>
-        <Breadcrumbs aria-label='breadcrumb' className={classes.breadcrumbs}>
+        <Breadcrumbs aria-label="breadcrumb" className={classes.breadcrumbs}>
           <a
             href={`${window.location.origin}${window.location.pathname}#${list?.id}`}
           >
@@ -151,9 +151,9 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
           </Typography>
         </Breadcrumbs>
         <IconButton
-          aria-label='close'
+          aria-label="close"
           onClick={handleClose}
-          size='small'
+          size="small"
           className={classes.rightAction}
         >
           <CloseIcon />
@@ -161,14 +161,14 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
       </CardActions>
       <CardHeader
         classes={{ root: classes.header }}
-        title={<EditableTitle method='PATCH' model='card' data={card} />}
+        title={<EditableTitle method="PATCH" model="card" data={card} />}
       />
       <CardContent className={classes.rows}>
         <FormControlLabel
           label={card.done ? 'Completed' : 'Incompleted'}
           control={
             <Checkbox
-              color='primary'
+              color="primary"
               checked={card.done}
               onChange={handleCheckbox}
             />
@@ -218,7 +218,7 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
       <CardActions className={classes.footer}>
         {openDeleteDialog && (
           <DeleteTaskDialog
-            model='card'
+            model="card"
             data={card}
             setOpen={setOpenDeleteDialog}
           />
@@ -226,8 +226,8 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
         <AlertButton
           onClick={handleDelete}
           startIcon={<DeleteIcon />}
-          title='削除'
-          color='danger'
+          title="削除"
+          color="danger"
           className={classes.rightAction}
         >
           削除

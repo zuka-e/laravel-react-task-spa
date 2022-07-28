@@ -2,7 +2,7 @@ import { APP_NAME } from 'config/app';
 import { BaseLayout, MarkdownWithToc } from 'layouts';
 
 const Privacy = () => (
-  <BaseLayout subtitle='Privacy Policy'>
+  <BaseLayout subtitle="Privacy Policy">
     <MarkdownWithToc articles={articles}>{privacyPolicy}</MarkdownWithToc>
   </BaseLayout>
 );

@@ -66,12 +66,12 @@ const UserProfile = () => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          {message && <AlertMessage severity='error' body={message} />}
+          {message && <AlertMessage severity="error" body={message} />}
         </Grid>
         <Grid item md={6} xs={12}>
           <TextField
             disabled={isGuest()}
-            variant='outlined'
+            variant="outlined"
             fullWidth
             id={formdata.name.id}
             label={formdata.name.label}
@@ -85,7 +85,7 @@ const UserProfile = () => {
         <Grid item md={6} xs={12}>
           <TextField
             disabled={isGuest()}
-            variant='outlined'
+            variant="outlined"
             fullWidth
             id={formdata.email.id}
             label={formdata.email.label}

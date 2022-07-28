@@ -34,11 +34,11 @@ const DatetimeInput: React.FC<DatetimeInputProps> = (props) => {
 
   return (
     <KeyboardDateTimePicker
-      variant='inline'
-      format='YYYY/MM/DD/ HH:mm'
+      variant="inline"
+      format="YYYY/MM/DD/ HH:mm"
       ampm={false}
       minDate={new Date().valueOf()}
-      minDateMessage='' // デフォルトのメッセージを削除
+      minDateMessage="" // デフォルトのメッセージを削除
       // autoOk : `分`設定後自動で(`onChange`実行前に)閉じる
       value={datetime}
       onChange={setDatetime}

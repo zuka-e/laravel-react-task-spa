@@ -80,7 +80,7 @@ const EditableTitle: React.FC<EditableTitleProps> = (props) => {
       inputProps={{ title: defaultValue }}
       multiline
       maxRows={props.maxRows || maxRow}
-      variant='outlined'
+      variant="outlined"
       InputProps={{
         onClick: handleOpenForm,
         classes: {

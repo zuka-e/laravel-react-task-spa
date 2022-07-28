@@ -38,8 +38,8 @@ const ListCardHeader: React.FC<ListCardHeaderProps> = (props) => {
 
   const Title = () => (
     <EditableTitle
-      method='PATCH'
-      model='list'
+      method="PATCH"
+      model="list"
       data={list}
       disableMargin
       inputStyle={classes.title}
@@ -47,7 +47,7 @@ const ListCardHeader: React.FC<ListCardHeaderProps> = (props) => {
   );
 
   const Subheader = () => (
-    <Typography color='textSecondary' variant='body2'>
+    <Typography color="textSecondary" variant="body2">
       {moment(list.updatedAt).calendar()}
     </Typography>
   );
@@ -55,7 +55,7 @@ const ListCardHeader: React.FC<ListCardHeaderProps> = (props) => {
   const Action = () => (
     <PopoverControl
       trigger={
-        <IconButton size='small'>
+        <IconButton size="small">
           <MoreVertIcon />
         </IconButton>
       }

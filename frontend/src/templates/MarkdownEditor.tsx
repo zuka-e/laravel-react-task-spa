@@ -94,7 +94,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
         >
           {errors[prop]?.message}
         </span>
-        <SubmitButton onClick={handleSubmit(onSubmit)} size='small'>
+        <SubmitButton onClick={handleSubmit(onSubmit)} size="small">
           {'Save'}
         </SubmitButton>
       </CardActions>

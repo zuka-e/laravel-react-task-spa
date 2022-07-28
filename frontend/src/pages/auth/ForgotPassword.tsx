@@ -43,12 +43,12 @@ const ForgotPassword = () => {
   };
 
   return (
-    <BaseLayout subtitle='Forgot Password' withoutHeaders>
+    <BaseLayout subtitle="Forgot Password" withoutHeaders>
       <FormLayout title={'Forgot Password?'} message={message}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
-            variant='outlined'
-            margin='normal'
+            variant="outlined"
+            margin="normal"
             required
             fullWidth
             id={formdata.email.id}
@@ -64,13 +64,13 @@ const ForgotPassword = () => {
           <Box mb={2}>
             <Divider />
           </Box>
-          <Grid container justifyContent='flex-end'>
+          <Grid container justifyContent="flex-end">
             <Grid item>
               {'Back to'}
               <AlertButton
-                color='info'
-                variant='text'
-                size='small'
+                color="info"
+                variant="text"
+                size="small"
                 onClick={() => history.push('/login')}
               >
                 {'Sign in'}
