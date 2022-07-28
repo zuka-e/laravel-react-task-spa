@@ -1,0 +1,10 @@
+# In accordance with `.gitignore` and `.eslintignore`,
+
+node_modules
+build
+coverage
+public
+package.json
+package-lock.json
+yarn.lock
+*.md
