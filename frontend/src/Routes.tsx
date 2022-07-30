@@ -24,12 +24,12 @@ const Route = ({ ...rest }) => {
 };
 
 const GuestRoute = ({ ...rest }) => {
-  if (isAfterRegistration()) return <Redirect to='/email-verification' />;
-  return isSignedIn() ? <Redirect to='/' /> : <Route {...rest} />;
+  if (isAfterRegistration()) return <Redirect to="/email-verification" />;
+  return isSignedIn() ? <Redirect to="/" /> : <Route {...rest} />;
 };
 
 const AuthRoute = ({ ...rest }) => {
-  return isSignedIn() ? <Route {...rest} /> : <Redirect to='/' />;
+  return isSignedIn() ? <Route {...rest} /> : <Redirect to="/" />;
 };
 
 const Routes = () => {
@@ -49,24 +49,24 @@ const Routes = () => {
 
   return (
     <Switch>
-      <Route exact path='/' component={Home} />
-      <Route exact path='/terms' component={Terms} />
-      <Route exact path='/privacy' component={Privacy} />
-      <GuestRoute exact path='/register' component={SignUp} />
-      <AuthRoute path='/email-verification' component={EmailVerification} />
-      <GuestRoute exact path='/login' component={SignIn} />
-      <AuthRoute exact path='/account' component={Account} />
-      <GuestRoute exact path='/forgot-password' component={ForgotPassword} />
-      <GuestRoute exact path='/reset-password' component={ResetPassword} />
+      <Route exact path="/" component={Home} />
+      <Route exact path="/terms" component={Terms} />
+      <Route exact path="/privacy" component={Privacy} />
+      <GuestRoute exact path="/register" component={SignUp} />
+      <AuthRoute path="/email-verification" component={EmailVerification} />
+      <GuestRoute exact path="/login" component={SignIn} />
+      <AuthRoute exact path="/account" component={Account} />
+      <GuestRoute exact path="/forgot-password" component={ForgotPassword} />
+      <GuestRoute exact path="/reset-password" component={ResetPassword} />
 
-      <AuthRoute exact path='/users/:userId/boards'>
+      <AuthRoute exact path="/users/:userId/boards">
         <TaskBoard.Index />
       </AuthRoute>
-      <AuthRoute exact path='/users/:userId/boards/:boardId'>
+      <AuthRoute exact path="/users/:userId/boards/:boardId">
         <TaskBoard.Show />
       </AuthRoute>
 
-      <Route path='*' component={NotFound} />
+      <Route path="*" component={NotFound} />
     </Switch>
   );
 };

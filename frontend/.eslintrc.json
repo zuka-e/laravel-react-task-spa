@@ -1,0 +1,70 @@
+// https://eslint.org/docs/user-guide/getting-started#installation-and-usage
+// https://eslint.org/docs/user-guide/configuring/configuration-files
+{
+  // https://eslint.org/docs/user-guide/configuring/configuration-files#cascading-and-hierarchy
+  "root": true,
+  // https://eslint.org/docs/user-guide/configuring/language-options#specifying-environments
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  // https://eslint.org/docs/user-guide/configuring/configuration-files#extending-configuration-files
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    // https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/react-in-jsx-scope.md#when-not-to-use-it
+    "plugin:react/jsx-runtime",
+    "plugin:@typescript-eslint/recommended",
+    // https://prettier.io/docs/en/install.html#eslint-and-other-linters
+    // https://github.com/prettier/eslint-config-prettier#installation
+    "prettier"
+  ],
+  // https://eslint.org/docs/user-guide/configuring/plugins#specifying-parser
+  "parser": "@typescript-eslint/parser",
+  // https://eslint.org/docs/user-guide/configuring/language-options#specifying-parser-options
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  // https://eslint.org/docs/user-guide/configuring/plugins#configuring-plugins
+  "plugins": ["react", "@typescript-eslint"],
+  // https://eslint.org/docs/user-guide/configuring/rules
+  "rules": {
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "ignoreRestSiblings": true,
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    // This rule isn't included in `recommended`.
+    // https://typescript-eslint.io/rules/explicit-module-boundary-types/#attributes
+    // But the warning is displayed in running `yarn start`,
+    // while not in case of `yarn lint`.
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    // https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/prop-types.md
+    // Alternatives:
+    // 1. Add `import React` and use like `React.FC`
+    // 2. Use explicit types like `(props: Props)`
+    "react/prop-types": "off"
+  },
+  // https://github.com/jsx-eslint/eslint-plugin-react#configuration
+  "settings": {
+    "react": {
+      "version": "detect" // It will default to "latest" and warn if missing
+    }
+  },
+  // https://eslint.org/docs/latest/user-guide/configuring/configuration-files#how-do-overrides-work
+  "overrides": [
+    {
+      "files": ["!src/*.js"],
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    }
+  ]
+}

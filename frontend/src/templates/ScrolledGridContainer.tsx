@@ -18,7 +18,7 @@ const ScrolledGridContainer = (props: GridProps) => {
   return (
     <Grid
       container
-      wrap='nowrap'
+      wrap="nowrap"
       classes={{ ...classes, root }}
       {...gridProps}
     />

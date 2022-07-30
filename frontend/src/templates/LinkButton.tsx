@@ -20,7 +20,9 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type LinkButtonProps = {
   to: string;
-} & ButtonProps<ButtonTypeMap<{}, 'a'>['defaultComponent']>;
+} & ButtonProps<
+  ButtonTypeMap<Record<string, unknown>, 'a'>['defaultComponent']
+>;
 
 const LinkButton = (props: LinkButtonProps) => {
   const { to, classes, ...buttonProps } = props;
@@ -29,8 +31,8 @@ const LinkButton = (props: LinkButtonProps) => {
   return (
     <Button
       classes={{ ...defaultClasses, ...classes }}
-      variant='contained'
-      color='primary'
+      variant="contained"
+      color="primary"
       component={RouterLink}
       to={to}
       {...buttonProps}

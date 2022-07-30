@@ -303,6 +303,7 @@ export const taskBoardSlice = createSlice({
 
       newCard.boardId = boardId;
       const list = state.docs[boardId].lists.find((list) => list.id === listId);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       list!.cards = [...list!.cards, { ...newCard }];
 
       state.loading = false;
@@ -359,6 +360,7 @@ export const taskBoardSlice = createSlice({
       const board = state.docs[boardId];
       const list = board.lists.find((list) => list.id === deletedCard.listId);
 
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       list!.cards = list!.cards.filter((card) => card.id !== deletedCard.id);
 
       if (deletedCard.id === state.infoBox.data?.id)

@@ -95,15 +95,15 @@ const TaskBoard = () => {
 
   return (
     <BaseLayout subtitle={board.title}>
-      <Container component='main' maxWidth={false} className={classes.main}>
+      <Container component="main" maxWidth={false} className={classes.main}>
         <ScrolledGridContainer
-          justifyContent='space-between'
-          alignItems='center'
+          justifyContent="space-between"
+          alignItems="center"
         >
           <Grid item className={classes.titleBox}>
             <EditableTitle
-              method='PATCH'
-              model='board'
+              method="PATCH"
+              model="board"
               data={board}
               disableMargin
               inputStyle={classes.title}
@@ -115,7 +115,7 @@ const TaskBoard = () => {
           <Grid item>
             <PopoverControl
               trigger={
-                <IconButton title='Menu'>
+                <IconButton title="Menu">
                   <MoreVertIcon />
                 </IconButton>
               }
@@ -131,12 +131,12 @@ const TaskBoard = () => {
             onDrop={handleDrop}
           >
             {board.lists?.map((list, i) => (
-              <Grid item key={list.id} id={list.id} className='listItem'>
+              <Grid item key={list.id} id={list.id} className="listItem">
                 <TaskList list={list} listIndex={i} />
               </Grid>
             ))}
-            <Grid item className='listItem'>
-              <ButtonToAddTask method='POST' model='list' parent={board} />
+            <Grid item className="listItem">
+              <ButtonToAddTask method="POST" model="list" parent={board} />
             </Grid>
           </ScrolledGridContainer>
           <InfoBox style={belowSm ? { flexShrink: 0 } : undefined} />

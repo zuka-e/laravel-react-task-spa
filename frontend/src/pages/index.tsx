@@ -30,7 +30,7 @@ const Home = () => {
     isSignedIn() && history.replace(`users/${userId}/boards`);
   }, [history, userId]);
 
-  return <BaseLayout subtitle=''>{renderHome()}</BaseLayout>;
+  return <BaseLayout subtitle="">{renderHome()}</BaseLayout>;
 };
 
 export default Home;

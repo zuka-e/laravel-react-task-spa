@@ -67,12 +67,12 @@ const SignUp = () => {
   };
 
   return (
-    <BaseLayout subtitle='Registration' withoutHeaders>
+    <BaseLayout subtitle="Registration" withoutHeaders>
       <FormLayout title={'Create an account'} message={message}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
-            variant='outlined'
-            margin='normal'
+            variant="outlined"
+            margin="normal"
             required
             fullWidth
             id={formdata.email.id}
@@ -83,8 +83,8 @@ const SignUp = () => {
             error={!!errors?.email}
           />
           <TextField
-            variant='outlined'
-            margin='normal'
+            variant="outlined"
+            margin="normal"
             required
             fullWidth
             id={formdata.password.id}
@@ -96,7 +96,7 @@ const SignUp = () => {
             error={!!errors?.password}
           />
           <TextField
-            variant='outlined'
+            variant="outlined"
             // margin='normal'
             required
             fullWidth
@@ -112,7 +112,7 @@ const SignUp = () => {
           />
           <Box ml={1} mb={2}>
             <LabeledCheckbox
-              label='Show Password'
+              label="Show Password"
               checked={visiblePassword}
               setChecked={setVisiblePassword}
             />
@@ -123,13 +123,13 @@ const SignUp = () => {
           <Box mb={2}>
             <Divider />
           </Box>
-          <Grid container justifyContent='flex-end'>
+          <Grid container justifyContent="flex-end">
             <Grid item>
               {'Already have an account? '}
               <AlertButton
-                color='info'
-                variant='text'
-                size='small'
+                color="info"
+                variant="text"
+                size="small"
                 onClick={() => history.push('/login')}
               >
                 {'Sign in'}

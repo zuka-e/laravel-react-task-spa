@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# https://typicode.github.io/husky/#/?id=custom-directory
+cd frontend
+# https://github.com/okonet/lint-staged#command-line-flags
+npx lint-staged

@@ -52,7 +52,7 @@ export const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(createUser.pending, (state, action) => {
+    builder.addCase(createUser.pending, (state, _action) => {
       state.loading = true;
     });
     builder.addCase(createUser.fulfilled, (state, action) => {
@@ -65,11 +65,11 @@ export const authSlice = createSlice({
         message: 'ユーザー登録が完了しました',
       });
     });
-    builder.addCase(createUser.rejected, (state, action) => {
+    builder.addCase(createUser.rejected, (state, _action) => {
       state.signedIn = false;
       state.loading = false;
     });
-    builder.addCase(fetchAuthUser.pending, (state, action) => {
+    builder.addCase(fetchAuthUser.pending, (state, _action) => {
       state.loading = true;
     });
     builder.addCase(fetchAuthUser.fulfilled, (state, action) => {
@@ -77,12 +77,12 @@ export const authSlice = createSlice({
       state.signedIn = true;
       state.loading = false;
     });
-    builder.addCase(fetchAuthUser.rejected, (state, action) => {
+    builder.addCase(fetchAuthUser.rejected, (state, _action) => {
       state.user = null;
       state.signedIn = false;
       state.loading = false;
     });
-    builder.addCase(sendEmailVerificationLink.pending, (state, action) => {
+    builder.addCase(sendEmailVerificationLink.pending, (state, _action) => {
       state.loading = true;
     });
     builder.addCase(sendEmailVerificationLink.fulfilled, (state, action) => {
@@ -100,10 +100,10 @@ export const authSlice = createSlice({
         });
       }
     });
-    builder.addCase(sendEmailVerificationLink.rejected, (state, action) => {
+    builder.addCase(sendEmailVerificationLink.rejected, (state, _action) => {
       state.loading = false;
     });
-    builder.addCase(signInWithEmail.pending, (state, action) => {
+    builder.addCase(signInWithEmail.pending, (state, _action) => {
       state.loading = true;
     });
     builder.addCase(signInWithEmail.fulfilled, (state, action) => {
@@ -115,11 +115,11 @@ export const authSlice = createSlice({
         ? state.flash.push({ type: 'success', message: '認証に成功しました' })
         : state.flash.push({ type: 'info', message: 'ログインしました' });
     });
-    builder.addCase(signInWithEmail.rejected, (state, action) => {
+    builder.addCase(signInWithEmail.rejected, (state, _action) => {
       state.signedIn = false;
       state.loading = false;
     });
-    builder.addCase(updateProfile.pending, (state, action) => {
+    builder.addCase(updateProfile.pending, (state, _action) => {
       state.loading = true;
     });
     builder.addCase(updateProfile.fulfilled, (state, action) => {
@@ -143,65 +143,65 @@ export const authSlice = createSlice({
         });
       }
     });
-    builder.addCase(updateProfile.rejected, (state, action) => {
+    builder.addCase(updateProfile.rejected, (state, _action) => {
       state.loading = false;
     });
-    builder.addCase(updatePassword.pending, (state, action) => {
+    builder.addCase(updatePassword.pending, (state, _action) => {
       state.loading = true;
     });
-    builder.addCase(updatePassword.fulfilled, (state, action) => {
+    builder.addCase(updatePassword.fulfilled, (state, _action) => {
       state.flash.push({
         type: 'success',
         message: 'パスワードを変更しました',
       });
       state.loading = false;
     });
-    builder.addCase(updatePassword.rejected, (state, action) => {
+    builder.addCase(updatePassword.rejected, (state, _action) => {
       state.loading = false;
     });
-    builder.addCase(forgotPassword.pending, (state, action) => {
+    builder.addCase(forgotPassword.pending, (state, _action) => {
       state.loading = true;
     });
-    builder.addCase(forgotPassword.fulfilled, (state, action) => {
+    builder.addCase(forgotPassword.fulfilled, (state, _action) => {
       state.loading = false;
       state.flash.push({
         type: 'success',
         message: 'パスワード再設定用のメールを送信しました',
       });
     });
-    builder.addCase(forgotPassword.rejected, (state, action) => {
+    builder.addCase(forgotPassword.rejected, (state, _action) => {
       state.loading = false;
     });
-    builder.addCase(resetPassword.pending, (state, action) => {
+    builder.addCase(resetPassword.pending, (state, _action) => {
       state.loading = true;
     });
-    builder.addCase(resetPassword.fulfilled, (state, action) => {
+    builder.addCase(resetPassword.fulfilled, (state, _action) => {
       state.loading = false;
       state.flash.push({
         type: 'success',
         message: 'パスワードを再設定しました',
       });
     });
-    builder.addCase(resetPassword.rejected, (state, action) => {
+    builder.addCase(resetPassword.rejected, (state, _action) => {
       state.loading = false;
     });
-    builder.addCase(signOutFromAPI.pending, (state, action) => {
+    builder.addCase(signOutFromAPI.pending, (state, _action) => {
       state.loading = true;
     });
-    builder.addCase(signOutFromAPI.fulfilled, (state, action) => {
+    builder.addCase(signOutFromAPI.fulfilled, (state, _action) => {
       state.user = null;
       state.signedIn = false;
       state.loading = false;
       state.flash.push({ type: 'success', message: 'ログアウトしました' });
     });
-    builder.addCase(signOutFromAPI.rejected, (state, action) => {
+    builder.addCase(signOutFromAPI.rejected, (state, _action) => {
       state.signedIn = false;
       state.loading = false;
     });
-    builder.addCase(deleteAccount.pending, (state, action) => {
+    builder.addCase(deleteAccount.pending, (state, _action) => {
       state.loading = true;
     });
-    builder.addCase(deleteAccount.fulfilled, (state, action) => {
+    builder.addCase(deleteAccount.fulfilled, (state, _action) => {
       state.user = null;
       state.signedIn = false;
       state.loading = false;
@@ -210,7 +210,7 @@ export const authSlice = createSlice({
         message: 'アカウントは削除されました',
       });
     });
-    builder.addCase(deleteAccount.rejected, (state, action) => {
+    builder.addCase(deleteAccount.rejected, (state, _action) => {
       state.loading = false;
     });
   },

@@ -86,15 +86,15 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = (props) => {
           name: register(prop)['name'],
           onBlur: register(prop)['onBlur'],
         }}
-        className={!!errors[prop] ? classes.error : undefined}
+        className={errors[prop] ? classes.error : undefined}
       />
       <CardActions>
         <span
-          className={`${classes.helperText}${!!errors[prop] ? ' error' : ''}`}
+          className={`${classes.helperText}${errors[prop] ? ' error' : ''}`}
         >
           {errors[prop]?.message}
         </span>
-        <SubmitButton onClick={handleSubmit(onSubmit)} size='small'>
+        <SubmitButton onClick={handleSubmit(onSubmit)} size="small">
           {'Save'}
         </SubmitButton>
       </CardActions>

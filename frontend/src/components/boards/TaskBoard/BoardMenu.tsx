@@ -46,10 +46,10 @@ const BoardMenu: React.FC<BoardMenuProps> = (props) => {
   };
 
   return (
-    <List component='nav' aria-label='board-menu' dense>
+    <List component="nav" aria-label="board-menu" dense>
       {boardId && ( // 詳細ページの場合
         <PopoverControl
-          position='left'
+          position="left"
           trigger={
             <ListItem button title={menuItem.sort}>
               <ListItemIcon>
@@ -59,7 +59,7 @@ const BoardMenu: React.FC<BoardMenuProps> = (props) => {
             </ListItem>
           }
         >
-          <SortSelect model='list' boardId={board.id} />
+          <SortSelect model="list" boardId={board.id} />
         </PopoverControl>
       )}
       {boardId && (
@@ -72,7 +72,7 @@ const BoardMenu: React.FC<BoardMenuProps> = (props) => {
       )}
       {openDeleteDialog && (
         <DeleteTaskDialog
-          model='board'
+          model="board"
           data={board}
           setOpen={setOpenDeleteDialog}
         />

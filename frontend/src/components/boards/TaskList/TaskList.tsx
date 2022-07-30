@@ -117,21 +117,21 @@ const TaskList: React.FC<TaskListProps> = (props) => {
 
   return (
     <Card ref={drop} className={rootClass}>
-      <div className='listWrapper'>
+      <div className="listWrapper">
         <ListCardHeader list={list} />
 
         <CardActions>
-          <Grid container alignItems='center' justifyContent='space-between'>
+          <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
               <LabeledSelect
-                label='Filter'
+                label="Filter"
                 options={cardFilter}
                 value={filterValue}
                 onChange={handleChange}
               />
             </Grid>
             <Grid item>
-              <Chip label={filteredCards.length} title='タスク数' />
+              <Chip label={filteredCards.length} title="タスク数" />
             </Grid>
           </Grid>
         </CardActions>
@@ -139,14 +139,14 @@ const TaskList: React.FC<TaskListProps> = (props) => {
         <CardContent className={classes.disablePadding}>
           <ScrolledDiv className={classes.cardItemBox}>
             {filteredCards.map((card, i) => (
-              <div key={card.id} className='cardItem'>
+              <div key={card.id} className="cardItem">
                 <TaskCard card={card} cardIndex={i} listIndex={listIndex} />
               </div>
             ))}
           </ScrolledDiv>
         </CardContent>
 
-        <ButtonToAddTask method='POST' model='card' parent={list} transparent />
+        <ButtonToAddTask method="POST" model="card" parent={list} transparent />
       </div>
     </Card>
   );

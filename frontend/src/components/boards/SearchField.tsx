@@ -68,32 +68,32 @@ const SearchField = () => {
     );
 
   return (
-    <ClickAwayListener mouseEvent='onMouseDown' onClickAway={handleClickAway}>
-      <div aria-labelledby='search-area'>
+    <ClickAwayListener mouseEvent="onMouseDown" onClickAway={handleClickAway}>
+      <div aria-labelledby="search-area">
         <TextField
           onFocus={handleFocus}
           onChange={handleChange}
           id={SEARCH}
           type={SEARCH}
-          placeholder='Search...'
+          placeholder="Search..."
           defaultValue={value}
           autoFocus
-          variant='outlined'
+          variant="outlined"
           classes={{ root: classes.input }}
           InputProps={{
             margin: 'dense',
             classes: { root: classes.inputPaper },
             startAdornment: (
-              <InputAdornment position='start'>
+              <InputAdornment position="start">
                 <SearchIcon />
               </InputAdornment>
             ),
           }}
         />
-        <Popper open={popperOpen} anchorEl={anchorEl} placement='bottom-end'>
+        <Popper open={popperOpen} anchorEl={anchorEl} placement="bottom-end">
           <Card
             classes={{ root: classes.popper }}
-            aria-labelledby='search-result'
+            aria-labelledby="search-result"
           >
             <SearchResult input={value} />
           </Card>

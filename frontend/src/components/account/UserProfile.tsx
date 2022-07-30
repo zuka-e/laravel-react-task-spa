@@ -29,12 +29,10 @@ const schema = yup.object().shape({
 });
 
 const UserProfile = () => {
-  /**
-   * `Account`ページは認証ルートのため以下が成立
-   * - `signedIn` === `true` && `user`!== `null` -> `user!`
-   */
   const user = {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     name: useAppSelector((state) => state.auth.user!.name),
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     email: useAppSelector((state) => state.auth.user!.email),
   };
   const dispatch = useAppDispatch();
@@ -68,12 +66,12 @@ const UserProfile = () => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          {message && <AlertMessage severity='error' body={message} />}
+          {message && <AlertMessage severity="error" body={message} />}
         </Grid>
         <Grid item md={6} xs={12}>
           <TextField
             disabled={isGuest()}
-            variant='outlined'
+            variant="outlined"
             fullWidth
             id={formdata.name.id}
             label={formdata.name.label}
@@ -87,7 +85,7 @@ const UserProfile = () => {
         <Grid item md={6} xs={12}>
           <TextField
             disabled={isGuest()}
-            variant='outlined'
+            variant="outlined"
             fullWidth
             id={formdata.email.id}
             label={formdata.email.label}

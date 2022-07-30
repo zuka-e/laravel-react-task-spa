@@ -29,20 +29,20 @@ const NotFound = () => {
   }, [dispatch, history.location]);
 
   return (
-    <BaseLayout subtitle='404 Not Found'>
-      <Container component='main' maxWidth='md' className={classes.container}>
-        <Typography variant='h1' gutterBottom>
+    <BaseLayout subtitle="404 Not Found">
+      <Container component="main" maxWidth="md" className={classes.container}>
+        <Typography variant="h1" gutterBottom>
           404 Page Not Found
         </Typography>
-        <Typography variant='h2' gutterBottom color='textSecondary'>
+        <Typography variant="h2" gutterBottom color="textSecondary">
           ページが見つかりませんでした。
         </Typography>
-        <Typography color='textSecondary' paragraph>
+        <Typography color="textSecondary" paragraph>
           お探しのページは移動または削除された可能性があります。
         </Typography>
         <Button
-          variant='contained'
-          color='primary'
+          variant="contained"
+          color="primary"
           onClick={() => history.push('/')}
         >
           トップページへ戻る

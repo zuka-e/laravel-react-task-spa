@@ -70,12 +70,12 @@ const Password = () => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          {message && <AlertMessage severity='error' body={message} />}
+          {message && <AlertMessage severity="error" body={message} />}
         </Grid>
         <Grid item md={6} xs={12}>
           <TextField
             disabled={isGuest()}
-            variant='outlined'
+            variant="outlined"
             fullWidth
             id={formdata.current_password.id}
             label={formdata.current_password.label}
@@ -91,7 +91,7 @@ const Password = () => {
         <Grid item md={6} xs={12}>
           <TextField
             disabled={isGuest()}
-            variant='outlined'
+            variant="outlined"
             fullWidth
             id={formdata.password.id}
             label={formdata.password.label}
@@ -105,7 +105,7 @@ const Password = () => {
         <Grid item md={6} xs={12}>
           <TextField
             disabled={isGuest()}
-            variant='outlined'
+            variant="outlined"
             fullWidth
             id={formdata.password_confirmation.id}
             label={formdata.password_confirmation.label}
@@ -121,7 +121,7 @@ const Password = () => {
       </Grid>
       <Box ml={1} mb={2}>
         <LabeledCheckbox
-          label='Show Password'
+          label="Show Password"
           checked={visiblePassword}
           setChecked={setVisiblePassword}
         />

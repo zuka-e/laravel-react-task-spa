@@ -74,24 +74,24 @@ const Hero = () => {
         <Grid container className={classes.hero}>
           <Grid item md={6}>
             <div className={classes.description}>
-              <Typography variant='h1' className={classes.catchphrase}>
+              <Typography variant="h1" className={classes.catchphrase}>
                 タスク管理で課題を明確化
               </Typography>
-              <Typography variant='h4' component='p' color='textSecondary'>
+              <Typography variant="h4" component="p" color="textSecondary">
                 複雑なタスクを視覚的に確認し、現在の状況を把握した上で意思決定に役立てることができます。
               </Typography>
             </div>
             <Grid container spacing={2}>
               <Grid item>
-                <LinkButton startIcon={<PersonAddIcon />} to='/register'>
+                <LinkButton startIcon={<PersonAddIcon />} to="/register">
                   登録する
                 </LinkButton>
               </Grid>
               <Grid item>
                 <LinkButton
                   startIcon={<LockOpenIcon />}
-                  color='secondary'
-                  to='/login'
+                  color="secondary"
+                  to="/login"
                 >
                   ログイン
                 </LinkButton>
@@ -99,12 +99,12 @@ const Hero = () => {
               <Grid item>
                 <PopoverControl
                   trigger={
-                    <AlertButton startIcon={<MenuIcon />} color='info'>
+                    <AlertButton startIcon={<MenuIcon />} color="info">
                       又はゲストユーザーで試す
                     </AlertButton>
                   }
                 >
-                  <List component='nav'>
+                  <List component="nav">
                     <ListItem button onClick={handleGuestSignUp}>
                       登録 (メール認証不可)
                     </ListItem>
@@ -117,7 +117,7 @@ const Hero = () => {
             </Grid>
           </Grid>
           <Grid item md={5} sm={10} xs={10}>
-            <img src={hero} alt='hero' width='100%' height='100%' />
+            <img src={hero} alt="hero" width="100%" height="100%" />
           </Grid>
         </Grid>
       </Container>

@@ -75,7 +75,7 @@ const SortSelect: React.FC<SortSelectProps> = (props) => {
   };
 
   return (
-    <List aria-label='sort-select' dense>
+    <List aria-label="sort-select" dense>
       {(Object.keys(options) as SortOption[]).map((option) => (
         <ListItem key={option} button onClick={handleClick(option)}>
           <ListItemText primary={options[option]} />

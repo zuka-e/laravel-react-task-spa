@@ -39,11 +39,11 @@ const FeatureLayout: React.FC<{ image: string; header: string }> = (props) => {
   const { children, image, header } = props;
 
   return (
-    <Grid item md={4} sm={9} xs={11} className='feature'>
-      <Grid container direction='column' alignItems='center'>
-        <img src={image} alt={basename(image)} width='100%' height='300px' />
-        <Box width='100%' mt={2}>
-          <ScrolledTypography variant='h3' align='center' gutterBottom>
+    <Grid item md={4} sm={9} xs={11} className="feature">
+      <Grid container direction="column" alignItems="center">
+        <img src={image} alt={basename(image)} width="100%" height="300px" />
+        <Box width="100%" mt={2}>
+          <ScrolledTypography variant="h3" align="center" gutterBottom>
             {header}
           </ScrolledTypography>
         </Box>
@@ -59,29 +59,29 @@ const Features = () => {
   return (
     <section className={classes.root}>
       <Container className={classes.container}>
-        <Typography variant='h2' title='Features' hidden>
+        <Typography variant="h2" title="Features" hidden>
           {'Features'}
         </Typography>
         <Grid
           container
-          justifyContent='space-around'
+          justifyContent="space-around"
           className={classes.features}
         >
-          <FeatureLayout image={filingSystem} header='サブタスク管理'>
+          <FeatureLayout image={filingSystem} header="サブタスク管理">
             各タスクはカードと呼ばれる単位で扱われ、リストの下に配置されます。
             リストは複数のカードを持ち、またボード上で複数のリストを管理することができます。
           </FeatureLayout>
-          <FeatureLayout image={drag} header='ドラッグ&amp;ドロップ'>
+          <FeatureLayout image={drag} header="ドラッグ&amp;ドロップ">
             カードはドラッグによりその配置を自由に入れ替えることが可能です。
             期限や重要度の変化に応じて常にボードの状態を更新することができます。
           </FeatureLayout>
-          <FeatureLayout image={search} header='タスク検索'>
+          <FeatureLayout image={search} header="タスク検索">
             キーワードによってタスクを検索することが可能です。
             多くの情報の中から目的のタスクを探し出す手間を省きます。
           </FeatureLayout>
         </Grid>
-        <Box mt={12} mb={8} mx='auto' width={300}>
-          <LinkButton to='/register' size='large' fullWidth>
+        <Box mt={12} mb={8} mx="auto" width={300}>
+          <LinkButton to="/register" size="large" fullWidth>
             始める
           </LinkButton>
         </Box>

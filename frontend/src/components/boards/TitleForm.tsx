@@ -55,7 +55,11 @@ const TitleForm: React.FC<FormProps> = (props) => {
   }, [handleClose]);
 
   const handleDispatch = async <
-    T extends AsyncThunk<any, Parameters<T>[0], AsyncThunkConfig>
+    T extends AsyncThunk<
+      Parameters<T['fulfilled']>[0],
+      Parameters<T>[0],
+      AsyncThunkConfig
+    >
   >(
     thunk: T,
     payload: Parameters<T>[0]
@@ -127,16 +131,16 @@ const TitleForm: React.FC<FormProps> = (props) => {
   };
 
   return (
-    <ClickAwayListener mouseEvent='onMouseDown' onClickAway={handleClose}>
+    <ClickAwayListener mouseEvent="onMouseDown" onClickAway={handleClose}>
       <form onSubmit={handleSubmit(onSubmit)} onKeyDown={handleKeyDown}>
         <TextField
-          id='title'
+          id="title"
           required
           autoFocus
           onFocus={handleFocus}
           fullWidth
-          variant='outlined'
-          placeholder='Enter a title'
+          variant="outlined"
+          placeholder="Enter a title"
           InputProps={{
             margin: 'dense',
             style: { backgroundColor: theme.palette.background.paper },
@@ -147,7 +151,7 @@ const TitleForm: React.FC<FormProps> = (props) => {
           {...textFieldProps}
           {...register('title')}
         />
-        <input type='submit' ref={submitRef} hidden />
+        <input type="submit" ref={submitRef} hidden />
       </form>
     </ClickAwayListener>
   );

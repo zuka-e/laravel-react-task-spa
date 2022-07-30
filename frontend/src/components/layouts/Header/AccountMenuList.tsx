@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { useHistory } from 'react-router-dom';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
@@ -33,7 +31,7 @@ const AccountMenuList = () => {
   };
 
   return (
-    <List component='nav' aria-label='account-menu' className={classes.root}>
+    <List component="nav" aria-label="account-menu" className={classes.root}>
       <ListItem button onClick={handleClick('/account')} title={username}>
         <ListItemIcon>
           <AccountCircleIcon />
@@ -44,7 +42,7 @@ const AccountMenuList = () => {
         <ListItemIcon>
           <ExitToAppIcon />
         </ListItemIcon>
-        <ListItemText primary='ログアウト' />
+        <ListItemText primary="ログアウト" />
       </ListItem>
     </List>
   );

@@ -122,7 +122,7 @@ const create = <T extends keyof DB>(model: T, doc: Doc<T>) => {
 const where = <T extends keyof DB>(
   model: T,
   column: keyof Doc<T>,
-  value: any
+  value: unknown
 ) => {
   const matchedDocs = Object.values(database[model]).filter(
     (doc) => doc[column as keyof typeof doc] === value
@@ -136,7 +136,7 @@ const where = <T extends keyof DB>(
 const whereIn = <T extends keyof DB>(
   model: T,
   column: keyof Doc<T>,
-  list: any[]
+  list: unknown[]
 ) => {
   const matchedDocs = Object.values(database[model]).filter((doc) =>
     list.includes(doc[column as keyof typeof doc])
@@ -215,7 +215,7 @@ interface Model {
   where<T extends keyof DB>(
     model: T,
     column: keyof Doc<T>,
-    value: any
+    value: unknown
   ): Doc<T>[];
   /**
    * 指定された`list`の値の何れかをプロパティ(`column`)の値として持つ`Document`を検索
@@ -225,7 +225,7 @@ interface Model {
   whereIn<T extends keyof DB>(
     model: T,
     column: keyof Doc<T>,
-    list: any[]
+    list: unknown[]
   ): Doc<T>[];
   /**
    * 指定された`Collection`の`Document`を更新

@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Copyright = () => (
-  <Typography variant='body2' color='textSecondary' align='center'>
+  <Typography variant="body2" color="textSecondary" align="center">
     © {APP_NAME} {new Date().getFullYear()}
   </Typography>
 );
@@ -57,25 +57,25 @@ const FormLayout: React.FC<FormLayoutProps> = (props) => {
 
   return (
     <React.Fragment>
-      <Container className={classes.main} component='main' maxWidth='xs'>
+      <Container className={classes.main} component="main" maxWidth="xs">
         {message && (
           <AlertMessage
-            severity='error'
+            severity="error"
             body={message}
             className={classes.error}
           />
         )}
         <Card classes={{ root: classes.paper }} elevation={2}>
-          <Grid container direction='column' alignItems='center'>
+          <Grid container direction="column" alignItems="center">
             <Avatar
               className={classes.logo}
               component={RouterLink}
-              to='/'
+              to="/"
               src={logo}
               alt={APP_NAME}
               title={APP_NAME}
             />
-            <Typography component='h1' variant='h5' gutterBottom>
+            <Typography component="h1" variant="h5" gutterBottom>
               {title}
             </Typography>
             <div className={classes.content}>{children}</div>
@@ -83,13 +83,13 @@ const FormLayout: React.FC<FormLayoutProps> = (props) => {
         </Card>
       </Container>
       <footer>
-        <Grid container direction='column' alignItems='center'>
+        <Grid container direction="column" alignItems="center">
           <Grid item>
-            <a href='/terms' target='_blank'>
+            <a href="/terms" target="_blank">
               {'Terms'}
             </a>
             <div className={classes.separator} />
-            <a href='/privacy' target='_blank'>
+            <a href="/privacy" target="_blank">
               {'Privacy'}
             </a>
           </Grid>

@@ -47,22 +47,22 @@ const DeleteAccountDialog: React.FC<DeleteAccountDialogProps> = (props) => {
       <Dialog
         open={open}
         onClose={handleClose}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id='alert-dialog-title'>
+        <DialogTitle id="alert-dialog-title">
           本当にアカウントを削除しますか？
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id='alert-dialog-description'>
+          <DialogContentText id="alert-dialog-description">
             アカウント消滅後は復元することはできません。このアカウントで作成したデータも全て削除されます。
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color='primary' autoFocus>
+          <Button onClick={handleClose} color="primary" autoFocus>
             キャンセル
           </Button>
-          <AlertButton onClick={handleDelete} color='danger'>
+          <AlertButton onClick={handleDelete} color="danger">
             削除
           </AlertButton>
         </DialogActions>

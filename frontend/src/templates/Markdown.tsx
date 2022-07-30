@@ -8,28 +8,28 @@ const options: MarkdownToJSX.Options = {
   overrides: {
     h1: {
       component: (props) => (
-        <Typography gutterBottom component='h1' variant='h3' {...props} />
+        <Typography gutterBottom component="h1" variant="h3" {...props} />
       ),
     },
     h2: {
       component: (props) => (
-        <Typography gutterBottom component='h2' variant='h4' {...props} />
+        <Typography gutterBottom component="h2" variant="h4" {...props} />
       ),
     },
     h3: {
       component: (props) => (
-        <Typography gutterBottom component='h3' variant='h5' {...props} />
+        <Typography gutterBottom component="h3" variant="h5" {...props} />
       ),
     },
     h4: {
       component: (props) => (
-        <Typography gutterBottom component='h4' variant='h6' {...props} />
+        <Typography gutterBottom component="h4" variant="h6" {...props} />
       ),
     },
     p: { component: (props) => <Typography paragraph {...props} /> },
     ol: { props: { style: { paddingInlineStart: '1.6rem' } } },
     li: {
-      component: (props) => <Typography component='li' {...props} />,
+      component: (props) => <Typography component="li" {...props} />,
     },
   },
 };

@@ -27,7 +27,7 @@ const FlashNotification = () => {
       open={open}
       autoHideDuration={5000}
       onClose={handleClose}
-      aria-label='flash'
+      aria-label="flash"
     >
       <Alert onClose={handleClose} severity={lastFlash.type} elevation={12}>
         {lastFlash.message}

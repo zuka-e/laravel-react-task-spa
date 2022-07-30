@@ -28,7 +28,7 @@ export const createSessionId = (userId: string | null) => {
  * 2. 認証ユーザーのIDを取得
  * 3. ユーザーIDを使用して新規にセッションIDを生成
  *
- * @param `` 復号化済み`session_id`
+ * @param currentSessionId 復号化済み`session_id`
  * @returns 新規の暗号化済みセッションID (`cookie`格納用)
  */
 export const regenerateSessionId = (currentSessionId: string) => {
@@ -43,11 +43,11 @@ export const regenerateSessionId = (currentSessionId: string) => {
  * 2. セッションIDを復号化し、セッション(sessionStorage)からユーザーIDを取得
  * 3. ユーザーIDからユーザーを取得
  *
- * @param `` `cookie`に格納された`session_id`
+ * @param encryptedSessionId `cookie`に格納された`session_id`
  * @returns `User` (手順から取得できた場合) | `null`
  */
 export const getUserFromSession = (encryptedSessionId: string) => {
-  // `req.cookies`は`string`型を返すが取得できない場合、`undefied`
+  // `req.cookies`は`string`型を返すが取得できない場合、`undefined`
   if (!encryptedSessionId) {
     console.log('There is no session_id in cookies');
     return null;
@@ -109,7 +109,7 @@ export const isUniqueEmail = (email: string) => {
   const matchedUsers = Object.values(db.collection('users')).filter(
     (user) => user.email === email
   );
-  // 合致するデータがない場合`matchedUsers[0]`は`undefied`
+  // 合致するデータがない場合`matchedUsers[0]`は`undefined`
   const matchedEmail = matchedUsers[0]?.email;
   const ownEmail = auth.getUser()?.email;
 

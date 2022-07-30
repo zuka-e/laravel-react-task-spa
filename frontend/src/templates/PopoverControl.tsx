@@ -94,7 +94,7 @@ const PopoverControl: React.FC<PopoverControlProps> = (props) => {
       <div
         aria-describedby={htmlId}
         onClick={handleClick}
-        aria-label='menu'
+        aria-label="menu"
         className={className}
       >
         {trigger}

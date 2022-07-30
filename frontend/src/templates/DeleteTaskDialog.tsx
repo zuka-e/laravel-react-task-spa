@@ -65,20 +65,20 @@ const DeleteTaskDialog: React.FC<DeleteTaskDialogProps> = (props) => {
     <Dialog
       open={true}
       onClose={handleClose}
-      aria-labelledby='alert-dialog-title'
-      aria-describedby='alert-dialog-description'
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id='alert-dialog-title'>{renderTitle()}</DialogTitle>
+      <DialogTitle id="alert-dialog-title">{renderTitle()}</DialogTitle>
       <DialogContent>
-        <DialogContentText id='alert-dialog-description'>
+        <DialogContentText id="alert-dialog-description">
           {renderContent()}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color='primary' autoFocus>
+        <Button onClick={handleClose} color="primary" autoFocus>
           キャンセル
         </Button>
-        <AlertButton onClick={handleDelete} color='danger'>
+        <AlertButton onClick={handleDelete} color="danger">
           削除
         </AlertButton>
       </DialogActions>

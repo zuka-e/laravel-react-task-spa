@@ -41,13 +41,13 @@ const Sidebar: React.FC<SidebarProps> = (props) => {
   return (
     <div className={classes.drawer}>
       <List
-        component='nav'
-        aria-labelledby='menu-header'
+        component="nav"
+        aria-labelledby="menu-header"
         subheader={
           <ListSubheader
             className={classes.listHeader}
-            component='div'
-            id='menu-header'
+            component="div"
+            id="menu-header"
           >
             <IconButton onClick={toggleDrawer(false)}>
               <MenuIcon />

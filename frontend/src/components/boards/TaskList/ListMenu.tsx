@@ -44,9 +44,9 @@ const ListMenu: React.FC<ListMenuProps> = (props) => {
   };
 
   return (
-    <List component='nav' aria-label='list-menu' dense>
+    <List component="nav" aria-label="list-menu" dense>
       <PopoverControl
-        position='left'
+        position="left"
         trigger={
           <ListItem button title={menuItem.sort}>
             <ListItemIcon>
@@ -56,7 +56,7 @@ const ListMenu: React.FC<ListMenuProps> = (props) => {
           </ListItem>
         }
       >
-        <SortSelect model='card' boardId={list.boardId} listId={list.id} />
+        <SortSelect model="card" boardId={list.boardId} listId={list.id} />
       </PopoverControl>
       <ListItem button onClick={handleClick('info')} title={menuItem.info}>
         <ListItemIcon>
@@ -66,7 +66,7 @@ const ListMenu: React.FC<ListMenuProps> = (props) => {
       </ListItem>
       {openDeleteDialog && (
         <DeleteTaskDialog
-          model='list'
+          model="list"
           data={props.list}
           setOpen={setOpenDeleteDialog}
         />
