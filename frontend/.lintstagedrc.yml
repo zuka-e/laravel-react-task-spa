@@ -1,0 +1,4 @@
+# https://github.com/okonet/lint-staged#configuration
+'*.{js,jsx,ts,tsx}':
+  - 'eslint --max-warnings=0'
+  - 'prettier --write'
