@@ -1,5 +1,5 @@
 export * from './usePrevious';
-export * from './useAppDipatch';
+export * from './useAppDispatch';
 export * from './useAppSelector';
 export * from './useDeepEqualSelector';
 export * from './useQuery';

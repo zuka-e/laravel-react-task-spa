@@ -12,7 +12,7 @@ import { LabeledCheckbox, AlertMessage, SubmitButton } from 'templates';
 
 type FormData = UpdatePasswordRequest;
 
-const formdata: Record<keyof FormData, { id: string; label: string }> = {
+const formData: Record<keyof FormData, { id: string; label: string }> = {
   current_password: {
     id: 'current-password',
     label: 'Current Password',
@@ -30,17 +30,17 @@ const formdata: Record<keyof FormData, { id: string; label: string }> = {
 const schema = yup.object().shape({
   current_password: yup
     .string()
-    .label(formdata.current_password.label)
+    .label(formData.current_password.label)
     .required(),
   password: yup
     .string()
-    .label(formdata.password.label)
+    .label(formData.password.label)
     .required()
     .min(8)
     .max(20),
   password_confirmation: yup
     .string()
-    .label(formdata.password_confirmation.label)
+    .label(formData.password_confirmation.label)
     .oneOf([yup.ref('password'), null], 'Passwords do not match'),
 });
 
@@ -77,10 +77,10 @@ const Password = () => {
             disabled={isGuest()}
             variant="outlined"
             fullWidth
-            id={formdata.current_password.id}
-            label={formdata.current_password.label}
+            id={formData.current_password.id}
+            label={formData.current_password.label}
             type={visiblePassword ? 'text' : 'password'}
-            autoComplete={formdata.current_password.id}
+            autoComplete={formData.current_password.id}
             {...register('current_password')}
             helperText={errors?.current_password?.message || ' '}
             error={!!errors?.current_password}
@@ -93,10 +93,10 @@ const Password = () => {
             disabled={isGuest()}
             variant="outlined"
             fullWidth
-            id={formdata.password.id}
-            label={formdata.password.label}
+            id={formData.password.id}
+            label={formData.password.label}
             type={visiblePassword ? 'text' : 'password'}
-            autoComplete={formdata.password.id}
+            autoComplete={formData.password.id}
             {...register('password')}
             helperText={errors?.password?.message || '8-20 characters'}
             error={!!errors?.password}
@@ -107,10 +107,10 @@ const Password = () => {
             disabled={isGuest()}
             variant="outlined"
             fullWidth
-            id={formdata.password_confirmation.id}
-            label={formdata.password_confirmation.label}
+            id={formData.password_confirmation.id}
+            label={formData.password_confirmation.label}
             type={visiblePassword ? 'text' : 'password'}
-            autoComplete={formdata.password_confirmation.id}
+            autoComplete={formData.password_confirmation.id}
             {...register('password_confirmation')}
             helperText={
               errors?.password_confirmation?.message || 'Retype password'
