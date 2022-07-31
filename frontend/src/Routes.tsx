@@ -11,11 +11,11 @@ import {
   Account,
   ForgotPassword,
   ResetPassword,
+  VerifyEmail,
 } from './pages/auth';
 import * as TaskBoard from 'pages/boards';
 import { NotFound } from './pages/error';
-import { setFlash } from './store/slices/authSlice';
-import { useAppDispatch, useAppSelector, useQuery } from './utils/hooks';
+import { useAppSelector } from './utils/hooks';
 import { isAfterRegistration, isSignedIn } from './utils/auth';
 
 const Route = ({ ...rest }) => {
@@ -33,19 +33,11 @@ const AuthRoute = ({ ...rest }) => {
 };
 
 const Routes = () => {
-  const dispatch = useAppDispatch();
-  const verified = useQuery().get('verified');
   const href = window.location.href;
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [href]);
-
-  // 認証メールリンクからのリダイレクトの場合
-  useEffect(() => {
-    verified &&
-      dispatch(setFlash({ type: 'success', message: '認証に成功しました。' }));
-  }, [dispatch, verified]);
 
   return (
     <Switch>
@@ -54,6 +46,7 @@ const Routes = () => {
       <Route exact path="/privacy" component={Privacy} />
       <GuestRoute exact path="/register" component={SignUp} />
       <AuthRoute path="/email-verification" component={EmailVerification} />
+      <AuthRoute path="/email/verify" component={VerifyEmail} />
       <GuestRoute exact path="/login" component={SignIn} />
       <AuthRoute exact path="/account" component={Account} />
       <GuestRoute exact path="/forgot-password" component={ForgotPassword} />
