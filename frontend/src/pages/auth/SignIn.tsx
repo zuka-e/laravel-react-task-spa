@@ -63,7 +63,7 @@ const SignIn = () => {
     const response = await dispatch(signInWithEmail(data));
     if (signInWithEmail.rejected.match(response)) {
       setMessage(response.payload?.error?.message);
-    } else history.goBack();
+    }
   };
 
   return (

@@ -15,7 +15,8 @@ import {
 } from './pages/auth';
 import * as TaskBoard from 'pages/boards';
 import { NotFound } from './pages/error';
-import { useAppSelector } from './utils/hooks';
+import { setFlash } from './store/slices/authSlice';
+import { useAppDispatch, useAppLocation, useAppSelector } from './utils/hooks';
 import { isAfterRegistration, isSignedIn } from './utils/auth';
 
 const Route = ({ ...rest }) => {
@@ -24,12 +25,38 @@ const Route = ({ ...rest }) => {
 };
 
 const GuestRoute = ({ ...rest }) => {
+  const location = useAppLocation();
+
   if (isAfterRegistration()) return <Redirect to="/email-verification" />;
-  return isSignedIn() ? <Redirect to="/" /> : <Route {...rest} />;
+
+  return isSignedIn() ? (
+    <Redirect to={location.state?.from || '/'} />
+  ) : (
+    <Route {...rest} />
+  );
 };
 
+/** @see https://v5.reactrouter.com/web/example/auth-workflow */
 const AuthRoute = ({ ...rest }) => {
-  return isSignedIn() ? <Route {...rest} /> : <Redirect to="/" />;
+  const flash = useAppSelector((state) => state.auth.flash);
+  const dispatch = useAppDispatch();
+  const location = useAppLocation();
+
+  if (!isSignedIn()) {
+    if (flash.slice(-1)[0]?.message !== 'ログアウトしました')
+      dispatch(setFlash({ type: 'error', message: 'ログインしてください' }));
+
+    return (
+      <Redirect
+        to={{
+          pathname: '/login',
+          state: { from: location } as typeof location['state'],
+        }}
+      />
+    );
+  }
+
+  return <Route {...rest} />;
 };
 
 const Routes = () => {
