@@ -21,7 +21,7 @@ import { AlertButton, LabeledCheckbox, SubmitButton } from 'templates';
 
 type FormData = SignInRequest;
 
-const formdata: Record<keyof FormData, { id: string; label: string }> = {
+const formData: Record<keyof FormData, { id: string; label: string }> = {
   email: {
     id: 'email',
     label: 'Email Address',
@@ -37,10 +37,10 @@ const formdata: Record<keyof FormData, { id: string; label: string }> = {
 };
 
 const schema = yup.object().shape({
-  email: yup.string().label(formdata.email.label).email().required(),
+  email: yup.string().label(formData.email.label).email().required(),
   password: yup
     .string()
-    .label(formdata.password.label)
+    .label(formData.password.label)
     .required()
     .min(8)
     .max(20),
@@ -51,6 +51,7 @@ const SignIn = () => {
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
   const history = useHistory();
+
   const {
     register,
     handleSubmit,
@@ -74,9 +75,9 @@ const SignIn = () => {
             margin="normal"
             required
             fullWidth
-            id={formdata.email.id}
-            label={formdata.email.label}
-            autoComplete={formdata.email.id}
+            id={formData.email.id}
+            label={formData.email.label}
+            autoComplete={formData.email.id}
             {...register('email')}
             helperText={errors?.email?.message}
             error={!!errors?.email}
@@ -86,10 +87,10 @@ const SignIn = () => {
             margin="normal"
             required
             fullWidth
-            id={formdata.password.id}
-            label={formdata.password.label}
+            id={formData.password.id}
+            label={formData.password.label}
             type={visiblePassword ? 'text' : 'password'}
-            autoComplete={formdata.password.id}
+            autoComplete={formData.password.id}
             {...register('password')}
             helperText={errors?.password?.message || '8-20 characters'}
             error={!!errors?.password}
@@ -102,8 +103,8 @@ const SignIn = () => {
             />
           </Box>
           <FormControlLabel
-            id={formdata.remember.id}
-            label={formdata.remember.label}
+            id={formData.remember.id}
+            label={formData.remember.label}
             control={
               <Checkbox {...register('remember')} value="on" color="primary" />
             }

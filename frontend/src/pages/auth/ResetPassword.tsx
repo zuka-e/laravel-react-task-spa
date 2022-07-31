@@ -17,7 +17,7 @@ import { AlertButton, LabeledCheckbox, SubmitButton } from 'templates';
 
 type FormData = ResetPasswordRequest;
 
-const formdata = {
+const formData = {
   password: {
     id: 'new-password',
     label: 'New Password',
@@ -31,13 +31,13 @@ const formdata = {
 const schema = yup.object().shape({
   password: yup
     .string()
-    .label(formdata.password.label)
+    .label(formData.password.label)
     .required()
     .min(8)
     .max(20),
   password_confirmation: yup
     .string()
-    .label(formdata.password_confirmation.label)
+    .label(formData.password_confirmation.label)
     .oneOf([yup.ref('password'), null], 'Passwords do not match'),
 });
 
@@ -80,10 +80,10 @@ const ResetPassword = () => {
             margin="normal"
             required
             fullWidth
-            id={formdata.password.id}
-            label={formdata.password.label}
+            id={formData.password.id}
+            label={formData.password.label}
             type={visiblePassword ? 'text' : 'password'}
-            autoComplete={formdata.password.id}
+            autoComplete={formData.password.id}
             {...register('password')}
             helperText={errors?.password?.message || '8-20 characters'}
             error={!!errors?.password}
@@ -93,10 +93,10 @@ const ResetPassword = () => {
             // margin='normal'
             required
             fullWidth
-            id={formdata.password_confirmation.id}
-            label={formdata.password_confirmation.label}
+            id={formData.password_confirmation.id}
+            label={formData.password_confirmation.label}
             type={visiblePassword ? 'text' : 'password'}
-            autoComplete={formdata.password_confirmation.id}
+            autoComplete={formData.password_confirmation.id}
             {...register('password_confirmation')}
             helperText={
               errors?.password_confirmation?.message || 'Retype password'

@@ -24,11 +24,7 @@ type FormData = {
 };
 
 const schema = yup.object().shape({
-  title: yup
-    .string()
-    .label('Title')
-    .min(2)
-    .max(Math.floor(191 / 3)),
+  title: yup.string().label('Title').min(1).max(255),
 });
 
 type FormProps = FormAction & {
@@ -146,7 +142,7 @@ const TitleForm: React.FC<FormProps> = (props) => {
             style: { backgroundColor: theme.palette.background.paper },
           }}
           InputLabelProps={{ margin: 'dense' }}
-          helperText={errors?.title?.message}
+          helperText={errors?.title?.message || '1-255 characters'}
           error={!!errors?.title}
           {...textFieldProps}
           {...register('title')}

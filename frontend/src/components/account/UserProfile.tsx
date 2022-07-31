@@ -12,7 +12,7 @@ import { AlertMessage, SubmitButton } from 'templates';
 
 type FormData = UpdateProfileRequest;
 
-const formdata: Record<keyof FormData, { id: string; label: string }> = {
+const formData: Record<keyof FormData, { id: string; label: string }> = {
   name: {
     id: 'name',
     label: 'Username',
@@ -24,8 +24,8 @@ const formdata: Record<keyof FormData, { id: string; label: string }> = {
 };
 
 const schema = yup.object().shape({
-  name: yup.string().label(formdata.name.label).min(2).max(60),
-  email: yup.string().label(formdata.email.label).email().max(255),
+  name: yup.string().label(formData.name.label).min(1).max(255),
+  email: yup.string().label(formData.email.label).email().max(255),
 });
 
 const UserProfile = () => {
@@ -73,12 +73,12 @@ const UserProfile = () => {
             disabled={isGuest()}
             variant="outlined"
             fullWidth
-            id={formdata.name.id}
-            label={formdata.name.label}
-            autoComplete={formdata.name.id}
+            id={formData.name.id}
+            label={formData.name.label}
+            autoComplete={formData.name.id}
             defaultValue={user?.name}
             {...register('name')}
-            helperText={errors?.name?.message || '2-60 characters'}
+            helperText={errors?.name?.message || '1-255 characters'}
             error={!!errors?.name}
           />
         </Grid>
@@ -87,9 +87,9 @@ const UserProfile = () => {
             disabled={isGuest()}
             variant="outlined"
             fullWidth
-            id={formdata.email.id}
-            label={formdata.email.label}
-            autoComplete={formdata.email.id}
+            id={formData.email.id}
+            label={formData.email.label}
+            autoComplete={formData.email.id}
             defaultValue={user?.email}
             {...register('email')}
             helperText={errors?.email?.message}

@@ -7,7 +7,7 @@ export * from './sendEmailVerificationLink';
 export * from './signInWithEmail';
 export * from './updateProfile';
 export * from './updatePassword';
-export * from './forgotPassoword';
+export * from './forgotPassword';
 export * from './resetPassword';
 export * from './signOutFromAPI';
 export * from './deleteAccount';

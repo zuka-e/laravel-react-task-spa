@@ -14,7 +14,7 @@ import { AlertButton, LabeledCheckbox, SubmitButton } from 'templates';
 // Input items
 type FormData = SignUpRequest;
 
-const formdata: Record<keyof FormData, { id: string; label: string }> = {
+const formData: Record<keyof FormData, { id: string; label: string }> = {
   email: {
     id: 'email',
     label: 'Email Address',
@@ -31,16 +31,16 @@ const formdata: Record<keyof FormData, { id: string; label: string }> = {
 
 // The schema-based form validation with Yup
 const schema = yup.object().shape({
-  email: yup.string().label(formdata.email.label).email().required(),
+  email: yup.string().label(formData.email.label).email().required(),
   password: yup
     .string()
-    .label(formdata.password.label)
+    .label(formData.password.label)
     .required()
     .min(8)
     .max(20),
   password_confirmation: yup
     .string()
-    .label(formdata.password_confirmation.label)
+    .label(formData.password_confirmation.label)
     .oneOf([yup.ref('password'), null], 'Passwords do not match'),
 });
 
@@ -75,9 +75,9 @@ const SignUp = () => {
             margin="normal"
             required
             fullWidth
-            id={formdata.email.id}
-            label={formdata.email.label}
-            autoComplete={formdata.email.id}
+            id={formData.email.id}
+            label={formData.email.label}
+            autoComplete={formData.email.id}
             {...register('email')}
             helperText={errors?.email?.message}
             error={!!errors?.email}
@@ -87,10 +87,10 @@ const SignUp = () => {
             margin="normal"
             required
             fullWidth
-            id={formdata.password.id}
-            label={formdata.password.label}
+            id={formData.password.id}
+            label={formData.password.label}
             type={visiblePassword ? 'text' : 'password'}
-            autoComplete={formdata.password.id}
+            autoComplete={formData.password.id}
             {...register('password')}
             helperText={errors?.password?.message || '8-20 characters'}
             error={!!errors?.password}
@@ -100,10 +100,10 @@ const SignUp = () => {
             // margin='normal'
             required
             fullWidth
-            id={formdata.password_confirmation.id}
-            label={formdata.password_confirmation.label}
+            id={formData.password_confirmation.id}
+            label={formData.password_confirmation.label}
             type={visiblePassword ? 'text' : 'password'}
-            autoComplete={formdata.password_confirmation.id}
+            autoComplete={formData.password_confirmation.id}
             {...register('password_confirmation')}
             helperText={
               errors?.password_confirmation?.message || 'Retype password'

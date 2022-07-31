@@ -13,7 +13,7 @@ import { AlertButton, SubmitButton } from 'templates';
 
 type FormData = ForgotPasswordRequest;
 
-const formdata: Record<keyof FormData, { id: string; label: string }> = {
+const formData: Record<keyof FormData, { id: string; label: string }> = {
   email: {
     id: 'email',
     label: 'Email Address',
@@ -21,7 +21,7 @@ const formdata: Record<keyof FormData, { id: string; label: string }> = {
 };
 
 const schema = yup.object().shape({
-  email: yup.string().label(formdata.email.label).email().required(),
+  email: yup.string().label(formData.email.label).email().required(),
 });
 
 const ForgotPassword = () => {
@@ -51,9 +51,9 @@ const ForgotPassword = () => {
             margin="normal"
             required
             fullWidth
-            id={formdata.email.id}
-            label={formdata.email.label}
-            autoComplete={formdata.email.id}
+            id={formData.email.id}
+            label={formData.email.label}
+            autoComplete={formData.email.id}
             {...register('email')}
             helperText={errors?.email?.message}
             error={!!errors?.email}
