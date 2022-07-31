@@ -24,7 +24,7 @@ const formdata: Record<keyof FormData, { id: string; label: string }> = {
 };
 
 const schema = yup.object().shape({
-  name: yup.string().label(formdata.name.label).min(2).max(60),
+  name: yup.string().label(formdata.name.label).min(1).max(255),
   email: yup.string().label(formdata.email.label).email().max(255),
 });
 

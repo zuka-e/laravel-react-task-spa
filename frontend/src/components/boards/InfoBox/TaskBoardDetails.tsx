@@ -156,10 +156,7 @@ const TaskBoardDetails: React.FC<TaskBoardDetailsProps> = (props) => {
         <MarkdownEditor
           onSubmit={handleSubmitText}
           schema={yup.object().shape({
-            description: yup
-              .string()
-              .label('Description')
-              .max(Math.floor(65535 / 3)),
+            description: yup.string().label('Description').max(2000),
           })}
           defaultValue={board.description}
         />

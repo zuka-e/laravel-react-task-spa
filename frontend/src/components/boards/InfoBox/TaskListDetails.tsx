@@ -143,10 +143,7 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = (props) => {
         <MarkdownEditor
           onSubmit={handleSubmitText}
           schema={yup.object().shape({
-            content: yup
-              .string()
-              .label('Description')
-              .max(Math.floor(65535 / 3)),
+            content: yup.string().label('Description').max(2000),
           })}
           defaultValue={list.description}
         />
