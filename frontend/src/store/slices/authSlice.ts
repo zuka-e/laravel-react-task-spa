@@ -6,6 +6,7 @@ import {
   createUser,
   fetchAuthUser,
   sendEmailVerificationLink,
+  verifyEmail,
   signInWithEmail,
   updateProfile,
   updatePassword,
@@ -103,6 +104,18 @@ export const authSlice = createSlice({
     builder.addCase(sendEmailVerificationLink.rejected, (state, _action) => {
       state.loading = false;
     });
+    builder.addCase(verifyEmail.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(verifyEmail.fulfilled, (state, action) => {
+      state.loading = false;
+      state.user = action.payload.user;
+      state.flash.push({ type: 'success', message: '認証に成功しました' });
+    });
+    builder.addCase(verifyEmail.rejected, (state) => {
+      state.loading = false;
+      state.flash.push({ type: 'error', message: '認証に失敗しました' });
+    });
     builder.addCase(signInWithEmail.pending, (state, _action) => {
       state.loading = true;
     });
@@ -110,10 +123,7 @@ export const authSlice = createSlice({
       state.user = action.payload.user;
       state.signedIn = true;
       state.loading = false;
-      // 認証メールリンクからのリダイレクトの場合 `true`
-      action.payload.verified
-        ? state.flash.push({ type: 'success', message: '認証に成功しました' })
-        : state.flash.push({ type: 'info', message: 'ログインしました' });
+      state.flash.push({ type: 'info', message: 'ログインしました' });
     });
     builder.addCase(signInWithEmail.rejected, (state, _action) => {
       state.signedIn = false;
