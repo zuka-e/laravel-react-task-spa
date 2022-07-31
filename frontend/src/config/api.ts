@@ -1,6 +1,6 @@
 export const API_HOST = process.env.REACT_APP_API_HOST || 'http://localhost';
 export const API_VERSION = process.env.REACT_APP_API_VERSION || 'v1';
-export const API_ROUTE = API_HOST + '/api/' + API_VERSION;
+export const API_ROUTE = API_HOST + '/' + API_VERSION;
 
 // paths
 export const GET_CSRF_TOKEN_PATH =
