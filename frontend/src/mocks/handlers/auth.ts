@@ -72,7 +72,7 @@ export const handlers = [
     DefaultRequestBody,
     FetchAuthUserResponse & ErrorResponse,
     RequestParams
-  >(url('AUTH_USER_PATH'), (req, res, ctx) => {
+  >(url('USER_INFO_PATH'), (req, res, ctx) => {
     const httpException = applyMiddleware(req, ['authenticate']);
     if (httpException) return res(httpException);
 
@@ -121,7 +121,7 @@ export const handlers = [
     UpdateProfileRequest,
     UpdateProfileResponse & ErrorResponse,
     RequestParams
-  >(url('UPDATE_USER_INFO_PATH'), (req, res, ctx) => {
+  >(url('USER_INFO_PATH'), (req, res, ctx) => {
     const httpException = applyMiddleware(req, ['authenticate']);
     if (httpException) return res(httpException);
 
@@ -226,7 +226,7 @@ export const handlers = [
   ),
 
   rest.delete<DefaultRequestBody, void & ErrorResponse, RequestParams>(
-    url('AUTH_USER_PATH'),
+    url('SIGNUP_PATH'),
     (req, res, ctx) => {
       const httpException = applyMiddleware(req, ['authenticate']);
       if (httpException) return res(httpException);

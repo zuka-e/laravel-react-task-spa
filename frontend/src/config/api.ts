@@ -14,8 +14,8 @@ export const VERIFICATION_NOTIFICATION_PATH =
 
 export const SIGNIN_PATH = process.env.REACT_APP_SIGNIN_PATH || '/login';
 
-export const UPDATE_USER_INFO_PATH =
-  process.env.REACT_APP_UPDATE_USER_INFO_PATH || '/user/profile-information';
+export const USER_INFO_PATH =
+  process.env.REACT_APP_USER_INFO_PATH || '/user/profile-information';
 
 export const UPDATE_PASSWORD_PATH =
   process.env.REACT_APP_UPDATE_PASSWORD_PATH || '/user/password';
@@ -28,18 +28,14 @@ export const FORGOT_PASSWORD_PATH =
 export const RESET_PASSWORD_PATH =
   process.env.REACT_APP_RESET_PASSWORD_PATH || '/reset-password';
 
-export const AUTH_USER_PATH =
-  process.env.REACT_APP_AUTH_USER_PATH || '/users/auth';
-
 export const paths = {
   GET_CSRF_TOKEN_PATH,
   SIGNUP_PATH,
   VERIFICATION_NOTIFICATION_PATH,
   SIGNIN_PATH,
-  UPDATE_USER_INFO_PATH,
+  USER_INFO_PATH,
   UPDATE_PASSWORD_PATH,
   SIGNOUT_PATH,
   FORGOT_PASSWORD_PATH,
   RESET_PASSWORD_PATH,
-  AUTH_USER_PATH,
 } as const;

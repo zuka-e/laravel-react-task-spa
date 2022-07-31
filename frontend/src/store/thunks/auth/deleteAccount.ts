@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { AUTH_USER_PATH } from 'config/api';
+import { SIGNUP_PATH } from 'config/api';
 import { apiClient } from 'utils/api';
 import { AsyncThunkConfig } from 'store/thunks/config';
 import { makeRejectValue } from 'store/thunks/utils';
@@ -14,7 +14,7 @@ export const deleteAccount = createAsyncThunk<
   AsyncThunkConfig
 >('auth/deleteAccount', async (_, thunkApi) => {
   try {
-    await apiClient().delete(AUTH_USER_PATH);
+    await apiClient().delete(SIGNUP_PATH);
   } catch (error) {
     return thunkApi.rejectWithValue(makeRejectValue(error));
   }
