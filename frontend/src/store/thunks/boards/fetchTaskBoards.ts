@@ -21,7 +21,9 @@ export const fetchTaskBoards = createAsyncThunk<
   const path = makePath(['users', userId], ['task-boards']);
 
   try {
-    const response = await apiClient().get(path, { params: { page } });
+    const response = await apiClient().get(path, {
+      params: { page: page || undefined },
+    });
     return response?.data;
   } catch (error) {
     return thunkApi.rejectWithValue(makeRejectValue(error));
