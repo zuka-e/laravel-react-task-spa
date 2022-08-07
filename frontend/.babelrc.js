@@ -21,4 +21,9 @@ const plugins = [
   ],
 ];
 
-module.exports = { plugins };
+// https://nextjs.org/docs/advanced-features/customizing-babel-config
+module.exports = {
+  // Without `next/babel`, errors like `Unexpected token, expected ","` occur.
+  presets: ['next/babel'],
+  plugins,
+};

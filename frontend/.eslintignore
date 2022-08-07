@@ -4,3 +4,7 @@ node_modules
 build
 coverage
 public
+
+# File ignored by default. Use a negated ignore pattern
+# (like "--ignore-pattern '!<relative/path/to/filename>'") to override
+!.babelrc.js
