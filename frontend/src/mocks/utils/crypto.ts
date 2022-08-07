@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-const password = process.env.REACT_APP_APP_KEY || 'password'.repeat(4);
+const password = process.env.NEXT_PUBLIC_APP_KEY || 'password'.repeat(4);
 const salt = crypto.randomBytes(128); // at least 16B recommended
 const key =
   process.env.NODE_ENV === 'test'
