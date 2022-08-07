@@ -1,0 +1,7 @@
+/* https://nextjs.org/docs/basic-features/built-in-css-support#adding-a-global-stylesheet */
+
+#__next {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
