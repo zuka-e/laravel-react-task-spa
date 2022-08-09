@@ -117,7 +117,7 @@ const Hero = () => {
             </Grid>
           </Grid>
           <Grid item md={5} sm={10} xs={10}>
-            <img src={hero} alt="hero" width="100%" height="100%" />
+            <img src={hero.src} alt="hero" width="100%" height="100%" />
           </Grid>
         </Grid>
       </Container>

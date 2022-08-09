@@ -67,15 +67,15 @@ const Features = () => {
           justifyContent="space-around"
           className={classes.features}
         >
-          <FeatureLayout image={filingSystem} header="サブタスク管理">
+          <FeatureLayout image={filingSystem.src} header="サブタスク管理">
             各タスクはカードと呼ばれる単位で扱われ、リストの下に配置されます。
             リストは複数のカードを持ち、またボード上で複数のリストを管理することができます。
           </FeatureLayout>
-          <FeatureLayout image={drag} header="ドラッグ&amp;ドロップ">
+          <FeatureLayout image={drag.src} header="ドラッグ&amp;ドロップ">
             カードはドラッグによりその配置を自由に入れ替えることが可能です。
             期限や重要度の変化に応じて常にボードの状態を更新することができます。
           </FeatureLayout>
-          <FeatureLayout image={search} header="タスク検索">
+          <FeatureLayout image={search.src} header="タスク検索">
             キーワードによってタスクを検索することが可能です。
             多くの情報の中から目的のタスクを探し出す手間を省きます。
           </FeatureLayout>

@@ -78,7 +78,7 @@ const Header: React.FC = () => {
         </Drawer>
         <div className={`${classes.root} ${classes.title}`}>
           <LinkWrapper to={'/'}>
-            <img src={logo} alt={APP_NAME} width="120" height="30" />
+            <img src={logo.src} alt={APP_NAME} width="120" height="30" />
           </LinkWrapper>
         </div>
         {isSignedIn() ? <AccountMenuButton /> : <SignInLinkButton />}

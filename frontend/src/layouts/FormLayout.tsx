@@ -71,7 +71,7 @@ const FormLayout: React.FC<FormLayoutProps> = (props) => {
               className={classes.logo}
               component={RouterLink}
               to="/"
-              src={logo}
+              src={logo.src}
               alt={APP_NAME}
               title={APP_NAME}
             />
