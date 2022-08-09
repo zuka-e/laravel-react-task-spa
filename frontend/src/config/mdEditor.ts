@@ -1,4 +1,11 @@
-import { commands } from '@uiw/react-md-editor';
+/**
+ * When used with `import { commands } from '@uiw/react-md-editor'`,
+ * the following error occurred.
+ * `Error [ERR_REQUIRE_ESM]: require() of ES Module ~ not supported.`
+ * To solve it,
+ * @see https://github.com/uiwjs/react-md-editor/issues/224#issuecomment-925673338
+ */
+import * as commands from '@uiw/react-md-editor/lib/commands';
 
 /** @see https://uiwjs.github.io/react-md-editor/#custom-toolbars */
 export const titleCommand = commands.group(
