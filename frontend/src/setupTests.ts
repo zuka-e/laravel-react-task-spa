@@ -9,7 +9,6 @@ import './mocks/data';
 
 beforeAll(() => {
   server.listen({ onUnhandledRequest: 'warn' }); // Enable the mocking in tests.
-  window.scrollTo = jest.fn();
 });
 
 afterEach(() => {

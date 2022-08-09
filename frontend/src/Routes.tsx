@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import { Switch, Route as DefaultRoute, Redirect } from 'react-router-dom';
 
 import Home from './pages';
@@ -60,11 +58,13 @@ const AuthRoute = ({ ...rest }) => {
 };
 
 const Routes = () => {
-  const href = window.location.href;
+  // https://nextjs.org/docs/migrating/from-react-router#scroll-restoration
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [href]);
+  // const href = window.location.href;
+
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // }, [href]);
 
   return (
     <Switch>

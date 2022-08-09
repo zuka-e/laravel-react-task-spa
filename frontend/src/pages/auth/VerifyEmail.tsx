@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import { useAppDispatch } from 'utils/hooks';
 import { verifyEmail } from 'store/thunks/auth';
@@ -7,11 +7,12 @@ import { BaseLayout } from 'layouts';
 
 const VerifyEmail = () => {
   const history = useHistory();
+  const location = useLocation();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     (async () => {
-      const url = window.location.pathname + window.location.search;
+      const url = location.pathname + location.search;
       const response = await dispatch(verifyEmail({ url }));
 
       if (verifyEmail.rejected.match(response))

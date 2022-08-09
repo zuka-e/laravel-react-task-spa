@@ -71,16 +71,21 @@ export type Doc<T extends keyof DB> = Collection<T>['id'];
  * 2. 指定された`key`を持つ`Collection`に取得したデータをコピー (上書き)
  */
 const load = <T extends keyof DB>(model: T) => {
-  const storedData = localStorage.getItem(model) || '{}';
-  database[model] = JSON.parse(storedData);
-  count[model] = Object.keys(database[model]).length;
+  // https://nextjs.org/docs/migrating/from-create-react-app#safely-accessing-web-apis
+  if (typeof window !== 'undefined') {
+    const storedData = localStorage.getItem(model) || '{}';
+    database[model] = JSON.parse(storedData);
+    count[model] = Object.keys(database[model]).length;
+  }
 };
 
 /**
  * 指定された`Collection`をJSON変換して`localStorage`に保存
  */
 const save = <T extends keyof DB>(model: T) => {
-  localStorage.setItem(model, JSON.stringify(database[model]));
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(model, JSON.stringify(database[model]));
+  }
 };
 
 /**

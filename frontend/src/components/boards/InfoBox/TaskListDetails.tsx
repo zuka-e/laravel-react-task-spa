@@ -2,7 +2,7 @@ import React from 'react';
 
 import * as yup from 'yup';
 import moment from 'moment';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import {
   Grid,
@@ -68,10 +68,10 @@ type TaskListDetailsProps = {
 const TaskListDetails: React.FC<TaskListDetailsProps> = (props) => {
   const { list } = props;
   const classes = useStyles();
+  const location = useLocation();
   const { boardId } = useParams<{ userId: string; boardId: string }>();
   const boardName = useAppSelector((state) => state.boards.docs[boardId].title);
   const dispatch = useAppDispatch();
-  const baseUrl = `${window.location.origin}${window.location.pathname}`;
 
   const handleClose = () => {
     dispatch(closeInfoBox());
@@ -93,7 +93,7 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = (props) => {
               {'Board'}
             </Typography>
           </Tooltip>
-          <a href={`${baseUrl}#${list?.id}`} title={list.title}>
+          <a href={`${location.pathname}#${list?.id}`} title={list.title}>
             <ListAltIcon className={classes.icon} />
             {list.title}
           </a>

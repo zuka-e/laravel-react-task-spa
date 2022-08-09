@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import * as yup from 'yup';
 import moment from 'moment';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import {
   Grid,
@@ -77,6 +77,7 @@ type TaskCardDetailsProps = {
 const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
   const { card } = props;
   const classes = useStyles();
+  const location = useLocation();
   const params = useParams<{ userId: string; boardId: string }>();
   const dispatch = useAppDispatch();
   const list = useDeepEqualSelector((state) =>
@@ -139,9 +140,7 @@ const TaskCardDetails: React.FC<TaskCardDetailsProps> = (props) => {
     <Card className={classes.root}>
       <CardActions disableSpacing>
         <Breadcrumbs aria-label="breadcrumb" className={classes.breadcrumbs}>
-          <a
-            href={`${window.location.origin}${window.location.pathname}#${list?.id}`}
-          >
+          <a href={`${location.pathname}#${list?.id}`}>
             <ListAltIcon className={classes.icon} />
             {list?.title}
           </a>
