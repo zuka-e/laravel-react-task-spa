@@ -2,7 +2,6 @@ import React from 'react';
 
 import * as yup from 'yup';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import {
   Grid,
@@ -24,7 +23,7 @@ import { TaskBoard } from 'models';
 import { closeInfoBox } from 'store/slices/taskBoardSlice';
 import { updateTaskBoard } from 'store/thunks/boards';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
-import { MarkdownEditor } from 'templates';
+import { Link, MarkdownEditor } from 'templates';
 import { EditableTitle } from '..';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -95,7 +94,7 @@ const TaskBoardDetails: React.FC<TaskBoardDetailsProps> = (props) => {
     <Card className={classes.root}>
       <CardActions disableSpacing>
         <Breadcrumbs aria-label="breadcrumb" className={classes.breadcrumbs}>
-          <Link to={`/users/${userId}/boards`}>
+          <Link href={`/users/${userId}/boards`} color="inherit">
             <FolderIcon className={classes.icon} />
             {'Boards'}
           </Link>

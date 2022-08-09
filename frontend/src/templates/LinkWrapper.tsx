@@ -1,6 +1,7 @@
-import { Link as RouterLink } from 'react-router-dom';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { Link, LinkProps } from '@material-ui/core';
+
+import { NextLinkComposed } from 'templates/Link';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -25,7 +26,7 @@ const LinkWrapper = (props: LinkWrapperProps) => {
   return (
     <Link
       classes={{ root }}
-      component={RouterLink}
+      component={NextLinkComposed}
       to={props.to}
       {...linkProps}
     />

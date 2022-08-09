@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Container, Card, Grid, Avatar, Typography } from '@material-ui/core';
 
 import { APP_NAME } from 'config/app';
 import { AlertMessage } from 'templates';
+import { NextLinkComposed } from 'templates/Link';
 import logo from 'images/logo_short.svg';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -69,7 +69,7 @@ const FormLayout: React.FC<FormLayoutProps> = (props) => {
           <Grid container direction="column" alignItems="center">
             <Avatar
               className={classes.logo}
-              component={RouterLink}
+              component={NextLinkComposed}
               to="/"
               src={logo.src}
               alt={APP_NAME}

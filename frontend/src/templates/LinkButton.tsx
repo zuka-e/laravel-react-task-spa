@@ -1,7 +1,7 @@
-import { Link as RouterLink } from 'react-router-dom';
-
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Button, ButtonProps, ButtonTypeMap } from '@material-ui/core';
+
+import { NextLinkComposed } from 'templates/Link';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,7 +33,7 @@ const LinkButton = (props: LinkButtonProps) => {
       classes={{ ...defaultClasses, ...classes }}
       variant="contained"
       color="primary"
-      component={RouterLink}
+      component={NextLinkComposed}
       to={to}
       {...buttonProps}
     />

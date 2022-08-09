@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Container, Grid, Link, Box, Typography } from '@material-ui/core';
+import { Container, Grid, Box, Typography } from '@material-ui/core';
 
 import { APP_NAME } from 'config/app';
+import { Link } from 'templates';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,11 +31,11 @@ const Footer: React.FC = () => {
     <Container component="footer" className={classes.footer} maxWidth={false}>
       <Grid container direction="column" alignItems="center">
         <Grid item>
-          <Link component={RouterLink} to="/terms" color="inherit">
+          <Link href="/terms" color="inherit">
             Terms
           </Link>
           <Box display="inline" borderLeft="1px solid" ml={1} pl={1} />
-          <Link component={RouterLink} to="/privacy" color="inherit">
+          <Link href="/privacy" color="inherit">
             Privacy
           </Link>
         </Grid>

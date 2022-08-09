@@ -7,6 +7,7 @@ export { default as Markdown } from './Markdown';
 export { default as MarkdownEditor } from './MarkdownEditor';
 export { default as PopoverControl } from './PopoverControl';
 export { default as SubmitButton } from './SubmitButton';
+export { default as Link } from './Link';
 export { default as LinkWrapper } from './LinkWrapper';
 export { default as LinkButton } from './LinkButton';
 export { default as ScrolledDiv } from './ScrolledDiv';
