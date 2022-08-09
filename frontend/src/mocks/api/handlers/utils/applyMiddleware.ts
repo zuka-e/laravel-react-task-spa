@@ -1,7 +1,7 @@
 import { compose, context, RestRequest } from 'msw';
 
 import type { User } from 'models/User';
-import type { ErrorResponse } from 'mocks/handlers/types';
+import type { ErrorResponse } from 'mocks/api/handlers/types';
 import { auth } from 'mocks/models';
 import {
   X_XSRF_TOKEN,

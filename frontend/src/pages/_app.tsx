@@ -22,15 +22,12 @@ import { FlashNotification, Loading } from 'layouts';
 import 'styles/globals.css';
 import 'config/moment';
 
-(async () => {
-  if (process.env.NODE_ENV === 'development') {
-    import('mocks/data');
-
-    const { worker } = await import('mocks/browser');
-
-    worker.start({ onUnhandledRequest: 'warn' });
-  }
-})();
+if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
+  // With `import` instead of `require`, API requests start before MSW enabled,
+  // probably because "import(...)" is async. ("await import" have the same result)
+  require('mocks/data');
+  require('mocks/api');
+}
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (

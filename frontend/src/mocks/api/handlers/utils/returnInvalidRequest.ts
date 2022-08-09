@@ -1,6 +1,6 @@
 import { compose, context } from 'msw';
 
-import type { ErrorResponse } from 'mocks/handlers/types';
+import type { ErrorResponse } from 'mocks/api/handlers/types';
 
 export const returnInvalidRequest = (errors: ErrorResponse['errors']) =>
   compose(
