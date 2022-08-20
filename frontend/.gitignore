@@ -21,3 +21,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+.next
+# > This file (`next-env.d.ts`) should not be committed
+# > and should be ignored by version control.
+# >> https://nextjs.org/docs/basic-features/typescript
+next-env.d.ts
