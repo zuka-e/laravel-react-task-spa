@@ -1,6 +1,6 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
-import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -50,7 +50,7 @@ const SignIn = () => {
   const dispatch = useAppDispatch();
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
-  const history = useHistory();
+  const router = useRouter();
 
   const {
     register,
@@ -116,7 +116,7 @@ const SignIn = () => {
             color="info"
             variant="text"
             size="small"
-            onClick={() => history.push('/forgot-password')}
+            onClick={() => router.push('/forgot-password')}
           >
             {'Forgot password?'}
           </AlertButton>
@@ -130,7 +130,7 @@ const SignIn = () => {
                 color="info"
                 variant="text"
                 size="small"
-                onClick={() => history.push('/register')}
+                onClick={() => router.push('/register')}
               >
                 {'Create an account'}
               </AlertButton>

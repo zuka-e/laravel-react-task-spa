@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
-import { useHistory } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Container, Typography, Button } from '@material-ui/core';
 
@@ -19,14 +19,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const NotFound = () => {
   const classes = useStyles();
-  const history = useHistory();
+  const router = useRouter();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     return function cleanup() {
       dispatch(releaseError404());
     };
-  }, [dispatch, history.location]);
+  }, [dispatch]);
 
   return (
     <BaseLayout subtitle="404 Not Found">
@@ -43,7 +43,7 @@ const NotFound = () => {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => history.push('/')}
+          onClick={() => router.push('/')}
         >
           トップページへ戻る
         </Button>

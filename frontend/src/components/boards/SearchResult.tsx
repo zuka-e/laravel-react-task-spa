@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { useParams } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
   List,
@@ -10,7 +9,7 @@ import {
   CardContent,
 } from '@material-ui/core';
 
-import { useAppDispatch, useDeepEqualSelector } from 'utils/hooks';
+import { useAppDispatch, useDeepEqualSelector, useRoute } from 'utils/hooks';
 import { openInfoBox } from 'store/slices';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -43,10 +42,10 @@ type SearchResultProps = {
 const SearchResult: React.FC<SearchResultProps> = (props) => {
   const { input } = props;
   const classes = useStyles();
+  const route = useRoute();
   const dispatch = useAppDispatch();
-  const { boardId } = useParams<{ userId: string; boardId: string }>();
   const lists = useDeepEqualSelector(
-    (state) => state.boards.docs[boardId].lists
+    (state) => state.boards.docs[route.queryParams.boardId?.toString()].lists
   );
   // `useMemo`: `useEffect`依存配列による無限ループを防止
   const cards = useMemo(() => {

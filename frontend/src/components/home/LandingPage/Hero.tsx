@@ -1,4 +1,5 @@
-import { useHistory } from 'react-router-dom';
+import { useRouter } from 'next/router';
+
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Container, Grid, Typography, List, ListItem } from '@material-ui/core';
 import {
@@ -49,16 +50,16 @@ const useStyles = makeStyles((theme: Theme) =>
 const Hero = () => {
   const classes = useStyles();
   const dispatch = useAppDispatch();
-  const history = useHistory();
+  const router = useRouter();
 
-  const handleGuestSignUp = () => {
+  const handleGuestSignUp = async () => {
     const user = {
       name: GUEST_NAME,
       email: makeEmail(),
       password: GUEST_PASSWORD,
       password_confirmation: GUEST_PASSWORD,
     };
-    history.push('/register'); // `EmailVerification`を表示するため
+    await router.push('/register'); // `EmailVerification`を表示するため
     dispatch(createUser(user));
   };
 

@@ -1,6 +1,5 @@
 import { Fragment, useEffect } from 'react';
-
-import { useHistory } from 'react-router-dom';
+import { useRouter } from 'next/router';
 
 import { isSignedIn } from 'utils/auth';
 import { useAppSelector } from 'utils/hooks';
@@ -23,12 +22,12 @@ const renderHome = () => {
 };
 
 const Home = () => {
-  const history = useHistory();
+  const router = useRouter();
   const userId = useAppSelector((state) => state.auth.user?.id);
 
   useEffect(() => {
-    isSignedIn() && history.replace(`users/${userId}/boards`);
-  }, [history, userId]);
+    isSignedIn() && router.replace(`users/${userId}/boards`);
+  }, [router, userId]);
 
   return <BaseLayout subtitle="">{renderHome()}</BaseLayout>;
 };

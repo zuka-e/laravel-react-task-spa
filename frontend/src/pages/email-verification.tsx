@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
-import { useHistory } from 'react-router-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Container, Card, Grid, Typography, Button } from '@material-ui/core';
 
@@ -30,13 +30,13 @@ const EmailVerification = () => {
   const afterRegistration = useAppSelector(
     (state) => state.auth.afterRegistration
   );
-  const history = useHistory();
+  const router = useRouter();
 
   // 一時的に表示させるページ
   // `afterRegistration`: `SignUp`直後に`true` (`replace`しない -> 表示させる)
   useEffect(() => {
-    if (!isAfterRegistration() || isVerified()) history.replace('/');
-  }, [history, afterRegistration]);
+    if (!isAfterRegistration() || isVerified()) router.replace('/');
+  }, [router, afterRegistration]);
 
   // DOMアンマウント時に実行 (cleanup function)
   useEffect(() => {

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-import { useParams } from 'react-router-dom';
 import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import {
   Sort as SortIcon,
@@ -9,7 +8,7 @@ import {
 } from '@material-ui/icons';
 
 import { TaskBoard } from 'models';
-import { useAppDispatch, useAppSelector } from 'utils/hooks';
+import { useAppDispatch, useAppSelector, useRoute } from 'utils/hooks';
 import { activateEventAttr } from 'utils/infoBox';
 import { openInfoBox } from 'store/slices/taskBoardSlice';
 import { PopoverControl, DeleteTaskDialog } from 'templates';
@@ -27,7 +26,7 @@ type BoardMenuProps = {
 
 const BoardMenu: React.FC<BoardMenuProps> = (props) => {
   const { board } = props;
-  const { boardId } = useParams<{ userId: string; boardId: string }>();
+  const { pathParams } = useRoute();
   const selectedId = useAppSelector((state) => state.boards.infoBox.data?.id);
   const dispatch = useAppDispatch();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -47,7 +46,7 @@ const BoardMenu: React.FC<BoardMenuProps> = (props) => {
 
   return (
     <List component="nav" aria-label="board-menu" dense>
-      {boardId && ( // 詳細ページの場合
+      {pathParams.boardId && ( // 詳細ページの場合
         <PopoverControl
           position="left"
           trigger={
@@ -62,7 +61,7 @@ const BoardMenu: React.FC<BoardMenuProps> = (props) => {
           <SortSelect model="list" boardId={board.id} />
         </PopoverControl>
       )}
-      {boardId && (
+      {pathParams.boardId && (
         <ListItem button onClick={handleClick('info')} title={menuItem.info}>
           <ListItemIcon>
             <InfoIcon />

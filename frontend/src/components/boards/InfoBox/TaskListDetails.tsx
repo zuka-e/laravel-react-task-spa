@@ -2,7 +2,6 @@ import React from 'react';
 
 import * as yup from 'yup';
 import moment from 'moment';
-import { useLocation, useParams } from 'react-router-dom';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import {
   Grid,
@@ -24,7 +23,7 @@ import {
 import { TaskList } from 'models';
 import { closeInfoBox } from 'store/slices/taskBoardSlice';
 import { updateTaskList } from 'store/thunks/lists';
-import { useAppDispatch, useAppSelector } from 'utils/hooks';
+import { useAppDispatch, useAppSelector, useRoute } from 'utils/hooks';
 import { MarkdownEditor } from 'templates';
 import { EditableTitle } from '..';
 
@@ -68,9 +67,10 @@ type TaskListDetailsProps = {
 const TaskListDetails: React.FC<TaskListDetailsProps> = (props) => {
   const { list } = props;
   const classes = useStyles();
-  const location = useLocation();
-  const { boardId } = useParams<{ userId: string; boardId: string }>();
-  const boardName = useAppSelector((state) => state.boards.docs[boardId].title);
+  const { pathname, pathParams } = useRoute();
+  const boardName = useAppSelector(
+    (state) => state.boards.docs[pathParams.boardId?.toString()].title
+  );
   const dispatch = useAppDispatch();
 
   const handleClose = () => {
@@ -93,7 +93,7 @@ const TaskListDetails: React.FC<TaskListDetailsProps> = (props) => {
               {'Board'}
             </Typography>
           </Tooltip>
-          <a href={`${location.pathname}#${list?.id}`} title={list.title}>
+          <a href={`${pathname}#${list?.id}`} title={list.title}>
             <ListAltIcon className={classes.icon} />
             {list.title}
           </a>

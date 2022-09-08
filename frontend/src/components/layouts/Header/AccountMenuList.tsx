@@ -1,4 +1,5 @@
-import { useHistory } from 'react-router-dom';
+import { useRouter } from 'next/router';
+
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import {
@@ -20,11 +21,11 @@ const useStyles = makeStyles(() =>
 
 const AccountMenuList = () => {
   const classes = useStyles();
-  const history = useHistory();
+  const router = useRouter();
   const username = useAppSelector((state) => state.auth.user?.name);
   const dispatch = useAppDispatch();
 
-  const handleClick = (path: string) => () => history.push(path);
+  const handleClick = (path: string) => () => router.push(path);
 
   const handleSignOut = () => {
     dispatch(signOutFromAPI());

@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 
-import { useParams } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import {
   Container,
@@ -12,7 +11,7 @@ import {
 import { MoreVert as MoreVertIcon } from '@material-ui/icons';
 
 import { makeIndexMap } from 'utils/dnd';
-import { useAppDispatch, useDeepEqualSelector } from 'utils/hooks';
+import { useAppDispatch, useDeepEqualSelector, useRoute } from 'utils/hooks';
 import {
   FetchTaskBoardRequest,
   fetchTaskBoard,
@@ -68,19 +67,19 @@ const useStyles = makeStyles((theme: Theme) =>
 const TaskBoard = () => {
   const belowSm = useMediaQuery((theme: Theme) => theme.breakpoints.down('xs'));
   const classes = useStyles();
-  const params = useParams<{ userId: string; boardId: string }>();
+  const { pathParams } = useRoute();
   const dispatch = useAppDispatch();
   const board = useDeepEqualSelector(
-    (state) => state.boards.docs[params.boardId]
+    (state) => state.boards.docs[pathParams.boardId.toString()]
   );
 
   useEffect(() => {
     const request: FetchTaskBoardRequest = {
-      userId: params.userId,
-      boardId: params.boardId,
+      userId: pathParams.userId.toString(),
+      boardId: pathParams.boardId.toString(),
     };
     dispatch(fetchTaskBoard(request));
-  }, [dispatch, params.userId, params.boardId]);
+  }, [dispatch, pathParams.userId, pathParams.boardId]);
 
   const handleDrop = () => {
     const listIndexMap = makeIndexMap(board.lists);

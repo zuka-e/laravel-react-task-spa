@@ -1,6 +1,6 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
-import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -45,7 +45,7 @@ const schema = yup.object().shape({
 });
 
 const SignUp = () => {
-  const history = useHistory();
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
@@ -130,7 +130,7 @@ const SignUp = () => {
                 color="info"
                 variant="text"
                 size="small"
-                onClick={() => history.push('/login')}
+                onClick={() => router.push('/login')}
               >
                 {'Sign in'}
               </AlertButton>

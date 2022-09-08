@@ -1,6 +1,6 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
-import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -25,7 +25,7 @@ const schema = yup.object().shape({
 });
 
 const ForgotPassword = () => {
-  const history = useHistory();
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [message, setMessage] = useState<string | undefined>('');
   const {
@@ -71,7 +71,7 @@ const ForgotPassword = () => {
                 color="info"
                 variant="text"
                 size="small"
-                onClick={() => history.push('/login')}
+                onClick={() => router.push('/login')}
               >
                 {'Sign in'}
               </AlertButton>

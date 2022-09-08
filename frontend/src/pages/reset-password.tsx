@@ -1,6 +1,6 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
-import { useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -11,7 +11,7 @@ import {
   resetPassword,
   signInWithEmail,
 } from 'store/thunks/auth';
-import { useAppDispatch, useQuery } from 'utils/hooks';
+import { useAppDispatch } from 'utils/hooks';
 import { BaseLayout, FormLayout } from 'layouts';
 import { AlertButton, LabeledCheckbox, SubmitButton } from 'templates';
 
@@ -42,8 +42,7 @@ const schema = yup.object().shape({
 });
 
 const ResetPassword = () => {
-  const query = useQuery();
-  const history = useHistory();
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [message, setMessage] = useState<string | undefined>('');
@@ -55,8 +54,8 @@ const ResetPassword = () => {
     mode: 'onBlur',
     resolver: yupResolver(schema),
     defaultValues: {
-      email: query.get('email') || '',
-      token: query.get('token') || '',
+      email: router.query.email?.toString() || '',
+      token: router.query.token?.toString() || '',
     },
     // `defaultValues`はフォーム入力では変更不可
   });
@@ -122,7 +121,7 @@ const ResetPassword = () => {
                 color="info"
                 variant="text"
                 size="small"
-                onClick={() => history.push('/')}
+                onClick={() => router.push('/')}
               >
                 {'Cancel'}
               </AlertButton>
