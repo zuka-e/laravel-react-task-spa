@@ -15,8 +15,8 @@ export const rootReducer = (
   action: AnyAction
 ) => {
   const actionsWithReset = [
-    'auth/signOut',
-    'auth/signOutFromAPI/fulfilled',
+    'auth/fetchAuthUser/rejected',
+    'auth/signOut/fulfilled',
     'auth/deleteAccount/fulfilled',
   ];
 

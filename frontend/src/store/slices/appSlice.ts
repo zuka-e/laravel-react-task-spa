@@ -1,10 +1,13 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type AppState = {
   notFound: boolean;
+  httpStatus?: number;
 };
 
-const initialState = {} as AppState;
+const initialState: Partial<AppState> & Pick<AppState, 'notFound'> = {
+  notFound: false,
+};
 
 export const appSlice = createSlice({
   name: 'app',
@@ -16,7 +19,14 @@ export const appSlice = createSlice({
     releaseError404(state) {
       state.notFound = initialState.notFound;
     },
+    setHttpStatus(state, action: PayloadAction<AppState['httpStatus']>) {
+      state.httpStatus = action.payload;
+    },
+    clearHttpStatus(state) {
+      state.httpStatus = undefined;
+    },
   },
 });
 
-export const { setError404, releaseError404 } = appSlice.actions;
+export const { setError404, releaseError404, setHttpStatus, clearHttpStatus } =
+  appSlice.actions;

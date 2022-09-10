@@ -7,7 +7,7 @@ import {
   ExitToApp as ExitToAppIcon,
 } from '@material-ui/icons';
 
-import { signOutFromAPI } from 'store/thunks/auth';
+import { signOut } from 'store/thunks/auth';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
 
 const useStyles = makeStyles(() =>
@@ -28,7 +28,7 @@ const AccountMenuList = () => {
   const handleClick = (path: string) => () => router.push(path);
 
   const handleSignOut = () => {
-    dispatch(signOutFromAPI());
+    dispatch(signOut());
   };
 
   return (

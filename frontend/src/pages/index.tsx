@@ -1,35 +1,35 @@
-import { Fragment, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-import { isSignedIn } from 'utils/auth';
-import { useAppSelector } from 'utils/hooks';
-import { BaseLayout } from 'layouts';
+import { fetchAuthUser } from 'store/thunks/auth';
+import { isReady } from 'utils/auth';
+import { useAppDispatch, useAppSelector } from 'utils/hooks';
+import { BaseLayout, Loading } from 'layouts';
 import { Hero, Features } from 'components/home/LandingPage';
-
-const LandingPage = () => (
-  <Fragment>
-    <Hero />
-    <Features />
-  </Fragment>
-);
-
-const renderHome = () => {
-  if (isSignedIn()) {
-    // return <Dashboard />;
-  } else {
-    return <LandingPage />;
-  }
-};
 
 const Home = () => {
   const router = useRouter();
+  const signedIn = useAppSelector((state) => state.auth.signedIn);
   const userId = useAppSelector((state) => state.auth.user?.id);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    isSignedIn() && router.replace(`users/${userId}/boards`);
-  }, [router, userId]);
+    if (!isReady()) dispatch(fetchAuthUser());
+  }, [dispatch]);
 
-  return <BaseLayout subtitle="">{renderHome()}</BaseLayout>;
+  useEffect(() => {
+    signedIn && router.replace(`users/${userId}/boards`);
+  }, [router, signedIn, userId]);
+
+  // Until initialized or the redirect completed.
+  if (!isReady() || signedIn) return <Loading open={true} />;
+
+  return (
+    <BaseLayout subtitle="">
+      <Hero />
+      <Features />
+    </BaseLayout>
+  );
 };
 
 export default Home;

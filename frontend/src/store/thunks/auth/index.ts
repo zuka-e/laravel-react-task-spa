@@ -10,5 +10,5 @@ export * from './updateProfile';
 export * from './updatePassword';
 export * from './forgotPassword';
 export * from './resetPassword';
-export * from './signOutFromAPI';
+export * from './signOut';
 export * from './deleteAccount';

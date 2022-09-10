@@ -14,7 +14,7 @@ import {
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import { makeEmail } from 'utils/generator';
 import { useAppSelector, useAppDispatch } from 'utils/hooks';
-import { createUser, signInWithEmail, signOutFromAPI } from 'store/thunks/auth';
+import { createUser, signInWithEmail, signOut } from 'store/thunks/auth';
 
 const SideMenu = () => {
   const router = useRouter();
@@ -49,7 +49,7 @@ const SideMenu = () => {
         router.push(`/users/${userId}/boards`);
         break;
       case 'logout':
-        dispatch(signOutFromAPI());
+        dispatch(signOut());
         break;
 
       case 'register':

@@ -4,7 +4,7 @@ import {
   fetchAuthUser,
   SignInRequest,
   signInWithEmail,
-  signOutFromAPI,
+  signOut,
 } from 'store/thunks/auth';
 import { initializeStore, store } from 'mocks/store';
 import {
@@ -24,8 +24,8 @@ describe('Thunk logging out', () => {
       store.dispatch(signIn());
       expect(isSignedIn(store)).toBe(true);
       // dispatch
-      const response = await store.dispatch(signOutFromAPI());
-      expect(signOutFromAPI.rejected.match(response)).toBe(true);
+      const response = await store.dispatch(signOut());
+      expect(signOut.rejected.match(response)).toBe(true);
       expect(isSignedIn(store)).toBe(false);
     });
   });
@@ -45,8 +45,8 @@ describe('Thunk logging out', () => {
       expect(isSignedIn(store)).toBe(true);
       expect(getUserState(store)).toBeTruthy();
       // dispatch
-      const signOutResponse = await store.dispatch(signOutFromAPI());
-      expect(signOutFromAPI.fulfilled.match(signOutResponse)).toBe(true);
+      const signOutResponse = await store.dispatch(signOut());
+      expect(signOut.fulfilled.match(signOutResponse)).toBe(true);
 
       // state更新
       expect(isSignedIn(store)).toBe(false);

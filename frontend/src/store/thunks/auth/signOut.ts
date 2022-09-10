@@ -5,8 +5,8 @@ import { apiClient } from 'utils/api';
 import { AsyncThunkConfig } from 'store/thunks/config';
 import { makeRejectValue } from 'store/thunks/utils';
 
-export const signOutFromAPI = createAsyncThunk<void, void, AsyncThunkConfig>(
-  'auth/signOutFromAPI',
+export const signOut = createAsyncThunk<void, void, AsyncThunkConfig>(
+  'auth/signOut',
   async (_, thunkApi) => {
     try {
       // status(response): ログイン状態によらず`204` 認証切れなら`419`

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { API_HOST, API_ROUTE } from 'config/api';
 import { DocumentBase } from 'models';
-import { setError404 } from 'store/slices/appSlice';
+import { setError404, setHttpStatus } from 'store/slices/appSlice';
 
 /**
  * Laravelからデータの配列と共にページネーションに関する情報及びリンクをリクエストする際のレスポンスタイプ
@@ -60,17 +60,15 @@ export const apiClient = (options?: ApiClientOption) => {
         process.env.NODE_ENV === 'test'
           ? await import('mocks/store')
           : await import('store');
-      const { setFlash, signOut } = await import('store/slices/authSlice');
+
+      const { setFlash } = await import('store/slices/authSlice');
 
       if (!axios.isAxiosError(error)) return Promise.reject(error);
 
-      switch (error.response?.status || 500) {
+      switch (error.response?.status) {
         case 401:
         case 419:
-          store.dispatch(signOut()); // ->initializeAuthState()
-          store.dispatch(
-            setFlash({ type: 'error', message: 'ログインしてください' })
-          );
+          store.dispatch(setHttpStatus(error.response.status));
           return Promise.reject(error);
         case 403:
           store.dispatch(

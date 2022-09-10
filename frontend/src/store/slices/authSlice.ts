@@ -12,7 +12,7 @@ import {
   updatePassword,
   forgotPassword,
   resetPassword,
-  signOutFromAPI,
+  signOut,
   deleteAccount,
 } from 'store/thunks/auth';
 
@@ -46,10 +46,6 @@ export const authSlice = createSlice({
     },
     signIn(state) {
       state.signedIn = true;
-    },
-    signOut(state) {
-      state.user = null;
-      state.signedIn = false;
     },
   },
   extraReducers: (builder) => {
@@ -195,16 +191,16 @@ export const authSlice = createSlice({
     builder.addCase(resetPassword.rejected, (state, _action) => {
       state.loading = false;
     });
-    builder.addCase(signOutFromAPI.pending, (state, _action) => {
+    builder.addCase(signOut.pending, (state, _action) => {
       state.loading = true;
     });
-    builder.addCase(signOutFromAPI.fulfilled, (state, _action) => {
+    builder.addCase(signOut.fulfilled, (state, _action) => {
       state.user = null;
       state.signedIn = false;
       state.loading = false;
       state.flash.push({ type: 'success', message: 'ログアウトしました' });
     });
-    builder.addCase(signOutFromAPI.rejected, (state, _action) => {
+    builder.addCase(signOut.rejected, (state, _action) => {
       state.signedIn = false;
       state.loading = false;
     });
@@ -226,5 +222,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setFlash, removeEmailVerificationPage, signIn, signOut } =
+export const { setFlash, removeEmailVerificationPage, signIn } =
   authSlice.actions;

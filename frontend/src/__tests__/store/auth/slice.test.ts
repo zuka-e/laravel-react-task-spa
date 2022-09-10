@@ -3,7 +3,6 @@ import {
   removeEmailVerificationPage,
   setFlash,
   signIn,
-  signOut,
 } from 'store/slices/authSlice';
 import { createUser, SignUpRequest } from 'store/thunks/auth';
 import { generateRandomString, makeEmail } from 'utils/generator';
@@ -67,17 +66,6 @@ describe('authSlice reducers', () => {
       expect(isSignedIn()).toBeUndefined();
       store.dispatch(signIn());
       expect(isSignedIn()).toBe(true);
-    });
-  });
-
-  describe('signOut', () => {
-    const isSignedIn = () => store.getState().auth.signedIn;
-
-    it('should update a`signedIn`state to false after logout', () => {
-      store.dispatch(signIn());
-      expect(isSignedIn()).toBe(true);
-      store.dispatch(signOut());
-      expect(isSignedIn()).toBe(false);
     });
   });
 });

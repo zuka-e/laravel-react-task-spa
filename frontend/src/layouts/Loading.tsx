@@ -1,10 +1,5 @@
-import { Fragment, useEffect } from 'react';
-
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Backdrop, CircularProgress } from '@material-ui/core';
-
-import { useAppSelector } from 'utils/hooks';
-import { initializeAuthState, isReady } from 'utils/auth';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -15,19 +10,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Loading = () => {
+type LoadingProps = { open?: boolean };
+
+const Loading = (props: LoadingProps) => {
   const classes = useStyles();
-  const signedIn = useAppSelector((state) => state.auth.signedIn);
-  const loading = useAppSelector((state) => state.auth.loading);
-
-  useEffect(() => {
-    initializeAuthState();
-  }, [signedIn]);
-
-  if (isReady() && !loading) return <Fragment />;
-
   return (
-    <Backdrop className={classes.backdrop} open={!!loading}>
+    <Backdrop className={classes.backdrop} open={!!props.open}>
       <CircularProgress color="inherit" />
     </Backdrop>
   );

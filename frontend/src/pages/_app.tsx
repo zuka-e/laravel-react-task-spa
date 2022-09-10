@@ -17,6 +17,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { APP_NAME } from 'config/app';
 import store from 'store';
 import theme from 'theme';
+import { AuthRoute, GuestRoute } from 'routes';
 import { FlashNotification, Loading } from 'layouts';
 
 import 'styles/globals.css';
@@ -45,7 +46,18 @@ const App = ({ Component, pageProps }: AppProps) => {
               <CssBaseline />
               <Loading />
               <FlashNotification />
-              <Component {...pageProps} />
+              {/* cf. https://alexsidorenko.com/blog/next-js-protected-routes/#move-user-logic-to-_appjs */}
+              {pageProps.auth ? (
+                <AuthRoute>
+                  <Component {...pageProps} />
+                </AuthRoute>
+              ) : pageProps.guest ? (
+                <GuestRoute>
+                  <Component {...pageProps} />
+                </GuestRoute>
+              ) : (
+                <Component {...pageProps} />
+              )}
             </DndProvider>
           </MuiPickersUtilsProvider>
         </ThemeProvider>
