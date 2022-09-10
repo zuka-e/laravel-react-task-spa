@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import type { GetStaticProps } from 'next';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -10,6 +11,7 @@ import { SignUpRequest, createUser } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { BaseLayout, FormLayout } from 'layouts';
 import { AlertButton, LabeledCheckbox, SubmitButton } from 'templates';
+import type { GuestPage } from 'routes';
 
 // Input items
 type FormData = SignUpRequest;
@@ -43,6 +45,17 @@ const schema = yup.object().shape({
     .label(formData.password_confirmation.label)
     .oneOf([yup.ref('password'), null], 'Passwords do not match'),
 });
+
+type RegisterProps = GuestPage;
+
+export const getStaticProps: GetStaticProps<RegisterProps> = async () => {
+  return {
+    props: {
+      guest: true,
+    },
+    revalidate: 10,
+  };
+};
 
 const SignUp = () => {
   const router = useRouter();

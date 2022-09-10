@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import type { GetStaticProps } from 'next';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -18,6 +19,7 @@ import { SignInRequest, signInWithEmail } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { BaseLayout, FormLayout } from 'layouts';
 import { AlertButton, LabeledCheckbox, SubmitButton } from 'templates';
+import type { GuestPage } from 'routes';
 
 type FormData = SignInRequest;
 
@@ -45,6 +47,17 @@ const schema = yup.object().shape({
     .min(8)
     .max(20),
 });
+
+type LoginProps = GuestPage;
+
+export const getStaticProps: GetStaticProps<LoginProps> = async () => {
+  return {
+    props: {
+      guest: true,
+    },
+    revalidate: 10,
+  };
+};
 
 const SignIn = () => {
   const dispatch = useAppDispatch();

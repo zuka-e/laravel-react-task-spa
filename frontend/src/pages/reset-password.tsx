@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import type { GetStaticProps } from 'next';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -14,6 +15,7 @@ import {
 import { useAppDispatch } from 'utils/hooks';
 import { BaseLayout, FormLayout } from 'layouts';
 import { AlertButton, LabeledCheckbox, SubmitButton } from 'templates';
+import type { GuestPage } from 'routes';
 
 type FormData = ResetPasswordRequest;
 
@@ -40,6 +42,17 @@ const schema = yup.object().shape({
     .label(formData.password_confirmation.label)
     .oneOf([yup.ref('password'), null], 'Passwords do not match'),
 });
+
+type ResetPasswordProps = GuestPage;
+
+export const getStaticProps: GetStaticProps<ResetPasswordProps> = async () => {
+  return {
+    props: {
+      guest: true,
+    },
+    revalidate: 10,
+  };
+};
 
 const ResetPassword = () => {
   const router = useRouter();

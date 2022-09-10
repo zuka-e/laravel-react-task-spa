@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import type { GetStaticProps } from 'next';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Container, Card, Grid, Typography, Button } from '@material-ui/core';
@@ -10,6 +11,7 @@ import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { isAfterRegistration, isVerified } from 'utils/auth';
 import { BaseLayout } from 'layouts';
 import { AlertMessage } from 'templates';
+import type { AuthPage } from 'routes';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,6 +25,19 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
+type EmailVerificationProps = AuthPage;
+
+export const getStaticProps: GetStaticProps<
+  EmailVerificationProps
+> = async () => {
+  return {
+    props: {
+      auth: true,
+    },
+    revalidate: 10,
+  };
+};
 
 const EmailVerification = () => {
   const classes = useStyles();

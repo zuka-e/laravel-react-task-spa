@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import type { GetStaticPaths, GetStaticProps } from 'next';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Container, Grid, Card, Divider, Typography } from '@material-ui/core';
@@ -16,6 +17,7 @@ import { BaseLayout, StandbyScreen } from 'layouts';
 import { LinkWrapper, ScrolledDiv } from 'templates';
 import { ButtonToAddTask } from 'components/boards';
 import { BoardCardHeader } from 'components/boards/TaskBoard';
+import type { AuthPage } from 'routes';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,6 +40,32 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
+type TaskBoardIndexProps = AuthPage;
+
+/**
+ * @see https://nextjs.org/docs/basic-features/data-fetching/get-static-paths
+ * @see https://nextjs.org/docs/api-reference/data-fetching/get-static-paths
+ */
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
+};
+
+/**
+ * @see https://nextjs.org/docs/basic-features/data-fetching/get-static-props
+ * @see https://nextjs.org/docs/api-reference/data-fetching/get-static-props
+ */
+export const getStaticProps: GetStaticProps<TaskBoardIndexProps> = async () => {
+  return {
+    props: {
+      auth: true,
+    },
+    revalidate: 10,
+  };
+};
 
 const TaskBoardIndex = () => {
   const classes = useStyles();

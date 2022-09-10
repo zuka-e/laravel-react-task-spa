@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import type { GetStaticProps } from 'next';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -10,6 +11,7 @@ import { ForgotPasswordRequest, forgotPassword } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
 import { BaseLayout, FormLayout } from 'layouts';
 import { AlertButton, SubmitButton } from 'templates';
+import type { GuestPage } from 'routes';
 
 type FormData = ForgotPasswordRequest;
 
@@ -23,6 +25,17 @@ const formData: Record<keyof FormData, { id: string; label: string }> = {
 const schema = yup.object().shape({
   email: yup.string().label(formData.email.label).email().required(),
 });
+
+type ForgotPasswordProps = GuestPage;
+
+export const getStaticProps: GetStaticProps<ForgotPasswordProps> = async () => {
+  return {
+    props: {
+      guest: true,
+    },
+    revalidate: 10,
+  };
+};
 
 const ForgotPassword = () => {
   const router = useRouter();

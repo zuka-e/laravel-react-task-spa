@@ -1,3 +1,5 @@
+import type { GetStaticProps } from 'next';
+
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
   Box,
@@ -17,6 +19,7 @@ import {
   UserStatus,
   DeleteAccountDialog,
 } from 'components/account';
+import type { AuthPage } from 'routes';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,6 +30,17 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
+type AccountProps = AuthPage;
+
+export const getStaticProps: GetStaticProps<AccountProps> = async () => {
+  return {
+    props: {
+      auth: true,
+    },
+    revalidate: 10,
+  };
+};
 
 const Account = () => {
   const classes = useStyles();

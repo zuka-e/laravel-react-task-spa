@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import type { GetStaticPaths, GetStaticProps } from 'next';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import {
@@ -23,6 +24,7 @@ import { ButtonToAddTask, EditableTitle, SearchField } from 'components/boards';
 import { BoardMenu } from 'components/boards/TaskBoard';
 import { TaskList } from 'components/boards/TaskList';
 import { InfoBox } from 'components/boards/InfoBox';
+import type { AuthPage } from 'routes';
 
 const boxWidth = '300px';
 const useStyles = makeStyles((theme: Theme) =>
@@ -63,6 +65,24 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
+type TaskBoardProps = AuthPage;
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps<TaskBoardProps> = async () => {
+  return {
+    props: {
+      auth: true,
+    },
+    revalidate: 10,
+  };
+};
 
 const TaskBoard = () => {
   const belowSm = useMediaQuery((theme: Theme) => theme.breakpoints.down('xs'));
