@@ -12,10 +12,9 @@
   // https://eslint.org/docs/user-guide/configuring/configuration-files#extending-configuration-files
   "extends": [
     "eslint:recommended",
-    "plugin:react/recommended",
-    // https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/react-in-jsx-scope.md#when-not-to-use-it
-    "plugin:react/jsx-runtime",
     "plugin:@typescript-eslint/recommended",
+    // https://nextjs.org/docs/basic-features/eslint
+    "next/core-web-vitals",
     // https://prettier.io/docs/en/install.html#eslint-and-other-linters
     // https://github.com/prettier/eslint-config-prettier#installation
     "prettier"
@@ -24,14 +23,10 @@
   "parser": "@typescript-eslint/parser",
   // https://eslint.org/docs/user-guide/configuring/language-options#specifying-parser-options
   "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
-    },
-    "ecmaVersion": "latest",
-    "sourceType": "module"
+    // https://nextjs.org/docs/basic-features/eslint#recommended-plugin-ruleset
   },
   // https://eslint.org/docs/user-guide/configuring/plugins#configuring-plugins
-  "plugins": ["react", "@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "testing-library"],
   // https://eslint.org/docs/user-guide/configuring/rules
   "rules": {
     "@typescript-eslint/no-unused-vars": [
@@ -45,18 +40,7 @@
     // https://typescript-eslint.io/rules/explicit-module-boundary-types/#attributes
     // But the warning is displayed in running `yarn start`,
     // while not in case of `yarn lint`.
-    "@typescript-eslint/explicit-module-boundary-types": "off",
-    // https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/prop-types.md
-    // Alternatives:
-    // 1. Add `import React` and use like `React.FC`
-    // 2. Use explicit types like `(props: Props)`
-    "react/prop-types": "off"
-  },
-  // https://github.com/jsx-eslint/eslint-plugin-react#configuration
-  "settings": {
-    "react": {
-      "version": "detect" // It will default to "latest" and warn if missing
-    }
+    "@typescript-eslint/explicit-module-boundary-types": "off"
   },
   // https://eslint.org/docs/latest/user-guide/configuring/configuration-files#how-do-overrides-work
   "overrides": [
