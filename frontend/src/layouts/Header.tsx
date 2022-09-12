@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Image from 'next/image';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { AppBar, Toolbar, Drawer, Avatar, IconButton } from '@material-ui/core';
@@ -78,7 +79,7 @@ const Header: React.FC = () => {
         </Drawer>
         <div className={`${classes.root} ${classes.title}`}>
           <LinkWrapper to={'/'}>
-            <img src={logo.src} alt={APP_NAME} width="120" height="30" />
+            <Image src={logo.src} alt={APP_NAME} width="120" height="30" />
           </LinkWrapper>
         </div>
         {isSignedIn() ? <AccountMenuButton /> : <SignInLinkButton />}

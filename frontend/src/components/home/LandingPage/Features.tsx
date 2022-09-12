@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Container, Grid, Typography, Box } from '@material-ui/core';
 
@@ -41,7 +43,9 @@ const FeatureLayout: React.FC<{ image: string; header: string }> = (props) => {
   return (
     <Grid item md={4} sm={9} xs={11} className="feature">
       <Grid container direction="column" alignItems="center">
-        <img src={image} alt={basename(image)} width="100%" height="300px" />
+        <Box position="relative" width="100%" height="300px">
+          <Image src={image} alt={basename(image)} layout="fill" />
+        </Box>
         <Box width="100%" mt={2}>
           <ScrolledTypography variant="h3" align="center" gutterBottom>
             {header}
