@@ -1,11 +1,7 @@
 import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
 import { signIn } from 'store/slices/authSlice';
 import { SignInRequest, signInWithEmail } from 'store/thunks/auth';
-import {
-  fetchTaskBoards,
-  updateTaskBoard,
-  UpdateTaskBoardRequest,
-} from 'store/thunks/boards';
+import { fetchTaskBoards, updateTaskBoard } from 'store/thunks/boards';
 import { generateRandomString } from 'utils/generator';
 import { initializeStore, store } from 'mocks/store';
 import { getUserState, isSignedIn } from 'mocks/utils/store/auth';
@@ -20,7 +16,7 @@ describe('Thunk updating a task board', () => {
     password: GUEST_PASSWORD,
   };
 
-  const payload: UpdateTaskBoardRequest = {
+  const payload = {
     id: boardOfGuestUser.id,
     title: generateRandomString(20),
     description: generateRandomString(255),
