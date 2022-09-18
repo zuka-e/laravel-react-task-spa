@@ -47,7 +47,7 @@ describe('Thunk requsting the Email verification link', () => {
       // ログイン
       await store.dispatch(signInWithEmail(signInRequest));
       // token削除
-      sessionStorage.removeItem(CSRF_TOKEN);
+      localStorage.removeItem(CSRF_TOKEN);
       // dispatch
       const response = await store.dispatch(sendEmailVerificationLink());
       expect(sendEmailVerificationLink.rejected.match(response)).toBe(true);

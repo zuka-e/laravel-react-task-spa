@@ -35,7 +35,7 @@ describe('Thunk fetching the authenticated user', () => {
       // ログイン
       await store.dispatch(signInWithEmail(signInRequest));
       // token削除
-      sessionStorage.removeItem(CSRF_TOKEN);
+      localStorage.removeItem(CSRF_TOKEN);
       // dispatch
       const response = await store.dispatch(fetchAuthUser());
       expect(fetchAuthUser.rejected.match(response)).toBe(true);

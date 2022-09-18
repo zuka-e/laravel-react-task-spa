@@ -47,7 +47,7 @@ describe('Thunk updating the user profile', () => {
 
     it('should throw an error without a valid token', async () => {
       await store.dispatch(signInWithEmail(signInRequest)); // ログイン
-      sessionStorage.removeItem(CSRF_TOKEN); // token削除
+      localStorage.removeItem(CSRF_TOKEN); // token削除
       // dispatch
       await store.dispatch(updateProfile(request));
 

@@ -26,9 +26,9 @@ export const setUser = (userDoc: UserDocument) => Object.assign(user, userDoc);
 export const login = (userDoc: UserDocument) => setUser(userDoc);
 
 /**
- * 登録した認証ユーザーを削除し、セッション(sessionStorage)を破棄
+ * 登録した認証ユーザーを削除し、セッション(localStorage)を破棄
  */
 export const logout = () => {
   Object.keys(user).forEach((key) => delete user[key as keyof typeof user]);
-  sessionStorage.clear();
+  localStorage.clear();
 };

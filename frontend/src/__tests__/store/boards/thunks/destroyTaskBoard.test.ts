@@ -50,7 +50,7 @@ describe('Thunk for destroying a task board', () => {
     it('should receive an error without a valid token', async () => {
       expect(isSignedIn(store)).toEqual(undefined);
       await store.dispatch(signInWithEmail(signInRequest)); // ログイン
-      sessionStorage.removeItem(CSRF_TOKEN); // token削除
+      localStorage.removeItem(CSRF_TOKEN); // token削除
       expect(isSignedIn(store)).toEqual(true);
       expect(getUserState(store)?.id).toEqual(guestUser.id);
       const response = await store.dispatch(destroyTaskBoard(payload));

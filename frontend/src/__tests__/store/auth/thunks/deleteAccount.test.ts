@@ -44,7 +44,7 @@ describe('Thunk for an account delete', () => {
 
     it('should receive an error without a valid token', async () => {
       await store.dispatch(signInWithEmail(signInRequest)); // ログイン
-      sessionStorage.removeItem(CSRF_TOKEN); // token削除
+      localStorage.removeItem(CSRF_TOKEN); // token削除
       const response = await store.dispatch(deleteAccount()); // dispatch
       expect(deleteAccount.rejected.match(response)).toBe(true);
 

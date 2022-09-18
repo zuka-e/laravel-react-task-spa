@@ -51,7 +51,7 @@ describe('Thunk updating the user password', () => {
 
     it('should receive an error without a valid token', async () => {
       await store.dispatch(signInWithEmail(signInRequest)); // ログイン
-      sessionStorage.removeItem(CSRF_TOKEN); // token削除
+      localStorage.removeItem(CSRF_TOKEN); // token削除
       await store.dispatch(updatePassword(request)); // dispatch
 
       expect(getFlashState(store).slice(-1)[0]).toEqual({

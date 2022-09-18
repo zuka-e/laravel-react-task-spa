@@ -10,7 +10,7 @@ export const X_XSRF_TOKEN = 'X-XSRF-TOKEN'; // header
 
 /**
  * 1. 適当な長さのランダム文字列を生成し、セッションIDとする
- * 2. セッションIDを`key`、`userId`を`value`として`sessionStorage`に格納
+ * 2. セッションIDを`key`、`userId`を`value`として`localStorage`に格納
  *
  * @param  userId - リクエストユーザーのID
  * @returns 暗号化済みセッションID (`cookie`格納用)
@@ -19,7 +19,7 @@ export const createSessionId = (userId: string | null) => {
   const sessionId = generateRandomString(32);
   const encryptedSessionId = encrypt(sessionId);
 
-  sessionStorage.setItem(sessionId, String(userId));
+  localStorage.setItem(sessionId, String(userId));
   return encryptedSessionId;
 };
 
@@ -32,7 +32,7 @@ export const createSessionId = (userId: string | null) => {
  * @returns 新規の暗号化済みセッションID (`cookie`格納用)
  */
 export const regenerateSessionId = (currentSessionId: string) => {
-  sessionStorage.removeItem(currentSessionId);
+  localStorage.removeItem(currentSessionId);
   const userId = auth.getUser()?.id || null;
 
   return createSessionId(userId);
@@ -40,7 +40,7 @@ export const regenerateSessionId = (currentSessionId: string) => {
 
 /**
  * 1. `encryptedSessionId`の有無を確認
- * 2. セッションIDを復号化し、セッション(sessionStorage)からユーザーIDを取得
+ * 2. セッションIDを復号化し、セッション(localStorage)からユーザーIDを取得
  * 3. ユーザーIDからユーザーを取得
  *
  * @param encryptedSessionId `cookie`に格納された`session_id`
@@ -54,7 +54,7 @@ export const getUserFromSession = (encryptedSessionId: string) => {
   }
 
   const sessionId = decrypt(encryptedSessionId);
-  const userId = sessionStorage.getItem(sessionId);
+  const userId = localStorage.getItem(sessionId);
 
   if (!userId) {
     console.log('There is no session');
@@ -68,13 +68,13 @@ export const getUserFromSession = (encryptedSessionId: string) => {
 
 /**
  * 1. 適当な長さのランダム文字列のハッシュ値をCSRFトークンとして発行
- * 2. セッション (sessionStorage) の`csrf-token`にトークンを格納
+ * 2. セッション (localStorage) の`csrf-token`にトークンを格納
  */
 export const generateCsrfToken = () => {
   const randomString = generateRandomString(32);
   const csrfToken = digestText(randomString);
 
-  sessionStorage.setItem(CSRF_TOKEN, csrfToken);
+  localStorage.setItem(CSRF_TOKEN, csrfToken);
   return csrfToken;
 };
 
@@ -82,7 +82,7 @@ export const generateCsrfToken = () => {
  * HTTPヘッダーの`X_XSRF_TOKEN`とセッションの`csrf-token`を比較
  */
 export const hasValidToken = (requestToken: string) => {
-  const sessionToken = sessionStorage.getItem(CSRF_TOKEN);
+  const sessionToken = localStorage.getItem(CSRF_TOKEN);
   return requestToken === sessionToken;
 };
 
