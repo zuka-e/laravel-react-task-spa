@@ -75,10 +75,5 @@
   },
   "msw": {
     "workerDirectory": "public"
-  },
-  "jest": {
-    "transformIgnorePatterns": [
-      "node_modules/(?!react-markdown)/"
-    ]
   }
 }
