@@ -49,6 +49,16 @@
       "rules": {
         "@typescript-eslint/no-var-requires": "off"
       }
+    },
+    // https://github.com/testing-library/eslint-plugin-testing-library#run-the-plugin-only-against-test-files
+    {
+      "files": [
+        "**/__tests__/**/*.[jt]s?(x)",
+        "**/?(*.)+(spec|test).[jt]s?(x)",
+        "jest.setup.[jt]s?(x)"
+      ],
+      "env": { "jest": true },
+      "extends": ["plugin:testing-library/react"]
     }
   ]
 }
