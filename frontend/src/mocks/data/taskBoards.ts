@@ -66,7 +66,7 @@ const initialize = () => {
 
   if (db.exists('taskBoards')) return;
 
-  runSeeder({ count: 2, belongsTo: { user: guestUser } });
+  runSeeder({ count: 30, belongsTo: { user: guestUser } });
   runSeeder({ count: 1, belongsTo: { user: otherUser } });
 };
 
