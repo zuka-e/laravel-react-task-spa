@@ -1,75 +1,68 @@
-import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { useRouter } from 'next/router';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
-import { HelmetProvider } from 'react-helmet-async';
 
-import { APP_NAME, GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
-import { isAfterRegistration, isSignedIn } from 'utils/auth';
-import store from 'store';
-import Routes from 'Routes';
-import App from 'App';
+import { initializeStore, store } from 'mocks/store';
+import { GUEST_EMAIL, GUEST_PASSWORD } from 'config/app';
+import SignUp from 'pages/register';
+
+jest.mock('next/router', () => ({
+  useRouter: jest.fn(),
+}));
+
+beforeEach(() => {
+  initializeStore();
+});
 
 describe('Sign Up', () => {
-  const signInFormName = new RegExp('Sign in to ' + APP_NAME, 'i');
   const signUpFormName = /Create an account/i;
   const emailFieldName = /Email Address/i;
   const passwordFieldName = /^Password(?!.*Confirm)/i;
   const passwordConfirmFieldName = /Password Confirmation/i;
   const submitButtonName = /Create an account/i;
-  const emailVerificationTitle = /認証用メールを送信/;
-
-  beforeEach(() => {
-    // 各テストで`history`は初期化されない (cf. MemoryRouter)
-    render(
-      <Provider store={store}>
-        <HelmetProvider>
-          <App />
-        </HelmetProvider>
-      </Provider>
-    );
-  });
-  afterEach(() => cleanup());
 
   describe('Form setup', () => {
-    it('renders a index page without crashing', async () => {
-      // 初期画面表示まで待機
-      expect(await screen.findByRole('img', { name: /hero/i })).toBeVisible();
-    });
+    it('should display a registration form', () => {
+      render(
+        <Provider store={store}>
+          <SignUp />
+        </Provider>
+      );
 
-    it('should display a registraion form', () => {
-      // ユーザー登録フォーム (`SignUp`) 表示ボタン押下
-      userEvent.click(screen.getByRole('button', { name: /始める/i }));
-      // 表示確認
-      const title = screen.getByRole('heading', { name: signUpFormName });
-      expect(title).toBeVisible();
+      expect(
+        screen.getByRole('heading', { name: signUpFormName })
+      ).toBeVisible();
     });
   });
 
   it('has a link to the login page', async () => {
-    // `history`を独立させるため`MemoryRouter`を使用し`render`し直す
-    cleanup();
+    (useRouter as jest.Mock).mockReturnValue({
+      push: jest.fn(),
+    });
+
     render(
       <Provider store={store}>
-        <HelmetProvider>
-          <MemoryRouter initialEntries={['/register']}>
-            <Routes />
-          </MemoryRouter>
-        </HelmetProvider>
+        <SignUp />
       </Provider>
     );
-    const signInSubmitName = /Sign in/i;
-    expect(screen.queryByRole('heading', { name: signInFormName })).toBeNull();
-    userEvent.click(screen.getByRole('button', { name: signInSubmitName }));
-    expect(screen.getByRole('heading', { name: signInFormName })).toBeVisible();
+
+    userEvent.click(screen.getByRole('button', { name: /Sign in/i }));
+    expect(useRouter().push).toHaveBeenCalledWith('/login');
   });
 
   it('should display password by a show password option', () => {
+    render(
+      <Provider store={store}>
+        <SignUp />
+      </Provider>
+    );
+
     expect(
       screen.queryByRole('textbox', { name: passwordFieldName })
     ).toBeNull();
-    // パスワード表示オプション有効化
+
     userEvent.click(screen.getByRole('checkbox', { name: /Show password/i }));
 
     const passwordField = screen.getByRole('textbox', {
@@ -78,6 +71,7 @@ describe('Sign Up', () => {
     const passwordConfirmField = screen.getByRole('textbox', {
       name: passwordConfirmFieldName,
     });
+
     expect(passwordField).toBeVisible();
     expect(passwordConfirmField).toBeVisible();
   });
@@ -85,11 +79,14 @@ describe('Sign Up', () => {
   describe('Form input', () => {
     const newEmail = 'test' + GUEST_EMAIL;
     const password = 'password';
-    const errorData = { '422': { message: /^Error/ } };
-    const successMessage = /ユーザー登録が完了しました/;
-    const warning = /登録が抹消されます/;
 
     it('should not be registered with the wrong email input', async () => {
+      render(
+        <Provider store={store}>
+          <SignUp />
+        </Provider>
+      );
+
       const invalidEmail = GUEST_EMAIL + '@example';
       const emailField = screen.getByRole('textbox', { name: emailFieldName });
       const passwordField = screen.getByLabelText(passwordFieldName);
@@ -98,18 +95,25 @@ describe('Sign Up', () => {
       );
       const submit = screen.getByRole('button', { name: submitButtonName });
 
-      // フォーム入力 (バリデーションエラー: email)
+      expect(store.getState().auth.signedIn).toBe(undefined);
+
       userEvent.type(emailField, invalidEmail);
       userEvent.type(passwordField, password);
       userEvent.type(passwordConfirmField, password + 'a');
       userEvent.click(submit);
-      // ページ遷移しない
-      expect(
-        await screen.findByRole('heading', { name: /Create an account/i })
-      ).toBeVisible();
+
+      await waitFor(() => {
+        expect(store.getState().auth.signedIn).toBeFalsy();
+      });
     });
 
     it('should not be registered with the wrong password input', async () => {
+      render(
+        <Provider store={store}>
+          <SignUp />
+        </Provider>
+      );
+
       const emailField = screen.getByRole('textbox', { name: emailFieldName });
       const passwordField = screen.getByLabelText(passwordFieldName);
       const passwordConfirmField = screen.getByLabelText(
@@ -117,39 +121,52 @@ describe('Sign Up', () => {
       );
       const submit = screen.getByRole('button', { name: submitButtonName });
 
-      // フォーム入力 (バリデーションエラー: password不一致)
+      expect(store.getState().auth.signedIn).toBe(undefined);
+
       userEvent.type(emailField, newEmail);
       userEvent.type(passwordField, password);
       userEvent.type(passwordConfirmField, password + 'a');
       userEvent.click(submit);
-      // ページ遷移しない
-      expect(
-        await screen.findByRole('heading', { name: signUpFormName })
-      ).toBeVisible();
+
+      await waitFor(() => {
+        expect(store.getState().auth.signedIn).toBeFalsy();
+      });
     });
 
     it('should display an error message when email already exists', async () => {
+      render(
+        <Provider store={store}>
+          <SignUp />
+        </Provider>
+      );
+
       const emailField = screen.getByRole('textbox', { name: emailFieldName });
       const passwordField = screen.getByLabelText(passwordFieldName);
       const passwordConfirmField = screen.getByLabelText(
         passwordConfirmFieldName
       );
       const submit = screen.getByRole('button', { name: submitButtonName });
+      const errorMessage = /^Error/;
+
+      expect(screen.queryByRole('alert')).toBeNull();
+      expect(screen.queryByText(errorMessage)).toBeNull();
 
       userEvent.type(emailField, GUEST_EMAIL);
       userEvent.type(passwordField, GUEST_PASSWORD);
       userEvent.type(passwordConfirmField, GUEST_PASSWORD);
-      act(() => {
-        userEvent.click(submit);
-      });
+      userEvent.click(submit);
 
-      await waitFor(() => {
-        expect(screen.getByRole('alert')).toBeVisible();
-      });
-      expect(screen.getByText(errorData['422'].message)).toBeVisible();
+      expect(await screen.findByRole('alert')).toBeVisible();
+      expect(screen.getByText(errorMessage)).toBeVisible();
     });
 
     it('should be registered with the right input', async () => {
+      render(
+        <Provider store={store}>
+          <SignUp />
+        </Provider>
+      );
+
       const emailField = screen.getByRole('textbox', { name: emailFieldName });
       const passwordField = screen.getByLabelText(passwordFieldName);
       const passwordConfirmField = screen.getByLabelText(
@@ -162,29 +179,12 @@ describe('Sign Up', () => {
       userEvent.type(passwordConfirmField, password);
       userEvent.click(submit);
 
-      // `FlashNotification`
-      expect(await screen.findAllByRole('alert')).toHaveLength(2);
-      expect(screen.getByText(successMessage)).toBeVisible();
-      expect(screen.getByText(warning)).toBeVisible();
+      await waitFor(() => {
+        expect(store.getState().auth.signedIn).toBe(true);
+      });
 
-      // `EmailVerification`
-      expect(isAfterRegistration()).toBeTruthy();
-      expect(
-        screen.getByRole('heading', { name: emailVerificationTitle })
-      ).toBeVisible();
-      expect(screen.getByRole('button', { name: /再送信/ })).toBeVisible();
-
-      expect(isSignedIn()).toBeTruthy();
+      expect(store.getState().auth.afterRegistration).toBe(true);
       expect(store.getState().auth.user?.email).toBe(newEmail);
-    });
-  });
-
-  describe('After authenticated', () => {
-    it('should not display a EmailVerification after a page transition', () => {
-      expect(isAfterRegistration()).toBeFalsy();
-      expect(
-        screen.queryByRole('heading', { name: emailVerificationTitle })
-      ).toBeNull();
     });
   });
 });
