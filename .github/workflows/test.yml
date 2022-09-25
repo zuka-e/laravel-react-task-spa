@@ -48,7 +48,7 @@ jobs:
         run: ./vendor/bin/phpunit
 
   build:
-    name: Fronend Test
+    name: Frontend Test
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -78,9 +78,6 @@ jobs:
       - name: Install dependencies
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn --frozen-lockfile
-
-      - name: Set environment variables
-        run: mv .env.example .env
 
       - run: yarn build --if-present
       - run: yarn test
