@@ -1,11 +1,8 @@
-import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Container, Typography, Button } from '@material-ui/core';
 
-import { useAppDispatch } from 'utils/hooks';
-import { releaseError404 } from 'store/slices/appSlice';
 import { BaseLayout } from 'layouts';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -20,13 +17,6 @@ const useStyles = makeStyles((theme: Theme) =>
 const NotFound = () => {
   const classes = useStyles();
   const router = useRouter();
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    return function cleanup() {
-      dispatch(releaseError404());
-    };
-  }, [dispatch]);
 
   return (
     <BaseLayout subtitle="404 Not Found">

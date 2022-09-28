@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { API_HOST, API_ROUTE } from 'config/api';
 import { DocumentBase } from 'models';
-import { setError404, setHttpStatus } from 'store/slices/appSlice';
+import { setHttpStatus } from 'store/slices/appSlice';
 
 /**
  * Laravelからデータの配列と共にページネーションに関する情報及びリンクをリクエストする際のレスポンスタイプ
@@ -61,31 +61,11 @@ export const apiClient = (options?: ApiClientOption) => {
           ? await import('mocks/store')
           : await import('store');
 
-      const { setFlash } = await import('store/slices/authSlice');
-
-      if (!axios.isAxiosError(error)) return Promise.reject(error);
-
-      switch (error.response?.status) {
-        case 401:
-        case 419:
-          store.dispatch(setHttpStatus(error.response.status));
-          return Promise.reject(error);
-        case 403:
-          store.dispatch(
-            setFlash({ type: 'error', message: '不正なリクエストです' })
-          );
-          return Promise.reject(error);
-        case 404:
-          store.dispatch(setError404());
-          return Promise.reject(error);
-        case 500:
-          store.dispatch(
-            setFlash({ type: 'error', message: 'システムエラーが発生しました' })
-          );
-          return Promise.reject(error);
-        default:
-          return Promise.reject(error); // `return`欠落 -> "response undefined"
+      if (axios.isAxiosError(error) && error.response) {
+        store.dispatch(setHttpStatus(error.response.status));
       }
+
+      return Promise.reject(error);
     }
   );
 
