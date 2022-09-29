@@ -6,4 +6,5 @@ export { default as Loading } from './Loading';
 export { default as Progressbar } from './Progressbar';
 export { default as FlashNotification } from './FlashNotification';
 export { default as FormLayout } from './FormLayout';
+export { default as HttpErrorLayout } from './HttpErrorLayout';
 export { default as MarkdownWithToc } from './MarkdownWithToc';
