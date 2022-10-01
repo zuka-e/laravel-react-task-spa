@@ -26,6 +26,10 @@ const HttpErrorLayout = (props: HttpErrorLayoutProps) => {
   const classes = useStyles();
   const router = useRouter();
 
+  const handleClick = () => {
+    router.push(router.asPath === '/' ? '#' : '/');
+  };
+
   return (
     <BaseLayout subtitle={title}>
       <Container component="main" maxWidth="md" className={classes.container}>
@@ -41,11 +45,7 @@ const HttpErrorLayout = (props: HttpErrorLayoutProps) => {
           </Typography>
         )}
         {children}
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => router.push('/')}
-        >
+        <Button variant="contained" color="primary" onClick={handleClick}>
           トップページへ戻る
         </Button>
       </Container>
