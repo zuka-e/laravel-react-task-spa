@@ -7,11 +7,7 @@ import {
   DestroyTaskBoardRequest,
 } from 'store/thunks/boards';
 import { initializeStore, store } from 'mocks/store';
-import {
-  getFlashState,
-  getUserState,
-  isSignedIn,
-} from 'mocks/utils/store/auth';
+import { getUserState, isSignedIn } from 'mocks/utils/store/auth';
 import { isLoading } from 'mocks/utils/store/boards';
 import { uuid } from 'mocks/utils/uuid';
 import { CSRF_TOKEN } from 'mocks/utils/validation';
@@ -73,10 +69,7 @@ describe('Thunk for destroying a task board', () => {
       expect(isLoading(store)).toEqual(false);
       expect(isSignedIn(store)).toEqual(true);
       expect(getUserState(store)?.id).toEqual(unverifiedUser.id);
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: '不正なリクエストです',
-      });
+      expect(store.getState().app.httpStatus).toBe(403);
     });
 
     it('should receive 404 if a board does not exist', async () => {

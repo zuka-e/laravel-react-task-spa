@@ -9,11 +9,7 @@ import {
 } from 'store/thunks/cards';
 import { generateRandomString } from 'utils/generator';
 import { initializeStore, store } from 'mocks/store';
-import {
-  getFlashState,
-  getUserState,
-  isSignedIn,
-} from 'mocks/utils/store/auth';
+import { getUserState, isSignedIn } from 'mocks/utils/store/auth';
 import { isLoading } from 'mocks/utils/store/boards';
 import { uuid } from 'mocks/utils/uuid';
 import { CSRF_TOKEN } from 'mocks/utils/validation';
@@ -95,10 +91,7 @@ describe('Thunk updating a task card', () => {
       expect(isLoading(store)).toEqual(false);
       expect(isSignedIn(store)).toEqual(true);
       expect(getUserState(store)?.id).toEqual(unverifiedUser.id);
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: '不正なリクエストです',
-      });
+      expect(store.getState().app.httpStatus).toBe(403);
     });
 
     it('should receive 404 if the parent does not exist', async () => {
@@ -129,10 +122,7 @@ describe('Thunk updating a task card', () => {
       expect(updateTaskCard.rejected.match(response)).toBeTruthy();
       expect(isLoading(store)).toEqual(false);
       expect(isSignedIn(store)).toEqual(true);
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: '不正なリクエストです',
-      });
+      expect(store.getState().app.httpStatus).toBe(403);
     });
 
     it('should receive 404 if the card does not exist', async () => {
@@ -163,10 +153,7 @@ describe('Thunk updating a task card', () => {
       expect(updateTaskCard.rejected.match(response)).toBeTruthy();
       expect(isLoading(store)).toEqual(false);
       expect(isSignedIn(store)).toEqual(true);
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: '不正なリクエストです',
-      });
+      expect(store.getState().app.httpStatus).toBe(403);
     });
   });
 

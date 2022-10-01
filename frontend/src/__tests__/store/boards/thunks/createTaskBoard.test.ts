@@ -4,11 +4,7 @@ import { SignInRequest, signInWithEmail } from 'store/thunks/auth';
 import { createTaskBoard, CreateTaskBoardRequest } from 'store/thunks/boards';
 import { generateRandomString } from 'utils/generator';
 import { initializeStore, store } from 'mocks/store';
-import {
-  getFlashState,
-  getUserState,
-  isSignedIn,
-} from 'mocks/utils/store/auth';
+import { getUserState, isSignedIn } from 'mocks/utils/store/auth';
 import { isLoading } from 'mocks/utils/store/boards';
 import { CSRF_TOKEN } from 'mocks/utils/validation';
 import { guestUser, unverifiedUser } from 'mocks/data';
@@ -72,10 +68,7 @@ describe('Thunk creating a new task board', () => {
       expect(isLoading(store)).toEqual(false);
       expect(isSignedIn(store)).toEqual(true);
       expect(getUserState(store)?.id).toEqual(unverifiedUser.id);
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: '不正なリクエストです',
-      });
+      expect(store.getState().app.httpStatus).toBe(403);
     });
   });
 
