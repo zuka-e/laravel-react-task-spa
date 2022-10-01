@@ -34,12 +34,7 @@ describe('Thunk for an account delete', () => {
       expect(deleteAccount.rejected.match(response)).toBeTruthy();
 
       expect(isLoading(store)).toBe(false);
-      expect(isSignedIn(store)).toBe(false);
-      expect(getUserState(store)).toBeNull();
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: 'ログインしてください',
-      });
+      expect(store.getState().app.httpStatus).toBe(401);
     });
 
     it('should receive an error without a valid token', async () => {
@@ -47,11 +42,7 @@ describe('Thunk for an account delete', () => {
       localStorage.removeItem(CSRF_TOKEN); // token削除
       const response = await store.dispatch(deleteAccount()); // dispatch
       expect(deleteAccount.rejected.match(response)).toBe(true);
-
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: 'ログインしてください',
-      });
+      expect(store.getState().app.httpStatus).toBe(419);
     });
 
     it('should not be deleted if the request is rejected', async () => {

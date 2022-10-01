@@ -53,12 +53,7 @@ describe('Thunk updating a task list', () => {
 
       expect(updateTaskList.rejected.match(response)).toBeTruthy();
       expect(isLoading(store)).toEqual(false);
-      expect(isSignedIn(store)).toEqual(false);
-      expect(getUserState(store)).toEqual(null);
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: 'ログインしてください',
-      });
+      expect(store.getState().app.httpStatus).toBe(401);
     });
 
     it('should receive 419 without a valid token', async () => {
@@ -71,12 +66,7 @@ describe('Thunk updating a task list', () => {
 
       expect(updateTaskList.rejected.match(response)).toBeTruthy();
       expect(isLoading(store)).toEqual(false);
-      expect(isSignedIn(store)).toEqual(false);
-      expect(getUserState(store)).toEqual(null);
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: 'ログインしてください',
-      });
+      expect(store.getState().app.httpStatus).toBe(419);
     });
 
     it('should receive 403 unless having been verified', async () => {
@@ -113,7 +103,7 @@ describe('Thunk updating a task list', () => {
       );
 
       expect(updateTaskList.rejected.match(response)).toBeTruthy();
-      expect(store.getState().app.notFound).toEqual(true);
+      expect(store.getState().app.httpStatus).toBe(404);
       expect(isLoading(store)).toEqual(false);
       expect(isSignedIn(store)).toEqual(true);
       expect(getUserState(store)?.id).toEqual(guestUser.id);
@@ -147,7 +137,7 @@ describe('Thunk updating a task list', () => {
       );
 
       expect(updateTaskList.rejected.match(response)).toBeTruthy();
-      expect(store.getState().app.notFound).toEqual(true);
+      expect(store.getState().app.httpStatus).toBe(404);
       expect(isLoading(store)).toEqual(false);
       expect(isSignedIn(store)).toEqual(true);
       expect(getUserState(store)?.id).toEqual(guestUser.id);

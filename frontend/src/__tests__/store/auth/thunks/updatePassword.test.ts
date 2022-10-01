@@ -8,12 +8,7 @@ import {
 } from 'store/thunks/auth';
 import { isInvalidRequest } from 'utils/api/errors';
 import { initializeStore, store } from 'mocks/store';
-import {
-  getFlashState,
-  getUserState,
-  isLoading,
-  isSignedIn,
-} from 'mocks/utils/store/auth';
+import { getFlashState, isLoading } from 'mocks/utils/store/auth';
 import { CSRF_TOKEN } from 'mocks/utils/validation';
 import { refresh } from 'mocks/data';
 
@@ -41,23 +36,14 @@ describe('Thunk updating the user password', () => {
       const response = await store.dispatch(updatePassword(request));
       expect(updatePassword.rejected.match(response)).toBe(true);
       expect(isLoading(store)).toBe(false);
-      expect(isSignedIn(store)).toBe(false);
-      expect(getUserState(store)).toBeNull();
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: 'ログインしてください',
-      });
+      expect(store.getState().app.httpStatus).toBe(401);
     });
 
     it('should receive an error without a valid token', async () => {
       await store.dispatch(signInWithEmail(signInRequest)); // ログイン
       localStorage.removeItem(CSRF_TOKEN); // token削除
       await store.dispatch(updatePassword(request)); // dispatch
-
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: 'ログインしてください',
-      });
+      expect(store.getState().app.httpStatus).toBe(419);
     });
 
     it('should receive an error if the password unmatchs', async () => {

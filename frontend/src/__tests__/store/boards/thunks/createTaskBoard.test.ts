@@ -38,12 +38,7 @@ describe('Thunk creating a new task board', () => {
 
       expect(createTaskBoard.rejected.match(response)).toBeTruthy();
       expect(isLoading(store)).toEqual(false);
-      expect(isSignedIn(store)).toEqual(false);
-      expect(getUserState(store)).toEqual(null);
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: 'ログインしてください',
-      });
+      expect(store.getState().app.httpStatus).toBe(401);
     });
 
     it('should receive an error without a valid token', async () => {
@@ -56,12 +51,7 @@ describe('Thunk creating a new task board', () => {
 
       expect(createTaskBoard.rejected.match(response)).toBeTruthy();
       expect(isLoading(store)).toEqual(false);
-      expect(isSignedIn(store)).toEqual(false);
-      expect(getUserState(store)).toEqual(null);
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: 'ログインしてください',
-      });
+      expect(store.getState().app.httpStatus).toBe(419);
     });
 
     it('should receive an error unless having been verified', async () => {

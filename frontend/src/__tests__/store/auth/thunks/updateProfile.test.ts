@@ -7,12 +7,7 @@ import {
 } from 'store/thunks/auth';
 import { isInvalidRequest } from 'utils/api/errors';
 import { initializeStore, store } from 'mocks/store';
-import {
-  getFlashState,
-  getUserState,
-  isLoading,
-  isSignedIn,
-} from 'mocks/utils/store/auth';
+import { getFlashState, getUserState, isLoading } from 'mocks/utils/store/auth';
 import { CSRF_TOKEN } from 'mocks/utils/validation';
 import { guestUser, refresh, unverifiedUser } from 'mocks/data';
 
@@ -37,24 +32,14 @@ describe('Thunk updating the user profile', () => {
 
       expect(updateProfile.rejected.match(response)).toBe(true);
       expect(isLoading(store)).toBe(false);
-      expect(isSignedIn(store)).toBe(false);
-      expect(getUserState(store)).toBeNull();
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: 'ログインしてください',
-      });
+      expect(store.getState().app.httpStatus).toBe(401);
     });
 
     it('should throw an error without a valid token', async () => {
       await store.dispatch(signInWithEmail(signInRequest)); // ログイン
       localStorage.removeItem(CSRF_TOKEN); // token削除
-      // dispatch
       await store.dispatch(updateProfile(request));
-
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: 'ログインしてください',
-      });
+      expect(store.getState().app.httpStatus).toBe(419);
     });
 
     it('should throw an error with an existing email', async () => {

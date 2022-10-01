@@ -16,7 +16,7 @@ import {
 } from 'mocks/utils/store/auth';
 import { CSRF_TOKEN } from 'mocks/utils/validation';
 
-describe('Thunk requsting the Email verification link', () => {
+describe('Thunk requesting the Email verification link', () => {
   beforeEach(() => {
     initializeStore();
   });
@@ -31,12 +31,7 @@ describe('Thunk requsting the Email verification link', () => {
       expect(sendEmailVerificationLink.rejected.match(response)).toBe(true);
 
       expect(isLoading(store)).toBe(false);
-      expect(isSignedIn(store)).toBe(false);
-      expect(getUserState(store)).toBeNull();
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: 'ログインしてください',
-      });
+      expect(store.getState().app.httpStatus).toBe(401);
     });
 
     it('should throw an error without a valid token', async () => {
@@ -53,12 +48,7 @@ describe('Thunk requsting the Email verification link', () => {
       expect(sendEmailVerificationLink.rejected.match(response)).toBe(true);
 
       expect(isLoading(store)).toBe(false);
-      expect(isSignedIn(store)).toBe(false);
-      expect(getUserState(store)).toBeNull();
-      expect(getFlashState(store).slice(-1)[0]).toEqual({
-        type: 'error',
-        message: 'ログインしてください',
-      });
+      expect(store.getState().app.httpStatus).toBe(419);
     });
   });
 
