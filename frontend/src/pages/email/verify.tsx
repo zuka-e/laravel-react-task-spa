@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticProps } from 'next';
 
@@ -35,7 +36,14 @@ const VerifyEmail = () => {
     })();
   }, [dispatch, route.pathname, route.queryString, router]);
 
-  return <BaseLayout subtitle="Verify Email"></BaseLayout>;
+  return (
+    <>
+      <Head>
+        <title>Verify Email</title>
+      </Head>
+      <BaseLayout />
+    </>
+  );
 };
 
 export default VerifyEmail;

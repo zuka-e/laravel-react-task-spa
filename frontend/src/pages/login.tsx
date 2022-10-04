@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticProps } from 'next';
 
@@ -17,7 +18,7 @@ import {
 import { APP_NAME } from 'config/app';
 import { SignInRequest, signInWithEmail } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
-import { BaseLayout, FormLayout } from 'layouts';
+import { FormLayout } from 'layouts';
 import { AlertButton, LabeledCheckbox, SubmitButton } from 'templates';
 import type { GuestPage } from 'routes';
 
@@ -80,7 +81,10 @@ const SignIn = () => {
   };
 
   return (
-    <BaseLayout subtitle="Sign In" withoutHeaders>
+    <>
+      <Head>
+        <title>Sign In</title>
+      </Head>
       <FormLayout title={`Sign in to ${APP_NAME}`} message={message}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
@@ -151,7 +155,7 @@ const SignIn = () => {
           </Grid>
         </form>
       </FormLayout>
-    </BaseLayout>
+    </>
   );
 };
 

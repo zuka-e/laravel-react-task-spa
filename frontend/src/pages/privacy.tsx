@@ -1,10 +1,17 @@
+import Head from 'next/head';
+
 import { APP_NAME } from 'config/app';
 import { BaseLayout, MarkdownWithToc } from 'layouts';
 
 const Privacy = () => (
-  <BaseLayout subtitle="Privacy Policy">
-    <MarkdownWithToc articles={articles}>{privacyPolicy}</MarkdownWithToc>
-  </BaseLayout>
+  <>
+    <Head>
+      <title>Privacy Policy</title>
+    </Head>
+    <BaseLayout>
+      <MarkdownWithToc articles={articles}>{privacyPolicy}</MarkdownWithToc>
+    </BaseLayout>
+  </>
 );
 
 export default Privacy;

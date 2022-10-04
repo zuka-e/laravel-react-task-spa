@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticProps } from 'next';
 
@@ -65,31 +66,40 @@ const EmailVerification = () => {
   };
 
   return (
-    <BaseLayout subtitle="Email Verification">
-      <Container className={classes.main} component="main" maxWidth="sm">
-        <AlertMessage severity="warning" elevation={2}>
-          <strong>
-            {`登録から24時間以内に認証を完了させなかった場合、一定時間経過後に登録が抹消されます。`}
-          </strong>
-        </AlertMessage>
-        <Card classes={{ root: classes.paper }} elevation={2}>
-          <Grid container direction="column" alignItems="center">
-            <Typography variant="h4" component="h1" gutterBottom>
-              {`認証用メールを送信しました。`}
-            </Typography>
-            <Typography paragraph>
-              {`届いたメールに記載されたURLをクリックして登録を完了させてください。メールが受信できない場合は迷惑メールに振り分けられていないかご確認ください。`}
-            </Typography>
-            <Typography paragraph>
-              {`1時間以内に手続きを行わなかった場合、メールのリンクは無効になります。`}
-            </Typography>
-            <Button variant="contained" color="secondary" onClick={handleClick}>
-              {`メールを再送信する`}
-            </Button>
-          </Grid>
-        </Card>
-      </Container>
-    </BaseLayout>
+    <>
+      <Head>
+        <title>Email Verification</title>
+      </Head>
+      <BaseLayout>
+        <Container className={classes.main} component="main" maxWidth="sm">
+          <AlertMessage severity="warning" elevation={2}>
+            <strong>
+              {`登録から24時間以内に認証を完了させなかった場合、一定時間経過後に登録が抹消されます。`}
+            </strong>
+          </AlertMessage>
+          <Card classes={{ root: classes.paper }} elevation={2}>
+            <Grid container direction="column" alignItems="center">
+              <Typography variant="h4" component="h1" gutterBottom>
+                {`認証用メールを送信しました。`}
+              </Typography>
+              <Typography paragraph>
+                {`届いたメールに記載されたURLをクリックして登録を完了させてください。メールが受信できない場合は迷惑メールに振り分けられていないかご確認ください。`}
+              </Typography>
+              <Typography paragraph>
+                {`1時間以内に手続きを行わなかった場合、メールのリンクは無効になります。`}
+              </Typography>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleClick}
+              >
+                {`メールを再送信する`}
+              </Button>
+            </Grid>
+          </Card>
+        </Container>
+      </BaseLayout>
+    </>
   );
 };
 

@@ -28,7 +28,7 @@ const Home = () => {
   return (
     <>
       <SEO title="" description="" />
-      <BaseLayout subtitle="">
+      <BaseLayout>
         <Hero />
         <Features />
       </BaseLayout>

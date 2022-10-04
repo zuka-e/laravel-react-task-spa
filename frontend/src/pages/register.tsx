@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticProps } from 'next';
 
@@ -9,7 +10,7 @@ import { TextField, Divider, Grid, Box } from '@material-ui/core';
 
 import { SignUpRequest, createUser } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
-import { BaseLayout, FormLayout } from 'layouts';
+import { FormLayout } from 'layouts';
 import { AlertButton, LabeledCheckbox, SubmitButton } from 'templates';
 import type { GuestPage } from 'routes';
 
@@ -80,7 +81,10 @@ const SignUp = () => {
   };
 
   return (
-    <BaseLayout subtitle="Registration" withoutHeaders>
+    <>
+      <Head>
+        <title>Registration</title>
+      </Head>
       <FormLayout title={'Create an account'} message={message}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
@@ -151,7 +155,7 @@ const SignUp = () => {
           </Grid>
         </form>
       </FormLayout>
-    </BaseLayout>
+    </>
   );
 };
 

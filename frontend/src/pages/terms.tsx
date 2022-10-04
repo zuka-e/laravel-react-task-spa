@@ -1,10 +1,17 @@
+import Head from 'next/head';
+
 import { APP_NAME } from 'config/app';
 import { BaseLayout, MarkdownWithToc } from 'layouts';
 
 const Terms = () => (
-  <BaseLayout subtitle="Terms">
-    <MarkdownWithToc articles={articles}>{terms}</MarkdownWithToc>
-  </BaseLayout>
+  <>
+    <Head>
+      <title>Terms</title>
+    </Head>
+    <BaseLayout>
+      <MarkdownWithToc articles={articles}>{terms}</MarkdownWithToc>
+    </BaseLayout>
+  </>
 );
 
 export default Terms;

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import Head from 'next/head';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -113,55 +114,60 @@ const TaskBoard = () => {
   if (!board) return <StandbyScreen />;
 
   return (
-    <BaseLayout subtitle={board.title}>
-      <Container component="main" maxWidth={false} className={classes.main}>
-        <ScrolledGridContainer
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Grid item className={classes.titleBox}>
-            <EditableTitle
-              method="PATCH"
-              model="board"
-              data={board}
-              disableMargin
-              inputStyle={classes.title}
-            />
-          </Grid>
-          <Grid item>
-            <SearchField />
-          </Grid>
-          <Grid item>
-            <PopoverControl
-              trigger={
-                <IconButton title="Menu">
-                  <MoreVertIcon />
-                </IconButton>
-              }
-            >
-              <BoardMenu board={board} />
-            </PopoverControl>
-          </Grid>
-        </ScrolledGridContainer>
-        <Divider />
-        <Grid container className={classes.content}>
+    <>
+      <Head>
+        <title>{board.title}</title>
+      </Head>
+      <BaseLayout>
+        <Container component="main" maxWidth={false} className={classes.main}>
           <ScrolledGridContainer
-            className={classes.listItems}
-            onDrop={handleDrop}
+            justifyContent="space-between"
+            alignItems="center"
           >
-            {board.lists?.map((list, i) => (
-              <Grid item key={list.id} id={list.id} className="listItem">
-                <TaskList list={list} listIndex={i} />
-              </Grid>
-            ))}
-            <Grid item className="listItem">
-              <ButtonToAddTask method="POST" model="list" parent={board} />
+            <Grid item className={classes.titleBox}>
+              <EditableTitle
+                method="PATCH"
+                model="board"
+                data={board}
+                disableMargin
+                inputStyle={classes.title}
+              />
+            </Grid>
+            <Grid item>
+              <SearchField />
+            </Grid>
+            <Grid item>
+              <PopoverControl
+                trigger={
+                  <IconButton title="Menu">
+                    <MoreVertIcon />
+                  </IconButton>
+                }
+              >
+                <BoardMenu board={board} />
+              </PopoverControl>
             </Grid>
           </ScrolledGridContainer>
-          <InfoBox style={belowSm ? { flexShrink: 0 } : undefined} />
-        </Grid>
-      </Container>
-    </BaseLayout>
+          <Divider />
+          <Grid container className={classes.content}>
+            <ScrolledGridContainer
+              className={classes.listItems}
+              onDrop={handleDrop}
+            >
+              {board.lists?.map((list, i) => (
+                <Grid item key={list.id} id={list.id} className="listItem">
+                  <TaskList list={list} listIndex={i} />
+                </Grid>
+              ))}
+              <Grid item className="listItem">
+                <ButtonToAddTask method="POST" model="list" parent={board} />
+              </Grid>
+            </ScrolledGridContainer>
+            <InfoBox style={belowSm ? { flexShrink: 0 } : undefined} />
+          </Grid>
+        </Container>
+      </BaseLayout>
+    </>
   );
 };
 

@@ -1,11 +1,17 @@
+import Head from 'next/head';
+
 import { HttpErrorLayout } from 'layouts';
 
 const BadRequest = () => {
+  const title = '400 Bad Request';
+
   return (
-    <HttpErrorLayout
-      title="400 Bad Request"
-      description="不正なリクエストです。"
-    />
+    <>
+      <Head>
+        <title>{title}</title>
+      </Head>
+      <HttpErrorLayout title={title} description="不正なリクエストです。" />
+    </>
   );
 };
 

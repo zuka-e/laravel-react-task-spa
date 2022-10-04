@@ -31,7 +31,7 @@ const HttpErrorLayout = (props: HttpErrorLayoutProps) => {
   };
 
   return (
-    <BaseLayout subtitle={title}>
+    <BaseLayout>
       <Container component="main" maxWidth="md" className={classes.container}>
         <Typography variant="h1" gutterBottom>
           {title}

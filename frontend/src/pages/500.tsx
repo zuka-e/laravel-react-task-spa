@@ -1,11 +1,20 @@
+import Head from 'next/head';
+
 import { HttpErrorLayout } from 'layouts';
 
 const InternalServerError = () => {
+  const title = '500 Internal Server Error';
+
   return (
-    <HttpErrorLayout
-      title="500 Internal Server Error"
-      description="このページは現在動作していません。"
-    />
+    <>
+      <Head>
+        <title>{title}</title>
+      </Head>
+      <HttpErrorLayout
+        title={title}
+        description="このページは現在動作していません。"
+      />
+    </>
   );
 };
 

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticProps } from 'next';
 
@@ -13,7 +14,7 @@ import {
   signInWithEmail,
 } from 'store/thunks/auth';
 import { useAppDispatch } from 'utils/hooks';
-import { BaseLayout, FormLayout } from 'layouts';
+import { FormLayout } from 'layouts';
 import { AlertButton, LabeledCheckbox, SubmitButton } from 'templates';
 import type { GuestPage } from 'routes';
 
@@ -84,7 +85,10 @@ const ResetPassword = () => {
   };
 
   return (
-    <BaseLayout subtitle="Reset Password" withoutHeaders>
+    <>
+      <Head>
+        <title>Reset Password</title>
+      </Head>
       <FormLayout title={'Reset Password'} message={message}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextField
@@ -142,7 +146,7 @@ const ResetPassword = () => {
           </Grid>
         </form>
       </FormLayout>
-    </BaseLayout>
+    </>
   );
 };
 

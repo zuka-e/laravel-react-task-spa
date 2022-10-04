@@ -1,11 +1,17 @@
+import Head from 'next/head';
+
 import { HttpErrorLayout } from 'layouts';
 
 const Forbidden = () => {
+  const title = '403 Forbidden';
+
   return (
-    <HttpErrorLayout
-      title="403 Forbidden"
-      description="不正なリクエストです。"
-    />
+    <>
+      <Head>
+        <title>{title}</title>
+      </Head>
+      <HttpErrorLayout title={title} description="不正なリクエストです。" />
+    </>
   );
 };
 

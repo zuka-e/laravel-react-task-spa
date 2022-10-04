@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 
@@ -97,44 +98,49 @@ const TaskBoardIndex = () => {
     return <StandbyScreen />;
 
   return (
-    <BaseLayout subtitle="Boards">
-      <Container component="main" className={classes.main}>
-        <Grid container spacing={2}>
-          {boards.map((board) => (
-            <Grid item lg={3} md={4} xs={6} key={board.id}>
-              <Card elevation={7}>
-                <LinkWrapper
-                  to={`/users/${route.pathParams.userId?.toString()}/boards/${
-                    board.id
-                  }`}
-                >
-                  <ScrolledDiv className={classes.content}>
-                    <Typography>{board.description}</Typography>
-                  </ScrolledDiv>
-                </LinkWrapper>
-                <Divider />
-                <BoardCardHeader board={board} />
-              </Card>
+    <>
+      <Head>
+        <title>Boards</title>
+      </Head>
+      <BaseLayout>
+        <Container component="main" className={classes.main}>
+          <Grid container spacing={2}>
+            {boards.map((board) => (
+              <Grid item lg={3} md={4} xs={6} key={board.id}>
+                <Card elevation={7}>
+                  <LinkWrapper
+                    to={`/users/${route.pathParams.userId?.toString()}/boards/${
+                      board.id
+                    }`}
+                  >
+                    <ScrolledDiv className={classes.content}>
+                      <Typography>{board.description}</Typography>
+                    </ScrolledDiv>
+                  </LinkWrapper>
+                  <Divider />
+                  <BoardCardHeader board={board} />
+                </Card>
+              </Grid>
+            ))}
+            <Grid item lg={3} sm={4} xs={6}>
+              <ButtonToAddTask method="POST" model="board" />
             </Grid>
-          ))}
-          <Grid item lg={3} sm={4} xs={6}>
-            <ButtonToAddTask method="POST" model="board" />
           </Grid>
-        </Grid>
-      </Container>
+        </Container>
 
-      {boards.length > 0 && count && currentPage && (
-        <Pagination
-          count={count}
-          page={currentPage}
-          siblingCount={2}
-          color="primary"
-          size="large"
-          onChange={handleChange}
-          classes={{ root: classes.pagination, ul: classes.paginationUl }}
-        />
-      )}
-    </BaseLayout>
+        {boards.length > 0 && count && currentPage && (
+          <Pagination
+            count={count}
+            page={currentPage}
+            siblingCount={2}
+            color="primary"
+            size="large"
+            onChange={handleChange}
+            classes={{ root: classes.pagination, ul: classes.paginationUl }}
+          />
+        )}
+      </BaseLayout>
+    </>
   );
 };
 
