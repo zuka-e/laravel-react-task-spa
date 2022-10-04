@@ -5,6 +5,7 @@ import { fetchAuthUser } from 'store/thunks/auth';
 import { isReady } from 'utils/auth';
 import { useAppDispatch, useAppSelector } from 'utils/hooks';
 import { BaseLayout, Loading } from 'layouts';
+import { SEO } from 'components/pages';
 import { Hero, Features } from 'components/home/LandingPage';
 
 const Home = () => {
@@ -25,10 +26,13 @@ const Home = () => {
   if (!isReady() || signedIn) return <Loading open={true} />;
 
   return (
-    <BaseLayout subtitle="">
-      <Hero />
-      <Features />
-    </BaseLayout>
+    <>
+      <SEO title="" description="" />
+      <BaseLayout subtitle="">
+        <Hero />
+        <Features />
+      </BaseLayout>
+    </>
   );
 };
 
