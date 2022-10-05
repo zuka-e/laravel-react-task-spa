@@ -79,5 +79,4 @@ jobs:
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn --frozen-lockfile
 
-      - run: yarn build --if-present
-      - run: yarn test
+      - run: yarn test:ci
