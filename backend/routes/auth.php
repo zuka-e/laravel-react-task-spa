@@ -109,7 +109,7 @@ Route::group(['middleware' => config('fortify.middleware', ['web'])], function (
     }
 
     // Profile Information...
-    Route::get('/user/profile-information', [ProfileInformationController::class, 'update'])
+    Route::get('/user/profile-information', [ProfileInformationController::class, 'show'])
         ->middleware([config('fortify.auth_middleware', 'auth').':'.config('fortify.guard')])
         ->name('user-profile-information.show');
 
